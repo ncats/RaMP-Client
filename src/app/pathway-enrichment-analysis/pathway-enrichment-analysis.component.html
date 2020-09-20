@@ -1,0 +1,102 @@
+<div class="route-container">
+    <h1>
+        Pathway Enrichment Analysis
+    </h1>
+    <mat-card>
+        <mat-card-content>
+            <mat-tab-group [selectedIndex]="selectedIndex">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        Input
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="error-message-container">
+                            <div class="error-message" *ngIf="errorMessage">
+                                {{errorMessage}}
+                            </div>
+                        </div>
+                        <form #anlyteForm="ngForm" class="analyte-form">
+                            <div class="identifiers">
+                                <div class="description">
+                                    Enter a list of identifiers (known Id's or names), one per line (press Enter
+                                    after each).
+                                </div>
+                                <div class="text-input-container">
+                                    <textarea class="targetBox" placeholder="Analytes" spellcheck="false"
+                                        [(ngModel)]="analytesInput" name="analytesInput" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-options">
+                                <div class="form-option-inputs">
+                                    <div class="form-divider">
+                                        <mat-radio-group aria-label="Indentifiers type"
+                                            [(ngModel)]="identifierTypesInput" name="identifierTypesInput">
+                                            <mat-radio-button [value]="'ids'">Id</mat-radio-button>
+                                            <mat-radio-button [value]="'names'">Name</mat-radio-button>
+                                        </mat-radio-group>
+                                    </div>
+                                    <mat-form-field class="form-divider number-input">
+                                        <mat-label>Holm adjustment cutoff</mat-label>
+                                        <input type="number" matInput [(ngModel)]="pHolmAdjCutoffInput" required
+                                            name="pHolmAdjCutoffInput">
+                                        <mat-hint>(0 - 1)</mat-hint>
+                                    </mat-form-field>
+                                    <mat-form-field class="form-divider number-input">
+                                        <mat-label>fdr adjustment cutoff</mat-label>
+                                        <input type="number" matInput [(ngModel)]="pfdrAdjCutoffInput"
+                                            name="pfdrAdjCutoffInput">
+                                        <mat-hint>(0 - 1)</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                                <div>
+                                    <button mat-flat-button color="accent" (click)="submitAnalytes()"
+                                        [disabled]="anlyteForm.invalid">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab *ngIf="analysisResults">
+                    <ng-template mat-tab-label>
+                        Results Table
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="results-message-container" *ngIf="analysisResults.length == 0">
+                            Your query didn't yield any results.
+                        </div>
+                        <div class="results-table-container" *ngIf="analysisResults && analysisResults.length">
+                            <div>
+                                <mat-paginator [length]="analysisResults && analysisResults.length || 0" [pageSize]="pageSize"
+                                    [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange($event)"
+                                    [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                            <div class="table-container">
+                                <mat-table [dataSource]="paged" matSort (matSortChange)="sortData($event)">
+                                    <ng-container [matColumnDef]="column.value" *ngFor="let column of columns; index as index">
+                                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            <span>
+                                                {{column.display}}
+                                            </span>
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let row">
+                                            <span>{{row[column.value]}}</span>
+                                        </mat-cell>
+                                    </ng-container>
+                                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                </mat-table>
+                            </div>
+                            <div>
+                                <mat-paginator [length]="analysisResults && analysisResults.length || 0" [pageSize]="pageSize"
+                                    [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange($event)"
+                                    [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+    </mat-card>
+</div>
