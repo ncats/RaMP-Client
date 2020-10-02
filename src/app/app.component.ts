@@ -1,25 +1,51 @@
-import { Component, ViewChild, HostListener, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, HostListener, AfterViewInit, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSidenav } from '@angular/material/sidenav';
+import { ActivationEnd, Router } from '@angular/router';
+import { MainNavItem } from './main-nav.model';
 
 @Component({
   selector: 'ramp-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
   hasBackdrop = false;
   @ViewChild('sideNav', { read: MatSidenav, static: false }) sideNav: MatSidenav;
-  fixedTopGap = 64;
+  navItems: Array<MainNavItem> = [];
+  activeNavItemId = '';
 
   constructor(
-    iconRegistry: MatIconRegistry,
-    sanitizer: DomSanitizer
+    public iconRegistry: MatIconRegistry,
+    public sanitizer: DomSanitizer,
+    private router: Router
   ){
     iconRegistry.addSvgIcon(
       'menu',
       sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/menu-24px.svg'));
+  }
+
+  ngOnInit() {
+
+    console.log(this.router.config);
+
+    this.navItems = this.router.config
+      .filter(item => item.data != null && item.data.isMainNav).map(item => {
+        return {
+          id: item.data.id,
+          path: `/${item.data.path || item.path}`,
+          display: item.data.display,
+          order: item.data.order
+        };
+      })
+      .sort((a, b) => a.order - b.order);
+
+    this.router.events.subscribe(event => {
+      if (event instanceof ActivationEnd) {
+        this.activeNavItemId = event.snapshot.data && event.snapshot.data.id || '';
+      }
+    });
   }
 
   ngAfterViewInit() {

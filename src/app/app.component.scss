@@ -24,7 +24,18 @@
 }
 
 .mat-nav-list a {
-    color: #448aff;
+
+    &:hover {
+        color: #1976D2;
+    }
+}
+
+.mat-list-item.active {
+    background: rgba(0, 0, 0, 0.04);
+
+    a {
+        color: #1976D2;
+    }
 }
 
 @media(max-width: 1799px) {

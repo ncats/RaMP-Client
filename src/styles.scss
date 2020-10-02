@@ -46,6 +46,12 @@ router-outlet + * {
     flex-grow: 1;
 }
 
+.route-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 @media(min-width: 600px) {
     html {
         height: calc(100vh - 64px);
@@ -62,7 +68,15 @@ router-outlet + * {
         max-width: 100%;
     }
 
-    
+    .route-container {
+        height: auto;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .page-title {
+        font-size: 1.5em;
+    }
 }
 
 @media(max-width: 599px) {

@@ -1,5 +1,5 @@
 <div class="route-container">
-    <h1>
+    <h1 class="page-title">
         Pathway Enrichment Analysis
     </h1>
     <mat-card>
@@ -66,14 +66,15 @@
                         </div>
                         <div class="results-table-container" *ngIf="analysisResults && analysisResults.length">
                             <div>
-                                <mat-paginator [length]="analysisResults && analysisResults.length || 0" [pageSize]="pageSize"
-                                    [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange($event)"
-                                    [pageSizeOptions]="[5, 10, 25, 100]">
+                                <mat-paginator [length]="analysisResults && analysisResults.length || 0"
+                                    [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                    (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
                             </div>
                             <div class="table-container">
                                 <mat-table [dataSource]="paged" matSort (matSortChange)="sortData($event)">
-                                    <ng-container [matColumnDef]="column.value" *ngFor="let column of columns; index as index">
+                                    <ng-container [matColumnDef]="column.value"
+                                        *ngFor="let column of columns; index as index">
                                         <mat-header-cell *matHeaderCellDef mat-sort-header>
                                             <span>
                                                 {{column.display}}
@@ -88,10 +89,32 @@
                                 </mat-table>
                             </div>
                             <div>
-                                <mat-paginator [length]="analysisResults && analysisResults.length || 0" [pageSize]="pageSize"
-                                    [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange($event)"
-                                    [pageSizeOptions]="[5, 10, 25, 100]">
+                                <mat-paginator [length]="analysisResults && analysisResults.length || 0"
+                                    [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                    (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab *ngIf="showPlots">
+                    <ng-template mat-tab-label>
+                        Plots
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="visualization-container">
+                            <div>
+                                <ramp-bar [data]="analysisResults" title="Pathway Clusters" xKey="cluster_assignment"
+                                    yKey="negativeLogPVal" yLabel="mean -log(p-value)" xLabel="Cluster"
+                                    calculation="average">
+                                </ramp-bar>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <div>
+                                <ramp-scatter [data]="analysisResults" title="Pathway Clusters" xKey="Total_In_Path"
+                                    yKey="negativeLogPVal" yLabel="-log(p-value)"
+                                    xLabel="Total # of analytes in pathway" clustersKey="cluster_assignment">
+                                </ramp-scatter>
                             </div>
                         </div>
                     </ng-template>

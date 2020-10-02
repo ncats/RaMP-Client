@@ -5,8 +5,8 @@
 <mat-sidenav-container [hasBackdrop]="hasBackdrop">
   <mat-sidenav #sideNav mode="side" opened opened="false">
     <mat-nav-list>
-      <mat-list-item>
-         <a matLine routerLink="/pathway-enrichment-analysis">Pathway enrichment analysis</a>
+      <mat-list-item *ngFor="let navItem of navItems" [ngClass]="{'active': navItem.id == activeNavItemId}">
+        <a matLine [routerLink]="navItem.path">{{navItem.display}}</a>
       </mat-list-item>
     </mat-nav-list>
   </mat-sidenav>

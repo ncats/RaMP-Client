@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { LoadingService } from '../loading/loading.service';
 import { AnalysisResult } from './analysis-result.model';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { MatCard } from '@angular/material/card';
+import { map } from 'rxjs/operators';
+import { analysisColumns } from './analysis-colums.constant';
+import { Decimal } from 'decimal.js';
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -15,58 +17,17 @@ import { MatCard } from '@angular/material/card';
 export class PathwayEnrichmentAnalysisComponent implements OnInit {
   analytesInput: string;
   identifierTypesInput = 'names';
-  pHolmAdjCutoffInput = 0.5;
+  pHolmAdjCutoffInput = 1;
   pfdrAdjCutoffInput: number;
   analysisResults: Array<AnalysisResult>;
   paged: Array<AnalysisResult>;
   page = 0;
   pageSize = 10;
-  displayedColumns = [
-    'Pval',
-    'Num_In_Path',
-    'Total_In_Path',
-    'Pval_FDR',
-    'Pval_Holm',
-    'pathwayName',
-    'pathwaysourceId',
-    'pathwaysource'
-  ];
-  columns: Array<{ value: string; display: string }> = [
-    {
-      value: 'Pval',
-      display: 'P Value'
-    },
-    {
-      value: 'Num_In_Path',
-      display: '# in Path'
-    },
-    {
-      value: 'Total_In_Path',
-      display: 'Total in Path'
-    },
-    {
-      value: 'Pval_FDR',
-      display: 'FDR P Value'
-    },
-    {
-      value: 'Pval_Holm',
-      display: 'Holm P Value'
-    },
-    {
-      value: 'pathwayName',
-      display: 'Pathway Name'
-    },
-    {
-      value: 'pathwaysourceId',
-      display: 'Pathway Source Id'
-    },
-    {
-      value: 'pathwaysource',
-      display: 'Pathway Source'
-    }
-  ];
+  displayedColumns: Array<string>;
+  columns = analysisColumns;
   selectedIndex = 0;
   errorMessage: string;
+  showPlots = false;
 
   constructor(
     private http: HttpClient,
@@ -74,13 +35,16 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.displayedColumns = analysisColumns.map(item => item.value);
   }
 
   submitAnalytes(): void {
     this.errorMessage = '';
     this.selectedIndex = 0;
     this.loadingService.setLoadingState(true);
-    const url = `${environment.apiBaseUrl}pathway_enrichment_analysis`;
+    this.showPlots = false;
+    // const url = `${environment.apiBaseUrl}pathway_enrichment_analysis`;
+    const url = `/assets/test-data/pathway_enrichment_analysis.json`;
 
     const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
 
@@ -102,7 +66,32 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     }
 
 
-    this.http.get<any>(url, options).subscribe((response: { fishresults: Array<AnalysisResult>,  analyte_type: Array<string>}) => {
+    this.http.get<any>(url, options)
+      .pipe(
+        map(response => {
+          if (response.fishresults && response.fishresults.length > 0) {
+            response.fishresults.map(item => {
+
+              if (item.cluster_assignment) {
+                this.showPlots = true;
+              }
+
+              if (item.Pval != null || item.Pval_combined != null) {
+                const pVal = item.Pval != null ? item.Pval : item.Pval_combined;
+                item.negativeLogPVal =  new Decimal(1).dividedBy(Decimal.log10(pVal)).toNumber();
+              }
+              Object.keys(item).forEach(key => {
+                if (key.indexOf('.') > -1) {
+                  item[key.split('.')[0]] = item[key];
+                  delete item[key];
+                }
+              });
+            });
+          }
+          return response;
+        })
+      )
+      .subscribe((response: { fishresults: Array<AnalysisResult>,  analyte_type: Array<string>}) => {
       this.analysisResults = response.fishresults;
       this.pageChange();
       this.loadingService.setLoadingState(false);

@@ -21,13 +21,18 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { MatTabsModule } from '@angular/material/tabs'; 
+import { MatTabsModule } from '@angular/material/tabs';
+import { AboutComponent } from './about/about.component';
+import { ScatterModule } from './visualization/scatter/scatter.module';
+import { BarModule } from './visualization/bar/bar.module';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
-    PathwayEnrichmentAnalysisComponent
+    PathwayEnrichmentAnalysisComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +54,10 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatPaginatorModule,
     MatSortModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    ScatterModule,
+    BarModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

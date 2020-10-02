@@ -1,20 +1,12 @@
-.route-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
 .content-container {
     display: flex;
     flex-grow: 1;
 }
 
 .mat-card {
-
     width: auto;
     max-width: 100%;
-    height: 100%;
-
+    flex-grow: 1;
 }
 
 .mat-card-content {
@@ -128,6 +120,17 @@ textarea {
     height: auto;
 }
 
+.visualization-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.mat-card .mat-divider-horizontal {
+    position: unset;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
 @media(max-width: 1200px) {
     ::ng-deep .mat-tab-body-content {
         flex-direction: column;
@@ -150,16 +153,6 @@ textarea {
 }
 
 @media(max-width: 704px) {
-
-    .route-container {
-        height: auto;
-        width: 100%;
-        max-width: 100%;
-    }
-
-    h1 {
-        font-size: 1.5em;
-    }
 
     .analyte-form {
         flex-direction: column;
