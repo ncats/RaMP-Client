@@ -17,17 +17,25 @@ export abstract class VisualizationBase {
     yMax: number;
     xMin: number;
     xMax: number;
-    @Input() title = 'Scatter Plot';
+    @Input() title = 'Graph';
     legendItems: Array<{ color: string; label: string }> = [];
     xAxis: any;
     yAxis: any;
 
-    createSvg(element: HTMLElement): void {
+    createSvg(
+        element: HTMLElement,
+        width = this.width,
+        height = this.height,
+        marginLeft = this.margin,
+        marginBottom = this.margin,
+        marginRight = 0,
+        marginTop = 0,
+    ): void {
         this.svg = d3.select(element)
             .append('svg')
-            .attr('width', this.width + (this.margin))
-            .attr('height', this.height + (this.margin))
-            .append('g').attr('transform', `translate(${this.margin},0)`);
+            .attr('width', width + marginLeft + marginRight)
+            .attr('height', height + marginBottom + marginTop)
+            .append('g').attr('transform', `translate(${marginLeft},${marginTop})`);
         this.svgReady.next();
         this.svgReady.complete();
     }

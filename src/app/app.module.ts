@@ -26,6 +26,7 @@ import { AboutComponent } from './about/about.component';
 import { ScatterModule } from './visualization/scatter/scatter.module';
 import { BarModule } from './visualization/bar/bar.module';
 import { MatDividerModule } from '@angular/material/divider';
+import { UpsetModule } from './visualization/upset/upset.module';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatTabsModule,
     ScatterModule,
     BarModule,
-    MatDividerModule
+    MatDividerModule,
+    UpsetModule
   ],
   providers: [],
   bootstrap: [AppComponent]

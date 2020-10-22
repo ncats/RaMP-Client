@@ -15,3 +15,10 @@ export interface AnalysisResult {
 
     negativeLogPVal: number;
 }
+
+export interface ClusteringCoordinates {
+    pathwayRampId: string;
+    x: number;
+    y: number;
+    cluster_assignment: string | number;
+}

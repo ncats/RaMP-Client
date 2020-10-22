@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { LoadingService } from '../loading/loading.service';
-import { AnalysisResult } from './analysis-result.model';
+import { AnalysisResult, ClusteringCoordinates } from './analysis-result.model';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { analysisColumns } from './analysis-colums.constant';
 import { Decimal } from 'decimal.js';
+import { _getOptionScrollPosition } from '@angular/material/core';
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -19,7 +20,11 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   identifierTypesInput = 'names';
   pHolmAdjCutoffInput = 1;
   pfdrAdjCutoffInput: number;
+  percAnalyteOverlap = 20;
+  percPathwayOverlap = 20;
+  minPathwayTocluster = 2;
   analysisResults: Array<AnalysisResult>;
+  clusterCoordinates: Array<ClusteringCoordinates>;
   paged: Array<AnalysisResult>;
   page = 0;
   pageSize = 10;
@@ -28,6 +33,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   selectedIndex = 0;
   errorMessage: string;
   showPlots = false;
+  pathwaySourceIds: Array<string>;
+  analytes: Array<any>;
 
   constructor(
     private http: HttpClient,
@@ -43,8 +50,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.selectedIndex = 0;
     this.loadingService.setLoadingState(true);
     this.showPlots = false;
-    // const url = `${environment.apiBaseUrl}pathway_enrichment_analysis`;
-    const url = `/assets/test-data/pathway_enrichment_analysis.json`;
+    const url = `${environment.apiBaseUrl}pathway_enrichment_analysis`;
+    // const url = `/assets/test-data/pathway_enrichment_analysis.json`;
 
     const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
 
@@ -65,12 +72,23 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       options.params['p_fdradj_cutoff'] = this.pfdrAdjCutoffInput;
     }
 
+    // tslint:disable-next-line:no-string-literal
+    options.params['perc_analyte_overlap'] = Decimal.div(this.percAnalyteOverlap, 100).toNumber();
+
+    // tslint:disable-next-line:no-string-literal
+    options.params['perc_pathway_overlap'] = Decimal.div(this.percPathwayOverlap, 100).toNumber();
+
+    // tslint:disable-next-line:no-string-literal
+    options.params['min_pathway_tocluster'] = this.minPathwayTocluster;
 
     this.http.get<any>(url, options)
       .pipe(
         map(response => {
           if (response.fishresults && response.fishresults.length > 0) {
+            this.pathwaySourceIds = [];
             response.fishresults.map(item => {
+
+              this.pathwaySourceIds.push(item.pathwaysourceId);
 
               if (item.cluster_assignment) {
                 this.showPlots = true;
@@ -88,19 +106,49 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
               });
             });
           }
+          if (response.analytes && response.analytes.length > 0) {
+            response.analytes = response.analytes.map(item => { item.pathways = item.pathways.split(','); return item; });
+          }
           return response;
         })
       )
-      .subscribe((response: { fishresults: Array<AnalysisResult>,  analyte_type: Array<string>}) => {
+      .subscribe((response: {
+        fishresults: Array<AnalysisResult>,
+        clusterCoordinates: Array<ClusteringCoordinates>,
+        analytes: Array<any>
+      }) => {
       this.analysisResults = response.fishresults;
+      this.clusterCoordinates = response.clusterCoordinates;
       this.pageChange();
+      this.analytes = response.analytes;
       this.loadingService.setLoadingState(false);
+      // this.getGroupedAnalytes();
       setTimeout(() => {
         this.selectedIndex = 1;
       }, 10);
     }, error => {
       this.errorMessage = 'There was a problem processing your request. Please review your input and make sure you entered the correct analyte identifiers and selected the correct options';
       this.loadingService.setLoadingState(false);
+    });
+  }
+
+  getGroupedAnalytes(): void {
+
+    const url = `${environment.apiBaseUrl}analytes`;
+
+    const options = {
+      params: {
+        pathwaySourceId: this.pathwaySourceIds,
+      }
+    };
+    this.http.get<any>(url, options)
+      .pipe(
+        map(response => {
+          response = response.map(item => { item.analytes = item.analytes.split(','); return item; });
+          return response;
+        })
+      ).subscribe(response => {
+      this.analytes = response;
     });
   }
 
