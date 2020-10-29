@@ -101,7 +101,7 @@ export class ScatterComponent extends VisualizationBase implements OnInit, After
           .append('circle')
           .attr('cx', d => this.xAxis(d[this.dataXKey]))
           .attr('cy', d => this.yAxis(d[this.dataYKey]))
-          .attr('r', 3)
+          .attr('r', 5)
           .style('opacity', .8)
           .style('fill', Colors[0]);
       } else {

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 import { VisualizationBase } from '../visualization-base';
 import { take } from 'rxjs/operators';
 import * as d3 from 'd3';
+import { UpsetIntersection } from './intersection.model';
 
 @Component({
   selector: 'ramp-upset',
@@ -10,12 +11,14 @@ import * as d3 from 'd3';
 })
 export class UpsetComponent extends VisualizationBase implements OnInit, AfterViewInit {
   selectedData: Array<any>;
-  intersections: Array<any>;
-  soloSets: any;
-  allData: Array<any>;
+  intersections: Array<UpsetIntersection>;
+  soloSets: Array<UpsetIntersection> | any;
+  allData: Array<UpsetIntersection>;
   dataNameKey: string;
   dataValuesKey: string;
   isViewInit = false;
+  @Input() scale: 'linear'|'log' = 'linear';
+  @Input() showSetsSelection = false;
 
   @ViewChild('upsetPlotBox', { read: ElementRef, static: false }) upsetPlotElement: ElementRef;
 
@@ -32,6 +35,32 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   ngAfterViewInit(): void {
     this.isViewInit = true;
     this.drawContainer();
+  }
+
+
+
+  @Input('intersections')
+  set intersectionsInput(intersections: Array<UpsetIntersection>) {
+    if (intersections != null) {
+      this.intersections = intersections;
+      this.drawContainer();
+    }
+  }
+
+  @Input('soloSets')
+  set soloSetsInput(soloSets: Array<UpsetIntersection> | any) {
+    if (soloSets != null) {
+      this.soloSets = soloSets;
+      this.drawContainer();
+    }
+  }
+
+  @Input('allData')
+  set allDataInput(allData: Array<UpsetIntersection>) {
+    if (allData != null) {
+      this.allData = allData;
+      this.drawContainer();
+    }
   }
 
   @Input('nameKey')
@@ -106,10 +135,10 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
           maxLabelSize = element.name.length;
         }
       });
-      const marginLeft = maxLabelSize * 8;
+      const marginLeft = maxLabelSize * 10.30;
       const height = 400;
       const marginBottom = this.soloSets.length * 45;
-      const width = this.allData.length * 41;
+      const width = 52 + ((this.allData.length - 1) * (13 * 2.7));
       this.createSvg(this.upsetPlotElement.nativeElement, width, height, marginLeft, marginBottom, 0, 20);
     }
   }
@@ -117,7 +146,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   // format intersection data
   formatIntersectionData() {
 
-    if (this.selectedData != null && this.dataValuesKey != null && this.dataNameKey != null) {
+    if (this.selectedData != null && this.dataValuesKey != null && this.dataNameKey != null && this.scale) {
       // compiling solo set data - how many values per set
       const soloSets = [];
 
@@ -166,7 +195,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   }
 
   // compiling list of intersection names recursively
-  // ["A", "AB", "ABC", ...]
+  // ['A', 'AB', 'ABC', ...]
   getIntNames(start, end, nameStr) {
     // eg. BCD
     const name = nameStr.substring(start, end);
@@ -221,7 +250,9 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       // all sets
       const allSetNames = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substr(0, this.soloSets.length).split('');
 
-      const width = 40 * this.allData.length;
+      const rad = 13;
+
+      const width = 42 + ((this.allData.length - 1) * (rad * 2.7));
       const height = 400;
 
       // make the canvas
@@ -237,8 +268,6 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         .attr('id', 'upsetCircles')
         .attr('transform', `translate(20,${height + 40})`);
 
-      const rad = 13;
-
       // making dataset labels
       this.soloSets.forEach((x, i) => {
         upsetCircles.append('text')
@@ -251,7 +280,8 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       });
 
       // sort data decreasing
-      this.allData.sort((a, b) => parseFloat(b.num) - parseFloat(a.num));
+      // this.allData.sort((a, b) => parseFloat(b.num.toString()) - parseFloat(a.num.toString()));
+      this.allData.sort((a, b) => parseFloat(a.name.split(' + ').length.toString()) - parseFloat(b.name.split(' + ').length.toString()));
 
       // make the bars
       const upsetBars = this.svg.append('g')
@@ -260,13 +290,35 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       const nums: Array<any> = this.allData.map((x) => x.num);
 
       // set range for data by domain, and scale by range
+
+      let yrange;
+      let yAxis;
+
+      if (this.scale === 'log') {
+        yrange = d3.scaleLog()
+          .domain([1, d3.max(nums)])
+          .range([height, 0]);
+
+        yAxis = d3.axisLeft(yrange)
+          .scale(yrange)
+          .tickFormat((d, i) => {
+            return i % 5 === 0 && d3.format(',d')(Number(d)) || '';
+          })
+          .tickSize(5);
+
+      } else {
+        yrange = d3.scaleLinear()
+          .domain([0, d3.max(nums)])
+          .range([height, 0]);
+
+        yAxis = d3.axisLeft(yrange)
+          // .scale(yrange)
+          .tickSize(5);
+      }
+
       const xrange = d3.scaleLinear()
         .domain([0, nums.length])
         .range([0, width]);
-
-      const yrange = d3.scaleLinear()
-        .domain([0, d3.max(nums)])
-        .range([height, 0]);
 
       // set axes for graph
       const xAxis = d3.axisBottom(xrange)
@@ -274,10 +326,6 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         .tickPadding(2)
         .tickFormat((d, i) => this.allData[i].setName)
         .tickValues(d3.range(this.allData.length));
-
-      const yAxis = d3.axisLeft(yrange)
-        // .scale(yrange)
-        .tickSize(5);
 
       // add X axis
       upsetBars.append('g')
@@ -314,16 +362,27 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         .append('rect')
         .attr('class', 'bar')
         .attr('width', 20)
-        .attr('x', (d, i) => 9 + i * (rad * 2.7))
+        .attr('x', (d, i) => 12 + i * (rad * 2.7))
         .attr('y', (d) => yrange(d.num))
         .style('fill', '#02577b')
         .attr('height', (d) => height - yrange(d.num));
+
+      const labels = chart.selectAll('.text')
+        .data(this.allData)
+        .enter()
+        .append('text')
+        .attr('font-size', 11)
+        .attr('dy', '.75em')
+        .attr('x', (d, i) => 12 + i * (rad * 2.7) + 10)
+        .attr('y', (d) => yrange(d.num) - 13)
+        .attr('text-anchor', 'middle')
+        .text((d) => d3.format(',d')(Number(d.num)));
 
       // circles
       this.allData.forEach((x, i) => {
         allSetNames.forEach((y, j) => {
           upsetCircles.append('circle')
-            .attr('cx', i * (rad * 2.7))
+            .attr('cx', i * (rad * 2.7) + 3)
             .attr('cy', j * (rad * 2.7))
             .attr('r', rad)
             .attr('class', `set-${x.setName}`)
