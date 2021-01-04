@@ -1,4 +1,4 @@
-export interface AnalysisResult {
+export interface FisherTestResult {
     pathwayRampId: string;
     Pval?: number;
     Pval_combined?: number;
@@ -12,7 +12,6 @@ export interface AnalysisResult {
     pathwaysourceId: string;
     pathwaysource: string;
     cluster_assignment?: string;
-
     negativeLogPVal: number;
 }
 

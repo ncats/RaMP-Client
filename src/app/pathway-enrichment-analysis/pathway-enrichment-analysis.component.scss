@@ -131,6 +131,27 @@ textarea {
     margin-bottom: 20px;
 }
 
+.pathways-table-top-options {
+    display: flex;
+    align-items: center;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .form-divider {
+        margin-right: 15px;
+    }
+}
+
 @media(max-width: 1200px) {
     ::ng-deep .mat-tab-body-content {
         flex-direction: column;

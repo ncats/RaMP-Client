@@ -4,8 +4,8 @@
     </h1>
     <mat-card>
         <mat-card-content>
-            <mat-tab-group [selectedIndex]="selectedIndex">
-                <mat-tab>
+            <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="selectedTabChange($event)">
+                <mat-tab textLabel="input">
                     <ng-template mat-tab-label>
                         Input
                     </ng-template>
@@ -27,73 +27,47 @@
                                 </div>
                             </div>
                             <div class="form-options">
-                                <div class="form-option-inputs">
-                                    <div class="form-divider">
-                                        <mat-radio-group aria-label="Indentifiers type"
-                                            [(ngModel)]="identifierTypesInput" name="identifierTypesInput">
-                                            <mat-radio-button [value]="'ids'">Id</mat-radio-button>
-                                            <mat-radio-button [value]="'names'">Name</mat-radio-button>
-                                        </mat-radio-group>
-                                    </div>
-                                    <h3>Enrichment options</h3>
-                                    <mat-form-field class="form-divider number-input">
-                                        <mat-label>Holm adjustment cutoff</mat-label>
-                                        <input type="number" matInput [(ngModel)]="pHolmAdjCutoffInput" required
-                                            name="pHolmAdjCutoffInput">
-                                        <mat-hint>(0 - 1)</mat-hint>
-                                    </mat-form-field>
-                                    <mat-form-field class="form-divider number-input">
-                                        <mat-label>fdr adjustment cutoff</mat-label>
-                                        <input type="number" matInput [(ngModel)]="pfdrAdjCutoffInput"
-                                            name="pfdrAdjCutoffInput">
-                                        <mat-hint>(0 - 1)</mat-hint>
-                                    </mat-form-field>
-                                    <h3>Clustering options</h3>
-                                    <mat-form-field class="form-divider number-input">
-                                        <mat-label>% analyte overlap</mat-label>
-                                        <input type="number" matInput [(ngModel)]="percAnalyteOverlap" required
-                                            name="percAnalyteOverlap">
-                                        <mat-hint>(1 - 100)</mat-hint>
-                                    </mat-form-field>
-                                    <mat-form-field class="form-divider number-input">
-                                        <mat-label>% pathway overlap</mat-label>
-                                        <input type="number" matInput [(ngModel)]="percPathwayOverlap" required
-                                            name="percAnalyteOverlap">
-                                        <mat-hint>(1 - 100)</mat-hint>
-                                    </mat-form-field>
-                                    <mat-form-field class="form-divider number-input">
-                                        <mat-label>Min pathway to cluster</mat-label>
-                                        <input type="number" matInput [(ngModel)]="minPathwayTocluster" required
-                                            name="minPathwayTocluster">
-                                    </mat-form-field>
-                                </div>
                                 <div>
-                                    <button mat-flat-button color="accent" (click)="submitAnalytes()"
-                                        [disabled]="anlyteForm.invalid">Submit</button>
+                                    <button mat-flat-button color="accent" (click)="mapAnalytesToPathways()"
+                                        [disabled]="anlyteForm.invalid">
+                                        Map analytes to pathways
+                                    </button>
                                 </div>
                             </div>
                         </form>
                     </ng-template>
                 </mat-tab>
-                <mat-tab *ngIf="analysisResults">
+                <mat-tab  *ngIf="pathways" textLabel="pathways">
                     <ng-template mat-tab-label>
-                        Results Table
+                        Pathways
                     </ng-template>
                     <ng-template matTabContent>
-                        <div class="results-message-container" *ngIf="analysisResults.length == 0">
+                        <div class="results-message-container" *ngIf="pathways.length == 0">
                             Your query didn't yield any results.
                         </div>
-                        <div class="results-table-container" *ngIf="analysisResults && analysisResults.length">
-                            <div>
-                                <mat-paginator [length]="analysisResults && analysisResults.length || 0"
+                        <div class="results-table-container" *ngIf="pathways && pathways.length">
+                            <div class="pathways-table-top-options">
+                                <form #anlyteForm="ngForm">
+                                    <button mat-flat-button color="accent" (click)="runCombinedFisherTest()"
+                                        [disabled]="anlyteForm.invalid">
+                                        Run Combined Fisher's Test
+                                    </button>
+                                </form>
+                                <div class="fill-middle"></div>
+                                <mat-paginator [length]="pathways && pathways.length || 0"
                                     [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
-                                    (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    (page)="pageChange(pathways, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
                             </div>
+                            <div class="error-message-container">
+                                <div class="error-message" *ngIf="errorMessage">
+                                    {{errorMessage}}
+                                </div>
+                            </div>
                             <div class="table-container">
-                                <mat-table [dataSource]="paged" matSort (matSortChange)="sortData($event)">
+                                <mat-table [dataSource]="pagedData" matSort (matSortChange)="sortData(pathways, $event)">
                                     <ng-container [matColumnDef]="column.value"
-                                        *ngFor="let column of columns; index as index">
+                                        *ngFor="let column of pathwayColumns; index as index">
                                         <mat-header-cell *matHeaderCellDef mat-sort-header>
                                             <span>
                                                 {{column.display}}
@@ -103,14 +77,194 @@
                                             <span>{{row[column.value]}}</span>
                                         </mat-cell>
                                     </ng-container>
-                                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                    <mat-header-row *matHeaderRowDef="pathwayDisplayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: pathwayDisplayedColumns;"></mat-row>
                                 </mat-table>
                             </div>
                             <div>
-                                <mat-paginator [length]="analysisResults && analysisResults.length || 0"
+                                <mat-paginator [length]="pathways && pathways.length || 0"
                                     [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
-                                    (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    (page)="pageChange(pathways, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab  *ngIf="fisherTestResults" textLabel="fisherTestResults">
+                    <ng-template mat-tab-label>
+                        Fisher's Test Results
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="flex-column">
+                            <div class="results-message-container" *ngIf="fisherTestResults.length == 0">
+                                Your query didn't yield any results.
+                            </div>
+                            <div class="results-table-container" *ngIf="fisherTestResults && fisherTestResults.length">
+                                <div class="pathways-table-top-options">
+                                    <form #anlyteForm="ngForm" class="flex-row">
+                                        <div class="form-divider">
+                                            <button mat-flat-button color="accent" (click)="filterFisherTestResults()"
+                                                [disabled]="anlyteForm.invalid">Filter Fisher's Test Results</button>
+                                        </div>
+                                        <mat-form-field class="form-divider number-input">
+                                            <mat-label>Holm adjustment cutoff</mat-label>
+                                            <input type="number" matInput [(ngModel)]="pHolmAdjCutoffInput" required
+                                                name="pHolmAdjCutoffInput">
+                                            <mat-hint>(0 - 1)</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field class="form-divider number-input">
+                                            <mat-label>fdr adjustment cutoff</mat-label>
+                                            <input type="number" matInput [(ngModel)]="pfdrAdjCutoffInput"
+                                                name="pfdrAdjCutoffInput">
+                                            <mat-hint>(0 - 1)</mat-hint>
+                                        </mat-form-field>
+                                    </form>
+                                    <div class="fill-middle"></div>
+                                    <mat-paginator [length]="fisherTestResults && fisherTestResults.length || 0"
+                                        [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                        (page)="pageChange(fisherTestResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    </mat-paginator>
+                                </div>
+                                <div class="error-message-container">
+                                    <div class="error-message" *ngIf="errorMessage">
+                                        {{errorMessage}}
+                                    </div>
+                                </div>
+                                <div class="table-container">
+                                    <mat-table [dataSource]="pagedData" matSort (matSortChange)="sortData(fisherTestResults, $event)">
+                                        <ng-container [matColumnDef]="column.value"
+                                            *ngFor="let column of fisherTestColumns; index as index">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <span>
+                                                    {{column.display}}
+                                                </span>
+                                            </mat-header-cell>
+                                            <mat-cell *matCellDef="let row">
+                                                <span>{{row[column.value]}}</span>
+                                            </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="fisherTestDisplayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: fisherTestDisplayedColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div>
+                                    <mat-paginator [length]="pathways && pathways.length || 0"
+                                        [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                        (page)="pageChange(fisherTestResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    </mat-paginator>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab  *ngIf="filteredFisherTestResults" textLabel="filteredFisherTestResults">
+                    <ng-template mat-tab-label>
+                        Filtered Fisher's Test Results
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="flex-column">
+                            <div class="results-message-container" *ngIf="filteredFisherTestResults.length == 0">
+                                Your query didn't yield any results.
+                            </div>
+                            <div class="results-table-container" *ngIf="filteredFisherTestResults && filteredFisherTestResults.length">
+                                <div class="pathways-table-top-options">
+                                    <form #anlyteForm="ngForm" class="flex-row">
+                                        <div class="form-divider">
+                                            <button mat-flat-button color="accent" (click)="clusterFilteredFisherResults()"
+                                                [disabled]="anlyteForm.invalid">Cluster Fisher's Test Results</button>
+                                        </div>
+                                        <mat-form-field class="form-divider number-input">
+                                            <mat-label>% analyte overlap</mat-label>
+                                            <input type="number" matInput [(ngModel)]="percAnalyteOverlap" required
+                                                name="percAnalyteOverlap">
+                                            <mat-hint>(1 - 100)</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field class="form-divider number-input">
+                                            <mat-label>% pathway overlap</mat-label>
+                                            <input type="number" matInput [(ngModel)]="percPathwayOverlap" required
+                                                name="percAnalyteOverlap">
+                                            <mat-hint>(1 - 100)</mat-hint>
+                                        </mat-form-field>
+                                        <mat-form-field class="form-divider number-input">
+                                            <mat-label>Min pathway to cluster</mat-label>
+                                            <input type="number" matInput [(ngModel)]="minPathwayTocluster" required
+                                                name="minPathwayTocluster">
+                                        </mat-form-field>
+                                    </form>
+                                    <div class="fill-middle"></div>
+                                    <mat-paginator [length]="filteredFisherTestResults && filteredFisherTestResults.length || 0"
+                                        [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                        (page)="pageChange(filteredFisherTestResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    </mat-paginator>
+                                </div>
+                                <div class="error-message-container">
+                                    <div class="error-message" *ngIf="errorMessage">
+                                        {{errorMessage}}
+                                    </div>
+                                </div>
+                                <div class="table-container">
+                                    <mat-table [dataSource]="pagedData" matSort (matSortChange)="sortData(filteredFisherTestResults, $event)">
+                                        <ng-container [matColumnDef]="column.value"
+                                            *ngFor="let column of fisherTestColumns; index as index">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <span>
+                                                    {{column.display}}
+                                                </span>
+                                            </mat-header-cell>
+                                            <mat-cell *matCellDef="let row">
+                                                <span>{{row[column.value]}}</span>
+                                            </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="fisherTestDisplayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: fisherTestDisplayedColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div>
+                                    <mat-paginator [length]="pathways && pathways.length || 0"
+                                        [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                        (page)="pageChange(filteredFisherTestResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    </mat-paginator>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab *ngIf="clusteringResults"  textLabel="clusteringResults">
+                    <ng-template mat-tab-label>
+                        Clustering Results Table
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="results-message-container" *ngIf="clusteringResults.length == 0">
+                            Your query didn't yield any results.
+                        </div>
+                        <div class="results-table-container" *ngIf="clusteringResults && clusteringResults.length">
+                            <div>
+                                <mat-paginator [length]="clusteringResults && clusteringResults.length || 0"
+                                    [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                    (page)="pageChange(clusteringResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                            <div class="table-container">
+                                <mat-table [dataSource]="pagedData" matSort (matSortChange)="sortData(clusteringResults, $event)">
+                                    <ng-container [matColumnDef]="column.value"
+                                        *ngFor="let column of clusteringColumns; index as index">
+                                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            <span>
+                                                {{column.display}}
+                                            </span>
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let row">
+                                            <span>{{row[column.value]}}</span>
+                                        </mat-cell>
+                                    </ng-container>
+                                    <mat-header-row *matHeaderRowDef="clusteringDisplayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: clusteringDisplayedColumns;"></mat-row>
+                                </mat-table>
+                            </div>
+                            <div>
+                                <mat-paginator [length]="clusteringResults && clusteringResults.length || 0"
+                                    [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                    (page)="pageChange(clusteringResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
                             </div>
                         </div>
@@ -118,34 +272,32 @@
                 </mat-tab>
                 <mat-tab *ngIf="showPlots">
                     <ng-template mat-tab-label>
-                        Plots
+                        Clustering Results Plots
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="visualization-container">
-                            <div>
-                                <ramp-bar [data]="analysisResults" title="Pathway Clusters" xKey="cluster_assignment"
+                            <div *ngIf="clusteringResults">
+                                <ramp-bar [data]="clusteringResults" title="Pathway Clusters" xKey="cluster_assignment"
                                     yKey="negativeLogPVal" yLabel="mean -log(p-value)" xLabel="Cluster"
                                     calculation="average">
                                 </ramp-bar>
                             </div>
-                            <mat-divider></mat-divider>
-                            <div>
-                                <ramp-scatter [data]="clusterCoordinates" title="Pathways Jaccard Distance Clusters" xKey="x"
-                                    yKey="y" clustersKey="cluster_assignment">
-                                </ramp-scatter>
+                            <div *ngIf="clusterCoordinates">
+                                <mat-divider></mat-divider>
+                                <div>
+                                    <ramp-scatter [data]="clusterCoordinates" title="Pathways Jaccard Distance Clusters" xKey="x"
+                                        yKey="y" clustersKey="cluster_assignment">
+                                    </ramp-scatter>
+                                </div>
                             </div>
-                            <mat-divider></mat-divider>
-                            <div>
-                                <ramp-upset [data]="analytes" title="Overlap of Pathways" nameKey="commonName" valuesKey="pathways" showSetsSelection="true">
-                                </ramp-upset>
+                            <div *ngIf="analytes">
+                                <mat-divider></mat-divider>
+                                <div>
+                                    <ramp-upset [data]="analytes" title="Overlap of Pathways" nameKey="commonName" valuesKey="pathways" showSetsSelection="true">
+                                    </ramp-upset>
+                                </div>
                             </div>
-                            <!-- <mat-divider></mat-divider>
-                            <div>
-                                <ramp-scatter [data]="analysisResults" title="Pathway Clusters" xKey="Total_In_Path"
-                                    yKey="negativeLogPVal" yLabel="-log(p-value)"
-                                    xLabel="Total # of analytes in pathway" clustersKey="cluster_assignment">
-                                </ramp-scatter>
-                            </div> -->
+
                         </div>
                     </ng-template>
                 </mat-tab>

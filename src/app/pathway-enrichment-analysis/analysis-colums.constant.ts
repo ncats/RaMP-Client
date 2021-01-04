@@ -1,4 +1,16 @@
-export const analysisColumns: Array<{ value: string; display: string }> = [
+export const fisherTestColumns: Array<{ value: string; display: string }> = [
+    {
+        value: 'pathwayName',
+        display: 'Pathway Name'
+    },
+    {
+        value: 'pathwaysourceId',
+        display: 'Pathway Source Id'
+    },
+    {
+        value: 'pathwaysource',
+        display: 'Pathway Source'
+    },
     {
         value: 'Pval',
         display: 'P Value'
@@ -30,7 +42,10 @@ export const analysisColumns: Array<{ value: string; display: string }> = [
     {
         value: 'Pval_combined_Holm',
         display: 'Combined Holm P Value'
-    },
+    }
+];
+
+export const ClusteringColumns: Array<{ value: string; display: string }> = [
     {
         value: 'pathwayName',
         display: 'Pathway Name'
@@ -42,5 +57,28 @@ export const analysisColumns: Array<{ value: string; display: string }> = [
     {
         value: 'pathwaysource',
         display: 'Pathway Source'
+    },
+    {
+        value: 'cluster_assignment',
+        display: 'Cluster Assignment'
+    }
+];
+
+export const pathwayColumns: Array<{ value: string; display: string }> = [
+    {
+        value: 'pathwayName',
+        display: 'Pathway Name'
+    },
+    {
+        value: 'pathwaysourceId',
+        display: 'Pathway Source Id'
+    },
+    {
+        value: 'pathwaysource',
+        display: 'Database Source'
+    },
+    {
+        value: 'commonName',
+        display: 'Analyte Common Name'
     }
 ];

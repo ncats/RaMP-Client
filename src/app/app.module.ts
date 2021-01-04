@@ -27,13 +27,15 @@ import { ScatterModule } from './visualization/scatter/scatter.module';
 import { BarModule } from './visualization/bar/bar.module';
 import { MatDividerModule } from '@angular/material/divider';
 import { UpsetModule } from './visualization/upset/upset.module';
+import { AnalytesComponent } from './analytes/analytes.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
     PathwayEnrichmentAnalysisComponent,
-    AboutComponent
+    AboutComponent,
+    AnalytesComponent
   ],
   imports: [
     BrowserModule,
