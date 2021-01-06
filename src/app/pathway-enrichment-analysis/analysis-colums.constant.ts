@@ -1,3 +1,33 @@
+export const AnalyteMatchesColumns: Array<{ value: string; display: string }> = [
+    {
+        value: 'input',
+        display: 'Input'
+    },
+    {
+        value: 'numAnalytes',
+        display: '# Analytes Found'
+    }
+];
+
+export const AnalyteColumns: Array<{ value: string; display: string }> = [
+    {
+        value: 'sourceId',
+        display: 'Source Id'
+    },
+    {
+        value: 'IDtype',
+        display: 'Source'
+    },
+    {
+        value: 'geneOrCompound',
+        display: 'Type'
+    },
+    {
+        value: 'commonName',
+        display: 'Common Name'
+    }
+];
+
 export const fisherTestColumns: Array<{ value: string; display: string }> = [
     {
         value: 'pathwayName',

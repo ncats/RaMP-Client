@@ -28,8 +28,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
-    console.log(this.router.config);
-
     this.navItems = this.router.config
       .filter(item => item.data != null && item.data.isMainNav).map(item => {
         return {

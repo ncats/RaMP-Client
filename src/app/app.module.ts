@@ -28,6 +28,7 @@ import { BarModule } from './visualization/bar/bar.module';
 import { MatDividerModule } from '@angular/material/divider';
 import { UpsetModule } from './visualization/upset/upset.module';
 import { AnalytesComponent } from './analytes/analytes.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { AnalytesComponent } from './analytes/analytes.component';
     ScatterModule,
     BarModule,
     MatDividerModule,
-    UpsetModule
+    UpsetModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]
