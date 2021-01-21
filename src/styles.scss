@@ -56,6 +56,10 @@ router-outlet + * {
     flex-grow: 1;
 }
 
+.clickable:hover {
+    cursor: pointer;
+}
+
 @media(min-width: 600px) {
     html {
         height: calc(100vh - 64px);

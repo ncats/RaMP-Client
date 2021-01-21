@@ -12,7 +12,11 @@ import { Decimal } from 'decimal.js';
 import { _getOptionScrollPosition } from '@angular/material/core';
 import { Pathway } from './pathway.model';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { AnalyteMatch } from './analyte.model';
+import { AnalyteMatch, Analyte } from './analyte.model';
+import { analyteExampleInputs } from './examples.constant';
+import { MatDialog } from '@angular/material/dialog';
+import { TableDialogComponent } from '../table-dialog/table-dialog.component';
+import { path } from 'd3';
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -85,7 +89,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -111,8 +116,39 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     };
     this.http.get<any>(url, options)
       .pipe(
-        map(response => {
-          return response;
+        map((response: Array<Analyte>) => {
+
+          const analyteMatches: Array<AnalyteMatch> = [];
+          const analytesLower: Array<string> = [];
+
+          analytes.forEach(analyteItendifier => {
+
+            const analyteLower = analyteItendifier.toLowerCase();
+            analytesLower.push(analyteLower);
+            const analyteMatch: AnalyteMatch = {
+              input: analyteItendifier,
+              numAnalytes: 0,
+              analytes: []
+            };
+
+            analyteMatches.push(analyteMatch);
+          });
+
+          response.forEach(analyte => {
+            let index = analytesLower.indexOf(analyte.sourceId.toLowerCase());
+            if (index === -1) {
+              index = analytesLower.indexOf(analyte.commonName.toLowerCase());
+            }
+            if (index === -1 && analyte.synonym) {
+              index = analytesLower.indexOf(analyte.synonym.toLowerCase());
+            }
+            if (index > -1) {
+              analyteMatches[index].numAnalytes++;
+              analyteMatches[index].analytes.push(analyte);
+            }
+          });
+
+          return analyteMatches;
         })
       )
       .subscribe((response: Array<AnalyteMatch>) => {
@@ -120,12 +156,17 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
           if (item.analytes && item.analytes.length > 0) {
             let selected = false;
             if (item.analytes.length > 1) {
-              item.analytes.forEach(analyte => {
-                if (analyte.commonName === item.input || analyte.sourceId === item.input) {
-                  analyte.isSelected = true;
+              // tslint:disable-next-line:prefer-for-of
+              for (let i = 0; i < item.analytes.length; i++){
+                if (
+                  item.analytes[i].commonName === item.input
+                  || item.analytes[i].sourceId === item.input
+                  || (item.analytes[i].synonym && item.analytes[i].synonym === item.input)) {
+                  item.analytes[i].isSelected = true;
                   selected = true;
+                  break;
                 }
-              });
+              }
             }
             if (!selected) {
               item.analytes[0].isSelected = true;
@@ -375,6 +416,10 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       });
   }
 
+  insertSample(sampleType: 'ids' | 'names'): void {
+    this.analytesInput = analyteExampleInputs[sampleType];
+  }
+
   pageChange(data: Array<any> = [], pageEvent?: PageEvent): void {
 
     if (pageEvent != null) {
@@ -396,6 +441,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   }
 
   sortData(allData: Array<any> = [], sort: Sort) {
+
+    this.expandedElement = null;
 
     if (!sort.active || sort.direction === '') {
       return;
@@ -459,4 +506,36 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     }
   }
 
+  barClicked(barEvent: any): void {
+    const pathways = [];
+    this.clusteringResults.forEach(item => {
+      if (item.cluster_assignment === barEvent.xValue) {
+        pathways.push(item);
+      }
+    });
+    this.dialog.open(TableDialogComponent, {
+      data: {
+        title: `Pathways in Cluster ${barEvent.xValue}`,
+        tableData: pathways,
+        columns: this.clusteringColumns
+      },
+      width: '600px'
+    });
+  }
+
+  upSetBarClicked(barEvent: any): void {
+    const pathways = [];
+    barEvent.values.forEach(pathwaysourceId => {
+      const pathway = this.pathways.find(_pathway => _pathway.pathwaysourceId === pathwaysourceId);
+      pathways.push(pathway);
+    });
+    this.dialog.open(TableDialogComponent, {
+      data: {
+        title: `Pathways in Instersection of ${barEvent.name}`,
+        tableData: pathways,
+        columns: this.pathwayColumns.filter(column => column.value !== 'commonName')
+      },
+      width: '600px'
+    });
+  }
 }

@@ -20,4 +20,5 @@ export interface ClusteringCoordinates {
     x: number;
     y: number;
     cluster_assignment: string | number;
+    pathwayName: string;
 }

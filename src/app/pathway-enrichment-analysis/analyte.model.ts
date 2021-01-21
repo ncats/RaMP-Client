@@ -9,5 +9,6 @@ export interface Analyte {
     IDtype: string;
     geneOrCompound: string;
     commonName: string;
+    synonym?: string;
     isSelected?: boolean;
 }

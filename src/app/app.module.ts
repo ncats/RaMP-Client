@@ -29,6 +29,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { UpsetModule } from './visualization/upset/upset.module';
 import { AnalytesComponent } from './analytes/analytes.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TableDialogComponent } from './table-dialog/table-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip'; 
 
 @NgModule({
   declarations: [
@@ -36,7 +39,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     PageNotFoundComponent,
     PathwayEnrichmentAnalysisComponent,
     AboutComponent,
-    AnalytesComponent
+    AnalytesComponent,
+    TableDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +67,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     BarModule,
     MatDividerModule,
     UpsetModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDialogModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

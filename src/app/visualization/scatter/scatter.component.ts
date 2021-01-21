@@ -3,6 +3,7 @@ import { VisualizationBase } from '../visualization-base';
 import { Colors } from '../colors.constant';
 import { take } from 'rxjs/operators';
 import * as d3 from 'd3';
+import { TooltipService } from '../tooltip/tooltip.service';
 
 @Component({
   selector: 'ramp-scatter',
@@ -13,8 +14,11 @@ export class ScatterComponent extends VisualizationBase implements OnInit, After
   @ViewChild('scatterPlotBox', { read: ElementRef, static: false }) scatterPlotElement: ElementRef;
   private clustersKey: string;
   private clusters: { [cluster: string]: { color: string, data: Array<any> } } = {};
+  @Input() tooltipKey: string;
 
-  constructor() {
+  constructor(
+    private tooltipService: TooltipService
+  ) {
     super();
   }
 
@@ -93,8 +97,9 @@ export class ScatterComponent extends VisualizationBase implements OnInit, After
         .call(d3.axisLeft(this.yAxis));
 
       // Add dots
+      const dots = this.svg.append('g');
+
       if (this.clustersKey == null || this.clustersKey === '') {
-        const dots = this.svg.append('g');
         dots.selectAll('dot')
           .data(this.data)
           .enter()
@@ -103,10 +108,15 @@ export class ScatterComponent extends VisualizationBase implements OnInit, After
           .attr('cy', d => this.yAxis(d[this.dataYKey]))
           .attr('r', 5)
           .style('opacity', .8)
-          .style('fill', Colors[0]);
+          .style('fill', Colors[0])
+          .on('mouseover', (d, i) => {
+            this.tooltipService.showTooltip(d, i[this.tooltipKey]);
+          })
+          .on('mouseout', (d, i) => {
+            this.tooltipService.hideTooltip();
+          });
       } else {
         Object.keys(this.clusters).forEach(cluster => {
-          const dots = this.svg.append('g');
           dots.selectAll('dot')
             .data(this.clusters[cluster].data)
             .enter()
@@ -115,10 +125,15 @@ export class ScatterComponent extends VisualizationBase implements OnInit, After
             .attr('cy', d => this.yAxis(d[this.dataYKey]))
             .attr('r', 3)
             .style('opacity', .8)
-            .style('fill', this.clusters[cluster].color);
+            .style('fill', this.clusters[cluster].color)
+            .on('mouseover', (d, i) => {
+              this.tooltipService.showTooltip(d, i[this.tooltipKey]);
+            })
+            .on('mouseout', (d, i) => {
+              this.tooltipService.hideTooltip();
+            });
         });
       }
     }
   }
-
 }

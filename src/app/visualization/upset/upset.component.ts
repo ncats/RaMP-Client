@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { VisualizationBase } from '../visualization-base';
 import { take } from 'rxjs/operators';
 import * as d3 from 'd3';
@@ -19,6 +19,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   isViewInit = false;
   @Input() scale: 'linear'|'log' = 'linear';
   @Input() showSetsSelection = false;
+  @Output() upSetBarClicked = new EventEmitter();
 
   @ViewChild('upsetPlotBox', { read: ElementRef, static: false }) upsetPlotElement: ElementRef;
 
@@ -360,12 +361,13 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         .data(this.allData)
         .enter()
         .append('rect')
-        .attr('class', 'bar')
+        .attr('class', 'bar clickable')
         .attr('width', 20)
         .attr('x', (d, i) => 12 + i * (rad * 2.7))
         .attr('y', (d) => yrange(d.num))
         .style('fill', '#02577b')
-        .attr('height', (d) => height - yrange(d.num));
+        .attr('height', (d) => height - yrange(d.num))
+        .on('click', (d, i) => { this.upSetBarClicked.emit(i); });
 
       const labels = chart.selectAll('.text')
         .data(this.allData)
@@ -404,28 +406,6 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
           .style('stroke', '#02577b')
           .attr('stroke-width', 4);
       });
-
-      // // tooltip
-      // const tooltip = d3.select(this.upsetPlotElement.nativeElement)
-      //   .append('div')
-      //   .style('position', 'absolute')
-      //   .style('z-index', '10')
-      //   .style('visibility', 'hidden')
-      //   .style('color', 'white')
-      //   .style('padding', '0px 10px')
-      //   .style('background', '#02577b')
-      //   .style('border-radius', '12px')
-      //   .text(''); // it changes, don't worry
-
-      // bars.on('mouseover', (d) => {
-      //   tooltip.text(`${d.name}: ${d.num} value${d.num === 1 ? '' : 's'}`).style('visibility', 'visible');
-      // })
-      //   .on('mousemove', (event) => {
-      //     tooltip.style('top', `${event.pageY - 20}px`).style('left', `${event.pageX + 20}px`);
-      //   })
-      //   .on('mouseout', (event) => {
-      //     tooltip.style('visibility', 'hidden');
-      //   });
     }
   }
 }

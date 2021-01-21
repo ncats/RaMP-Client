@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { VisualizationBase } from '../visualization-base';
 import * as d3 from 'd3';
 import { take } from 'rxjs/operators';
 import { ProcessedData } from './processed-data';
 import { Colors } from '../colors.constant';
 import { Decimal } from 'decimal.js';
+import { TooltipService } from '../tooltip/tooltip.service';
 
 @Component({
   selector: 'ramp-bar',
@@ -15,8 +16,11 @@ export class BarComponent extends VisualizationBase implements OnInit, AfterView
   @ViewChild('barChartBox', { read: ElementRef, static: false }) barChartElement: ElementRef;
   calculation: 'average'|'sum';
   processedData: Array<ProcessedData>;
+  @Output() barClicked = new EventEmitter();
 
-  constructor() {
+  constructor(
+    private tooltipService: TooltipService
+  ) {
     super();
   }
 
@@ -102,11 +106,19 @@ export class BarComponent extends VisualizationBase implements OnInit, AfterView
         .data(this.processedData)
         .enter()
         .append('rect')
+        .attr('class', 'clickable')
         .attr('x', d => this.xAxis(d.xValue))
         .attr('y', d => this.yAxis(d.yValue))
         .attr('width', this.xAxis.bandwidth())
         .attr('height', (d) => this.height - this.yAxis(d.yValue))
-        .attr('fill', Colors[0]);
+        .attr('fill', Colors[0])
+        .on('mouseover', (d, i) => {
+          this.tooltipService.showTooltip(d, i.yValue);
+        })
+        .on('mouseout', (d, i) => {
+          this.tooltipService.hideTooltip();
+        })
+        .on('click', (d, i) => { this.barClicked.emit(i); });
     }
   }
 

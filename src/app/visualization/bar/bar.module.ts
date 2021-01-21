@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BarComponent } from './bar.component';
+import { TooltipModule } from '../tooltip/tooltip.module';
 
 
 
@@ -9,7 +10,8 @@ import { BarComponent } from './bar.component';
     BarComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    TooltipModule.forRoot()
   ],
   exports: [
     BarComponent
