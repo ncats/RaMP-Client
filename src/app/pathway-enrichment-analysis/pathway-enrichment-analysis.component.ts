@@ -17,6 +17,7 @@ import { analyteExampleInputs } from './examples.constant';
 import { MatDialog } from '@angular/material/dialog';
 import { TableDialogComponent } from '../table-dialog/table-dialog.component';
 import { path } from 'd3';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -76,6 +77,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   errorMessage: string;
   showPlots = false;
   expandedElement: AnalyteMatch | null;
+  apiBaseUrl: string;
 
   fisherTestResultsResponse: {
     fishresults: Array<FisherTestResult>,
@@ -90,8 +92,11 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private loadingService: LoadingService,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private configService: ConfigService
+  ) {
+    this.apiBaseUrl = configService.configData.apiBaseUrl;
+  }
 
   ngOnInit(): void {
     this.fisherTestDisplayedColumns = fisherTestColumns.map(item => item.value);
@@ -106,7 +111,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.errorMessage = '';
     this.selectedIndex = 0;
     this.loadingService.setLoadingState(true);
-    const url = `${environment.apiBaseUrl}source/analytes`;
+    const url = `${this.apiBaseUrl}source/analytes`;
     const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
 
     const options = {
@@ -195,7 +200,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   mapAnalytesToPathways(): void {
     this.errorMessage = '';
     this.loadingService.setLoadingState(true);
-    const url = `${environment.apiBaseUrl}pathways`;
+    const url = `${this.apiBaseUrl}pathways`;
     // const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
     const analytes = [];
     this.analyteMatches.forEach(item => {
@@ -241,7 +246,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   runCombinedFisherTest(): void {
     this.errorMessage = '';
     this.loadingService.setLoadingState(true);
-    const url = `${environment.apiBaseUrl}combined-fisher-test`;
+    const url = `${this.apiBaseUrl}combined-fisher-test`;
     this.http.post<any>(url, this.pathways).subscribe(
       (response: {
         fishresults: Array<FisherTestResult>,
@@ -272,7 +277,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   filterFisherTestResults(): void {
     this.errorMessage = '';
     this.loadingService.setLoadingState(true);
-    const url = `${environment.apiBaseUrl}filter-fisher-test-results`;
+    const url = `${this.apiBaseUrl}filter-fisher-test-results`;
     const options = {
       params: {}
     };
@@ -315,7 +320,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.errorMessage = '';
     this.loadingService.setLoadingState(true);
     this.showPlots = false;
-    const url = `${environment.apiBaseUrl}cluster-fisher-test-results-extended`;
+    const url = `${this.apiBaseUrl}cluster-fisher-test-results-extended`;
     // const url = `/assets/test-data/pathway_enrichment_analysis.json`;
 
     // const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
@@ -398,7 +403,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
 
   getGroupedAnalytes(): void {
 
-    const url = `${environment.apiBaseUrl}analytes`;
+    const url = `${this.apiBaseUrl}analytes`;
 
     const options = {
       params: {

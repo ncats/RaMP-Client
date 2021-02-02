@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -31,7 +31,9 @@ import { AnalytesComponent } from './analytes/analytes.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TableDialogComponent } from './table-dialog/table-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatTooltipModule } from '@angular/material/tooltip'; 
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfigService } from './config/config.service';
+import { configServiceFactory } from './config/config.factory';
 
 @NgModule({
   declarations: [
@@ -71,7 +73,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDialogModule,
     MatTooltipModule
   ],
-  providers: [],
+  providers: [
+    ConfigService,
+    {
+        provide: APP_INITIALIZER,
+        useFactory: configServiceFactory,
+        deps: [ConfigService],
+        multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

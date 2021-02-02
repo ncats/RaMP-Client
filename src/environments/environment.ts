@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   baseHref: '/',
-  apiBaseUrl: '/api/'
+  apiBaseUrl: '/api/',
+  configFileLocation: null,
+  googleAnalyticsId: null
 };
 
 /*

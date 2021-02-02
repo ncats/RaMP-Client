@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { UpsetIntersection } from '../visualization/upset/intersection.model';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: 'ramp-about',
@@ -16,17 +17,21 @@ export class AboutComponent implements OnInit {
   compoundsIntersections: Array<UpsetIntersection>;
   compoundsSoloSets: Array<UpsetIntersection> | any;
   compoundsAllData: Array<UpsetIntersection>;
+  apiBaseUrl: string;
 
   constructor(
-    private http: HttpClient
-  ) { }
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {
+    this.apiBaseUrl = configService.configData.apiBaseUrl;
+  }
 
   ngOnInit(): void {
     this.getAnalytesSourceIntersects();
   }
 
   getAnalytesSourceIntersects(): void {
-    const url = `${environment.apiBaseUrl}analyte_intersects`;
+    const url = `${this.apiBaseUrl}analyte_intersects`;
 
     const genesIntersections: Array<UpsetIntersection> = [];
     const genesSoloSets: Array<UpsetIntersection> | any = [];
