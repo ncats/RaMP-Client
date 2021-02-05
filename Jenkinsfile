@@ -48,15 +48,11 @@ pipeline {
                         "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
                         checkout scm
-                        configFileProvider([
-                            configFile(fileId: 'config.json', targetLocation: '/assets/data/config.json')
-                        ]) {
                             script {
                                 def image = docker.build("${env.IMAGE_NAME}","--no-cache ."
                                 )
                                 docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
                                 docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
-                                }
                             }
                         }
                     }
