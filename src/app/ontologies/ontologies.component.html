@@ -1,0 +1,108 @@
+<div class="route-container">
+    <h1 class="page-title">
+        Pathway Enrichment Analysis
+    </h1>
+    <mat-card>
+        <mat-card-content>
+            <mat-tab-group [selectedIndex]="selectedIndex">
+                <mat-tab textLabel="input">
+                    <ng-template mat-tab-label>
+                        Input
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="error-message-container">
+                            <div class="error-message" *ngIf="errorMessage">
+                                {{errorMessage}}
+                            </div>
+                        </div>
+                        <form #anlyteForm="ngForm" class="analyte-form">
+                            <div class="identifiers">
+                                <div class="description">
+                                    <span *ngIf="queryType == 'ontoFromMeta'">Enter a list of metabolite ID's prepended
+                                        by ID source (e.g. kegg:C00412)</span>
+                                    <span *ngIf="queryType == 'metaFromOnto'">Enter a list of common ontology names
+                                        (e.g. Adrenal Cortex)</span>
+                                    , one per line (press Enter
+                                    after each).
+                                </div>
+                                <div class="text-input-container">
+                                    <textarea class="targetBox" placeholder="Identifiers" spellcheck="false"
+                                        [(ngModel)]="identifiersInput" name="identifiersInput" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-options">
+                                <div class="form-divider">
+                                    <mat-radio-group aria-label="Select an option" [(ngModel)]="queryType"
+                                        value="ontoFromMeta" name="queryType">
+                                        <mat-radio-button value="ontoFromMeta">Retrieve ontologies from metabolites
+                                        </mat-radio-button>
+                                        <mat-radio-button value="metaFromOnto">Retrieve metabolites from ontologies
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                                <div>
+                                    <button mat-flat-button color="accent" (click)="submitQuery()"
+                                        [disabled]="anlyteForm.invalid">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab *ngIf="results" textLabel="resultsTable">
+                    <ng-template mat-tab-label>
+                        Results
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="results-table-container">
+                            <div class="results-message-container">
+                                <span>We found <strong>{{numFoundIds}}</strong> of the
+                                    <strong>{{numSubmittedIds}}</strong>&nbsp;</span>
+                                <span *ngIf="queryType == 'ontoFromMeta'">metabolites&nbsp;</span>
+                                <span *ngIf="queryType == 'metaFromOnto'">ontologies&nbsp;</span>
+                                <span>you submitted.</span>
+                            </div>
+                            <div *ngIf="results && results.length">
+                                <div>
+                                    <mat-paginator [length]="results && results.length || 0" [pageSize]="pageSize"
+                                        [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange($event)"
+                                        [pageSizeOptions]="[5, 10, 25, 100]">
+                                    </mat-paginator>
+                                </div>
+                                <div class="error-message-container">
+                                    <div class="error-message" *ngIf="errorMessage">
+                                        {{errorMessage}}
+                                    </div>
+                                </div>
+                                <div class="table-container">
+                                    <mat-table [dataSource]="pagedData" matSort (matSortChange)="sortData($event)">
+                                        <ng-container [matColumnDef]="column.value"
+                                            *ngFor="let column of columns; index as index">
+                                            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                                <span>
+                                                    {{column.display}}
+                                                </span>
+                                            </mat-header-cell>
+                                            <mat-cell *matCellDef="let row">
+                                                <span>{{row[column.value]}}</span>
+                                            </mat-cell>
+                                        </ng-container>
+                                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                                    </mat-table>
+                                </div>
+                                <div>
+                                    <mat-paginator [length]="results && results.length || 0" [pageSize]="pageSize"
+                                        [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange($event)"
+                                        [pageSizeOptions]="[5, 10, 25, 100]">
+                                    </mat-paginator>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+    </mat-card>
+</div>

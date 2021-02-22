@@ -396,7 +396,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
           this.loadingService.setLoadingState(false);
         }, 15);
       }, error => {
-        this.errorMessage = 'There was a problem processing your request. Please review your input and make sure you entered the correct analyte identifiers and selected the correct options';
+        this.errorMessage = 'There was a problem processing your request. Please review your input and make sure you entered the correct analyte identifiers.';
         this.loadingService.setLoadingState(false);
       });
   }

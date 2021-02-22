@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AboutComponent } from './about/about.component';
+import { OntologiesComponent } from './ontologies/ontologies.component';
 import { PathwayEnrichmentAnalysisComponent } from './pathway-enrichment-analysis/pathway-enrichment-analysis.component';
 
 
@@ -22,6 +23,16 @@ const routes: Routes = [
       id: 'pea',
       display: 'Pathway enrichment analysis',
       order: 2,
+      isMainNav: true
+    }
+  },
+  {
+    path: 'ontologies',
+    component: OntologiesComponent,
+    data: {
+      id: 'ontologies',
+      display: 'Ontologies',
+      order: 3,
       isMainNav: true
     }
   },

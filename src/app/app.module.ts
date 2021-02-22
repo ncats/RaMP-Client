@@ -34,6 +34,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfigService } from './config/config.service';
 import { configServiceFactory } from './config/config.factory';
+import { OntologiesComponent } from './ontologies/ontologies.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { configServiceFactory } from './config/config.factory';
     PathwayEnrichmentAnalysisComponent,
     AboutComponent,
     AnalytesComponent,
-    TableDialogComponent
+    TableDialogComponent,
+    OntologiesComponent
   ],
   imports: [
     BrowserModule,

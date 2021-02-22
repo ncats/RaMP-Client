@@ -5,6 +5,15 @@
     z-index: 2;
 }
 
+.logo {
+    height: 100%;
+
+    img {
+        height: 100%;
+        width: auto;
+    }
+}
+
 .mat-drawer-container {
     height: 100%;
 }
@@ -26,7 +35,7 @@
 .mat-nav-list a {
 
     &:hover {
-        color: #1976D2;
+        color: #6A1B9A;
     }
 }
 
@@ -34,7 +43,7 @@
     background: rgba(0, 0, 0, 0.04);
 
     a {
-        color: #1976D2;
+        color: #6A1B9A;
     }
 }
 
