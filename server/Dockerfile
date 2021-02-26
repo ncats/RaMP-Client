@@ -8,4 +8,4 @@ COPY install.R install.R
 
 RUN Rscript install.R
 
-CMD ["/plumber.R"]
+CMD ["plumber.R"]
