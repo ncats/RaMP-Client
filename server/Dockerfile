@@ -6,6 +6,8 @@ RUN R -e "install.packages(c('devtools'))"
 
 COPY install.R install.R
 
+COPY plumber.R /usr/local/lib/
+
 RUN Rscript install.R
 
-CMD ["plumber.R"]
+CMD ["/usr/local/lib/plumber.R"]
