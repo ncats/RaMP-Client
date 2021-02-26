@@ -50,7 +50,7 @@ pipeline {
                     ]) {
                         checkout scm
                         configFileProvider([
-                            configFile(fileId: 'ramp-api-install.R', targetLocation: 'install.R')
+                            configFile(fileId: 'ramp-api-install.R', targetLocation: 'server/install.R')
                         ]) {
                         dir(env.PACKAGE_DIR) {
                             script {
