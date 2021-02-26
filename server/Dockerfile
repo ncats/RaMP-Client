@@ -6,8 +6,6 @@ RUN R -e "install.packages(c('devtools'))"
 
 COPY install.R install.R
 
-COPY plumber.R /usr/local/lib/
-
 RUN Rscript install.R
 
-CMD ["/usr/local/lib/plumber.R"]
+CMD ["/usr/local/lib/R/site-library/RaMP/api/plumber.R"]
