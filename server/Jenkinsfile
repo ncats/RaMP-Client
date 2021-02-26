@@ -14,6 +14,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = "rampdb-api"
+        PACKAGE_DIR = "server"
         DOCKER_REPO_NAME = "684150170045.dkr.ecr.us-east-1.amazonaws.com/rampdb-api"
     }
     stages {
@@ -51,10 +52,12 @@ pipeline {
                         configFileProvider([
                             configFile(fileId: 'ramp-api-install.R', targetLocation: 'install.R')
                         ]) {
+                        dir(env.PACKAGE_DIR) {
                             script {
                                 def image = docker.build("${env.IMAGE_NAME}","--no-cache .")
                                 docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
                                     docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
+                                    }
                                 }
                             }
                         }
