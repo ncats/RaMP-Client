@@ -4,7 +4,6 @@
   "scripts": {
     "ng": "ng",
     "start:dev": "ng serve --configuration=dev",
-    "build:embedded": "ng build --prod --deploy-url=/client/",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
