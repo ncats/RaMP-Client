@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y build-essential libcurl4-gnutls-dev lib
 
 RUN R -e "install.packages(c('devtools'))"
 
-COPY ./server/plumber.R /usr/local/lib/R/site-library
+COPY plumber.R /usr/local/lib/R/site-library
 
 COPY install.R install.R
 
