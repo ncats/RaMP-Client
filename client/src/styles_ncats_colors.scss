@@ -1,0 +1,116 @@
+$ncats-purple: (
+  "darken-4":   #3D1B40,
+  "darken-3":   #47204A,
+  "darken-2":   #512455,
+  "darken-1":   #5B2960,
+  "base":       #662E6B,
+  "lighten-1":  #754279,
+  "lighten-2":  #845788,
+  "lighten-3":  #936C97,
+  "lighten-4":  #A381A6,
+  "lighten-5":  #B296B5,
+);
+
+$ncats-teal: (
+  "darken-4":   #003C48,
+  "darken-3":   #004654,
+  "darken-2":   #005060,
+  "darken-1":   #005A6C,
+  "base":       #006478,
+  "lighten-1":  #197385,
+  "lighten-2":  #338393,
+  "lighten-3":  #4C92A0,
+  "lighten-4":  #66A2AE,
+  "lighten-5":  #7FB1BB,
+);
+
+$ncats-gray: (
+  "darken-4":   #3C3C3F,
+  "darken-3":   #464649,
+  "darken-2":   #505054,
+  "darken-1":   #5A5A5E,
+  "base":       #656569,
+  "lighten-1":  #747478,
+  "lighten-2":  #838387,
+  "lighten-3":  #939396,
+  "lighten-4":  #A2A2A5,
+  "lighten-5":  #B2B2B4,
+);
+
+$ncats-red: (
+  "darken-4":   #4C1732,
+  "darken-3":   #581B3A,
+  "darken-2":   #651F43,
+  "darken-1":   #72234B,
+  "base":       #7F2754,
+  "lighten-1":  #8B3C65,
+  "lighten-2":  #985276,
+  "lighten-3":  #A56787,
+  "lighten-4":  #B27D98,
+  "lighten-5":  #BF93A9,
+);
+
+$ncats-green: (
+  "darken-4":   #00463B,
+  "darken-3":   #005145,
+  "darken-2":   #005D4F,
+  "darken-1":   #006959,
+  "base":       #007563,
+  "lighten-1":  #198272,
+  "lighten-2":  #339082,
+  "lighten-3":  #4C9E91,
+  "lighten-4":  #66ACA1,
+  "lighten-5":  #7FBAB1,
+);
+
+$ncats-orange: (
+  "darken-4":   #89241B,
+  "darken-3":   #A02A20,
+  "darken-2":   #B73024,
+  "darken-1":   #CE3629,
+  "base":       #E53D2E,
+  "lighten-1":  #E75042,
+  "lighten-2":  #EA6357,
+  "lighten-3":  #EC776C,
+  "lighten-4":  #EF8A81,
+  "lighten-5":  #F29E96,
+);
+
+$ncats-blue: (
+  "darken-4":   #001F58,
+  "darken-3":   #002467,
+  "darken-2":   #002976,
+  "darken-1":   #002E85,
+  "base":       #003494,
+  "lighten-1":  #19489E,
+  "lighten-2":  #335CA9,
+  "lighten-3":  #4C70B4,
+  "lighten-4":  #6685BE,
+  "lighten-5":  #7F99C9,
+);
+
+$colors: (
+  "ncats-purple": $ncats-purple,
+  "ncats-teal": $ncats-teal,
+  "ncats-gray": $ncats-gray,
+  "ncats-red": $ncats-red,
+  "ncats-green": $ncats-green,
+  "ncats-orange": $ncats-orange,
+  "ncats-blue": $ncats-blue,
+  "shades": $shades
+) !default;
+
+
+// usage: color("name_of_color", "type_of_color")
+// to avoid to repeating map-get($colors, ...)
+
+@function color($color, $type) {
+  @if map-has-key($colors, $color) {
+    $curr_color: map-get($colors, $color);
+    @if map-has-key($curr_color, $type) {
+      @return map-get($curr_color, $type);
+    }
+  }
+  @warn "Unknown `#{$color}` - `#{$type}` in $colors.";
+  @return null;
+}
