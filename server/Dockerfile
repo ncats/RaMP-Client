@@ -8,4 +8,4 @@ COPY install.R install.R
 
 RUN Rscript install.R
 
-CMD ["plumber.R"]
+CMD ["usr/local/lib/R/site-library/RaMp/api/plumber.R"]
