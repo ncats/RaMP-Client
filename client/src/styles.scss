@@ -60,6 +60,65 @@ router-outlet + * {
     cursor: pointer;
 }
 
+.space-bottom {
+    margin-bottom: 15px;
+}
+
+td.mat-cell:last-of-type {
+    padding-left: 7px;
+}
+
+td.mat-cell:first-of-type {
+    padding-right: 7px;
+}
+
+td.mat-cell:not(:first-of-type):not(:last-of-type) {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.static-table {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+
+    .mat-row, .mat-header-row {
+        display: flex;
+        border-width: 0;
+        border-bottom-width: 1px;
+        border-style: solid;
+        align-items: center;
+        box-sizing: border-box;
+        border-bottom-color: rgba(0, 0, 0, 0.12);
+    }
+
+    .mat-header-row {
+        min-height: 56px;
+    }
+
+    .mat-row {
+        min-height: 48px;
+    }
+
+    .mat-cell, .mat-header-cell {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        word-wrap: break-word;
+        min-height: inherit;
+    }
+
+    .mat-header-cell {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.54);
+    }
+
+    .mat-cell {
+        color: rgba(0, 0, 0, 0.87);
+        font-size: 14px;
+    }
+}
+
 @media(min-width: 600px) {
     html {
         height: calc(100vh - 64px);

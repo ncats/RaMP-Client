@@ -4,23 +4,31 @@ export const AnalyteMatchesColumns: Array<{ value: string; display: string }> = 
         display: 'Input'
     },
     {
+        value: 'idTypes',
+        display: 'Id Types'
+    },
+    {
+        value: 'types',
+        display: 'Analyte Types'
+    },
+    {
         value: 'numAnalytes',
         display: '# Analytes Found'
+    },
+    {
+        value: 'commonName',
+        display: 'Common Name'
     }
 ];
 
 export const AnalyteColumns: Array<{ value: string; display: string }> = [
     {
-        value: 'sourceId',
-        display: 'Source Id'
-    },
-    {
-        value: 'IDtype',
-        display: 'Source'
+        value: 'idTypes',
+        display: 'Id Types'
     },
     {
         value: 'geneOrCompound',
-        display: 'Type'
+        display: 'Analyte Types'
     },
     {
         value: 'commonName',

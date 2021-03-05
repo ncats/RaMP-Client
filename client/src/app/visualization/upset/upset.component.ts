@@ -376,7 +376,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         .attr('font-size', 11)
         .attr('dy', '.75em')
         .attr('x', (d, i) => 12 + i * (rad * 2.7) + 10)
-        .attr('y', (d) => yrange(d.num) - 13)
+        .attr('y', (d) => d.num > 0 ? yrange(d.num) - 13 : yrange(1) - 13)
         .attr('text-anchor', 'middle')
         .text((d) => d3.format(',d')(Number(d.num)));
 

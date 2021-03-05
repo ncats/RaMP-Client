@@ -28,125 +28,125 @@ function() {
         compounds=list(
             list(
                 sets=list("KEGG"),
-                size=9
+                size=0
             ),
             list(
                 sets=list("REACTOME"),
-                size=226
+                size=246
             ),
             list(
                 sets=list("WP"),
-                size=631
+                size=814
             ),
             list(
                 sets=list("HMDB"),
-                size=106778
+                size=110847
             ),
             list(
                 sets=list("KEGG", "REACTOME"),
-                size=20
+                size=0
             ),
             list(
                 sets=list("KEGG", "WP"),
-                size=125
+                size=0
             ),
             list(
                 sets=list("KEGG", "HMDB"),
-                size=3791
+                size=163
             ),
             list(
                 sets=list("REACTOME", "WP"),
-                size=817
+                size=811
             ),
             list(
                 sets=list("REACTOME", "HMDB"),
-                size=675
+                size=76
             ),
             list(
                 sets=list("WP", "HMDB"),
-                size=591
+                size=417
             ),
             list(
                 sets=list("KEGG", "REACTOME", "WP"),
-                size=142
+                size=0
             ),
             list(
                 sets=list("REACTOME", "WP", "HMDB"),
-                size=973
+                size=422
             ),
             list(
                 sets=list("KEGG", "REACTOME", "HMDB"),
-                size=940
+                size=2
             ),
             list(
                 sets=list("KEGG", "WP", "HMDB"),
-                size=19
+                size=169
             ),
             list(
                 sets=list("KEGG", "REACTOME", "WP", "HMDB"),
-                size=33
+                size=551
             )
         ),
         genes=list(
             list(
                 sets=list("KEGG"),
-                size=936
+                size=0
             ),
             list(
                 sets=list("REACTOME"),
-                size=278
+                size=1030
             ),
             list(
                 sets=list("WP"),
-                size=975
+                size=1288
             ),
             list(
                 sets=list("HMDB"),
-                size=1207
+                size=892
             ),
             list(
                 sets=list("KEGG", "REACTOME"),
-                size=171
+                size=0
             ),
             list(
                 sets=list("KEGG", "WP"),
-                size=1026
+                size=0
             ),
             list(
                 sets=list("KEGG", "HMDB"),
-                size=1781
+                size=68
             ),
             list(
                 sets=list("REACTOME", "WP"),
-                size=3825
+                size=6113
             ),
             list(
                 sets=list("REACTOME", "HMDB"),
-                size=19
+                size=48
             ),
             list(
                 sets=list("WP", "HMDB"),
-                size=14
+                size=278
             ),
             list(
                 sets=list("KEGG", "REACTOME", "WP"),
-                size=4441
+                size=0
             ),
             list(
                 sets=list("REACTOME", "WP", "HMDB"),
-                size=1088
+                size=2598
             ),
             list(
                 sets=list("KEGG", "REACTOME", "HMDB"),
-                size=28
+                size=15
             ),
             list(
                 sets=list("KEGG", "WP", "HMDB"),
-                size=21
+                size=48
             ),
             list(
                 sets=list("KEGG", "REACTOME", "WP", "HMDB"),
-                size=1544
+                size=1549
             )
         )
     )
@@ -171,7 +171,7 @@ function(identifier) {
                           password = conpass,
                           host = host)
     query <- paste0(
-        "select s.sourceId, s.IDtype, s.geneOrCompound, s.commonName, min(ansyn.Synonym) as synonym ",
+        "select s.rampId, s.sourceId, s.IDtype, s.geneOrCompound, s.commonName, min(ansyn.Synonym) as synonym ",
         "from source as s ",
         "left join analytesynonym as ansyn on s.rampId = ansyn.rampId and ansyn.Synonym in (", identifiers, ") ",
         "where s.sourceId in (", identifiers, ") ",
@@ -339,7 +339,9 @@ function(req) {
     dbname <- config$db_dbname
     username <- config$db_username
     conpass <- config$db_password
+    print(req)
     pathways_df <- as.data.frame(req$body)
+    print(pathways_df)
     fishers_results_df <- RaMP::runCombinedFisherTest(
         pathwaydf = pathways_df,
         conpass=conpass,

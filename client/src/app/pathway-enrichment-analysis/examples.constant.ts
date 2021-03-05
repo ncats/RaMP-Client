@@ -36,5 +36,5 @@ export const analyteExampleInputs = {
         '11-cis-Retinol\r\n' +
         'Cortisol;\r\n' +
         'Peroxynitrite\r\n' +
-        'Phosphoenolpyruvic acid\r\n'
+        'Phosphoenolpyruvic acid'
 };

@@ -10,16 +10,23 @@
                         Input
                     </ng-template>
                     <ng-template matTabContent>
-                        <div class="error-message-container">
-                            <div class="error-message" *ngIf="errorMessage">
-                                {{errorMessage}}
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
                             </div>
                         </div>
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
                                 <div class="description">
                                     <span *ngIf="queryType == 'ontoFromMeta'">Enter a list of metabolite ID's prepended
-                                        by ID source (e.g. kegg:C00412)</span>
+                                        by ID source (e.g. <strong>kegg</strong>:C00412)</span>
                                     <span *ngIf="queryType == 'metaFromOnto'">Enter a list of common ontology names
                                         (e.g. Adrenal Cortex)</span>
                                     , one per line (press Enter
@@ -55,6 +62,18 @@
                         Results
                     </ng-template>
                     <ng-template matTabContent>
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
+                            </div>
+                        </div>
                         <div class="results-table-container">
                             <div class="results-message-container">
                                 <span>We found <strong>{{numFoundIds}}</strong> of the
@@ -69,11 +88,6 @@
                                         [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange($event)"
                                         [pageSizeOptions]="[5, 10, 25, 100]">
                                     </mat-paginator>
-                                </div>
-                                <div class="error-message-container">
-                                    <div class="error-message" *ngIf="errorMessage">
-                                        {{errorMessage}}
-                                    </div>
                                 </div>
                                 <div class="table-container">
                                     <mat-table [dataSource]="pagedData" matSort (matSortChange)="sortData($event)">
