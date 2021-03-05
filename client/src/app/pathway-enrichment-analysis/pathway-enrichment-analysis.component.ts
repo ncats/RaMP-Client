@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TableDialogComponent } from '../table-dialog/table-dialog.component';
 import { path } from 'd3';
 import { ConfigService } from '../config/config.service';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -34,7 +35,8 @@ import { ConfigService } from '../config/config.service';
 export class PathwayEnrichmentAnalysisComponent implements OnInit {
 
   // analytes
-  analytesInput: string;
+  metabolitesInput: string;
+  genesInput: string;
   pathwaySourceIds: Array<string>;
   analytes: Array<any>;
 
@@ -112,8 +114,9 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.selectedIndex = 0;
     this.loadingService.setLoadingState(true);
     const url = `${this.apiBaseUrl}source/analytes`;
-    const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
-
+    const metabolites = this.metabolitesInput ? this.metabolitesInput.toString().split(/\r\n|\r|\n/g) : [];
+    const genes = this.genesInput ? this.genesInput.toString().split(/\r\n|\r|\n/g) : [];
+    const analytes = metabolites.concat(genes).filter(analyte => analyte !== '');
     const options = {
       params: {
         identifier: analytes,
@@ -132,7 +135,13 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
             analytesLower.push(analyteLower);
             const analyteMatch: AnalyteMatch = {
               input: analyteItendifier,
+              rampIdList: [],
+              idTypesList: [],
+              idTypes: '',
+              typesList: [],
+              types: '',
               numAnalytes: 0,
+              commonName: '',
               analytes: []
             };
 
@@ -148,9 +157,39 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
               index = analytesLower.indexOf(analyte.synonym.toLowerCase());
             }
             if (index > -1) {
-              analyteMatches[index].numAnalytes++;
-              analyteMatches[index].analytes.push(analyte);
+              if (analyteMatches[index].rampIdList.indexOf(analyte.rampId) === -1) {
+                analyteMatches[index].rampIdList.push(analyte.rampId);
+                analyteMatches[index].numAnalytes++;
+                analyte.idTypesList = [analyte.IDtype];
+                analyteMatches[index].analytes.push(analyte);
+                if (analyteMatches[index].commonName === '') {
+                  analyteMatches[index].commonName = analyte.commonName;
+                } else if (analyteMatches[index].commonName !== analyte.commonName) {
+                  analyteMatches[index].commonName = 'multiple - click to view';
+                }
+              } else {
+                const existingAnalyite = analyteMatches[index].analytes.find(x => x.rampId === analyte.rampId);
+                if (existingAnalyite.idTypesList.indexOf(analyte.IDtype) === -1) {
+                  existingAnalyite.idTypesList.push(analyte.IDtype);
+                }
+              }
+              if (analyteMatches[index].idTypesList.indexOf(analyte.IDtype) === -1) {
+                analyteMatches[index].idTypesList.push(analyte.IDtype);
+              }
+              if (analyteMatches[index].typesList.indexOf(analyte.geneOrCompound) === -1) {
+                analyteMatches[index].typesList.push(analyte.geneOrCompound);
+              }
             }
+          });
+
+          analyteMatches.map(analyteMatch => {
+            analyteMatch.idTypes = analyteMatch.idTypesList.join(', ');
+            analyteMatch.types = analyteMatch.typesList.join(', ');
+            analyteMatch.analytes.map(analyte => {
+              analyte.idTypes = analyte.idTypesList.join(', ');
+              return analyte;
+            });
+            return analyteMatch;
           });
 
           return analyteMatches;
@@ -422,7 +461,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   }
 
   insertSample(sampleType: 'ids' | 'names'): void {
-    this.analytesInput = analyteExampleInputs[sampleType];
+    this.metabolitesInput = analyteExampleInputs[sampleType];
   }
 
   pageChange(data: Array<any> = [], pageEvent?: PageEvent): void {
@@ -542,5 +581,18 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       },
       width: '600px'
     });
+  }
+
+  expandRow(row: AnalyteMatch): AnalyteMatch {
+    console.log(row);
+    if (row.numAnalytes <= 1) {
+      return null;
+    } else {
+      return this.expandedElement = this.expandedElement === row ? null : row;
+    }
+  }
+
+  closeErrorMessage(): void {
+    this.errorMessage = null;
   }
 }

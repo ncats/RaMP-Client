@@ -1,8 +1,11 @@
+@import '../styles_ncats_colors';
+
 .mat-toolbar {
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 2;
+    background-color: color("ncats-green", "lighten-5");
 }
 
 .logo {

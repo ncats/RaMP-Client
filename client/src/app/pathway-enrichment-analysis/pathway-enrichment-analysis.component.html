@@ -10,38 +10,67 @@
                         Input
                     </ng-template>
                     <ng-template matTabContent>
-                        <div class="error-message-container">
-                            <div class="error-message" *ngIf="errorMessage">
-                                {{errorMessage}}
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
                             </div>
                         </div>
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
-                                <div class="description">
-                                    Enter a list of identifiers (known Id's or names), one per line (press Enter
-                                    after each).
-                                </div>
                                 <div class="text-input-container">
                                     <textarea class="targetBox" placeholder="Analytes" spellcheck="false"
-                                        [(ngModel)]="analytesInput" name="analytesInput" required></textarea>
+                                        [(ngModel)]="metabolitesInput" name="metabolitesInput" [required]="!genesInput"></textarea>
                                 </div>
                             </div>
-                            <div class="form-options">
-                                <div>
+                            <div class="identifiers">
+                                <div class="text-input-container">
+                                    <textarea class="targetBox" placeholder="Genes" spellcheck="false"
+                                        [(ngModel)]="genesInput" name="genesInput" [required]="!metabolitesInput"></textarea>
+                                </div>
+                            </div>
+                            <div class="description-right">
+                                <div class="space-bottom">
+                                    Enter a list of names or IDs.
+                                </div>
+                                <div class="space-bottom">
+                                    When entering IDs, prepend with the database of origin followed by a colon, for example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc..  It is possible to input IDs using multiple different sources.  RaMP currently supports the following id prefixes:
+                                </div>
+                                <table class="mat-table static-table space-bottom">
+                                    <tr class="mat-header-row">
+                                        <th class="mat-header-cell">Analyte Type</th>
+                                        <th class="mat-header-cell">ID Prefix Types</th>
+                                    </tr>
+                                    <tr class="mat-row">
+                                        <td class="mat-cell">Metabolites</td>
+                                        <td class="mat-cell">CAS, chebi, chemspider, enzymeNomenclature, hmdb, kegg, LIPIDMAPS, pubchem</td>
+                                    </tr>
+                                    <tr class="mat-row">
+                                        <td class="mat-cell">Genes/Proteins</td>
+                                        <td class="mat-cell">ensembl, entrez, uniprot</td>
+                                    </tr>
+                                </table>
+                                <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
                                         <span>
-                                            &#60; Use ID's sample list
+                                            &#60; Use Metabolite ID's sample list
                                         </span>
                                     </button>
                                 </div>
-                                <div>
+                                <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button (click)="insertSample('names')">
                                         <span>
-                                            &#60; Use Names sample list
+                                            &#60; Use Metabolite Names sample list
                                         </span>
                                     </button>
                                 </div>
-                                <div>
+                                <div class="form-options-top">
                                     <button mat-flat-button color="accent" (click)="findAnalytes()"
                                         [disabled]="anlyteForm.invalid">
                                         Find analytes in database
@@ -59,12 +88,24 @@
                         <div class="results-message-container" *ngIf="analyteMatches.length == 0">
                             Your query didn't yield any results.
                         </div>
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
+                            </div>
+                        </div>
                         <div class="results-table-container" *ngIf="analyteMatches && analyteMatches.length">
                             <div class="pathways-table-top-options">
                                 <form #anlyteForm="ngForm">
                                     <button mat-flat-button color="accent" (click)="mapAnalytesToPathways()"
                                         [disabled]="anlyteForm.invalid">
-                                        Map selected analytes to pathways
+                                        Map analytes to pathways
                                     </button>
                                 </form>
                                 <div class="fill-middle"></div>
@@ -72,11 +113,6 @@
                                     [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
                                     (page)="pageChange(analyteMatches, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
-                            </div>
-                            <div class="error-message-container">
-                                <div class="error-message" *ngIf="errorMessage">
-                                    {{errorMessage}}
-                                </div>
                             </div>
                             <div class="table-container">
                                 <mat-table [dataSource]="pagedData" multiTemplateDataRows matSort
@@ -134,9 +170,9 @@
 
                                     <mat-header-row *matHeaderRowDef="analyteMatchesDisplayedColumns"></mat-header-row>
                                     <mat-row *matRowDef="let row; columns: analyteMatchesDisplayedColumns;"
-                                        class="example-element-row"
-                                        [class.example-expanded-row]="expandedElement === row"
-                                        (click)="expandedElement = expandedElement === row ? null : row">
+                                        [class]="{'expandable-table-row': row.numAnalytes > 1}"
+                                        [class.expanded-table-row]="expandedElement === row"
+                                        (click)="expandRow(row)">
                                     </mat-row>
                                     <mat-row *matRowDef="let row; columns: ['expandedDetail']"
                                         class="detail-row">
@@ -160,6 +196,18 @@
                         <div class="results-message-container" *ngIf="pathways.length == 0">
                             Your query didn't yield any results.
                         </div>
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
+                            </div>
+                        </div>
                         <div class="results-table-container" *ngIf="pathways && pathways.length">
                             <div class="pathways-table-top-options">
                                 <form #anlyteForm="ngForm">
@@ -173,11 +221,6 @@
                                     [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange(pathways, $event)"
                                     [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
-                            </div>
-                            <div class="error-message-container">
-                                <div class="error-message" *ngIf="errorMessage">
-                                    {{errorMessage}}
-                                </div>
                             </div>
                             <div class="table-container">
                                 <mat-table [dataSource]="pagedData" matSort
@@ -215,6 +258,18 @@
                             <div class="results-message-container" *ngIf="fisherTestResults.length == 0">
                                 Your query didn't yield any results.
                             </div>
+                            <div class="error-message-container" *ngIf="errorMessage">
+                                <div class="error-message">
+                                    <div class="close-button">
+                                        <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </div>
+                                    <span>
+                                        {{errorMessage}}
+                                    </span>
+                                </div>
+                            </div>
                             <div class="results-table-container" *ngIf="fisherTestResults && fisherTestResults.length">
                                 <div class="pathways-table-top-options">
                                     <form #anlyteForm="ngForm" class="flex-row">
@@ -241,11 +296,6 @@
                                         (page)="pageChange(fisherTestResults, $event)"
                                         [pageSizeOptions]="[5, 10, 25, 100]">
                                     </mat-paginator>
-                                </div>
-                                <div class="error-message-container">
-                                    <div class="error-message" *ngIf="errorMessage">
-                                        {{errorMessage}}
-                                    </div>
                                 </div>
                                 <div class="table-container">
                                     <mat-table [dataSource]="pagedData" matSort
@@ -285,6 +335,18 @@
                             <div class="results-message-container" *ngIf="filteredFisherTestResults.length == 0">
                                 Your query didn't yield any results.
                             </div>
+                            <div class="error-message-container" *ngIf="errorMessage">
+                                <div class="error-message">
+                                    <div class="close-button">
+                                        <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </div>
+                                    <span>
+                                        {{errorMessage}}
+                                    </span>
+                                </div>
+                            </div>
                             <div class="results-table-container"
                                 *ngIf="filteredFisherTestResults && filteredFisherTestResults.length">
                                 <div class="pathways-table-top-options">
@@ -319,11 +381,6 @@
                                         (page)="pageChange(filteredFisherTestResults, $event)"
                                         [pageSizeOptions]="[5, 10, 25, 100]">
                                     </mat-paginator>
-                                </div>
-                                <div class="error-message-container">
-                                    <div class="error-message" *ngIf="errorMessage">
-                                        {{errorMessage}}
-                                    </div>
                                 </div>
                                 <div class="table-container">
                                     <mat-table [dataSource]="pagedData" matSort
@@ -361,6 +418,18 @@
                     <ng-template matTabContent>
                         <div class="results-message-container" *ngIf="clusteringResults.length == 0">
                             Your query didn't yield any results.
+                        </div>
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
+                            </div>
                         </div>
                         <div class="results-table-container" *ngIf="clusteringResults && clusteringResults.length">
                             <div>
