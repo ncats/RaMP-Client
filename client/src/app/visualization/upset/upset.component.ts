@@ -365,7 +365,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         .attr('width', 20)
         .attr('x', (d, i) => 12 + i * (rad * 2.7))
         .attr('y', (d) => yrange(d.num))
-        .style('fill', '#6A1B9A')
+        .style('fill', '#66A2AE')
         .attr('height', (d) => height - yrange(d.num))
         .on('click', (d, i) => { this.upSetBarClicked.emit(i); });
 
@@ -391,7 +391,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
             .style('opacity', 1)
             .attr('fill', () => {
               if (x.setName.indexOf(y) !== -1) {
-                return '#6A1B9A';
+                return '#66A2AE';
               }
               return 'silver';
             });
@@ -403,7 +403,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
           .attr('y1', allSetNames.indexOf(x.setName[0]) * (rad * 2.7))
           .attr('x2', i * (rad * 2.7))
           .attr('y2', allSetNames.indexOf(x.setName[x.setName.length - 1]) * (rad * 2.7))
-          .style('stroke', '#6A1B9A')
+          .style('stroke', '#66A2AE')
           .attr('stroke-width', 4);
       });
     }
