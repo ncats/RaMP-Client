@@ -7,8 +7,8 @@ import { Decimal } from 'decimal.js';
 export abstract class VisualizationBase {
     svg: any;
     margin = 50;
-    width = 750;
-    height = 400;
+    width = 700;
+    height = 325;
     svgReady = new ReplaySubject<void>();
     data: Array<any>;
     dataXKey: string;

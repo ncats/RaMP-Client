@@ -5,7 +5,8 @@
     top: 0;
     width: 100%;
     z-index: 2;
-    background-color: color("ncats-green", "lighten-5");
+    background-color: #00667a;
+    //background-color: color("ncats-green", "lighten-5");
 }
 
 .logo {
@@ -38,7 +39,7 @@
 .mat-nav-list a {
 
     &:hover {
-        color: #6A1B9A;
+        color: #642f6c;
     }
 }
 
@@ -46,7 +47,7 @@
     background: rgba(0, 0, 0, 0.04);
 
     a {
-        color: #6A1B9A;
+        color: #642f6c;
     }
 }
 

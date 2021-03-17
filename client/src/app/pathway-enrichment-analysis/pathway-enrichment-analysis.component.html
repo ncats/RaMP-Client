@@ -471,11 +471,21 @@
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="visualization-container">
+                            <div *ngIf="analytes">
+                                <div>
+                                    <ramp-upset [data]="analytes" (upSetBarClicked)="upSetBarClicked($event)" title="Overlap of Pathways" nameKey="commonName"
+                                        valuesKey="pathways" showSetsSelection="true">
+                                    </ramp-upset>
+                                </div>
+                            </div>
                             <div *ngIf="clusteringResults">
-                                <ramp-bar [data]="clusteringResults" (barClicked)="barClicked($event)" title="Pathway Clusters" xKey="cluster_assignment"
-                                    yKey="negativeLogPVal" yLabel="mean -log(p-value)" xLabel="Cluster"
-                                    calculation="average">
-                                </ramp-bar>
+                                <mat-divider></mat-divider>
+                                <div>
+                                    <ramp-bar [data]="clusteringResults" (barClicked)="barClicked($event)" title="Pathway Clusters" xKey="cluster_assignment"
+                                        yKey="negativeLogPVal" yLabel="mean -log(p-value)" xLabel="Cluster"
+                                        calculation="average">
+                                    </ramp-bar>
+                                </div>
                             </div>
                             <div *ngIf="clusterCoordinates">
                                 <mat-divider></mat-divider>
@@ -485,15 +495,6 @@
                                     </ramp-scatter>
                                 </div>
                             </div>
-                            <div *ngIf="analytes">
-                                <mat-divider></mat-divider>
-                                <div>
-                                    <ramp-upset [data]="analytes" (upSetBarClicked)="upSetBarClicked($event)" title="Overlap of Pathways" nameKey="commonName"
-                                        valuesKey="pathways" showSetsSelection="true">
-                                    </ramp-upset>
-                                </div>
-                            </div>
-
                         </div>
                     </ng-template>
                 </mat-tab>

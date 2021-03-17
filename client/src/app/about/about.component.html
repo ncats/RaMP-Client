@@ -35,13 +35,15 @@
             <div class="paragraph">
                 For questions or issues, please submit an issue on our GitHub site at <a href="https://github.com/ncats/RaMP-DB/issues" target="_blank">https://github.com/ncats/RaMP-DB</a>
             </div>
-            <div>
-                <ramp-upset title="Compounds Overlap" [intersections]="compoundsIntersections" [soloSets]="compoundsSoloSets" [allData]="compoundsAllData" scale="log">
-                </ramp-upset>
-            </div>
-            <div>
-                <ramp-upset title="Genes Overlap" [intersections]="genesIntersections" [soloSets]="genesSoloSets" [allData]="genesAllData" scale="log">
-                </ramp-upset>
+            <div class="flex-row">
+                <div>
+                    <ramp-upset title="Compounds Overlap" [intersections]="compoundsIntersections" [soloSets]="compoundsSoloSets" [allData]="compoundsAllData" scale="log">
+                    </ramp-upset>
+                </div>
+                <div>
+                    <ramp-upset title="Genes Overlap" [intersections]="genesIntersections" [soloSets]="genesSoloSets" [allData]="genesAllData" scale="log">
+                    </ramp-upset>
+                </div>
             </div>
         </mat-card-content>
     </mat-card>
