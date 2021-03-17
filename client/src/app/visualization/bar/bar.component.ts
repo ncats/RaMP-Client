@@ -87,7 +87,7 @@ export class BarComponent extends VisualizationBase implements OnInit, AfterView
       this.xAxis = d3.scaleBand()
         .domain(this.processedData.map(d => d.xValue))
         .range([0, this.width])
-        .padding(0.2);
+        .padding(0.3);
 
       this.svg.append('g')
         .attr('transform', `translate(0,${this.height})`)

@@ -1,3 +1,9 @@
 .paragraph {
     margin-bottom: 15px;
 }
+
+.flex-row {
+    & > div:not(:first-child) {
+        margin-left: 15px;
+    }
+}

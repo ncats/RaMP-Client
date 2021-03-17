@@ -137,7 +137,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         }
       });
       const marginLeft = maxLabelSize * 10.30;
-      const height = 400;
+      const height = 300;
       const marginBottom = this.soloSets.length * 45;
       const width = 52 + ((this.allData.length - 1) * (13 * 2.7));
       this.createSvg(this.upsetPlotElement.nativeElement, width, height, marginLeft, marginBottom, 0, 20);
@@ -251,10 +251,10 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       // all sets
       const allSetNames = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substr(0, this.soloSets.length).split('');
 
-      const rad = 13;
+      const rad = 11;
 
       const width = 42 + ((this.allData.length - 1) * (rad * 2.7));
-      const height = 400;
+      const height = 300;
 
       // make the canvas
       this.svg
@@ -267,7 +267,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       // make a group for the upset circle intersection things
       const upsetCircles = this.svg.append('g')
         .attr('id', 'upsetCircles')
-        .attr('transform', `translate(20,${height + 40})`);
+        .attr('transform', `translate(20,${height + 25})`);
 
       // making dataset labels
       this.soloSets.forEach((x, i) => {
@@ -399,9 +399,9 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
 
         upsetCircles.append('line')
           .attr('id', `setline${i}`)
-          .attr('x1', i * (rad * 2.7))
+          .attr('x1', i * (rad * 2.7) + 3)
           .attr('y1', allSetNames.indexOf(x.setName[0]) * (rad * 2.7))
-          .attr('x2', i * (rad * 2.7))
+          .attr('x2', i * (rad * 2.7) + 3)
           .attr('y2', allSetNames.indexOf(x.setName[x.setName.length - 1]) * (rad * 2.7))
           .style('stroke', '#66A2AE')
           .attr('stroke-width', 4);

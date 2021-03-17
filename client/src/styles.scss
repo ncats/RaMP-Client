@@ -1,4 +1,3 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @import '~@angular/material/theming';
@@ -9,11 +8,44 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
+$ncats-purple: (
+    50: #642f6c,
+    100: #642f6c,
+    200: #642f6c,
+    300: #642f6c,
+    400: #642f6c,
+    500: #642f6c,
+    600: #642f6c,
+    700: #642f6c,
+    800: #642f6c,
+    900: #642f6c,
+    A100: #642f6c,
+    A200: #642f6c,
+    A400: #642f6c,
+    A700: #642f6c,
+    contrast: (
+        50: white,
+        100: white,
+        200: white,
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: white,
+        A200: white,
+        A400: white,
+        A700: white,
+    )
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $ramp-client-primary: mat-palette($mat-teal, 50);
-$ramp-client-accent: mat-palette($mat-purple, 400, 100, 200);
+$ramp-client-accent: mat-palette($ncats-purple, 400, 200, 100);
 
 // The warn palette is optional (defaults to red).
 $ramp-client-warn: mat-palette($mat-red);
@@ -39,7 +71,7 @@ div {
 }
 
 a {
-    color: #6A1B9A;
+    color: #642f6c;
 }
 
 router-outlet + * {
@@ -117,6 +149,11 @@ td.mat-cell:not(:first-of-type):not(:last-of-type) {
         color: rgba(0, 0, 0, 0.87);
         font-size: 14px;
     }
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
 }
 
 @media(min-width: 600px) {
