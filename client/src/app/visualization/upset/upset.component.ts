@@ -20,6 +20,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   @Input() scale: 'linear'|'log' = 'linear';
   @Input() showSetsSelection = false;
   @Output() upSetBarClicked = new EventEmitter();
+  private circRad = 11;
 
   @ViewChild('upsetPlotBox', { read: ElementRef, static: false }) upsetPlotElement: ElementRef;
 
@@ -131,15 +132,20 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   drawContainer(): void {
     if (this.isViewInit && this.allData && this.soloSets) {
       let maxLabelSize = 0;
+      let maxLabelText = ';'
       this.soloSets.forEach(element => {
         if (element.name.length > maxLabelSize) {
           maxLabelSize = element.name.length;
+          maxLabelText = element.name;
         }
       });
-      const marginLeft = maxLabelSize * 10.30;
+      const canvasElement = document.createElement('canvas');
+      const context = canvasElement.getContext('2d');
+      context.font = '400 14px/20px Roboto, "Helvetica Neue", sans-serif';
+      const marginLeft = context.measureText(maxLabelText).width + 10;
       const height = 300;
       const marginBottom = this.soloSets.length * 45;
-      const width = 52 + ((this.allData.length - 1) * (13 * 2.7));
+      const width = 52 + ((this.allData.length - 1) * (this.circRad * 2.7));
       this.createSvg(this.upsetPlotElement.nativeElement, width, height, marginLeft, marginBottom, 0, 20);
     }
   }
@@ -251,7 +257,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       // all sets
       const allSetNames = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substr(0, this.soloSets.length).split('');
 
-      const rad = 11;
+      const rad = this.circRad;
 
       const width = 42 + ((this.allData.length - 1) * (rad * 2.7));
       const height = 300;
@@ -365,7 +371,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         .attr('width', 20)
         .attr('x', (d, i) => 12 + i * (rad * 2.7))
         .attr('y', (d) => yrange(d.num))
-        .style('fill', '#66A2AE')
+        .style('fill', '#00667a')
         .attr('height', (d) => height - yrange(d.num))
         .on('click', (d, i) => { this.upSetBarClicked.emit(i); });
 
@@ -391,7 +397,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
             .style('opacity', 1)
             .attr('fill', () => {
               if (x.setName.indexOf(y) !== -1) {
-                return '#66A2AE';
+                return '#00667a';
               }
               return 'silver';
             });
@@ -403,7 +409,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
           .attr('y1', allSetNames.indexOf(x.setName[0]) * (rad * 2.7))
           .attr('x2', i * (rad * 2.7) + 3)
           .attr('y2', allSetNames.indexOf(x.setName[x.setName.length - 1]) * (rad * 2.7))
-          .style('stroke', '#66A2AE')
+          .style('stroke', '#00667a')
           .attr('stroke-width', 4);
       });
     }
