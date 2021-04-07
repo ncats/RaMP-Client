@@ -35,6 +35,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfigService } from './config/config.service';
 import { configServiceFactory } from './config/config.factory';
 import { OntologiesComponent } from './ontologies/ontologies.component';
+import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
+import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { OntologiesComponent } from './ontologies/ontologies.component';
     AboutComponent,
     AnalytesComponent,
     TableDialogComponent,
-    OntologiesComponent
+    OntologiesComponent,
+    PathwaysFromAnalytesComponent,
+    CommonReactionAnalytesComponent
   ],
   imports: [
     BrowserModule,
