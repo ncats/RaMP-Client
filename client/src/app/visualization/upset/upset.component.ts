@@ -132,7 +132,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   drawContainer(): void {
     if (this.isViewInit && this.allData && this.soloSets) {
       let maxLabelSize = 0;
-      let maxLabelText = ';'
+      let maxLabelText = '';
       this.soloSets.forEach(element => {
         if (element.name.length > maxLabelSize) {
           maxLabelSize = element.name.length;

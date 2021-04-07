@@ -490,3 +490,47 @@ function(req, analyte_source_id, perc_analyte_overlap=0.2, perc_pathway_overlap=
 
     return(response)
 }
+
+#' Return analytes involved in same reaction as given list of analytes
+#' @param analyte
+#' @get /api/common-reaction-analytes
+function(analyte="") {
+    analytes <- c(analyte)
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+    analytes_df_ids <- tryCatch(
+        {
+            analytes_df <- RaMP::rampFastCata(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'ids'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
+    analytes_df_names <- tryCatch(
+        {
+            analytes_df <- RaMP::rampFastCata(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'names'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
+    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
+    return(unique(analytes_df))
+}
