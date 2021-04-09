@@ -5,6 +5,7 @@ import { Inject, Injectable, OnDestroy, Renderer2, RendererFactory2 } from '@ang
 export class TooltipService implements OnDestroy {
   private renderer: Renderer2;
   private tooltipElement: HTMLElement;
+  private childElements: Array<HTMLElement> = [];
 
   constructor(
     private rendererFactory: RendererFactory2,
@@ -19,7 +20,7 @@ export class TooltipService implements OnDestroy {
     this.renderer.setStyle(this.tooltipElement, 'padding', '5px 7px');
     this.renderer.setStyle(this.tooltipElement, 'border-radius', '5px');
     this.renderer.setStyle(this.tooltipElement, 'font-size', '12px');
-    this.renderer.setStyle(this.tooltipElement, 'max-width', '150px');
+    this.renderer.setStyle(this.tooltipElement, 'max-width', '175px');
     this.renderer.setStyle(this.tooltipElement, 'overflow', 'hidden');
     this.renderer.setStyle(this.tooltipElement, 'transition', 'all, 300ms');
     this.renderer.setStyle(this.tooltipElement, 'opacity', '0');
@@ -33,8 +34,13 @@ export class TooltipService implements OnDestroy {
     this.tooltipElement = null;
   }
 
-  showTooltip(mouseEvent: MouseEvent, text: string, position: 'top'|'bottom'|'right'|'left' = 'top'): void {
-    this.tooltipElement.textContent = text;
+  showTooltip(mouseEvent: MouseEvent, textArray: Array<string>, position: 'top'|'bottom'|'right'|'left' = 'top'): void {
+    textArray.forEach(text => {
+      const childElement = this.renderer.createElement('div');
+      childElement.textContent = text;
+      this.renderer.appendChild(this.tooltipElement, childElement);
+      this.childElements.push(childElement);
+    });
     const target = mouseEvent.target as HTMLElement;
     const targetRect = target.getBoundingClientRect();
     const tooltipRect = this.tooltipElement.getBoundingClientRect();
@@ -45,7 +51,11 @@ export class TooltipService implements OnDestroy {
   }
 
   hideTooltip(): void {
-    this.tooltipElement.textContent = '';
+    this.childElements.forEach(childElement => {
+      this.renderer.removeChild(this.tooltipElement, childElement);
+      childElement = null;
+    });
+    this.childElements = [];
     this.renderer.setStyle(this.tooltipElement, 'opacity', '0');
     this.renderer.setStyle(this.tooltipElement, 'z-index', '-1');
     this.renderer.removeStyle(this.tooltipElement, 'top');

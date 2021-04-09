@@ -37,6 +37,7 @@ import { configServiceFactory } from './config/config.factory';
 import { OntologiesComponent } from './ontologies/ontologies.component';
 import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
 import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
+import { AnalytesFromPathwayComponent } from './analytes-from-pathway/analytes-from-pathway.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { CommonReactionAnalytesComponent } from './common-reaction-analytes/comm
     TableDialogComponent,
     OntologiesComponent,
     PathwaysFromAnalytesComponent,
-    CommonReactionAnalytesComponent
+    CommonReactionAnalytesComponent,
+    AnalytesFromPathwayComponent
   ],
   imports: [
     BrowserModule,

@@ -110,7 +110,8 @@ export class ScatterComponent extends VisualizationBase implements OnInit, After
           .style('opacity', .8)
           .style('fill', Colors[0])
           .on('mouseover', (d, i) => {
-            this.tooltipService.showTooltip(d, i[this.tooltipKey]);
+            console.log(i);
+            this.tooltipService.showTooltip(d, [i[this.tooltipKey]]);
           })
           .on('mouseout', (d, i) => {
             this.tooltipService.hideTooltip();
@@ -127,7 +128,8 @@ export class ScatterComponent extends VisualizationBase implements OnInit, After
             .style('opacity', .8)
             .style('fill', this.clusters[cluster].color)
             .on('mouseover', (d, i) => {
-              this.tooltipService.showTooltip(d, i[this.tooltipKey]);
+              console.log(i);
+              this.tooltipService.showTooltip(d, [`Pathway: ${i[this.tooltipKey]}`, `Cluster: ${i[this.clustersKey]}`]);
             })
             .on('mouseout', (d, i) => {
               this.tooltipService.hideTooltip();

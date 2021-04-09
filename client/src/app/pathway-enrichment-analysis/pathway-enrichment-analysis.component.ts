@@ -460,8 +460,12 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       });
   }
 
-  insertSample(sampleType: 'ids' | 'names'): void {
-    this.metabolitesInput = analyteExampleInputs[sampleType];
+  insertSample(inputType: 'metabolites' | 'genes', sampleType: 'ids' | 'names'): void {
+    if (inputType === 'metabolites') {
+      this.metabolitesInput = analyteExampleInputs[inputType][sampleType];
+    } else {
+      this.genesInput = analyteExampleInputs[inputType][sampleType];
+    }
   }
 
   pageChange(data: Array<any> = [], pageEvent?: PageEvent): void {
@@ -584,7 +588,6 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   }
 
   expandRow(row: AnalyteMatch): AnalyteMatch {
-    console.log(row);
     if (row.numAnalytes <= 1) {
       return null;
     } else {
