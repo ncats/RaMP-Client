@@ -7,8 +7,9 @@ figure {
 }
 
 .legend {
-    flex-grow: 1;
     margin-left: 15px;
+    overflow: auto;
+    margin-right: 15px;
 }
 
 .legend-item {
@@ -24,4 +25,8 @@ figure {
     min-height: 8px;
     width: 8px;
     min-width: 8px;
+}
+
+.fill-space {
+    flex-grow: 1;
 }

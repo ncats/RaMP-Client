@@ -231,10 +231,11 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
     if (this.intersections != null && this.soloSets != null) {
       const allData = this.intersections.slice();
       const soloSets = this.soloSets.slice();
+
       soloSets.forEach(x => {
         // compile all unique values from other sets except current set
         const otherSets = [...new Set(soloSets.map(y => y.setName === x.setName ? [] : y.values).flat())];
-
+        console.log(otherSets);
         // subtract otherSets values from current set values
         const values = x.values.filter(y => !otherSets.includes(y));
         allData.push({
@@ -246,6 +247,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
         });
 
       });
+
       return allData;
     }
   }
@@ -253,7 +255,6 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   drawChart() {
 
     if (this.svg != null && this.allData != null && this.soloSets != null) {
-
       // all sets
       const allSetNames = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substr(0, this.soloSets.length).split('');
 

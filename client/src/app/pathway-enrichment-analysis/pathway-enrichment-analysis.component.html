@@ -25,7 +25,7 @@
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
                                 <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="Analytes" spellcheck="false"
+                                    <textarea class="targetBox" placeholder="Metabolites" spellcheck="false"
                                         [(ngModel)]="metabolitesInput" name="metabolitesInput" [required]="!genesInput"></textarea>
                                 </div>
                             </div>
@@ -57,16 +57,30 @@
                                     </tr>
                                 </table>
                                 <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
+                                    <button class="form-divider" mat-stroked-button (click)="insertSample('metabolites', 'ids')">
                                         <span>
                                             &#60; Use Metabolite ID's sample list
                                         </span>
                                     </button>
                                 </div>
                                 <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('names')">
+                                    <button class="form-divider" mat-stroked-button (click)="insertSample('metabolites', 'names')">
                                         <span>
                                             &#60; Use Metabolite Names sample list
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button (click)="insertSample('genes', 'ids')">
+                                        <span>
+                                            &#60; Use Gene ID's sample list
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button (click)="insertSample('genes', 'names')">
+                                        <span>
+                                            &#60; Use Gene Names sample list
                                         </span>
                                     </button>
                                 </div>
@@ -316,7 +330,7 @@
                                     </mat-table>
                                 </div>
                                 <div>
-                                    <mat-paginator [length]="pathways && pathways.length || 0" [pageSize]="pageSize"
+                                    <mat-paginator [length]="fisherTestResults && fisherTestResults.length || 0" [pageSize]="pageSize"
                                         [pageIndex]="page" showFirstLastButtons="true"
                                         (page)="pageChange(fisherTestResults, $event)"
                                         [pageSizeOptions]="[5, 10, 25, 100]">
@@ -401,7 +415,7 @@
                                     </mat-table>
                                 </div>
                                 <div>
-                                    <mat-paginator [length]="pathways && pathways.length || 0" [pageSize]="pageSize"
+                                    <mat-paginator [length]="filteredFisherTestResults && filteredFisherTestResults.length || 0" [pageSize]="pageSize"
                                         [pageIndex]="page" showFirstLastButtons="true"
                                         (page)="pageChange(filteredFisherTestResults, $event)"
                                         [pageSizeOptions]="[5, 10, 25, 100]">

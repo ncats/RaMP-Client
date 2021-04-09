@@ -1,0 +1,226 @@
+<div class="route-container">
+    <h1 class="page-title">
+        Analytes from Pathways
+    </h1>
+    <mat-card>
+        <mat-card-content>
+            <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="selectedTabChange($event)">
+                <mat-tab textLabel="input">
+                    <ng-template mat-tab-label>
+                        Input
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
+                            </div>
+                        </div>
+                        <form #pathwayForm="ngForm" class="pathway-form">
+                            <div class="identifiers">
+                                <div class="text-input-container">
+                                    <textarea class="targetBox" placeholder="Analytes" spellcheck="false"
+                                        [(ngModel)]="pathwaysInput" name="pathwaysInput" required></textarea>
+                                </div>
+                            </div>
+                            <div class="description-right">
+                                <div class="space-bottom">
+                                    Enter a list of pathway names or IDs.
+                                </div>
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
+                                        <span>
+                                            &#60; Use Pathway ID's sample list
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button (click)="insertSample('names')">
+                                        <span>
+                                            &#60; Use Pathwayt Names sample list
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="form-options-top">
+                                    <button mat-flat-button color="accent" (click)="findPathways()"
+                                        [disabled]="pathwayForm.invalid">
+                                        Find pathways in database
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab *ngIf="pathwayMatches" textLabel="pathwayMatches">
+                    <ng-template mat-tab-label>
+                        Pathways
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="results-message-container" *ngIf="pathwayMatches.length == 0">
+                            Your query didn't yield any results.
+                        </div>
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="results-table-container" *ngIf="pathwayMatches && pathwayMatches.length">
+                            <div class="pathways-table-top-options">
+                                <form #pathwayForm="ngForm">
+                                    <button mat-flat-button color="accent" (click)="mapPathwaysToAnalytes()"
+                                        [disabled]="pathwayForm.invalid">
+                                        Map pathways to analytes
+                                    </button>
+                                </form>
+                                <div class="fill-middle"></div>
+                                <mat-paginator [length]="pathwayMatches && pathwayMatches.length || 0"
+                                    [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                    (page)="pageChange(pathwayMatches, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                            <div class="table-container">
+                                <mat-table [dataSource]="pagedData" multiTemplateDataRows matSort
+                                (matSortChange)="sortData(pathwayMatches, $event)">
+                                    <ng-container [matColumnDef]="column.value"
+                                        *ngFor="let column of pathwayMatchesColumns; index as index">
+                                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            <span>
+                                                {{column.display}}
+                                            </span>
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let row">
+                                            <span>{{row[column.value]}}</span>
+                                        </mat-cell>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="expandedDetail">
+                                        <mat-cell *matCellDef="let element"
+                                            [attr.colspan]="pathwayMatchesDisplayedColumns.length">
+                                            <div class="example-element-detail"
+                                                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                                <mat-table [dataSource]="element.analytes">
+                                                    <ng-container matColumnDef="isSelected">
+                                                        <mat-header-cell *matHeaderCellDef>
+                                                            <span>
+                                                                Selected
+                                                            </span>
+                                                        </mat-header-cell>
+                                                        <mat-cell *matCellDef="let row">
+                                                            <span>
+                                                                <mat-checkbox [(ngModel)]="row.isSelected"></mat-checkbox>
+                                                            </span>
+                                                        </mat-cell>
+                                                    </ng-container>
+                                                    <ng-container [matColumnDef]="column.value"
+                                                        *ngFor="let column of pathwayColumns; index as index">
+                                                        <mat-header-cell *matHeaderCellDef>
+                                                            <span>
+                                                                {{column.display}}
+                                                            </span>
+                                                        </mat-header-cell>
+                                                        <mat-cell *matCellDef="let row">
+                                                            <span>{{row[column.value]}}</span>
+                                                        </mat-cell>
+                                                    </ng-container>
+                                                    <mat-header-row *matHeaderRowDef="pathwayDisplayedColumns">
+                                                    </mat-header-row>
+                                                    <mat-row
+                                                        *matRowDef="let row; columns: pathwayDisplayedColumns;">
+                                                    </mat-row>
+                                                </mat-table>
+                                            </div>
+                                        </mat-cell>
+                                    </ng-container>
+
+                                    <mat-header-row *matHeaderRowDef="pathwayMatchesDisplayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: pathwayMatchesDisplayedColumns;"
+                                        [class]="{'expandable-table-row': row.numPathways > 1}"
+                                        [class.expanded-table-row]="expandedElement === row"
+                                        (click)="expandRow(row)">
+                                    </mat-row>
+                                    <mat-row *matRowDef="let row; columns: ['expandedDetail']"
+                                        class="detail-row">
+                                    </mat-row>
+                                </mat-table>
+                            </div>
+                            <div>
+                                <mat-paginator [length]="pathwayMatches && pathwayMatches.length || 0"
+                                    [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
+                                    (page)="pageChange(pathwayMatches, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab *ngIf="analytes" textLabel="analytes">
+                    <ng-template mat-tab-label>
+                        Analytes
+                    </ng-template>
+                    <ng-template matTabContent>
+                        <div class="results-message-container" *ngIf="analytes.length == 0">
+                            Your query didn't yield any results.
+                        </div>
+                        <div class="error-message-container" *ngIf="errorMessage">
+                            <div class="error-message">
+                                <div class="close-button">
+                                    <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                <span>
+                                    {{errorMessage}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="results-table-container" *ngIf="analytes && analytes.length">
+                            <div class="analytes-table-top-options">
+                                <div class="fill-middle"></div>
+                                <mat-paginator [length]="analytes && analytes.length || 0" [pageSize]="pageSize"
+                                    [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange(analytes, $event)"
+                                    [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                            <div class="table-container">
+                                <mat-table [dataSource]="pagedData" matSort
+                                    (matSortChange)="sortData(analytes, $event)">
+                                    <ng-container [matColumnDef]="column.value"
+                                        *ngFor="let column of analyteColumns; index as index">
+                                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                                            <span>
+                                                {{column.display}}
+                                            </span>
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let row">
+                                            <span>{{row[column.value]}}</span>
+                                        </mat-cell>
+                                    </ng-container>
+                                    <mat-header-row *matHeaderRowDef="analyteDisplayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: analyteDisplayedColumns;"></mat-row>
+                                </mat-table>
+                            </div>
+                            <div>
+                                <mat-paginator [length]="analytes && analytes.length || 0" [pageSize]="pageSize"
+                                    [pageIndex]="page" showFirstLastButtons="true" (page)="pageChange(analytes, $event)"
+                                    [pageSizeOptions]="[5, 10, 25, 100]">
+                                </mat-paginator>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+    </mat-card>
+</div>

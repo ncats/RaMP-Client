@@ -152,6 +152,35 @@ function() {
     )
 }
 
+#* Return pathways from source database
+#* @param identifier
+#* @serializer unboxedJSON
+#* @get /api/source/pathways
+function(identifier) {
+    identifiers <- c(identifier)
+    identifiers <- sapply(identifiers,shQuote)
+    identifiers <- paste(identifiers, collapse=",")
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                          user = username,
+                          dbname = dbname,
+                          password = conpass,
+                          host = host)
+    query <- paste0(
+        "select p.pathwayRampId, p.sourceId as pathwaysourceId, p.type as pathwaysource, p.pathwayCategory, p.pathwayName ",
+        "from pathway as p ",
+        "where p.sourceId in (", identifiers, ") ",
+        "or p.pathwayName in (", identifiers, ") "
+    )
+    pathways <- DBI::dbGetQuery(con,query)
+    DBI::dbDisconnect(con)
+    return(pathways)
+}
+
 #* Return analytes from source database
 #* @param identifier
 #* @serializer unboxedJSON
@@ -188,8 +217,8 @@ function(identifier) {
     return(analytes)
 }
 
-#* Return analytes from pathway
-#* @param analyte
+#* Return ontologies from list of metabolites
+#* @param metabolite
 #* @serializer unboxedJSON
 #* @get /api/ontologies
 function(metabolite="") {
@@ -283,6 +312,35 @@ function(ontology="") {
         return(list(numSubmittedIds=numSubmittedNames, numFoundIds=0, data=vector()))
     }
 
+    return(analytes_df)
+}
+
+#' Return analytes from given list of pathways
+#' @param analyte
+#' @get /api/analytes
+function(pathway="") {
+    pathways <- c(pathway)
+    print(pathways)
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+    analytes_df <- tryCatch(
+        {
+            analytes_df <- RaMP::getAnalyteFromPathway(
+                pathway = pathways,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username
+            )
+        },
+        error=function(cond) {
+            print(cond)
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
     return(analytes_df)
 }
 
