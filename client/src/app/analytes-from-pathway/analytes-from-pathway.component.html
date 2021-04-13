@@ -31,7 +31,8 @@
                             </div>
                             <div class="description-right">
                                 <div class="space-bottom">
-                                    Enter a list of pathway names or IDs.
+                                    Enter a list of pathway names or IDs so the application can try to match them
+                                    against our database.
                                 </div>
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
@@ -78,6 +79,23 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="pathwayMatches && pathwayMatches.length">
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            The pathways table contains the pathways in the RaMP database that matched your input list. If more than one pathway matched a single entry, the <i># Pathways Found</i> column will have a value that's > 1 and you will have to click on the row to confirm that the right pathway is selected to map it to analytes.
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                             <div class="pathways-table-top-options">
                                 <form #pathwayForm="ngForm">
                                     <button mat-flat-button color="accent" (click)="mapPathwaysToAnalytes()"
@@ -186,6 +204,42 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="analytes && analytes.length">
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            This table shows all analytes that are mapped to the input pathways.
+                                        </div>
+                                    </mat-expansion-panel>
+                                    <mat-expansion-panel (opened)="rFunctionPanelOpen = true" (closed)="rFunctionPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                R Package Function
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div class="code-containder">
+                                            <div>RaMP::getAnalyteFromPathway(</div>
+                                                <div class="indent">pathway = c({{pathwaysParameters.join(', ')}}),</div>
+                                                <div class="indent">conpass = &#123;conpass&#125;,</div>
+                                                <div class="indent">host = &#123;host&#125;,</div>
+                                                <div class="indent">dbname = &#123;dbname&#125;,</div>
+                                                <div class="indent">username = &#123;username&#125;,</div>
+                                            <div>)</div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                             <div class="analytes-table-top-options">
                                 <div class="fill-middle"></div>
                                 <mat-paginator [length]="analytes && analytes.length || 0" [pageSize]="pageSize"

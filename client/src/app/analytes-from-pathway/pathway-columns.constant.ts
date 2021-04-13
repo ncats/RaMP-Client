@@ -38,27 +38,23 @@ export const PathwayColumns: Array<{ value: string; display: string }> = [
 
 export const AnalyteColumns: Array<{ value: string; display: string }> = [
     {
+        value: 'pathwayName',
+        display: 'Pathway Name'
+    },
+    {
+        value: 'pathwayType',
+        display: 'Pathway Source Database'
+    },
+    {
         value: 'compoundName',
         display: 'Analyte Name'
     },
     {
         value: 'sourceCompoundIDs',
-        display: 'Sources'
+        display: 'Analyte IDs'
     },
     {
         value: 'geneOrCompound',
         display: 'Analyte Type'
-    },
-    {
-        value: 'pathwayName',
-        display: 'Pathway Name'
-    },
-    {
-        value: 'pathwayCategory',
-        display: 'Pathway Category'
-    },
-    {
-        value: 'pathwayType',
-        display: 'Pathway Type'
     }
 ];

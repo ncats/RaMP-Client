@@ -25,7 +25,7 @@
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
                                 <div class="description">
-                                    <span *ngIf="queryType == 'ontoFromMeta'">Enter a list of metabolite ID's prepended
+                                    <span *ngIf="queryType == 'bioOnto' || queryType == 'originOnto'">Enter a list of metabolite ID's prepended
                                         by ID source (e.g. <strong>kegg</strong>:C00412)</span>
                                     <span *ngIf="queryType == 'metaFromOnto'">Enter a list of common ontology names
                                         (e.g. Adrenal Cortex)</span>
@@ -40,8 +40,10 @@
                             <div class="form-options">
                                 <div class="form-divider">
                                     <mat-radio-group aria-label="Select an option" [(ngModel)]="queryType"
-                                        value="ontoFromMeta" name="queryType">
-                                        <mat-radio-button value="ontoFromMeta">Retrieve ontologies from metabolites
+                                        value="bioOnto" name="queryType">
+                                        <mat-radio-button value="bioOnto">Retrieve biological ontologies from metabolites
+                                        </mat-radio-button>
+                                        <mat-radio-button value="originOnto">Retrieve origin ontologies from metabolites
                                         </mat-radio-button>
                                         <mat-radio-button value="metaFromOnto">Retrieve metabolites from ontologies
                                         </mat-radio-button>
@@ -78,9 +80,56 @@
                             <div class="results-message-container">
                                 <span>We found <strong>{{numFoundIds}}</strong> of the
                                     <strong>{{numSubmittedIds}}</strong>&nbsp;</span>
-                                <span *ngIf="queryType == 'ontoFromMeta'">metabolites&nbsp;</span>
+                                <span *ngIf="queryType == 'bioOnto' || queryType == 'originOnto'">metabolites&nbsp;</span>
                                 <span *ngIf="queryType == 'metaFromOnto'">ontologies&nbsp;</span>
                                 <span>you submitted.</span>
+                            </div>
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            The pathways table shows the mapping from analytes to pathways.
+                                        </div>
+                                    </mat-expansion-panel>
+                                    <mat-expansion-panel (opened)="rFunctionPanelOpen = true" (closed)="rFunctionPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                R Package Function
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div class="code-containder" *ngIf="queryType == 'bioOnto' || queryType == 'originOnto'">
+                                            <div>RaMP::getOntoFromMeta(</div>
+                                                <div class="indent">analytes = c({{identifiersParams.join(', ')}}),</div>
+                                                <div class="indent">conpass = &#123;conpass&#125;,</div>
+                                                <div class="indent">host = &#123;host&#125;,</div>
+                                                <div class="indent">dbname = &#123;dbname&#125;,</div>
+                                                <div class="indent">username = &#123;username&#125;,</div>
+                                                <div class="indent">NameOrIds = 'ids' or 'names'</div>
+                                            <div>)</div>
+                                        </div>
+                                        <div class="code-containder" *ngIf="queryType == 'metaFromOnto'">
+                                            <div>RaMP::getMetaFromOnto(</div>
+                                                <div class="indent">ontology = c({{identifiersParams.join(', ')}}),</div>
+                                                <div class="indent">conpass = &#123;conpass&#125;,</div>
+                                                <div class="indent">host = &#123;host&#125;,</div>
+                                                <div class="indent">dbname = &#123;dbname&#125;,</div>
+                                                <div class="indent">username = &#123;username&#125;,</div>
+                                                <div class="indent">NameOrIds = 'ids' or 'names'</div>
+                                            <div>)</div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
                             </div>
                             <div *ngIf="results && results.length">
                                 <div>
