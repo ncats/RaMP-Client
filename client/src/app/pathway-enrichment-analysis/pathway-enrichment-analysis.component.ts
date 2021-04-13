@@ -69,6 +69,9 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   // clustering
   clusterCoordinates: Array<ClusteringCoordinates>;
 
+  // For showing R package calls
+  analytesParameters: Array<string>;
+
   // paging
   pagedData: Array<any> = [];
   page = 0;
@@ -80,6 +83,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   showPlots = false;
   expandedElement: AnalyteMatch | null;
   apiBaseUrl: string;
+  detailsPanelOpen = false;
+  rFunctionPanelOpen = false;
 
   fisherTestResultsResponse: {
     fishresults: Array<FisherTestResult>,
@@ -241,12 +246,12 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.loadingService.setLoadingState(true);
     const url = `${this.apiBaseUrl}pathways`;
     // const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
-    const analytes = [];
+    this.analytesParameters = [];
     this.analyteMatches.forEach(item => {
       if (item.analytes && item.analytes.length > 0) {
         item.analytes.forEach(analyte => {
           if (analyte.isSelected) {
-            analytes.push(analyte.sourceId);
+            this.analytesParameters.push(analyte.sourceId);
           }
         });
       }
@@ -254,7 +259,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
 
     const options = {
       params: {
-        analyte: analytes,
+        analyte: this.analytesParameters,
       }
     };
     this.http.get<any>(url, options)
@@ -460,8 +465,12 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       });
   }
 
-  insertSample(sampleType: 'ids' | 'names'): void {
-    this.metabolitesInput = analyteExampleInputs[sampleType];
+  insertSample(inputType: 'metabolites' | 'genes', sampleType: 'ids' | 'names'): void {
+    if (inputType === 'metabolites') {
+      this.metabolitesInput = analyteExampleInputs[inputType][sampleType];
+    } else {
+      this.genesInput = analyteExampleInputs[inputType][sampleType];
+    }
   }
 
   pageChange(data: Array<any> = [], pageEvent?: PageEvent): void {
@@ -506,6 +515,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
 
   selectedTabChange(matTabChangeEvent: MatTabChangeEvent): void {
     this.errorMessage = '';
+    this.detailsPanelOpen = false;
+    this.rFunctionPanelOpen = false;
     switch (matTabChangeEvent.index) {
       case 1: {
         const sort: Sort = {
@@ -584,7 +595,6 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   }
 
   expandRow(row: AnalyteMatch): AnalyteMatch {
-    console.log(row);
     if (row.numAnalytes <= 1) {
       return null;
     } else {

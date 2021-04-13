@@ -25,22 +25,28 @@
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
                                 <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="Analytes" spellcheck="false"
-                                        [(ngModel)]="metabolitesInput" name="metabolitesInput" [required]="!genesInput"></textarea>
+                                    <textarea class="targetBox" placeholder="Metabolites" spellcheck="false"
+                                        [(ngModel)]="metabolitesInput" name="metabolitesInput"
+                                        [required]="!genesInput"></textarea>
                                 </div>
                             </div>
                             <div class="identifiers">
                                 <div class="text-input-container">
                                     <textarea class="targetBox" placeholder="Genes" spellcheck="false"
-                                        [(ngModel)]="genesInput" name="genesInput" [required]="!metabolitesInput"></textarea>
+                                        [(ngModel)]="genesInput" name="genesInput"
+                                        [required]="!metabolitesInput"></textarea>
                                 </div>
                             </div>
                             <div class="description-right">
                                 <div class="space-bottom">
-                                    Enter a list of names or IDs.
+                                    Enter a list of analyte names or IDs so the application can try to match them
+                                    against our database.
                                 </div>
                                 <div class="space-bottom">
-                                    When entering IDs, prepend with the database of origin followed by a colon, for example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc..  It is possible to input IDs using multiple different sources.  RaMP currently supports the following id prefixes:
+                                    When entering IDs, prepend with the database of origin followed by a colon, for
+                                    example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc.. It is
+                                    possible to input IDs using multiple different sources. RaMP currently supports the
+                                    following id prefixes:
                                 </div>
                                 <table class="mat-table static-table space-bottom">
                                     <tr class="mat-header-row">
@@ -49,7 +55,8 @@
                                     </tr>
                                     <tr class="mat-row">
                                         <td class="mat-cell">Metabolites</td>
-                                        <td class="mat-cell">CAS, chebi, chemspider, enzymeNomenclature, hmdb, kegg, LIPIDMAPS, pubchem</td>
+                                        <td class="mat-cell">CAS, chebi, chemspider, enzymeNomenclature, hmdb, kegg,
+                                            LIPIDMAPS, pubchem</td>
                                     </tr>
                                     <tr class="mat-row">
                                         <td class="mat-cell">Genes/Proteins</td>
@@ -57,23 +64,41 @@
                                     </tr>
                                 </table>
                                 <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
+                                    <button mat-flat-button color="accent" (click)="findAnalytes()"
+                                        [disabled]="anlyteForm.invalid">
+                                        Find analytes in database
+                                    </button>
+                                </div>
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('metabolites', 'ids')">
                                         <span>
                                             &#60; Use Metabolite ID's sample list
                                         </span>
                                     </button>
                                 </div>
                                 <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('names')">
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('metabolites', 'names')">
                                         <span>
                                             &#60; Use Metabolite Names sample list
                                         </span>
                                     </button>
                                 </div>
-                                <div class="form-options-top">
-                                    <button mat-flat-button color="accent" (click)="findAnalytes()"
-                                        [disabled]="anlyteForm.invalid">
-                                        Find analytes in database
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('genes', 'ids')">
+                                        <span>
+                                            &#60; Use Gene ID's sample list
+                                        </span>
+                                    </button>
+                                </div>
+                                <div>
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('genes', 'names')">
+                                        <span>
+                                            &#60; Use Gene Names sample list
+                                        </span>
                                     </button>
                                 </div>
                             </div>
@@ -101,6 +126,23 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="analyteMatches && analyteMatches.length">
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            The analytes table contains the genes and/or metabolites in the RaMP database that matched your input list. If more than one analyte matched a single entry, the <i># Analytes Found</i> column will have a value that's > 1 and you will have to click on the row to confirm that the right analyte is selected for the pathway analysis.
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                             <div class="pathways-table-top-options">
                                 <form #anlyteForm="ngForm">
                                     <button mat-flat-button color="accent" (click)="mapAnalytesToPathways()"
@@ -116,7 +158,7 @@
                             </div>
                             <div class="table-container">
                                 <mat-table [dataSource]="pagedData" multiTemplateDataRows matSort
-                                (matSortChange)="sortData(analyteMatches, $event)">
+                                    (matSortChange)="sortData(analyteMatches, $event)">
                                     <ng-container [matColumnDef]="column.value"
                                         *ngFor="let column of analyteMatchesColumns; index as index">
                                         <mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -143,7 +185,8 @@
                                                         </mat-header-cell>
                                                         <mat-cell *matCellDef="let row">
                                                             <span>
-                                                                <mat-checkbox [(ngModel)]="row.isSelected"></mat-checkbox>
+                                                                <mat-checkbox [(ngModel)]="row.isSelected">
+                                                                </mat-checkbox>
                                                             </span>
                                                         </mat-cell>
                                                     </ng-container>
@@ -160,8 +203,7 @@
                                                     </ng-container>
                                                     <mat-header-row *matHeaderRowDef="analyteDisplayedColumns">
                                                     </mat-header-row>
-                                                    <mat-row
-                                                        *matRowDef="let row; columns: analyteDisplayedColumns;">
+                                                    <mat-row *matRowDef="let row; columns: analyteDisplayedColumns;">
                                                     </mat-row>
                                                 </mat-table>
                                             </div>
@@ -171,11 +213,9 @@
                                     <mat-header-row *matHeaderRowDef="analyteMatchesDisplayedColumns"></mat-header-row>
                                     <mat-row *matRowDef="let row; columns: analyteMatchesDisplayedColumns;"
                                         [class]="{'expandable-table-row': row.numAnalytes > 1}"
-                                        [class.expanded-table-row]="expandedElement === row"
-                                        (click)="expandRow(row)">
+                                        [class.expanded-table-row]="expandedElement === row" (click)="expandRow(row)">
                                     </mat-row>
-                                    <mat-row *matRowDef="let row; columns: ['expandedDetail']"
-                                        class="detail-row">
+                                    <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row">
                                     </mat-row>
                                 </mat-table>
                             </div>
@@ -209,6 +249,43 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="pathways && pathways.length">
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            The pathways table shows the mapping from analytes to pathways.
+                                        </div>
+                                    </mat-expansion-panel>
+                                    <mat-expansion-panel (opened)="rFunctionPanelOpen = true" (closed)="rFunctionPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                R Package Function
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div class="code-containder">
+                                            <div>pathways_df &#60;- RaMP::getPathwayFromAnalyte(</div>
+                                                <div class="indent">analytes = c({{analytesParameters.join(', ')}}),</div>
+                                                <div class="indent">conpass = &#123;conpass&#125;,</div>
+                                                <div class="indent">host = &#123;host&#125;,</div>
+                                                <div class="indent">dbname = &#123;dbname&#125;,</div>
+                                                <div class="indent">username = &#123;username&#125;,</div>
+                                                <div class="indent">NameOrIds = 'ids' or 'names'</div>
+                                            <div>)</div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                             <div class="pathways-table-top-options">
                                 <form #anlyteForm="ngForm">
                                     <button mat-flat-button color="accent" (click)="runCombinedFisherTest()"
@@ -261,7 +338,8 @@
                             <div class="error-message-container" *ngIf="errorMessage">
                                 <div class="error-message">
                                     <div class="close-button">
-                                        <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <button mat-mini-fab aria-label="Close error message"
+                                            (click)="closeErrorMessage()">
                                             <mat-icon>close</mat-icon>
                                         </button>
                                     </div>
@@ -271,6 +349,45 @@
                                 </div>
                             </div>
                             <div class="results-table-container" *ngIf="fisherTestResults && fisherTestResults.length">
+                                <div class="accordion-container">
+                                    <mat-accordion>
+                                        <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    Details
+                                                </mat-panel-title>
+                                                <mat-panel-description>
+                                                    {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                                </mat-panel-description>
+                                            </mat-expansion-panel-header>
+                                            <div>
+                                                This table shows the results of the Fisher's Test.
+                                            </div>
+                                        </mat-expansion-panel>
+                                        <mat-expansion-panel (opened)="rFunctionPanelOpen = true" (closed)="rFunctionPanelOpen = false">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    R Package Function
+                                                </mat-panel-title>
+                                                <mat-panel-description>
+                                                    {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
+                                                </mat-panel-description>
+                                            </mat-expansion-panel-header>
+                                            <div class="space-bottom">
+                                                <span class="code">pathways_df</span> is the dataframe returned by the <span class="code">RaMP::getPathwayFromAnalyte</span> function.
+                                            </div>
+                                            <div class="code-containder">
+                                                <div>fishers_results_df &#60;- RaMP::runCombinedFisherTest(</div>
+                                                    <div class="indent">pathwaydf = pathways_df,</div>
+                                                    <div class="indent">conpass = &#123;conpass&#125;,</div>
+                                                    <div class="indent">host = &#123;host&#125;,</div>
+                                                    <div class="indent">dbname = &#123;dbname&#125;,</div>
+                                                    <div class="indent">username = &#123;username&#125;,</div>
+                                                <div>)</div>
+                                            </div>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+                                </div>
                                 <div class="pathways-table-top-options">
                                     <form #anlyteForm="ngForm" class="flex-row">
                                         <div class="space-right">
@@ -316,8 +433,8 @@
                                     </mat-table>
                                 </div>
                                 <div>
-                                    <mat-paginator [length]="pathways && pathways.length || 0" [pageSize]="pageSize"
-                                        [pageIndex]="page" showFirstLastButtons="true"
+                                    <mat-paginator [length]="fisherTestResults && fisherTestResults.length || 0"
+                                        [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
                                         (page)="pageChange(fisherTestResults, $event)"
                                         [pageSizeOptions]="[5, 10, 25, 100]">
                                     </mat-paginator>
@@ -338,7 +455,8 @@
                             <div class="error-message-container" *ngIf="errorMessage">
                                 <div class="error-message">
                                     <div class="close-button">
-                                        <button mat-mini-fab aria-label="Close error message" (click)="closeErrorMessage()">
+                                        <button mat-mini-fab aria-label="Close error message"
+                                            (click)="closeErrorMessage()">
                                             <mat-icon>close</mat-icon>
                                         </button>
                                     </div>
@@ -349,6 +467,43 @@
                             </div>
                             <div class="results-table-container"
                                 *ngIf="filteredFisherTestResults && filteredFisherTestResults.length">
+                                <div class="accordion-container">
+                                    <mat-accordion>
+                                        <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    Details
+                                                </mat-panel-title>
+                                                <mat-panel-description>
+                                                    {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                                </mat-panel-description>
+                                            </mat-expansion-panel-header>
+                                            <div>
+                                                This table shows a filtered list of the Fisher's Test based on the <i>Holm adjustment</i> or <i>fdr adjustment</i> cutoff parameters that you entered.
+                                            </div>
+                                        </mat-expansion-panel>
+                                        <mat-expansion-panel (opened)="rFunctionPanelOpen = true" (closed)="rFunctionPanelOpen = false">
+                                            <mat-expansion-panel-header>
+                                                <mat-panel-title>
+                                                    R Package Function
+                                                </mat-panel-title>
+                                                <mat-panel-description>
+                                                    {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
+                                                </mat-panel-description>
+                                            </mat-expansion-panel-header>
+                                            <div class="space-bottom">
+                                                <span class="code">fishers_results_df</span> is the dataframe returned by the <span class="code">RaMP::runCombinedFisherTest</span> function.
+                                            </div>
+                                            <div class="code-containder">
+                                                <div>filtered_results &#60;- RaMP::FilterFishersResults(</div>
+                                                    <div class="indent">fishers_df = fishers_results_df,</div>
+                                                    <div class="indent">p_holmadj_cutoff = {{pHolmAdjCutoffInput}},</div>
+                                                    <div class="indent">p_fdradj_cutoff = {{pfdrAdjCutoffInput}}</div>
+                                                <div>)</div>
+                                            </div>
+                                        </mat-expansion-panel>
+                                    </mat-accordion>
+                                </div>
                                 <div class="pathways-table-top-options">
                                     <form #anlyteForm="ngForm" class="flex-row">
                                         <div class="space-right">
@@ -401,8 +556,9 @@
                                     </mat-table>
                                 </div>
                                 <div>
-                                    <mat-paginator [length]="pathways && pathways.length || 0" [pageSize]="pageSize"
-                                        [pageIndex]="page" showFirstLastButtons="true"
+                                    <mat-paginator
+                                        [length]="filteredFisherTestResults && filteredFisherTestResults.length || 0"
+                                        [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
                                         (page)="pageChange(filteredFisherTestResults, $event)"
                                         [pageSizeOptions]="[5, 10, 25, 100]">
                                     </mat-paginator>
@@ -432,6 +588,44 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="clusteringResults && clusteringResults.length">
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            This table shows the filtered list of the Fisher's Test with cluster assignments based on the <i>% analyte overlap</i>, <i>% pathway overlap</i>, and <i>Min pathway to cluster</i> parameters that you entered.
+                                        </div>
+                                    </mat-expansion-panel>
+                                    <mat-expansion-panel (opened)="rFunctionPanelOpen = true" (closed)="rFunctionPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                R Package Function
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div class="space-bottom">
+                                            <span class="code">filtered_results</span> is the object returned by the <span class="code">RaMP::FilterFishersResults</span> function.
+                                        </div>
+                                        <div class="code-containder">
+                                            <div>clustering_results &#60;- RaMP::findCluster(</div>
+                                                <div class="indent">fishers_df = filtered_results,</div>
+                                                <div class="indent">perc_analyte_overlap = {{percAnalyteOverlap}},</div>
+                                                <div class="indent">min_pathway_tocluster = {{minPathwayTocluster}},</div>
+                                                <div class="indent">perc_pathway_overlap = {{percPathwayOverlap}}</div>
+                                            <div>)</div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                             <div>
                                 <mat-paginator [length]="clusteringResults && clusteringResults.length || 0"
                                     [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
@@ -473,17 +667,18 @@
                         <div class="visualization-container">
                             <div *ngIf="analytes">
                                 <div>
-                                    <ramp-upset [data]="analytes" (upSetBarClicked)="upSetBarClicked($event)" title="Overlap of Pathways" nameKey="commonName"
-                                        valuesKey="pathways" showSetsSelection="true">
+                                    <ramp-upset [data]="analytes" (upSetBarClicked)="upSetBarClicked($event)"
+                                        title="Overlap of Pathways" nameKey="commonName" valuesKey="pathways"
+                                        showSetsSelection="true">
                                     </ramp-upset>
                                 </div>
                             </div>
                             <div *ngIf="clusteringResults">
                                 <mat-divider></mat-divider>
                                 <div>
-                                    <ramp-bar [data]="clusteringResults" (barClicked)="barClicked($event)" title="Pathway Clusters" xKey="cluster_assignment"
-                                        yKey="negativeLogPVal" yLabel="mean -log(p-value)" xLabel="Cluster"
-                                        calculation="average">
+                                    <ramp-bar [data]="clusteringResults" (barClicked)="barClicked($event)"
+                                        title="Pathway Clusters" xKey="cluster_assignment" yKey="negativeLogPVal"
+                                        yLabel="mean -log(p-value)" xLabel="Cluster" calculation="average">
                                     </ramp-bar>
                                 </div>
                             </div>

@@ -1,10 +1,11 @@
 <h3>{{title}}</h3>
 <div class="plot-legend-container">
     <figure #scatterPlotBox></figure>
-    <div class="legend">
+    <div class="legend" [ngStyle]="{'max-height': height + 'px'}">
         <div class="legend-item" *ngFor="let legendItem of legendItems">
             <div class="legend-item-color" [ngStyle]="{'background-color': legendItem.color}"></div>
             <div class="legend-item-label">{{legendItem.label}}</div>
         </div>
     </div>
+    <div class="fill-space"></div>
 </div>
