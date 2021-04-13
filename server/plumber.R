@@ -152,6 +152,35 @@ function() {
     )
 }
 
+#* Return pathways from source database
+#* @param identifier
+#* @serializer unboxedJSON
+#* @get /api/source/pathways
+function(identifier) {
+    identifiers <- c(identifier)
+    identifiers <- sapply(identifiers,shQuote)
+    identifiers <- paste(identifiers, collapse=",")
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                          user = username,
+                          dbname = dbname,
+                          password = conpass,
+                          host = host)
+    query <- paste0(
+        "select p.pathwayRampId, p.sourceId as pathwaysourceId, p.type as pathwaysource, p.pathwayCategory, p.pathwayName ",
+        "from pathway as p ",
+        "where p.sourceId in (", identifiers, ") ",
+        "or p.pathwayName in (", identifiers, ") "
+    )
+    pathways <- DBI::dbGetQuery(con,query)
+    DBI::dbDisconnect(con)
+    return(pathways)
+}
+
 #* Return analytes from source database
 #* @param identifier
 #* @serializer unboxedJSON
@@ -188,11 +217,11 @@ function(identifier) {
     return(analytes)
 }
 
-#* Return analytes from pathway
-#* @param analyte
+#* Return ontologies from list of metabolites
+#* @param metabolite
 #* @serializer unboxedJSON
 #* @get /api/ontologies
-function(metabolite="") {
+function(metabolite="", type="biological") {
     config <- config::get()
     host <- config$db_host
     dbname <- config$db_dbname
@@ -229,6 +258,12 @@ function(metabolite="") {
             dbname = dbname,
             username = username
         )
+
+        if (type == "biological") {
+            ontologies_df <- ontologies_df[ontologies_df$biofluidORcellular %in% c('biofluid', 'tissue location', 'cellular location') ,]
+        } else {
+            ontologies_df <- ontologies_df[ontologies_df$biofluidORcellular %in% c('origins') ,]
+        }
 
         return(list(numSubmittedIds=numSubmittedIds, numFoundIds=nrow(metabolites), data=ontologies_df))
     } else {
@@ -283,6 +318,35 @@ function(ontology="") {
         return(list(numSubmittedIds=numSubmittedNames, numFoundIds=0, data=vector()))
     }
 
+    return(analytes_df)
+}
+
+#' Return analytes from given list of pathways
+#' @param analyte
+#' @get /api/analytes
+function(pathway="") {
+    pathways <- c(pathway)
+    print(pathways)
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+    analytes_df <- tryCatch(
+        {
+            analytes_df <- RaMP::getAnalyteFromPathway(
+                pathway = pathways,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username
+            )
+        },
+        error=function(cond) {
+            print(cond)
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
     return(analytes_df)
 }
 
@@ -489,4 +553,48 @@ function(req, analyte_source_id, perc_analyte_overlap=0.2, perc_pathway_overlap=
     )
 
     return(response)
+}
+
+#' Return analytes involved in same reaction as given list of analytes
+#' @param analyte
+#' @get /api/common-reaction-analytes
+function(analyte="") {
+    analytes <- c(analyte)
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+    analytes_df_ids <- tryCatch(
+        {
+            analytes_df <- RaMP::rampFastCata(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'ids'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
+    analytes_df_names <- tryCatch(
+        {
+            analytes_df <- RaMP::rampFastCata(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'names'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
+    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
+    return(unique(analytes_df))
 }

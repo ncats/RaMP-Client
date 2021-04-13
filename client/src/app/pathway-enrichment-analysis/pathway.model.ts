@@ -1,8 +1,12 @@
 export interface Pathway {
-    rampId: string;
+    rampId?: string;
     pathwayRampId: string;
     pathwayName: string;
     pathwaysourceId: string;
     pathwaysource: string;
-    commonName: string;
+    pathwayCategory?: string;
+    commonName?: string;
+    pathwaySourceList?: Array<string>;
+    pathwaySources?: string;
+    isSelected?: boolean;
 }

@@ -189,6 +189,31 @@ td.mat-cell:not(:first-of-type):not(:last-of-type) {
     flex-direction: row;
 }
 
+.indent {
+    padding-left: 20px;
+}
+
+.code-containder {
+    padding: 15px;
+    background-color: #404040;
+    color: white;
+    border-radius: 2px;
+    font-family: monaco,Consolas,"Lucida Console",monospace;
+}
+
+.code {
+    display: inline-block;
+    background-color: #404040;
+    color: white;
+    padding: 0 3px;
+    border-radius: 2px;
+    font-family: monaco,Consolas,"Lucida Console",monospace;
+}
+
+.accordion-container {
+    margin-bottom: 15px;
+}
+
 @media(min-width: 600px) {
     html {
         height: calc(100vh - 64px);

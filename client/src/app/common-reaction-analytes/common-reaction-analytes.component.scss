@@ -38,6 +38,10 @@
     width: 400px;
     display: flex;
     flex-direction: column;
+  
+    &:not(:first-of-type) {
+      margin-left: 15px;
+    }
   }
   
   .text-input-container {
@@ -45,8 +49,12 @@
     display: flex;
   }
   
-  .description {
-    margin-bottom: 10px;
+  .description-right {
+    margin-left: 15px;
+  
+    table {
+      width: 100%;
+    }
   }
   
   .form-options {
@@ -60,23 +68,6 @@
   .form-option-inputs {
     display: flex;
     flex-direction: column;
-  }
-
-  .mat-radio-group {
-    display: flex;
-    flex-direction: column;
-
-    .mat-radio-button:not(:last-child) {
-        margin-bottom: 25px;
-    }
-
-    .mat-radio-button:not(:first-child) {
-        margin-left: 0;
-    }
-  }
-  
-  .form-divider {
-    margin-bottom: 25px;
   }
   
   .number-input {
@@ -160,6 +151,11 @@
     align-items: center;
   }
   
+  .form-options-top {
+    padding-bottom: 15px;
+    display: flex;
+  }
+  
   .flex-column {
     display: flex;
     flex-direction: column;
@@ -174,4 +170,105 @@
   
   .space-right {
     margin-right: 15px;
+  }
+  
+  .mat-row {
+  
+      &.detail-row {
+          min-height: 0;
+      }
+    &.contracted-detail-row {
+      height: 0;
+      min-height: 0;
+    }
+  
+    &.expanded-detail-row {
+        height: auto;
+    }
+  
+    &.expandable-table-row:not(.expanded-table-row):hover {
+      background: whitesmoke;
+      cursor: pointer;
+    }
+  
+    &.expandable-table-row:not(.expanded-table-row):active {
+      background: #efefef;
+    }
+  }
+  
+  .expandable-table-row .mat-cell {
+    border-bottom-width: 0;
+  }
+  
+  .example-element-detail {
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    background-color: #e6f0ff;
+  
+    .mat-table {
+      width: 100%;
+      margin: 10px;
+      background-color: #e6f0ff;
+    }
+  }
+  
+  .example-element-description {
+    padding: 16px;
+  }
+  
+  .example-element-description-attribution {
+    opacity: 0.5;
+  }
+  
+  @media(max-width: 1200px) {
+    ::ng-deep .mat-tab-body-content {
+      flex-direction: column;
+    }
+  
+    .error-message-container {
+      padding: 10px;
+    }
+  
+    .analyte-form {
+      flex-grow: 1;
+    }
+  
+    .error-message {
+      font-size: 1;
+    }
+  
+  }
+  
+  @media(max-width: 704px) {
+  
+    .analyte-form {
+      flex-direction: column;
+    }
+  
+    .identifiers {
+      width: 100%;
+      flex-grow: 1;
+    }
+  
+    textarea {
+      min-height: 300px;
+    }
+  
+    .form-option-inputs {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  
+    .mat-card {
+      margin-bottom: 15px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  
+    .mat-table {
+      min-width: 650px;
+    }
   }

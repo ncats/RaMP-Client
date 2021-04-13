@@ -14,7 +14,11 @@ import { Ontology } from './ontology.model';
 })
 export class OntologiesComponent implements OnInit {
   identifiersInput: string;
-  queryType: 'ontoFromMeta' | 'metaFromOnto' = 'ontoFromMeta';
+  queryType: 'bioOnto' | 'originOnto' | 'metaFromOnto' = 'bioOnto';
+  private ontoQueryType = {
+    bioOnto: 'biological',
+    originOnto: 'originOnto'
+  };
   results: Array<Ontology>;
 
   // tables columns
@@ -26,12 +30,16 @@ export class OntologiesComponent implements OnInit {
   page = 0;
   pageSize = 10;
 
+  identifiersParams: Array<string>;
+
   // utilities
   selectedIndex = 0;
   errorMessage: string;
   apiBaseUrl: string;
   numSubmittedIds: number;
   numFoundIds: number;
+  detailsPanelOpen = false;
+  rFunctionPanelOpen = false;
 
   constructor(
     private http: HttpClient,
@@ -50,7 +58,7 @@ export class OntologiesComponent implements OnInit {
     this.selectedIndex = 0;
     this.loadingService.setLoadingState(true);
     let url: string;
-    const identifiers = this.identifiersInput.toString().split(/\r\n|\r|\n/g);
+    this.identifiersParams = this.identifiersInput.toString().split(/\r\n|\r|\n/g);
 
     const options = {
       params: {}
@@ -59,11 +67,13 @@ export class OntologiesComponent implements OnInit {
     if (this.queryType === 'metaFromOnto') {
       url = `${this.apiBaseUrl}metabolites`;
       // tslint:disable-next-line:no-string-literal
-      options.params['ontology'] = identifiers;
+      options.params['ontology'] = this.identifiersParams;
     } else {
       url = `${this.apiBaseUrl}ontologies`;
       // tslint:disable-next-line:no-string-literal
-      options.params['metabolite'] = identifiers;
+      options.params['metabolite'] = this.identifiersParams;
+      // tslint:disable-next-line:no-string-literal
+      options.params['type'] = this.ontoQueryType[this.queryType];
     }
     this.http.get<any>(url, options).subscribe(response => {
       this.numSubmittedIds =  response.numSubmittedIds;

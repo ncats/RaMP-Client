@@ -91,7 +91,8 @@ export class BarComponent extends VisualizationBase implements OnInit, AfterView
 
       this.svg.append('g')
         .attr('transform', `translate(0,${this.height})`)
-        .call(d3.axisBottom(this.xAxis));
+        .call(this.processedData.length > 25 ? d3.axisBottom(this.xAxis).tickFormat(domain => '') : d3.axisBottom(this.xAxis));
+        // .call(d3.axisBottom(this.xAxis));
 
       // Add Y axis
       this.yAxis = d3.scaleLinear()
@@ -113,7 +114,7 @@ export class BarComponent extends VisualizationBase implements OnInit, AfterView
         .attr('height', (d) => this.height - this.yAxis(d.yValue))
         .attr('fill', Colors[0])
         .on('mouseover', (d, i) => {
-          this.tooltipService.showTooltip(d, i.yValue);
+          this.tooltipService.showTooltip(d, [`y: ${i.yValue}`, `x: ${i.xValue}`]);
         })
         .on('mouseout', (d, i) => {
           this.tooltipService.hideTooltip();
