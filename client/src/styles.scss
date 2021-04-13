@@ -1,0 +1,249 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+$ncats-teal: (
+    50: #00667a,
+    100: #00667a,
+    200: #00667a,
+    300: #00667a,
+    400: #00667a,
+    500: #00667a,
+    600: #00667a,
+    700: #00667a,
+    800: #00667a,
+    900: #00667a,
+    A100: #00667a,
+    A200: #00667a,
+    A400: #00667a,
+    A700: #00667a,
+    contrast: (
+        50: white,
+        100: white,
+        200: white,
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: white,
+        A200: white,
+        A400: white,
+        A700: white,
+    )
+);
+
+$ncats-purple: (
+    50: #642f6c,
+    100: #642f6c,
+    200: #642f6c,
+    300: #642f6c,
+    400: #642f6c,
+    500: #642f6c,
+    600: #642f6c,
+    700: #642f6c,
+    800: #642f6c,
+    900: #642f6c,
+    A100: #642f6c,
+    A200: #642f6c,
+    A400: #642f6c,
+    A700: #642f6c,
+    contrast: (
+        50: white,
+        100: white,
+        200: white,
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white,
+        A100: white,
+        A200: white,
+        A400: white,
+        A700: white,
+    )
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$ramp-client-primary: mat-palette($ncats-teal, 50);
+$ramp-client-accent: mat-palette($ncats-purple, 400, 200, 100);
+
+// The warn palette is optional (defaults to red).
+$ramp-client-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$ramp-client-theme: mat-light-theme($ramp-client-primary, $ramp-client-accent, $ramp-client-warn);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($ramp-client-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+div {
+    box-sizing: border-box;
+}
+
+a {
+    color: #642f6c;
+}
+
+router-outlet + * {
+    flex-grow: 1;
+}
+
+.route-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.fill-middle {
+    flex-grow: 1;
+}
+
+.clickable:hover {
+    cursor: pointer;
+}
+
+.space-bottom {
+    margin-bottom: 15px;
+}
+
+td.mat-cell:last-of-type {
+    padding-left: 7px;
+}
+
+td.mat-cell:first-of-type {
+    padding-right: 7px;
+}
+
+td.mat-cell:not(:first-of-type):not(:last-of-type) {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.static-table {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+
+    .mat-row, .mat-header-row {
+        display: flex;
+        border-width: 0;
+        border-bottom-width: 1px;
+        border-style: solid;
+        align-items: center;
+        box-sizing: border-box;
+        border-bottom-color: rgba(0, 0, 0, 0.12);
+    }
+
+    .mat-header-row {
+        min-height: 56px;
+    }
+
+    .mat-row {
+        min-height: 48px;
+    }
+
+    .mat-cell, .mat-header-cell {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        word-wrap: break-word;
+        min-height: inherit;
+    }
+
+    .mat-header-cell {
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.54);
+    }
+
+    .mat-cell {
+        color: rgba(0, 0, 0, 0.87);
+        font-size: 14px;
+    }
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.indent {
+    padding-left: 20px;
+}
+
+.code-containder {
+    padding: 15px;
+    background-color: #404040;
+    color: white;
+    border-radius: 2px;
+    font-family: monaco,Consolas,"Lucida Console",monospace;
+}
+
+.code {
+    display: inline-block;
+    background-color: #404040;
+    color: white;
+    padding: 0 3px;
+    border-radius: 2px;
+    font-family: monaco,Consolas,"Lucida Console",monospace;
+}
+
+.accordion-container {
+    margin-bottom: 15px;
+}
+
+@media(min-width: 600px) {
+    html {
+        height: calc(100vh - 64px);
+        margin-top: 64px;
+    }
+}
+
+@media(max-width: 704px) {
+
+    router-outlet + * {
+        display: flex;
+        box-sizing: border-box;
+        padding: 7px;
+        max-width: 100%;
+    }
+
+    .route-container {
+        height: auto;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .page-title {
+        font-size: 1.5em;
+    }
+}
+
+@media(max-width: 599px) {
+    html {
+        height: calc(100vh - 56px);
+        margin-top: 56px;
+    }
+}

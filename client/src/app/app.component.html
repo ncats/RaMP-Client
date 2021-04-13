@@ -1,0 +1,26 @@
+<ramp-loading></ramp-loading>
+<mat-toolbar class="mat-elevation-z3" color="primary">
+  <div class="logo">
+    <img src="/assets/images/RaMPLogoNCATS.png">
+  </div>
+</mat-toolbar>
+<mat-sidenav-container [hasBackdrop]="hasBackdrop">
+  <mat-sidenav #sideNav mode="side" opened opened="false">
+    <mat-nav-list>
+      <mat-list-item *ngFor="let navItem of navItems" [ngClass]="{'active': navItem.id == activeNavItemId}">
+        <a matLine [routerLink]="navItem.path">{{navItem.display}}</a>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="content-container">
+      <div class="hamburger-container">
+        <button mat-icon-button aria-label="Open side navigation" color="accent" (click)="openSideNav()">
+          <mat-icon svgIcon="menu"></mat-icon>
+        </button>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
