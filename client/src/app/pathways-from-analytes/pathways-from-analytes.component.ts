@@ -31,6 +31,9 @@ export class PathwaysFromAnalytesComponent implements OnInit {
   pathwaySourceIds: Array<string>;
   analytes: Array<any>;
 
+  // For showing R package calls
+  analytesParameters: Array<string>;
+
   // data for tables
   analyteMatches: Array<AnalyteMatch>;
   pathways: Array<Pathway>;
@@ -53,6 +56,8 @@ export class PathwaysFromAnalytesComponent implements OnInit {
   errorMessage: string;
   apiBaseUrl: string;
   expandedElement: AnalyteMatch | null;
+  detailsPanelOpen = false;
+  rFunctionPanelOpen = false;
 
   constructor(
     private http: HttpClient,
@@ -197,12 +202,12 @@ export class PathwaysFromAnalytesComponent implements OnInit {
     this.loadingService.setLoadingState(true);
     const url = `${this.apiBaseUrl}pathways`;
     // const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
-    const analytes = [];
+    this.analytesParameters = [];
     this.analyteMatches.forEach(item => {
       if (item.analytes && item.analytes.length > 0) {
         item.analytes.forEach(analyte => {
           if (analyte.isSelected) {
-            analytes.push(analyte.sourceId);
+            this.analytesParameters.push(analyte.sourceId);
           }
         });
       }
@@ -210,7 +215,7 @@ export class PathwaysFromAnalytesComponent implements OnInit {
 
     const options = {
       params: {
-        analyte: analytes,
+        analyte: this.analytesParameters,
       }
     };
     this.http.get<any>(url, options)
@@ -233,8 +238,12 @@ export class PathwaysFromAnalytesComponent implements OnInit {
       }, () => {});
   }
 
-  insertSample(sampleType: 'ids' | 'names'): void {
-    this.metabolitesInput = analyteExampleInputs[sampleType];
+  insertSample(inputType: 'metabolites' | 'genes', sampleType: 'ids' | 'names'): void {
+    if (inputType === 'metabolites') {
+      this.metabolitesInput = analyteExampleInputs[inputType][sampleType];
+    } else {
+      this.genesInput = analyteExampleInputs[inputType][sampleType];
+    }
   }
 
   pageChange(data: Array<any> = [], pageEvent?: PageEvent): void {
@@ -279,6 +288,8 @@ export class PathwaysFromAnalytesComponent implements OnInit {
 
   selectedTabChange(matTabChangeEvent: MatTabChangeEvent): void {
     this.errorMessage = '';
+    this.detailsPanelOpen = false;
+    this.rFunctionPanelOpen = false;
     switch (matTabChangeEvent.index) {
       case 1: {
         const sort: Sort = {

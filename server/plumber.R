@@ -221,7 +221,7 @@ function(identifier) {
 #* @param metabolite
 #* @serializer unboxedJSON
 #* @get /api/ontologies
-function(metabolite="") {
+function(metabolite="", type="biological") {
     config <- config::get()
     host <- config$db_host
     dbname <- config$db_dbname
@@ -258,6 +258,12 @@ function(metabolite="") {
             dbname = dbname,
             username = username
         )
+
+        if (type == "biological") {
+            ontologies_df <- ontologies_df[ontologies_df$biofluidORcellular %in% c('biofluid', 'tissue location', 'cellular location') ,]
+        } else {
+            ontologies_df <- ontologies_df[ontologies_df$biofluidORcellular %in% c('origins') ,]
+        }
 
         return(list(numSubmittedIds=numSubmittedIds, numFoundIds=nrow(metabolites), data=ontologies_df))
     } else {

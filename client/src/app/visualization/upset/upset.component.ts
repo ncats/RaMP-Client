@@ -235,7 +235,6 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       soloSets.forEach(x => {
         // compile all unique values from other sets except current set
         const otherSets = [...new Set(soloSets.map(y => y.setName === x.setName ? [] : y.values).flat())];
-        console.log(otherSets);
         // subtract otherSets values from current set values
         const values = x.values.filter(y => !otherSets.includes(y));
         allData.push({

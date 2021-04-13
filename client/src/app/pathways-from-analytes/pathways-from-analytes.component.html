@@ -37,7 +37,8 @@
                             </div>
                             <div class="description-right">
                                 <div class="space-bottom">
-                                    Enter a list of names or IDs.
+                                    Enter a list of analyte names or IDs so the application can try to match them
+                                    against our database.
                                 </div>
                                 <div class="space-bottom">
                                     When entering IDs, prepend with the database of origin followed by a colon, for example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc..  It is possible to input IDs using multiple different sources.  RaMP currently supports the following id prefixes:
@@ -57,23 +58,41 @@
                                     </tr>
                                 </table>
                                 <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
+                                    <button mat-flat-button color="accent" (click)="findAnalytes()"
+                                        [disabled]="anlyteForm.invalid">
+                                        Find analytes in database
+                                    </button>
+                                </div>
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('metabolites', 'ids')">
                                         <span>
                                             &#60; Use Metabolite ID's sample list
                                         </span>
                                     </button>
                                 </div>
                                 <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('names')">
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('metabolites', 'names')">
                                         <span>
                                             &#60; Use Metabolite Names sample list
                                         </span>
                                     </button>
                                 </div>
-                                <div class="form-options-top">
-                                    <button mat-flat-button color="accent" (click)="findAnalytes()"
-                                        [disabled]="anlyteForm.invalid">
-                                        Find analytes in database
+                                <div class="space-bottom">
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('genes', 'ids')">
+                                        <span>
+                                            &#60; Use Gene ID's sample list
+                                        </span>
+                                    </button>
+                                </div>
+                                <div>
+                                    <button class="form-divider" mat-stroked-button
+                                        (click)="insertSample('genes', 'names')">
+                                        <span>
+                                            &#60; Use Gene Names sample list
+                                        </span>
                                     </button>
                                 </div>
                             </div>
@@ -101,6 +120,23 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="analyteMatches && analyteMatches.length">
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            The analytes table contains the genes and/or metabolites in the RaMP database that matched your input list. If more than one analyte matched a single entry, the <i># Analytes Found</i> column will have a value that's > 1 and you will have to click on the row to confirm that the right analyte is selected for the pathway analysis.
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                             <div class="pathways-table-top-options">
                                 <form #anlyteForm="ngForm">
                                     <button mat-flat-button color="accent" (click)="mapAnalytesToPathways()"
@@ -209,6 +245,43 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="pathways && pathways.length">
+                            <div class="accordion-container">
+                                <mat-accordion>
+                                    <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                Details
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!detailsPanelOpen ? 'Click to see table details' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div>
+                                            The pathways table shows the mapping from analytes to pathways.
+                                        </div>
+                                    </mat-expansion-panel>
+                                    <mat-expansion-panel (opened)="rFunctionPanelOpen = true" (closed)="rFunctionPanelOpen = false">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>
+                                                R Package Function
+                                            </mat-panel-title>
+                                            <mat-panel-description>
+                                                {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
+                                            </mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        <div class="code-containder">
+                                            <div>pathways_df &#60;- RaMP::getPathwayFromAnalyte(</div>
+                                                <div class="indent">analytes = c({{analytesParameters.join(', ')}}),</div>
+                                                <div class="indent">conpass = &#123;conpass&#125;,</div>
+                                                <div class="indent">host = &#123;host&#125;,</div>
+                                                <div class="indent">dbname = &#123;dbname&#125;,</div>
+                                                <div class="indent">username = &#123;username&#125;,</div>
+                                                <div class="indent">NameOrIds = 'ids' or 'names'</div>
+                                            <div>)</div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>
+                            </div>
                             <div class="pathways-table-top-options">
                                 <div class="fill-middle"></div>
                                 <mat-paginator [length]="pathways && pathways.length || 0" [pageSize]="pageSize"

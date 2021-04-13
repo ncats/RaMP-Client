@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -38,6 +37,7 @@ import { OntologiesComponent } from './ontologies/ontologies.component';
 import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
 import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
 import { AnalytesFromPathwayComponent } from './analytes-from-pathway/analytes-from-pathway.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -79,7 +79,8 @@ import { AnalytesFromPathwayComponent } from './analytes-from-pathway/analytes-f
     UpsetModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatExpansionModule
   ],
   providers: [
     ConfigService,

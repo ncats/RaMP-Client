@@ -30,6 +30,9 @@ export class AnalytesFromPathwayComponent implements OnInit {
   pathwaysInput: string;
   pathwayCommonNames: Array<string>;
 
+  // for showing R function
+  pathwaysParameters: Array<string>;
+
   // data for tables
   pathwayMatches: Array<PathwayMatch>;
   pathways: Array<Pathway>;
@@ -53,6 +56,8 @@ export class AnalytesFromPathwayComponent implements OnInit {
   errorMessage: string;
   apiBaseUrl: string;
   expandedElement: PathwayMatch | null;
+  detailsPanelOpen = false;
+  rFunctionPanelOpen = false;
 
   constructor(
     private http: HttpClient,
@@ -191,12 +196,12 @@ export class AnalytesFromPathwayComponent implements OnInit {
     this.loadingService.setLoadingState(true);
     const url = `${this.apiBaseUrl}analytes`;
     // const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
-    const pathways = [];
+    this.pathwaysParameters = [];
     this.pathwayMatches.forEach(item => {
       if (item.pathways && item.pathways.length > 0) {
         item.pathways.forEach(pathway => {
           if (pathway.isSelected) {
-            pathways.push(pathway.pathwayName);
+            this.pathwaysParameters.push(pathway.pathwayName);
           }
         });
       }
@@ -204,7 +209,7 @@ export class AnalytesFromPathwayComponent implements OnInit {
 
     const options = {
       params: {
-        pathway: pathways,
+        pathway: this.pathwaysParameters,
       }
     };
     this.http.get<any>(url, options)
@@ -273,6 +278,8 @@ export class AnalytesFromPathwayComponent implements OnInit {
 
   selectedTabChange(matTabChangeEvent: MatTabChangeEvent): void {
     this.errorMessage = '';
+    this.detailsPanelOpen = false;
+    this.rFunctionPanelOpen = false;
     switch (matTabChangeEvent.index) {
       case 1: {
         const sort: Sort = {
