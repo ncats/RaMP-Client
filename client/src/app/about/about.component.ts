@@ -40,7 +40,19 @@ export class AboutComponent implements OnInit {
     const compoundsSoloSets: Array<UpsetIntersection> | any = [];
     const compoundsAllData: Array<UpsetIntersection> = [];
 
-    this.http.get<any>(url).subscribe(response => {
+    this.http.get<any>(url).pipe(
+      map((response) => {
+        Object.keys(response).forEach(key => {
+          response[key].map(intercept => {
+            if (typeof intercept.sets === 'string') {
+              intercept.sets = [intercept.sets];
+            }
+            return intercept;
+          });
+        });
+        return response;
+      })
+    ).subscribe(response => {
       const nameStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
       let compoundNameStrIndex = 0;
