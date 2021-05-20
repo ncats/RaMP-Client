@@ -25,7 +25,7 @@ get_count_query <- function(
   data_source,
   analyte_type
 ) {
-    data_source_string <- sapply(data_source,shQuote)
+    data_source_string <- sapply(data_source, shQuote)
     data_source_string <- paste(data_source_string, collapse=",")
 
     conditions <- ""
@@ -44,7 +44,7 @@ get_count_query <- function(
 
     query <- paste0(
         "select ",
-        "'", data_source_string, "' as sources, ",
+        "'sources' as sources, ",
         "count(a.rampId) as count ",
         "from analyte as a ",
         "where a.type = '", analyte_type, "' ",
@@ -62,7 +62,7 @@ get_count_query <- function(
         ") ",
         conditions
     )
-    
+
     return(query)
 }
 
