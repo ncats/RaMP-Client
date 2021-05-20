@@ -1,6 +1,7 @@
 library(plumber)
 library(sqldf)
 library(config)
+library(R.cache)
 
 host <- "***REMOVED***"
 dbname <- "ramp"
@@ -20,136 +21,250 @@ cors <- function(req, res) {
   }
 }
 
+get_count_query <- function(
+  data_source,
+  analyte_type
+) {
+    data_source_string <- sapply(data_source,shQuote)
+    data_source_string <- paste(data_source_string, collapse=",")
+
+    conditions <- ""
+
+    for (d_source in data_source) {
+        base_condition <- paste0(
+            "and EXISTS (",
+            "select s.rampId ",
+            "from source as s ",
+            "where a.rampId = s.rampId ",
+            "and s.dataSource like '%", d_source, "') "
+        )
+
+        conditions <- paste0(conditions, base_condition)
+    }
+
+    query <- paste0(
+        "select ",
+        "'", data_source_string, "' as sources, ",
+        "count(a.rampId) as count ",
+        "from analyte as a ",
+        "where a.type = '", analyte_type, "' ",
+        "and ", length(data_source), " = (",
+            "select count(distinct dataSource) ",
+            "from (",
+                "select ",
+                    "s.rampId, ",
+                    "case when s.dataSource like '%kegg' then 'kegg' ",
+                    "else s.dataSource ",
+                    "end as dataSource ",
+                "from source as s ",
+            ") dsc ",
+            "where a.rampId = dsc.rampId ",
+        ") ",
+        conditions
+    )
+    return(query)
+}
+
+get_data_source_intercepts <- function() {
+  host <- "***REMOVED***"
+  dbname <- "ramp2"
+  username <- "ramp"
+  conpass <- "***REMOVED***"
+  con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                        user = username,
+                        dbname = dbname,
+                        password = conpass,
+                        host = host)
+
+  tryCatch({
+    analyte_types <- c("compound", "gene")
+    data_sources <- c("reactome", "hmdb", "wiki", "kegg")
+
+
+    response <- list()
+
+    for (analyte_type in analyte_types) {
+
+      intersects <- list()
+
+      data_sources_range <- 1:length(data_sources)
+    
+      index = 1
+      for (range_item in data_sources_range) {
+        combination <- combn(data_sources, range_item)
+        for(i in 1:ncol(combination)) {
+          data_source = combination[ , i]
+          query = get_count_query(data_source, analyte_type)
+          print(query)
+          query_result <- DBI::dbGetQuery(con,query)
+          print(query_result)
+          count <- 0
+          if (nrow(query_result) > 0) {
+              count = query_result$count
+          }
+          intersects[[index]] <- list(sets = c(toupper(data_source)), size=count)
+          index = index + 1
+        }
+      }
+      key <- paste0(analyte_type, "s")
+      response[key] <- list(intersects)
+    }
+    return(response)
+  },
+  error = function(error){
+    print("error")
+    print(error)
+    return("")
+  },
+  finally = {
+    DBI::dbDisconnect(con)
+  })
+}
+
 #* Return analyte source intersects
 #* @serializer unboxedJSON
 #* @get /api/analyte_intersects
 function() {
-    intersects <- list(
-        compounds=list(
-            list(
-                sets=list("KEGG"),
-                size=0
-            ),
-            list(
-                sets=list("REACTOME"),
-                size=246
-            ),
-            list(
-                sets=list("WP"),
-                size=814
-            ),
-            list(
-                sets=list("HMDB"),
-                size=110847
-            ),
-            list(
-                sets=list("KEGG", "REACTOME"),
-                size=0
-            ),
-            list(
-                sets=list("KEGG", "WP"),
-                size=0
-            ),
-            list(
-                sets=list("KEGG", "HMDB"),
-                size=163
-            ),
-            list(
-                sets=list("REACTOME", "WP"),
-                size=811
-            ),
-            list(
-                sets=list("REACTOME", "HMDB"),
-                size=76
-            ),
-            list(
-                sets=list("WP", "HMDB"),
-                size=417
-            ),
-            list(
-                sets=list("KEGG", "REACTOME", "WP"),
-                size=0
-            ),
-            list(
-                sets=list("REACTOME", "WP", "HMDB"),
-                size=422
-            ),
-            list(
-                sets=list("KEGG", "REACTOME", "HMDB"),
-                size=2
-            ),
-            list(
-                sets=list("KEGG", "WP", "HMDB"),
-                size=169
-            ),
-            list(
-                sets=list("KEGG", "REACTOME", "WP", "HMDB"),
-                size=551
-            )
-        ),
-        genes=list(
-            list(
-                sets=list("KEGG"),
-                size=0
-            ),
-            list(
-                sets=list("REACTOME"),
-                size=1030
-            ),
-            list(
-                sets=list("WP"),
-                size=1288
-            ),
-            list(
-                sets=list("HMDB"),
-                size=892
-            ),
-            list(
-                sets=list("KEGG", "REACTOME"),
-                size=0
-            ),
-            list(
-                sets=list("KEGG", "WP"),
-                size=0
-            ),
-            list(
-                sets=list("KEGG", "HMDB"),
-                size=68
-            ),
-            list(
-                sets=list("REACTOME", "WP"),
-                size=6113
-            ),
-            list(
-                sets=list("REACTOME", "HMDB"),
-                size=48
-            ),
-            list(
-                sets=list("WP", "HMDB"),
-                size=278
-            ),
-            list(
-                sets=list("KEGG", "REACTOME", "WP"),
-                size=0
-            ),
-            list(
-                sets=list("REACTOME", "WP", "HMDB"),
-                size=2598
-            ),
-            list(
-                sets=list("KEGG", "REACTOME", "HMDB"),
-                size=15
-            ),
-            list(
-                sets=list("KEGG", "WP", "HMDB"),
-                size=48
-            ),
-            list(
-                sets=list("KEGG", "REACTOME", "WP", "HMDB"),
-                size=1549
-            )
-        )
+    key <- list(2.0, 3.0)
+    cached_intercepts <- loadCache(key)
+    print(cached_intercepts)
+
+    if (is.null(cached_intercepts)) {
+        response <- get_data_source_intercepts()
+        saveCache(response, key=key)
+    } else (
+        response <- cached_intercepts
     )
+
+    return(response)
+    
+    
+    # intersects <- list(
+    #     compounds=list(
+    #         list(
+    #             sets=list("KEGG"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME"),
+    #             size=246
+    #         ),
+    #         list(
+    #             sets=list("WP"),
+    #             size=814
+    #         ),
+    #         list(
+    #             sets=list("HMDB"),
+    #             size=110847
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "HMDB"),
+    #             size=163
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP"),
+    #             size=811
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "HMDB"),
+    #             size=76
+    #         ),
+    #         list(
+    #             sets=list("WP", "HMDB"),
+    #             size=417
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP", "HMDB"),
+    #             size=422
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "HMDB"),
+    #             size=2
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP", "HMDB"),
+    #             size=169
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP", "HMDB"),
+    #             size=551
+    #         )
+    #     ),
+    #     genes=list(
+    #         list(
+    #             sets=list("KEGG"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME"),
+    #             size=1030
+    #         ),
+    #         list(
+    #             sets=list("WP"),
+    #             size=1288
+    #         ),
+    #         list(
+    #             sets=list("HMDB"),
+    #             size=892
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "HMDB"),
+    #             size=68
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP"),
+    #             size=6113
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "HMDB"),
+    #             size=48
+    #         ),
+    #         list(
+    #             sets=list("WP", "HMDB"),
+    #             size=278
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP", "HMDB"),
+    #             size=2598
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "HMDB"),
+    #             size=15
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP", "HMDB"),
+    #             size=48
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP", "HMDB"),
+    #             size=1549
+    #         )
+    #     )
+    # )
 }
 
 #* Return pathways from source database
