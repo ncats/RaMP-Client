@@ -62,6 +62,7 @@ get_count_query <- function(
         ") ",
         conditions
     )
+    
     return(query)
 }
 
@@ -95,9 +96,7 @@ get_data_source_intercepts <- function() {
         for(i in 1:ncol(combination)) {
           data_source = combination[ , i]
           query = get_count_query(data_source, analyte_type)
-          print(query)
           query_result <- DBI::dbGetQuery(con,query)
-          print(query_result)
           count <- 0
           if (nrow(query_result) > 0) {
               count = query_result$count
@@ -127,7 +126,6 @@ get_data_source_intercepts <- function() {
 function() {
     key <- list(2.0, 3.0)
     cached_intercepts <- loadCache(key)
-    print(cached_intercepts)
 
     if (is.null(cached_intercepts)) {
         response <- get_data_source_intercepts()
