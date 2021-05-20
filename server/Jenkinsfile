@@ -90,6 +90,10 @@ pipeline {
                                 def docker = new org.labshare.Docker()
                                 docker.deployDockerAPI()
                             }
+                            sh '''
+                            sleep 30
+                            curl https://ramp-api-alpha.ncats.io/api/analyte_intersects
+                            '''
                         }
                     }
                 }
