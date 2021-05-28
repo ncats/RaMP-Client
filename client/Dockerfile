@@ -1,4 +1,4 @@
-FROM node:12.3.1-alpine AS build
+FROM node:12-alpine AS build
 # Set the source folder
 ARG SOURCE_FOLDER="./"
 ARG BUILD_VERSION

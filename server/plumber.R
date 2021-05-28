@@ -25,7 +25,7 @@ get_count_query <- function(
   data_source,
   analyte_type
 ) {
-    data_source_string <- sapply(data_source,shQuote)
+    data_source_string <- sapply(data_source, shQuote)
     data_source_string <- paste(data_source_string, collapse=",")
 
     conditions <- ""
@@ -62,6 +62,7 @@ get_count_query <- function(
         ") ",
         conditions
     )
+
     return(query)
 }
 
@@ -95,9 +96,7 @@ get_data_source_intercepts <- function() {
         for(i in 1:ncol(combination)) {
           data_source = combination[ , i]
           query = get_count_query(data_source, analyte_type)
-          print(query)
           query_result <- DBI::dbGetQuery(con,query)
-          print(query_result)
           count <- 0
           if (nrow(query_result) > 0) {
               count = query_result$count
@@ -127,7 +126,6 @@ get_data_source_intercepts <- function() {
 function() {
     key <- list(2.0, 3.0)
     cached_intercepts <- loadCache(key)
-    print(cached_intercepts)
 
     if (is.null(cached_intercepts)) {
         response <- get_data_source_intercepts()
@@ -385,6 +383,38 @@ function(metabolite="", type="biological") {
         return(list(numSubmittedIds=numSubmittedIds, numFoundIds=0, data=vector()))
     }
 }
+
+#* Return ontologies from list of metabolites
+#* @param contains
+#* @serializer unboxedJSON
+#* @get /api/ontology-summaries
+function(contains="") {
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                          user = username,
+                          dbname = dbname,
+                          password = conpass,
+                          host = host)
+
+    query <- paste0(
+        "select commonName as Ontology, biofluidORcellular ",
+        "from ontology ",
+        "where commonName LIKE '%", contains, "%' ",
+        "order by commonName ASC"
+    )
+
+    ontologies <- DBI::dbGetQuery(con,query)
+
+    DBI::dbDisconnect(con)
+
+    return(ontologies)
+}
+
 
 #* Return metabolites from ontology
 #* @param analyte
