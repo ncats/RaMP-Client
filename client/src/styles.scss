@@ -9,15 +9,15 @@
 @include mat-core();
 
 $ncats-teal: (
-    50: #00667a,
-    100: #00667a,
-    200: #00667a,
-    300: #00667a,
-    400: #00667a,
-    500: #00667a,
-    600: #00667a,
-    700: #00667a,
-    800: #00667a,
+    50: #e6fbff,
+    100: #ccf6ff,
+    200: #b3f2ff,
+    300: #99eeff,
+    400: #80eaff,
+    500: #66e6ff,
+    600: #00bfe6,
+    700: #0095b3,
+    800: #006a80,
     900: #00667a,
     A100: #00667a,
     A200: #00667a,
@@ -77,7 +77,7 @@ $ncats-purple: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$ramp-client-primary: mat-palette($ncats-teal, 50);
+$ramp-client-primary: mat-palette($ncats-teal, 900, 50);
 $ramp-client-accent: mat-palette($ncats-purple, 400, 200, 100);
 
 // The warn palette is optional (defaults to red).

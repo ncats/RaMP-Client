@@ -6,3 +6,6 @@
 !.vscode/extensions.json
 .history/*
 .Rproj.user
+/sql-queries
+sql-queries/
+

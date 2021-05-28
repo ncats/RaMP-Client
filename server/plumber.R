@@ -44,7 +44,7 @@ get_count_query <- function(
 
     query <- paste0(
         "select ",
-        "'sources' as sources, ",
+        "'", data_source_string, "' as sources, ",
         "count(a.rampId) as count ",
         "from analyte as a ",
         "where a.type = '", analyte_type, "' ",
@@ -383,6 +383,38 @@ function(metabolite="", type="biological") {
         return(list(numSubmittedIds=numSubmittedIds, numFoundIds=0, data=vector()))
     }
 }
+
+#* Return ontologies from list of metabolites
+#* @param contains
+#* @serializer unboxedJSON
+#* @get /api/ontology-summaries
+function(contains="") {
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                          user = username,
+                          dbname = dbname,
+                          password = conpass,
+                          host = host)
+
+    query <- paste0(
+        "select commonName as Ontology, biofluidORcellular ",
+        "from ontology ",
+        "where commonName LIKE '%", contains, "%' ",
+        "order by commonName ASC"
+    )
+
+    ontologies <- DBI::dbGetQuery(con,query)
+
+    DBI::dbDisconnect(con)
+
+    return(ontologies)
+}
+
 
 #* Return metabolites from ontology
 #* @param analyte
