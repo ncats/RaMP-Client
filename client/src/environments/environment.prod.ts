@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  baseHref: '/client/',
+  baseHref: '/',
   apiBaseUrl: '/api/',
   configFileLocation: null,
   googleAnalyticsId: null
