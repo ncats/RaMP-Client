@@ -3,11 +3,6 @@ library(sqldf)
 library(config)
 library(R.cache)
 
-host <- "***REMOVED***"
-dbname <- "ramp"
-username <- "***REMOVED***"
-conpass <- "***REMOVED***"
-
 #* @filter cors
 cors <- function(req, res) {
     res$setHeader("Access-Control-Allow-Origin", "*")
@@ -41,7 +36,7 @@ get_count_query <- function(
 
         conditions <- paste0(conditions, base_condition)
     }
-
+    print(data_source_string)
     query <- paste0(
         "select ",
         "'", data_source_string, "' as sources, ",
@@ -62,7 +57,7 @@ get_count_query <- function(
         ") ",
         conditions
     )
-
+    print(query)
     return(query)
 }
 
