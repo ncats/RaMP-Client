@@ -7,7 +7,7 @@ import { FisherTestResult, ClusteringCoordinates } from './analysis-result.model
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { AnalyteColumns, AnalyteMatchesColumns, ClusteringColumns, fisherTestColumns, pathwayColumns } from './analysis-colums.constant';
+import { AnalyteColumns, AnalyteMatchesColumns, ClusteringColumns, fisherTestColumns, pathwayColumns, idTypeColumns } from './analysis-colums.constant';
 import { Decimal } from 'decimal.js';
 import { _getOptionScrollPosition } from '@angular/material/core';
 import { Pathway } from './pathway.model';
@@ -41,6 +41,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   analytes: Array<any>;
 
   // data for tables
+  idTypes: Array<{ analyteType: string; idTypes: string }>;
   analyteMatches: Array<AnalyteMatch>;
   pathways: Array<Pathway>;
   fisherTestResults: Array<FisherTestResult>;
@@ -48,6 +49,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   clusteringResults: Array<FisherTestResult>;
 
   // tables columns
+  idTypeDisplayedColumns: Array<string>;
+  idTypeColumns = idTypeColumns;
   fisherTestDisplayedColumns: Array<string>;
   fisherTestColumns = fisherTestColumns;
   pathwayDisplayedColumns: Array<string>;
@@ -111,7 +114,16 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.clusteringDisplayedColumns = this.clusteringColumns.map(item => item.value);
     this.analyteMatchesDisplayedColumns = this.analyteMatchesColumns.map(item => item.value);
     this.analyteDisplayedColumns = this.analyteColumns.map(item => item.value);
+    this.idTypeDisplayedColumns = this.idTypeColumns.map(item => item.value);
     this.analyteDisplayedColumns.unshift('isSelected');
+    this.loadIdTypes();
+  }
+
+  loadIdTypes(): void {
+    const url = `${this.apiBaseUrl}id-types`;
+    this.http.get<Array<{ analyteType: string; idTypes: string }>>(url).subscribe(response => {
+      this.idTypes = response;
+    });
   }
 
   findAnalytes(): void {

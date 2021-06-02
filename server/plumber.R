@@ -135,8 +135,7 @@ function() {
     )
 
     return(response)
-    
-    
+
     # intersects <- list(
     #     compounds=list(
     #         list(
@@ -263,6 +262,38 @@ function() {
     #         )
     #     )
     # )
+}
+
+
+#* Return analyte ID types
+#* @serializer unboxedJSON
+#* @get /api/id-types
+function() {
+    config <- config::get()
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                          user = username,
+                          dbname = dbname,
+                          password = conpass,
+                          host = host)
+
+    query <- paste0(
+        "select ",
+            "CASE ",
+                "when geneOrCompound = 'compound' then 'Metabolites' ",
+                "else 'Genes/Proteins' ",
+            "END as analyteType, ",
+            "GROUP_CONCAT(DISTINCT IDtype SEPARATOR ', ') as idTypes ",
+        "from source ",
+        "where geneOrCompound = 'compound' or geneOrCompound = 'gene' ",
+        "GROUP BY AnalyteType "
+    )
+    idtypes <- DBI::dbGetQuery(con,query)
+    DBI::dbDisconnect(con)
+    return(idtypes)
 }
 
 #* Return pathways from source database
