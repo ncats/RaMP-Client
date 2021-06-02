@@ -39,7 +39,7 @@ get_count_query <- function(
     print(data_source_string)
     query <- paste0(
         "select ",
-        "'", data_source_string, "' as sources, ",
+        data_source_string, " as sources, ",
         "count(a.rampId) as count ",
         "from analyte as a ",
         "where a.type = '", analyte_type, "' ",
