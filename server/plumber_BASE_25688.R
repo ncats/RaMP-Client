@@ -3,14 +3,20 @@ library(sqldf)
 library(config)
 library(R.cache)
 
+<<<<<<<<< Temporary merge branch 1
+host <- "ramp-db.ncats.io"
+dbname <- "ramp"
+username <- "ramp_query_user"
+conpass <- "ramp_query_user"
+
+=========
+>>>>>>>>> Temporary merge branch 2
 #* @filter cors
 cors <- function(req, res) {
     res$setHeader("Access-Control-Allow-Origin", "*")
     if (req$REQUEST_METHOD == "OPTIONS") {
-    res$setHeader("Access-Control-Allow-Methods", "*")
-    res$setHeader(
-        "Access-Control-Allow-Headers", req$HTTP_ACCESS_CONTROL_REQUEST_HEADERS
-    )
+    res$setHeader("Access-Control-Allow-Methods","*")
+    res$setHeader("Access-Control-Allow-Headers", req$HTTP_ACCESS_CONTROL_REQUEST_HEADERS)
     res$status <- 200
     return(list())
   } else {
@@ -22,8 +28,12 @@ get_count_query <- function(
   data_source,
   analyte_type
 ) {
+<<<<<<<<< Temporary merge branch 1
+    data_source_string <- sapply(data_source,shQuote)
+=========
     data_source_string <- sapply(data_source, shQuote)
-    data_source_string <- paste(data_source_string, collapse = ",")
+>>>>>>>>> Temporary merge branch 2
+    data_source_string <- paste(data_source_string, collapse=",")
 
     conditions <- ""
 
@@ -38,9 +48,16 @@ get_count_query <- function(
 
         conditions <- paste0(conditions, base_condition)
     }
+<<<<<<<<< Temporary merge branch 1
+
+    query <- paste0(
+        "select ",
+        "'", data_source_string, "' as sources, ",
+=========
     query <- paste0(
         "select ",
         data_source_string, " as sources, ",
+>>>>>>>>> Temporary merge branch 2
         "count(a.rampId) as count ",
         "from analyte as a ",
         "where a.type = '", analyte_type, "' ",
@@ -62,12 +79,19 @@ get_count_query <- function(
 }
 
 get_data_source_intercepts <- function() {
-    config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+  host <- "ramp-db.ncats.io"
+  dbname <- "ramp2"
+  username <- "ramp"
+  conpass <- "ramptest"
+  con <- DBI::dbConnect(RMariaDB::MariaDB(),
+=========
     host <- config$db_host_v2
     dbname <- config$db_dbname_v2
     username <- config$db_username_v2
     conpass <- config$db_password_v2
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
+>>>>>>>>> Temporary merge branch 2
                         user = username,
                         dbname = dbname,
                         password = conpass,
@@ -85,22 +109,26 @@ get_data_source_intercepts <- function() {
       intersects <- list()
 
       data_sources_range <- 1:length(data_sources)
-
-      index <- 1
+    
+      index = 1
       for (range_item in data_sources_range) {
         combination <- combn(data_sources, range_item)
-        for (i in 1:ncol(combination)) {
-          data_source <- combination[, i]
-          query <- get_count_query(data_source, analyte_type)
-          query_result <- DBI::dbGetQuery(con, query)
+        for(i in 1:ncol(combination)) {
+          data_source = combination[ , i]
+          query = get_count_query(data_source, analyte_type)
+<<<<<<<<< Temporary merge branch 1
+          print(query)
+          query_result <- DBI::dbGetQuery(con,query)
+          print(query_result)
+=========
+          query_result <- DBI::dbGetQuery(con,query)
+>>>>>>>>> Temporary merge branch 2
           count <- 0
           if (nrow(query_result) > 0) {
-              count <- query_result$count
+              count = query_result$count
           }
-          intersects[[index]] <- list(
-              sets = c(toupper(data_source)), size = count
-            )
-          index <- index + 1
+          intersects[[index]] <- list(sets = c(toupper(data_source)), size=count)
+          index = index + 1
         }
       }
       key <- paste0(analyte_type, "s")
@@ -108,7 +136,7 @@ get_data_source_intercepts <- function() {
     }
     return(response)
   },
-  error = function(error) {
+  error = function(error){
     print("error")
     print(error)
     return("")
@@ -124,15 +152,149 @@ get_data_source_intercepts <- function() {
 function() {
     key <- list(2.0, 3.0)
     cached_intercepts <- loadCache(key)
+<<<<<<<<< Temporary merge branch 1
+    print(cached_intercepts)
+=========
+>>>>>>>>> Temporary merge branch 2
 
     if (is.null(cached_intercepts)) {
         response <- get_data_source_intercepts()
-        saveCache(response, key = key)
+        saveCache(response, key=key)
     } else (
         response <- cached_intercepts
     )
 
     return(response)
+<<<<<<<<< Temporary merge branch 1
+    
+    
+    # intersects <- list(
+    #     compounds=list(
+    #         list(
+    #             sets=list("KEGG"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME"),
+    #             size=246
+    #         ),
+    #         list(
+    #             sets=list("WP"),
+    #             size=814
+    #         ),
+    #         list(
+    #             sets=list("HMDB"),
+    #             size=110847
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "HMDB"),
+    #             size=163
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP"),
+    #             size=811
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "HMDB"),
+    #             size=76
+    #         ),
+    #         list(
+    #             sets=list("WP", "HMDB"),
+    #             size=417
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP", "HMDB"),
+    #             size=422
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "HMDB"),
+    #             size=2
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP", "HMDB"),
+    #             size=169
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP", "HMDB"),
+    #             size=551
+    #         )
+    #     ),
+    #     genes=list(
+    #         list(
+    #             sets=list("KEGG"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME"),
+    #             size=1030
+    #         ),
+    #         list(
+    #             sets=list("WP"),
+    #             size=1288
+    #         ),
+    #         list(
+    #             sets=list("HMDB"),
+    #             size=892
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "HMDB"),
+    #             size=68
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP"),
+    #             size=6113
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "HMDB"),
+    #             size=48
+    #         ),
+    #         list(
+    #             sets=list("WP", "HMDB"),
+    #             size=278
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP"),
+    #             size=0
+    #         ),
+    #         list(
+    #             sets=list("REACTOME", "WP", "HMDB"),
+    #             size=2598
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "HMDB"),
+    #             size=15
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "WP", "HMDB"),
+    #             size=48
+    #         ),
+    #         list(
+    #             sets=list("KEGG", "REACTOME", "WP", "HMDB"),
+    #             size=1549
+    #         )
+    #     )
+    # )
+=========
 }
 
 
@@ -162,9 +324,10 @@ function() {
         "where geneOrCompound = 'compound' or geneOrCompound = 'gene' ",
         "GROUP BY AnalyteType "
     )
-    idtypes <- DBI::dbGetQuery(con, query)
+    idtypes <- DBI::dbGetQuery(con,query)
     DBI::dbDisconnect(con)
     return(idtypes)
+>>>>>>>>> Temporary merge branch 2
 }
 
 #* Return pathways from source database
@@ -173,30 +336,32 @@ function() {
 #* @get /api/source/pathways
 function(identifier) {
     identifiers <- c(identifier)
-    identifiers <- sapply(identifiers, shQuote)
-    identifiers <- paste(identifiers, collapse = ",")
+    identifiers <- sapply(identifiers,shQuote)
+    identifiers <- paste(identifiers, collapse=",")
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
                           password = conpass,
                           host = host)
     query <- paste0(
-        "select ",
-            "p.pathwayRampId, ",
-            "p.sourceId as pathwaysourceId, ",
-            "p.type as pathwaysource, ",
-            "p.pathwayCategory, ",
-            "p.pathwayName ",
+        "select p.pathwayRampId, p.sourceId as pathwaysourceId, p.type as pathwaysource, p.pathwayCategory, p.pathwayName ",
         "from pathway as p ",
         "where p.sourceId in (", identifiers, ") ",
         "or p.pathwayName in (", identifiers, ") "
     )
-    pathways <- DBI::dbGetQuery(con, query)
+    pathways <- DBI::dbGetQuery(con,query)
     DBI::dbDisconnect(con)
     return(pathways)
 }
@@ -207,30 +372,29 @@ function(identifier) {
 #* @get /api/source/analytes
 function(identifier) {
     identifiers <- c(identifier)
-    identifiers <- sapply(identifiers, shQuote)
-    identifiers <- paste(identifiers, collapse = ",")
+    identifiers <- sapply(identifiers,shQuote)
+    identifiers <- paste(identifiers, collapse=",")
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
                           password = conpass,
                           host = host)
     query <- paste0(
-        "select ",
-            "s.rampId, ",
-            "s.sourceId, ",
-            "s.IDtype, ",
-            "s.geneOrCompound, ",
-            "s.commonName, ",
-            "min(ansyn.Synonym) as synonym ",
+        "select s.rampId, s.sourceId, s.IDtype, s.geneOrCompound, s.commonName, min(ansyn.Synonym) as synonym ",
         "from source as s ",
-        "left join analytesynonym as ",
-            "ansyn on s.rampId = ansyn.rampId and ",
-            "ansyn.Synonym in (", identifiers, ") ",
+        "left join analytesynonym as ansyn on s.rampId = ansyn.rampId and ansyn.Synonym in (", identifiers, ") ",
         "where s.sourceId in (", identifiers, ") ",
         "or s.commonName in (", identifiers, ") ",
         "or s.rampId in (",
@@ -240,7 +404,7 @@ function(identifier) {
         ") ",
         "group by s.sourceId, s.IDtype, s.geneOrCompound, s.commonName"
     )
-    analytes <- DBI::dbGetQuery(con, query)
+    analytes <- DBI::dbGetQuery(con,query)
     DBI::dbDisconnect(con)
     return(analytes)
 }
@@ -251,13 +415,20 @@ function(identifier) {
 #* @get /api/ontologies
 function(metabolite="", type="biological") {
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
 
     metabolites_ids <- c(metabolite)
-    num_submitted_ids <- length(metabolites_ids)
+    numSubmittedIds <- length(metabolites_ids)
     metabolites_ids <- sapply(metabolites_ids, shQuote)
     metabolites_ids <- paste(metabolites_ids, collapse = ",")
 
@@ -273,7 +444,7 @@ function(metabolite="", type="biological") {
         "where s.sourceId in (", metabolites_ids, ") "
     )
 
-    metabolites <- DBI::dbGetQuery(con, query)
+    metabolites <- DBI::dbGetQuery(con,query)
 
     DBI::dbDisconnect(con)
 
@@ -288,37 +459,19 @@ function(metabolite="", type="biological") {
         )
 
         if (type == "biological") {
-            ontologies_df <- ontologies_df[
-                ontologies_df$biofluidORcellular %in% c(
-                    "biofluid",
-                    "tissue location",
-                    "cellular location"
-                ),
-            ]
+            ontologies_df <- ontologies_df[ontologies_df$biofluidORcellular %in% c('biofluid', 'tissue location', 'cellular location') ,]
         } else {
-            ontologies_df <- ontologies_df[
-                ontologies_df$biofluidORcellular %in% c("origins"),
-            ]
+            ontologies_df <- ontologies_df[ontologies_df$biofluidORcellular %in% c('origins') ,]
         }
 
-        return(
-            list(
-                num_submitted_ids = num_submitted_ids,
-                numFoundIds = nrow(metabolites),
-                data = ontologies_df
-            )
-        )
+        return(list(numSubmittedIds=numSubmittedIds, numFoundIds=nrow(metabolites), data=ontologies_df))
     } else {
-        return(
-            list(
-                num_submitted_ids = num_submitted_ids,
-                numFoundIds = 0,
-                data = vector()
-            )
-        )
+        return(list(numSubmittedIds=numSubmittedIds, numFoundIds=0, data=vector()))
     }
 }
 
+<<<<<<<<< Temporary merge branch 1
+=========
 #* Return ontologies from list of metabolites
 #* @param contains
 #* @serializer unboxedJSON
@@ -343,7 +496,7 @@ function(contains="") {
         "order by commonName ASC"
     )
 
-    ontologies <- DBI::dbGetQuery(con, query)
+    ontologies <- DBI::dbGetQuery(con,query)
 
     DBI::dbDisconnect(con)
 
@@ -351,19 +504,27 @@ function(contains="") {
 }
 
 
+>>>>>>>>> Temporary merge branch 2
 #* Return metabolites from ontology
 #* @param analyte
 #* @serializer unboxedJSON
 #* @get /api/metabolites
 function(ontology="") {
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
 
     ontologies_names <- c(ontology)
-    num_submitted_names <- length(ontologies_names)
+    numSubmittedNames <- length(ontologies_names)
     ontologies_names <- sapply(ontologies_names, shQuote)
     ontologies_names <- paste(ontologies_names, collapse = ",")
 
@@ -379,7 +540,7 @@ function(ontology="") {
         "where o.commonName in (", ontologies_names, ") "
     )
 
-    ontologies <- DBI::dbGetQuery(con, query)
+    ontologies <- DBI::dbGetQuery(con,query)
 
     DBI::dbDisconnect(con)
 
@@ -393,21 +554,9 @@ function(ontology="") {
             username = username
         )
 
-        return(
-            list(
-                num_submitted_ids = num_submitted_names,
-                numFoundIds = nrow(ontologies),
-                data = metabolites_df
-            )
-        )
+        return(list(numSubmittedIds=numSubmittedNames, numFoundIds=nrow(ontologies), data=metabolites_df))
     } else {
-        return(
-            list(
-                num_submitted_ids = num_submitted_names,
-                numFoundIds = 0,
-                data = vector()
-            )
-        )
+        return(list(numSubmittedIds=numSubmittedNames, numFoundIds=0, data=vector()))
     }
 
     return(analytes_df)
@@ -420,23 +569,32 @@ function(pathway="") {
     pathways <- c(pathway)
     print(pathways)
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
-    analytes_df <- tryCatch({
-        analytes_df <- RaMP::getAnalyteFromPathway(
-            pathway = pathways,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
-        )
-    },
-    error = function(cond) {
-        print(cond)
-        return(data.frame(stringsAsFactors = FALSE))
-    })
+>>>>>>>>> Temporary merge branch 2
+    analytes_df <- tryCatch(
+        {
+            analytes_df <- RaMP::getAnalyteFromPathway(
+                pathway = pathways,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username
+            )
+        },
+        error=function(cond) {
+            print(cond)
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
     return(analytes_df)
 }
 
@@ -446,168 +604,189 @@ function(pathway="") {
 function(analyte="") {
     analytes <- c(analyte)
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
-    pathways_df_ids <- tryCatch({
-        pathways_df <- RaMP::getPathwayFromAnalyte(
-            analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
-            NameOrIds = "ids"
-        )
-    },
-    error = function(cond) {
-        return(data.frame(stringsAsFactors = FALSE))
-    })
-    pathways_df_names <- tryCatch({
-        pathways_df <- RaMP::getPathwayFromAnalyte(
-            analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
-            NameOrIds = "names"
-        )
-    },
-    error = function(cond) {
-        return(data.frame(stringsAsFactors = FALSE))
-    })
+>>>>>>>>> Temporary merge branch 2
+    pathways_df_ids <- tryCatch(
+        {
+            pathways_df <- RaMP::getPathwayFromAnalyte(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'ids'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
+    pathways_df_names <- tryCatch(
+        {
+            pathways_df <- RaMP::getPathwayFromAnalyte(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'names'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
     pathways_df <- rbind(pathways_df_ids, pathways_df_names)
     return(unique(pathways_df))
 }
 
-#' Return combined Fisher's test results
-#' from given list of analytes query results
+#' Return combined Fisher's test results from given list of analytes query results
 #' @parser json
 #' @post /api/combined-fisher-test
 function(req) {
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
     print(req)
     pathways_df <- as.data.frame(req$body)
     print(pathways_df)
     fishers_results_df <- RaMP::runCombinedFisherTest(
         pathwaydf = pathways_df,
-        conpass = conpass,
-        host = host,
-        dbname = dbname,
-        username = username
+        conpass=conpass,
+        host=host,
+        dbname=dbname,
+        username=username
     )
     return(fishers_results_df)
 }
 
-#' Return filtered Fisher's test results
-#' from given list of Fisher's test results
+#' Return filtered Fisher's test results from given list of Fisher's test results
 #' @param p_holmadj_cutoff
 #' @param p_fdradj_cutoff
 #' @parser json
 #' @post /api/filter-fisher-test-results
 function(req, p_holmadj_cutoff=0.05, p_fdradj_cutoff=NULL) {
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     filtered_results <- RaMP::FilterFishersResults(
-        fishers_df = fishers_results,
+        fishers_df=fishers_results,
         p_holmadj_cutoff = p_holmadj_cutoff,
         p_fdradj_cutoff = p_fdradj_cutoff
     )
     return(filtered_results)
 }
 
-#' Return filtered Fisher's test results
-#' from given list of Fisher's test results
+#' Return filtered Fisher's test results from given list of Fisher's test results
 #' @param perc_analyte_overlap
 #' @param perc_pathway_overlap
 #' @param min_pathway_tocluster
 #' @parser json
 #' @post /api/cluster-fisher-test-results
-function(
-    req,
-    analyte_source_id,
-    perc_analyte_overlap = 0.2,
-    perc_pathway_overlap = 0.2,
-    min_pathway_tocluster=2
-) {
+function(req, analyte_source_id, perc_analyte_overlap=0.2, perc_pathway_overlap=0.2, min_pathway_tocluster=2) {
     analytes <- c(analyte_source_id)
     if (typeof(min_pathway_tocluster) == "character") {
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
         fishers_results,
-        perc_analyte_overlap = perc_analyte_overlap,
-        min_pathway_tocluster = min_pathway_tocluster,
-        perc_pathway_overlap = perc_pathway_overlap
+        perc_analyte_overlap=perc_analyte_overlap,
+        min_pathway_tocluster=min_pathway_tocluster,
+        perc_pathway_overlap=perc_pathway_overlap
     )
 
     return(clustering_results)
 }
 
-#' Return filtered Fisher's test results
-#' from given list of Fisher's test results
+#' Return filtered Fisher's test results from given list of Fisher's test results
 #' @param analyte_source_id
 #' @param perc_analyte_overlap
 #' @param perc_pathway_overlap
 #' @param min_pathway_tocluster
 #' @parser json
 #' @post /api/cluster-fisher-test-results-extended
-function(
-    req,
-    analyte_source_id,
-    perc_analyte_overlap = 0.2,
-    perc_pathway_overlap = 0.2,
-    min_pathway_tocluster = 2
-) {
+function(req, analyte_source_id, perc_analyte_overlap=0.2, perc_pathway_overlap=0.2, min_pathway_tocluster=2) {
     analytes <- c(analyte_source_id)
     if (typeof(min_pathway_tocluster) == "character") {
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
+>>>>>>>>> Temporary merge branch 2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
         fishers_results,
-        perc_analyte_overlap = perc_analyte_overlap,
-        min_pathway_tocluster = min_pathway_tocluster,
-        perc_pathway_overlap = perc_pathway_overlap
+        perc_analyte_overlap=perc_analyte_overlap,
+        min_pathway_tocluster=min_pathway_tocluster,
+        perc_pathway_overlap=perc_pathway_overlap
     )
 
     fishresults <- clustering_results$fishresults
 
     ids_no_cluster <- fishresults[
-        fishresults$cluster_assignment != "Did not cluster", "pathwayRampId"
+        fishresults$cluster_assignment != 'Did not cluster', 'pathwayRampId'
     ]
-    pathway_matrix <- clustering_results$pathway_matrix[
-        ids_no_cluster, ids_no_cluster
-    ]
+    pathway_matrix <- clustering_results$pathway_matrix[ids_no_cluster,ids_no_cluster]
 
     cluster_coordinates <- c()
 
     if (!is.null(pathway_matrix)) {
         distance_matrix <- dist(1 - pathway_matrix)
 
-        fit <- cmdscale(distance_matrix, eig = TRUE, k = 2)
+        fit <- cmdscale(distance_matrix, eig=TRUE, k=2)
 
         cluster_coordinates <- data.frame(fit$points)
         cluster_coordinates <- cbind(
@@ -633,8 +812,8 @@ function(
         )
     }
 
-    analyte_ids <- sapply(analytes, shQuote)
-    analyte_ids <- paste(analyte_ids, collapse = ",")
+    analyte_ids <- sapply(analytes,shQuote)
+    analyte_ids <- paste(analyte_ids,collapse = ",")
 
     query <- paste0(
         "select s.sourceId, commonName, GROUP_CONCAT(p.sourceId) as pathways ",
@@ -646,13 +825,8 @@ function(
         "group by s.sourceId, s.commonName"
     )
 
-    con <- RaMP::connectToRaMP(
-        dbname = dbname,
-        username = username,
-        conpass = conpass,
-        host = host
-    )
-    cids <- DBI::dbGetQuery(con, query)
+    con <- RaMP::connectToRaMP(dbname=dbname,username=username,conpass=conpass,host = host)
+    cids <- DBI::dbGetQuery(con,query)
     DBI::dbDisconnect(con)
 
     response <- list(
@@ -670,35 +844,45 @@ function(
 function(analyte="") {
     analytes <- c(analyte)
     config <- config::get()
+<<<<<<<<< Temporary merge branch 1
+    host <- config$db_host
+    dbname <- config$db_dbname
+    username <- config$db_username
+    conpass <- config$db_password
+=========
     host <- config$db_host_v1
     dbname <- config$db_dbname_v1
     username <- config$db_username_v1
     conpass <- config$db_password_v1
-    analytes_df_ids <- tryCatch({
-        analytes_df <- RaMP::rampFastCata(
-            analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
-            NameOrIds = "ids"
-        )
-    },
-    error = function(cond) {
-        return(data.frame(stringsAsFactors = FALSE))
-    })
-    analytes_df_names <- tryCatch({
-        analytes_df <- RaMP::rampFastCata(
-            analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
-            NameOrIds = "names"
-        )
-    },
-        error = function(cond) {
-            return(data.frame(stringsAsFactors = FALSE))
+>>>>>>>>> Temporary merge branch 2
+    analytes_df_ids <- tryCatch(
+        {
+            analytes_df <- RaMP::rampFastCata(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'ids'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
+        }
+    )
+    analytes_df_names <- tryCatch(
+        {
+            analytes_df <- RaMP::rampFastCata(
+                analytes = analytes,
+                conpass=conpass,
+                host=host,
+                dbname=dbname,
+                username=username,
+                NameOrIds = 'names'
+            )
+        },
+        error=function(cond) {
+            return(data.frame(stringsAsFactors=FALSE))
         }
     )
     analytes_df <- rbind(analytes_df_ids, analytes_df_names)
