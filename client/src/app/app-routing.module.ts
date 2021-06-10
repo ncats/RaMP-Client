@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, ExtraOptions } from '@angular/router';
 import { AboutComponent } from './about/about.component';
 import { AnalytesFromPathwayComponent } from './analytes-from-pathway/analytes-from-pathway.component';
 import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
@@ -7,6 +7,11 @@ import { OntologiesComponent } from './ontologies/ontologies.component';
 import { PathwayEnrichmentAnalysisComponent } from './pathway-enrichment-analysis/pathway-enrichment-analysis.component';
 import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
 
+const routerOptions: ExtraOptions = {
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled',
+  scrollOffset: [0, 64],
+};
 
 const routes: Routes = [
   {
@@ -76,7 +81,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, routerOptions)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

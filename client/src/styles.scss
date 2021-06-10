@@ -105,6 +105,10 @@ div {
 
 a {
     color: #642f6c;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 router-outlet + * {
