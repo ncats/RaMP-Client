@@ -1,3 +1,8 @@
+
+section {
+    padding: 15px 0;
+}
+
 .paragraph {
     margin-bottom: 15px;
 }
@@ -5,5 +10,21 @@
 .flex-row {
     & > div:not(:first-child) {
         margin-left: 15px;
+    }
+}
+
+.upset-plots-container {
+    display: flex;
+    max-width: 100%;
+    flex-wrap: wrap;
+}
+
+.functionality-flowchart {
+    width: 400px;
+    max-width: 100%;
+
+    img {
+        width: 100%;
+        height: auto;
     }
 }

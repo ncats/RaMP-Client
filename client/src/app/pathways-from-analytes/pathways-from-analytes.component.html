@@ -7,7 +7,7 @@
             <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="selectedTabChange($event)">
                 <mat-tab textLabel="input">
                     <ng-template mat-tab-label>
-                        Input
+                        Input Analytes
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="error-message-container" *ngIf="errorMessage">
@@ -101,7 +101,7 @@
                 </mat-tab>
                 <mat-tab *ngIf="analyteMatches" textLabel="analyteMatches">
                     <ng-template mat-tab-label>
-                        Analytes
+                        Analytes Mapped in RaMP
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="results-message-container" *ngIf="analyteMatches.length == 0">
