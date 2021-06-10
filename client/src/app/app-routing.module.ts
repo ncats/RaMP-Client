@@ -7,7 +7,6 @@ import { OntologiesComponent } from './ontologies/ontologies.component';
 import { PathwayEnrichmentAnalysisComponent } from './pathway-enrichment-analysis/pathway-enrichment-analysis.component';
 import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
 
-
 const routes: Routes = [
   {
     path: 'about',
