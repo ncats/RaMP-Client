@@ -3,11 +3,6 @@ library(sqldf)
 library(config)
 library(R.cache)
 
-host <- "***REMOVED***"
-dbname <- "ramp"
-username <- "***REMOVED***"
-conpass <- "***REMOVED***"
-
 #* @filter cors
 cors <- function(req, res) {
     res$setHeader("Access-Control-Allow-Origin", "*")
@@ -41,10 +36,9 @@ get_count_query <- function(
 
         conditions <- paste0(conditions, base_condition)
     }
-
     query <- paste0(
         "select ",
-        "'", data_source_string, "' as sources, ",
+        data_source_string, " as sources, ",
         "count(a.rampId) as count ",
         "from analyte as a ",
         "where a.type = '", analyte_type, "' ",
@@ -62,16 +56,15 @@ get_count_query <- function(
         ") ",
         conditions
     )
-
     return(query)
 }
 
 get_data_source_intercepts <- function() {
-  host <- "***REMOVED***"
-  dbname <- "ramp2"
-  username <- "ramp"
-  conpass <- "***REMOVED***"
-  con <- DBI::dbConnect(RMariaDB::MariaDB(),
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
                         user = username,
                         dbname = dbname,
                         password = conpass,
@@ -135,133 +128,6 @@ function() {
     )
 
     return(response)
-
-    # intersects <- list(
-    #     compounds=list(
-    #         list(
-    #             sets=list("KEGG"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("REACTOME"),
-    #             size=246
-    #         ),
-    #         list(
-    #             sets=list("WP"),
-    #             size=814
-    #         ),
-    #         list(
-    #             sets=list("HMDB"),
-    #             size=110847
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "WP"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "HMDB"),
-    #             size=163
-    #         ),
-    #         list(
-    #             sets=list("REACTOME", "WP"),
-    #             size=811
-    #         ),
-    #         list(
-    #             sets=list("REACTOME", "HMDB"),
-    #             size=76
-    #         ),
-    #         list(
-    #             sets=list("WP", "HMDB"),
-    #             size=417
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME", "WP"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("REACTOME", "WP", "HMDB"),
-    #             size=422
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME", "HMDB"),
-    #             size=2
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "WP", "HMDB"),
-    #             size=169
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME", "WP", "HMDB"),
-    #             size=551
-    #         )
-    #     ),
-    #     genes=list(
-    #         list(
-    #             sets=list("KEGG"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("REACTOME"),
-    #             size=1030
-    #         ),
-    #         list(
-    #             sets=list("WP"),
-    #             size=1288
-    #         ),
-    #         list(
-    #             sets=list("HMDB"),
-    #             size=892
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "WP"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "HMDB"),
-    #             size=68
-    #         ),
-    #         list(
-    #             sets=list("REACTOME", "WP"),
-    #             size=6113
-    #         ),
-    #         list(
-    #             sets=list("REACTOME", "HMDB"),
-    #             size=48
-    #         ),
-    #         list(
-    #             sets=list("WP", "HMDB"),
-    #             size=278
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME", "WP"),
-    #             size=0
-    #         ),
-    #         list(
-    #             sets=list("REACTOME", "WP", "HMDB"),
-    #             size=2598
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME", "HMDB"),
-    #             size=15
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "WP", "HMDB"),
-    #             size=48
-    #         ),
-    #         list(
-    #             sets=list("KEGG", "REACTOME", "WP", "HMDB"),
-    #             size=1549
-    #         )
-    #     )
-    # )
 }
 
 
@@ -270,10 +136,10 @@ function() {
 #* @get /api/id-types
 function() {
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
@@ -305,10 +171,10 @@ function(identifier) {
     identifiers <- sapply(identifiers,shQuote)
     identifiers <- paste(identifiers, collapse=",")
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
@@ -334,10 +200,10 @@ function(identifier) {
     identifiers <- sapply(identifiers,shQuote)
     identifiers <- paste(identifiers, collapse=",")
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
@@ -367,10 +233,10 @@ function(identifier) {
 #* @get /api/ontologies
 function(metabolite="", type="biological") {
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
 
     metabolites_ids <- c(metabolite)
     numSubmittedIds <- length(metabolites_ids)
@@ -421,10 +287,10 @@ function(metabolite="", type="biological") {
 #* @get /api/ontology-summaries
 function(contains="") {
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
 
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
@@ -453,10 +319,10 @@ function(contains="") {
 #* @get /api/metabolites
 function(ontology="") {
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
 
     ontologies_names <- c(ontology)
     numSubmittedNames <- length(ontologies_names)
@@ -504,10 +370,10 @@ function(pathway="") {
     pathways <- c(pathway)
     print(pathways)
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     analytes_df <- tryCatch(
         {
             analytes_df <- RaMP::getAnalyteFromPathway(
@@ -532,10 +398,10 @@ function(pathway="") {
 function(analyte="") {
     analytes <- c(analyte)
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     pathways_df_ids <- tryCatch(
         {
             pathways_df <- RaMP::getPathwayFromAnalyte(
@@ -575,10 +441,10 @@ function(analyte="") {
 #' @post /api/combined-fisher-test
 function(req) {
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     print(req)
     pathways_df <- as.data.frame(req$body)
     print(pathways_df)
@@ -599,10 +465,10 @@ function(req) {
 #' @post /api/filter-fisher-test-results
 function(req, p_holmadj_cutoff=0.05, p_fdradj_cutoff=NULL) {
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     filtered_results <- RaMP::FilterFishersResults(
@@ -625,10 +491,10 @@ function(req, analyte_source_id, perc_analyte_overlap=0.2, perc_pathway_overlap=
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
@@ -654,10 +520,10 @@ function(req, analyte_source_id, perc_analyte_overlap=0.2, perc_pathway_overlap=
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
@@ -737,10 +603,10 @@ function(req, analyte_source_id, perc_analyte_overlap=0.2, perc_pathway_overlap=
 function(analyte="") {
     analytes <- c(analyte)
     config <- config::get()
-    host <- config$db_host
-    dbname <- config$db_dbname
-    username <- config$db_username
-    conpass <- config$db_password
+    host <- config$db_host_v1
+    dbname <- config$db_dbname_v1
+    username <- config$db_username_v1
+    conpass <- config$db_password_v1
     analytes_df_ids <- tryCatch(
         {
             analytes_df <- RaMP::rampFastCata(
