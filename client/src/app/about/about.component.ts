@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 import { UpsetIntersection } from '../visualization/upset/intersection.model';
 import { ConfigService } from '../config/config.service';
@@ -10,7 +9,7 @@ import { ConfigService } from '../config/config.service';
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent implements OnInit, AfterViewInit {
   genesIntersections: Array<UpsetIntersection>;
   genesSoloSets: Array<UpsetIntersection> | any;
   genesAllData: Array<UpsetIntersection>;
@@ -18,6 +17,11 @@ export class AboutComponent implements OnInit {
   compoundsSoloSets: Array<UpsetIntersection> | any;
   compoundsAllData: Array<UpsetIntersection>;
   apiBaseUrl: string;
+  @ViewChild('briefDescription', { static: false }) briefDescription: ElementRef<HTMLElement>;
+  @ViewChild('contact', { static: false }) contact: ElementRef<HTMLElement>;
+  @ViewChild('citation', { static: false }) citation: ElementRef<HTMLElement>;
+  @ViewChild('summaryStatistics', { static: false }) summaryStatistics: ElementRef<HTMLElement>;
+  elementsDict: { [elementName: string]: ElementRef<HTMLElement> } = {};
 
   constructor(
     private http: HttpClient,
@@ -28,6 +32,17 @@ export class AboutComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAnalytesSourceIntersects();
+  }
+
+  ngAfterViewInit(): void {
+    // tslint:disable-next-line:no-string-literal
+    this.elementsDict['briefDescription'] = this.briefDescription;
+    // tslint:disable-next-line:no-string-literal
+    this.elementsDict['contact'] = this.contact;
+    // tslint:disable-next-line:no-string-literal
+    this.elementsDict['citation'] = this.citation;
+    // tslint:disable-next-line:no-string-literal
+    this.elementsDict['summaryStatistics'] = this.summaryStatistics;
   }
 
   getAnalytesSourceIntersects(): void {
@@ -153,4 +168,7 @@ export class AboutComponent implements OnInit {
     });
   }
 
+  scrollTo(element: string): void {
+    this.elementsDict[element].nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }

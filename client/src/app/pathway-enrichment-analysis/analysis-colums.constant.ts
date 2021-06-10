@@ -120,3 +120,14 @@ export const pathwayColumns: Array<{ value: string; display: string }> = [
         display: 'Analyte Common Name'
     }
 ];
+
+export const idTypeColumns: Array<{ value: string; display: string }> = [
+    {
+        value: 'analyteType',
+        display: 'Analyte Type'
+    },
+    {
+        value: 'idTypes',
+        display: 'ID Prefix Types'
+    }
+];

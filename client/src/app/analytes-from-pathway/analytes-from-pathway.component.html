@@ -7,7 +7,7 @@
             <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="selectedTabChange($event)">
                 <mat-tab textLabel="input">
                     <ng-template mat-tab-label>
-                        Input
+                        Input Pathways
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="error-message-container" *ngIf="errorMessage">
@@ -37,14 +37,14 @@
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
                                         <span>
-                                            &#60; Use Pathway ID's sample list
+                                            &#60; Example of Pathway ID's
                                         </span>
                                     </button>
                                 </div>
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button (click)="insertSample('names')">
                                         <span>
-                                            &#60; Use Pathwayt Names sample list
+                                            &#60; Example of Pathwayt Names
                                         </span>
                                     </button>
                                 </div>
@@ -60,7 +60,7 @@
                 </mat-tab>
                 <mat-tab *ngIf="pathwayMatches" textLabel="pathwayMatches">
                     <ng-template mat-tab-label>
-                        Pathways
+                        Pathways Mapped in RaMP
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="results-message-container" *ngIf="pathwayMatches.length == 0">

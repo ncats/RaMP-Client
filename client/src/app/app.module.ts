@@ -38,6 +38,9 @@ import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways
 import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
 import { AnalytesFromPathwayComponent } from './analytes-from-pathway/analytes-from-pathway.component';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -80,7 +83,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatCheckboxModule,
     MatDialogModule,
     MatTooltipModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatAutocompleteModule,
+    MatChipsModule,
+    MatProgressBarModule
   ],
   providers: [
     ConfigService,

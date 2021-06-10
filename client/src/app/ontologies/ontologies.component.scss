@@ -175,3 +175,20 @@
   .space-right {
     margin-right: 15px;
   }
+
+  .chip-list-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-top: 15px;
+
+    .mat-progress-bar {
+      margin-top: -18px;
+    }
+  }
+
+  .no-options-message-container {
+    margin-top: -10px;
+    padding: 0 10px;
+    color: #595959;
+  }
