@@ -18,6 +18,68 @@ cors <- function(req, res) {
   }
 }
 
+
+#* Return source version information
+#* @serializer unboxedJSON
+#* @get /api/source_versions
+function() {
+    config <- config::get()
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                        user = username,
+                        dbname = dbname,
+                        password = conpass,
+                        host = host)
+
+    query <- paste0(
+        "select ",
+            "ramp_db_version as rampDbVersion, ",
+            "db_mod_date as dbModDate, ",
+            "status, ",
+            "data_source_id as dataSourceId, ",
+            "data_source_name as dataSourceName, ",
+            "data_source_url as dataSourceUrl, ",
+            "data_source_version as dataSourceVersion ",
+        "from version_info where status = 'current'"
+    )
+
+    version_info <- DBI::dbGetQuery(con, query)
+    DBI::dbDisconnect(con)
+    return(version_info)
+}
+
+#* Return counts on entities and their associations
+#* @serializer unboxedJSON
+#* @get /api/entity_counts
+function() {
+    config <- config::get()
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
+    con <- DBI::dbConnect(RMariaDB::MariaDB(),
+                        user = username,
+                        dbname = dbname,
+                        password = conpass,
+                        host = host)
+
+    query <- paste0(
+        "select ",
+            "status_category as entity, ",
+            "entity_source_id as entitySourceId, ",
+            "entity_source_name as entitySourceName, ",
+            "entity_count as entityCount ",
+        "from entity_status_info"
+    )
+
+    entity_counts <- DBI::dbGetQuery(con, query)
+    DBI::dbDisconnect(con)
+    return(entity_counts)
+}
+
 get_count_query <- function(
   data_source,
   analyte_type
