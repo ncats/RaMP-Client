@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { UpsetIntersection } from '../visualization/upset/intersection.model';
 import { ConfigService } from '../config/config.service';
+import { SourceVersion } from './source-version.model';
 
 @Component({
   selector: 'ramp-about',
@@ -22,6 +23,7 @@ export class AboutComponent implements OnInit, AfterViewInit {
   @ViewChild('citation', { static: false }) citation: ElementRef<HTMLElement>;
   @ViewChild('summaryStatistics', { static: false }) summaryStatistics: ElementRef<HTMLElement>;
   elementsDict: { [elementName: string]: ElementRef<HTMLElement> } = {};
+  sourceVersions: Array<SourceVersion>;
 
   constructor(
     private http: HttpClient,
@@ -31,6 +33,7 @@ export class AboutComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.getVersionInfo();
     this.getAnalytesSourceIntersects();
   }
 
@@ -43,6 +46,13 @@ export class AboutComponent implements OnInit, AfterViewInit {
     this.elementsDict['citation'] = this.citation;
     // tslint:disable-next-line:no-string-literal
     this.elementsDict['summaryStatistics'] = this.summaryStatistics;
+  }
+
+  getVersionInfo(): void {
+    const url = `${this.apiBaseUrl}source_versions`;
+    this.http.get<Array<SourceVersion>>(url).subscribe(response => {
+      this.sourceVersions = response;
+    });
   }
 
   getAnalytesSourceIntersects(): void {
