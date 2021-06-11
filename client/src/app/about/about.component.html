@@ -41,7 +41,33 @@
                         <span *ngIf="!isLast">, </span>
                         <span *ngIf="isLast">.</span>
                     </span>
-                    <!-- <a href="http://www.genome.jp/kegg/" target="_blank">KEGG</a> vXXX, <a href="http://www.reactome.org/" target="_blank">REACTOME</a> vYYY, <a href="http://www.hmdb.ca/" target="_blank">HMDB</a> vZZZ, and <a href="http://www.wikipathways.org/index.php/WikiPathways" target="_blank">WIKIPATHWAYS</a> vAAA. -->
+                </div>
+                <div class="paragraph">
+                    <mat-table [dataSource]="entityCounts">
+                        <ng-container matColumnDef="entity">
+                            <mat-header-cell *matHeaderCellDef>
+                                <span>
+                                    Entity
+                                </span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <span>{{row.entity}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container [matColumnDef]="column"
+                            *ngFor="let column of entityCountsColumns.slice(1); index as index">
+                            <mat-header-cell *matHeaderCellDef>
+                                <span>
+                                    {{column}}
+                                </span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <span>{{row.counts[column] | number}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="entityCountsColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: entityCountsColumns;"></mat-row>
+                    </mat-table>
                 </div>
                 <div class="paragraph">
                     This application allows users to interface with RaMP without any programming experience. The functionalities currently supported are:
