@@ -80,5 +80,44 @@ export const analyteExampleInputs = {
             'ITPR1\r\n' +
             'PRKACA;proteinkinasecAMP-activ\r\n' +
             'CHKA'
-    }
+    },
+    metabolitesCombined: 'kegg:C00412\r\n' +
+        'CAS:987-78-0\r\n' +
+        'hmdb:HMDB0001270\r\n' +
+        'chebi:48828\r\n' +
+        'LIPIDMAPS:LMST01010013\r\n' +
+        'pubchem:6037\r\n' +
+        'hmdb:HMDB0010343\r\n' +
+        'kegg:C00621\r\n' +
+        'chemspider:4444436\r\n' +
+        'LIPIDMAPS:LMST02020021\r\n' +
+        'L-Aspartic acid\r\n' +
+        'Crotonoyl-CoA\r\n' +
+        'Leukotriene D4\r\n' +
+        'Spermine\r\n' +
+        'Arabinosylhypoxanthine\r\n' +
+        '11-cis-Retinol\r\n' +
+        'Cortisol;\r\n' +
+        'Peroxynitrite\r\n' +
+        'Phosphoenolpyruvic acid',
+    genesCombined: 'ensembl:ENSG00000134255\r\n' +
+        'uniprot:Q99447\r\n' +
+        'ensembl:ENSG00000241878\r\n' +
+        'entrez:5130\r\n' +
+        'uniprot:Q9UBM1\r\n' +
+        'ensembl:ENSG00000156471\r\n' +
+        'uniprot:P62979\r\n' +
+        'entrez:7311\r\n' +
+        'ensembl:ENSG00000170315\r\n' +
+        'uniprot:P0CG48\r\n' +
+        'MAPK1\r\n' +
+        'MAPK3;mitogen-activatedprotein\r\n' +
+        'CALM2;calmodulin2\r\n' +
+        'NFKB1\r\n' +
+        'AKT1;AKTserine/threoninekinase\r\n' +
+        'PIK3R1\r\n' +
+        'HRAS\r\n' +
+        'ITPR1\r\n' +
+        'PRKACA;proteinkinasecAMP-activ\r\n' +
+        'CHKA'
 };

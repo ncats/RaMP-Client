@@ -25,7 +25,7 @@
                         <form #pathwayForm="ngForm" class="pathway-form">
                             <div class="identifiers">
                                 <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="Analytes" spellcheck="false"
+                                    <textarea class="targetBox" placeholder="Enter pathway IDs or names" spellcheck="false"
                                         [(ngModel)]="pathwaysInput" name="pathwaysInput" required></textarea>
                                 </div>
                             </div>
@@ -35,16 +35,9 @@
                                     against our database.
                                 </div>
                                 <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('ids')">
+                                    <button class="form-divider" mat-stroked-button (click)="insertSample()">
                                         <span>
-                                            &#60; Example of Pathway ID's
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button (click)="insertSample('names')">
-                                        <span>
-                                            &#60; Example of Pathwayt Names
+                                            &#60; Example of Pathways
                                         </span>
                                     </button>
                                 </div>

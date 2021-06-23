@@ -15,6 +15,11 @@ export interface FisherTestResult {
     negativeLogPVal: number;
 }
 
+export interface Cluster {
+    cluster: string;
+    pathways: string;
+}
+
 export interface ClusteringCoordinates {
     pathwayRampId: string;
     x: number;

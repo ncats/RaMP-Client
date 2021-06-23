@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { LoadingService } from '../loading/loading.service';
-import { FisherTestResult, ClusteringCoordinates } from './analysis-result.model';
+import { FisherTestResult, Cluster } from './analysis-result.model';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
@@ -16,9 +15,7 @@ import { AnalyteMatch, Analyte } from './analyte.model';
 import { analyteExampleInputs } from './examples.constant';
 import { MatDialog } from '@angular/material/dialog';
 import { TableDialogComponent } from '../table-dialog/table-dialog.component';
-import { path } from 'd3';
 import { ConfigService } from '../config/config.service';
-import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -37,8 +34,6 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   // analytes
   metabolitesInput: string;
   genesInput: string;
-  pathwaySourceIds: Array<string>;
-  analytes: Array<any>;
 
   // data for tables
   idTypes: Array<{ analyteType: string; idTypes: string }>;
@@ -46,7 +41,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   pathways: Array<Pathway>;
   fisherTestResults: Array<FisherTestResult>;
   filteredFisherTestResults: Array<FisherTestResult>;
-  clusteringResults: Array<FisherTestResult>;
+  clusters: Array<Cluster>;
 
   // tables columns
   idTypeDisplayedColumns: Array<string>;
@@ -70,7 +65,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   minPathwayTocluster = 2;
 
   // clustering
-  clusterCoordinates: Array<ClusteringCoordinates>;
+  private clusteringResults: Array<FisherTestResult>;
 
   // For showing R package calls
   analytesParameters: Array<string>;
@@ -84,7 +79,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   selectedIndex = 0;
   errorMessage: string;
   showPlots = false;
-  expandedElement: AnalyteMatch | null;
+  expandedElement: AnalyteMatch;
   apiBaseUrl: string;
   detailsPanelOpen = false;
   rFunctionPanelOpen = false;
@@ -248,6 +243,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
         this.pathways = null;
         this.fisherTestResults = null;
         this.filteredFisherTestResults = null;
+        this.clusters = null;
         this.clusteringResults = null;
         this.showPlots = false;
       });
@@ -294,6 +290,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       }, () => {
         this.fisherTestResults = null;
         this.filteredFisherTestResults = null;
+        this.clusters = null;
         this.clusteringResults = null;
         this.showPlots = false;
       });
@@ -325,6 +322,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
         this.loadingService.setLoadingState(false);
       }, () => {
         this.filteredFisherTestResults = null;
+        this.clusters = null;
         this.clusteringResults = null;
         this.showPlots = false;
       });
@@ -367,6 +365,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
         this.errorMessage = 'There was a problem processing your request.';
         this.loadingService.setLoadingState(false);
       }, () => {
+        this.clusters = null;
         this.clusteringResults = null;
         this.showPlots = false;
       });
@@ -376,10 +375,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.errorMessage = '';
     this.loadingService.setLoadingState(true);
     this.showPlots = false;
-    const url = `${this.apiBaseUrl}cluster-fisher-test-results-extended`;
-    // const url = `/assets/test-data/pathway_enrichment_analysis.json`;
-
-    // const analytes = this.analytesInput.toString().split(/\r\n|\r|\n/g);
+    const url = `${this.apiBaseUrl}cluster-fisher-test-results`;
 
     const options = {
       params: {}
@@ -411,22 +407,19 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.http.post<any>(url, this.filteredFisherTestResultsResponse, options)
       .subscribe((response: {
         fishresults: Array<FisherTestResult>,
-        clusterCoordinates: Array<ClusteringCoordinates>,
-        analytes: Array<any>
+        analyte_type: string,
+        cluster_list: { [rampId: string]: Array<string> },
+        pathway_matrix: Array<Array<number>>;
       }) => {
         if (response.fishresults && response.fishresults.length > 0) {
-          this.pathwaySourceIds = [];
+
+          const group = new Map();
+
           response.fishresults.map(item => {
-
-            this.pathwaySourceIds.push(item.pathwaysourceId);
-
-            if (item.cluster_assignment) {
-              this.showPlots = true;
-            }
 
             if (item.Pval != null || item.Pval_combined != null) {
               const pVal = item.Pval != null ? item.Pval : item.Pval_combined;
-              item.negativeLogPVal = new Decimal(1).dividedBy(Decimal.log10(pVal)).toNumber();
+              item.negativeLogPVal = Decimal.log10(new Decimal(1).dividedBy(pVal)).toNumber();
             }
             Object.keys(item).forEach(key => {
               if (key.indexOf('.') > -1) {
@@ -434,17 +427,27 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
                 delete item[key];
               }
             });
+
+            const keys = item.cluster_assignment.split(', ');
+            keys.forEach(key => {
+              const collection = group.get(key);
+              if (!collection) {
+                group.set(key, [item.pathwayName]);
+              } else {
+                collection.push(item.pathwayName);
+              }
+            });
           });
-        }
-        if (response.analytes && response.analytes.length > 0) {
-          response.analytes = response.analytes.map(item => {
-            item.pathways = item.pathways && item.pathways.split(',') || ''; return item;
+
+          this.clusters = Array.from(group, element => {
+            return {
+              cluster: element[0],
+              pathways: element[1].join(', ')
+            };
           });
         }
         this.clusteringResults = response.fishresults;
-        this.clusterCoordinates = response.clusterCoordinates;
-        this.analytes = response.analytes;
-        // this.getGroupedAnalytes();
+
         setTimeout(() => {
           this.selectedIndex = 5;
         }, 10);
@@ -457,31 +460,11 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       });
   }
 
-  getGroupedAnalytes(): void {
-
-    const url = `${this.apiBaseUrl}analytes`;
-
-    const options = {
-      params: {
-        pathwaySourceId: this.pathwaySourceIds,
-      }
-    };
-    this.http.get<any>(url, options)
-      .pipe(
-        map(response => {
-          response = response.map(item => { item.analytes = item.analytes.split(','); return item; });
-          return response;
-        })
-      ).subscribe(response => {
-        this.analytes = response;
-      });
-  }
-
-  insertSample(inputType: 'metabolites' | 'genes', sampleType: 'ids' | 'names'): void {
-    if (inputType === 'metabolites') {
-      this.metabolitesInput = analyteExampleInputs[inputType][sampleType];
+  insertSample(inputType: 'metabolitesCombined' | 'genesCombined'): void {
+    if (inputType === 'metabolitesCombined') {
+      this.metabolitesInput = analyteExampleInputs[inputType];
     } else {
-      this.genesInput = analyteExampleInputs[inputType][sampleType];
+      this.genesInput = analyteExampleInputs[inputType];
     }
   }
 
@@ -521,8 +504,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.pageChange(allData);
   }
 
-  compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  compare(a: number | string = '', b: number | string = '', isAsc: boolean) {
+    return a.toString().localeCompare(b.toString(), undefined, {numeric: true}) * (isAsc ? 1 : -1);
   }
 
   selectedTabChange(matTabChangeEvent: MatTabChangeEvent): void {
@@ -564,10 +547,10 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       }
       case 5: {
         const sort: Sort = {
-          active: this.fisherTestColumns[0].value,
+          active: this.clusteringColumns[0].value,
           direction: 'asc'
         };
-        this.sortData(this.clusteringResults, sort);
+        this.sortData(this.clusters, sort);
         break;
       }
     }
@@ -606,11 +589,9 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     });
   }
 
-  expandRow(row: AnalyteMatch): AnalyteMatch {
-    if (row.numAnalytes <= 1) {
-      return null;
-    } else {
-      return this.expandedElement = this.expandedElement === row ? null : row;
+  expandRow(row: AnalyteMatch): void {
+    if (row.numAnalytes > 1) {
+      this.expandedElement = this.expandedElement === row ? null : row;
     }
   }
 

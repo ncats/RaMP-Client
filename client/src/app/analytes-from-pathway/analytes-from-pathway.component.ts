@@ -232,7 +232,7 @@ export class AnalytesFromPathwayComponent implements OnInit {
       }, () => {});
   }
 
-  insertSample(sampleType: 'ids' | 'names'): void {
+  insertSample(sampleType: 'ids' | 'names' | 'combined'  = 'combined'): void {
     this.pathwaysInput = pathwayExampleInputs[sampleType];
   }
 

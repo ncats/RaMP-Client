@@ -7,7 +7,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
 import { LoadingService } from '../loading/loading.service';
-import { AnalyteColumns, AnalyteMatchesColumns, pathwayColumns } from '../pathway-enrichment-analysis/analysis-colums.constant';
+import { AnalyteColumns, AnalyteMatchesColumns, idTypeColumns, pathwayColumns } from '../pathway-enrichment-analysis/analysis-colums.constant';
 import { Analyte, AnalyteMatch } from '../pathway-enrichment-analysis/analyte.model';
 import { analyteExampleInputs } from '../pathway-enrichment-analysis/examples.constant';
 import { Pathway } from '../pathway-enrichment-analysis/pathway.model';
@@ -35,10 +35,13 @@ export class PathwaysFromAnalytesComponent implements OnInit {
   analytesParameters: Array<string>;
 
   // data for tables
+  idTypes: Array<{ analyteType: string; idTypes: string }>;
   analyteMatches: Array<AnalyteMatch>;
   pathways: Array<Pathway>;
 
   // tables columns
+  idTypeDisplayedColumns: Array<string>;
+  idTypeColumns = idTypeColumns;
   pathwayDisplayedColumns: Array<string>;
   pathwayColumns = pathwayColumns;
   analyteMatchesDisplayedColumns: Array<string>;
@@ -71,7 +74,16 @@ export class PathwaysFromAnalytesComponent implements OnInit {
     this.pathwayDisplayedColumns = pathwayColumns.map(item => item.value);
     this.analyteMatchesDisplayedColumns = this.analyteMatchesColumns.map(item => item.value);
     this.analyteDisplayedColumns = this.analyteColumns.map(item => item.value);
+    this.idTypeDisplayedColumns = this.idTypeColumns.map(item => item.value);
     this.analyteDisplayedColumns.unshift('isSelected');
+    this.loadIdTypes();
+  }
+
+  loadIdTypes(): void {
+    const url = `${this.apiBaseUrl}id-types`;
+    this.http.get<Array<{ analyteType: string; idTypes: string }>>(url).subscribe(response => {
+      this.idTypes = response;
+    });
   }
 
   findAnalytes(): void {
@@ -238,11 +250,11 @@ export class PathwaysFromAnalytesComponent implements OnInit {
       }, () => {});
   }
 
-  insertSample(inputType: 'metabolites' | 'genes', sampleType: 'ids' | 'names'): void {
-    if (inputType === 'metabolites') {
-      this.metabolitesInput = analyteExampleInputs[inputType][sampleType];
+  insertSample(inputType: 'metabolitesCombined' | 'genesCombined'): void {
+    if (inputType === 'metabolitesCombined') {
+      this.metabolitesInput = analyteExampleInputs[inputType];
     } else {
-      this.genesInput = analyteExampleInputs[inputType][sampleType];
+      this.genesInput = analyteExampleInputs[inputType];
     }
   }
 
