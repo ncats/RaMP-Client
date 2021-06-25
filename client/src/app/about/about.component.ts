@@ -84,7 +84,6 @@ export class AboutComponent implements OnInit, AfterViewInit {
       if (this.entityCountsColumns.indexOf(sourceCount.entitySourceName) === -1) {
         this.entityCountsColumns.push(sourceCount.entitySourceName);
       }
-      console.log(this.entityCountsColumns);
     });
     const entityCounts = Array.from(group, element => {
       return {

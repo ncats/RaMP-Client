@@ -44,7 +44,6 @@ export class GoogleAnalyticsService {
         page_title: title,
         page_path: path
       };
-      console.log(this.gtag);
       this.gtag('config', this.googleAnanlyticsId, sendFields);
     }
   }

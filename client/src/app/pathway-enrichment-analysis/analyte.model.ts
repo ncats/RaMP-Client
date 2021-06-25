@@ -1,7 +1,9 @@
 export interface AnalyteMatch {
     input: string;
     rampIdList: Array<string>;
+    sourceIdsList: Array<string>;
     idTypesList: Array<string>;
+    sourceIds: string;
     idTypes: string;
     typesList: Array<string>;
     types: string;
@@ -14,7 +16,9 @@ export interface Analyte {
     rampId: string;
     sourceId: string;
     IDtype: string;
+    sourceIdsList?: Array<string>;
     idTypesList?: Array<string>;
+    sourceIds?: string;
     idTypes?: string;
     geneOrCompound: string;
     commonName: string;

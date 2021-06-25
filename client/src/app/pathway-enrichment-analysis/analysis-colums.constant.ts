@@ -4,8 +4,8 @@ export const AnalyteMatchesColumns: Array<{ value: string; display: string }> = 
         display: 'Input'
     },
     {
-        value: 'idTypes',
-        display: 'Id Types'
+        value: 'sourceIds',
+        display: 'Source IDs'
     },
     {
         value: 'types',
@@ -23,8 +23,8 @@ export const AnalyteMatchesColumns: Array<{ value: string; display: string }> = 
 
 export const AnalyteColumns: Array<{ value: string; display: string }> = [
     {
-        value: 'idTypes',
-        display: 'Id Types'
+        value: 'sourceIds',
+        display: 'Source IDs'
     },
     {
         value: 'geneOrCompound',

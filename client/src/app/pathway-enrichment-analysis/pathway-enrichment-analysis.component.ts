@@ -23,9 +23,10 @@ import { ConfigService } from '../config/config.service';
   styleUrls: ['./pathway-enrichment-analysis.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('collapsed, void', style({ height: '0px' })),
       state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition('expanded <=> void', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
     ]),
   ]
 })
@@ -58,7 +59,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   analyteColumns = AnalyteColumns;
 
   // fisher test filter options
-  pHolmAdjCutoffInput = 1;
+  pHolmAdjCutoffInput = 0.1;
   pfdrAdjCutoffInput: number;
   percAnalyteOverlap = 20;
   percPathwayOverlap = 20;
@@ -150,7 +151,9 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
               rampIdList: [],
               idTypesList: [],
               idTypes: '',
+              sourceIdsList: [],
               typesList: [],
+              sourceIds: '',
               types: '',
               numAnalytes: 0,
               commonName: '',
@@ -172,8 +175,10 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
               if (analyteMatches[index].rampIdList.indexOf(analyte.rampId) === -1) {
                 analyteMatches[index].rampIdList.push(analyte.rampId);
                 analyteMatches[index].numAnalytes++;
+                analyte.sourceIdsList = [analyte.sourceId];
                 analyte.idTypesList = [analyte.IDtype];
                 analyteMatches[index].analytes.push(analyte);
+                analyteMatches[index].sourceIdsList.push(analyte.sourceId);
                 if (analyteMatches[index].commonName === '') {
                   analyteMatches[index].commonName = analyte.commonName;
                 } else if (analyteMatches[index].commonName !== analyte.commonName) {
@@ -181,6 +186,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
                 }
               } else {
                 const existingAnalyite = analyteMatches[index].analytes.find(x => x.rampId === analyte.rampId);
+                existingAnalyite.sourceIdsList.push(analyte.sourceId);
                 if (existingAnalyite.idTypesList.indexOf(analyte.IDtype) === -1) {
                   existingAnalyite.idTypesList.push(analyte.IDtype);
                 }
@@ -197,7 +203,9 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
           analyteMatches.map(analyteMatch => {
             analyteMatch.idTypes = analyteMatch.idTypesList.join(', ');
             analyteMatch.types = analyteMatch.typesList.join(', ');
+            analyteMatch.sourceIds = analyteMatch.sourceIdsList.join(', ');
             analyteMatch.analytes.map(analyte => {
+              analyte.sourceIds = analyte.sourceIdsList.join(', ');
               analyte.idTypes = analyte.idTypesList.join(', ');
               return analyte;
             });
