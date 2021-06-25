@@ -32,7 +32,7 @@
                             </div>
                             <div class="identifiers">
                                 <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="List Gene IDs or names" spellcheck="false"
+                                    <textarea class="targetBox" placeholder="List of Gene IDs or names" spellcheck="false"
                                         [(ngModel)]="genesInput" name="genesInput"
                                         [required]="!metabolitesInput"></textarea>
                                 </div>
@@ -72,33 +72,17 @@
                                 </div>
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('metabolites', 'ids')">
+                                        (click)="insertSample('metabolitesCombined')">
                                         <span>
-                                            &#60; Example of Metabolite IDs
+                                            &#60; Example of Metabolites
                                         </span>
                                     </button>
                                 </div>
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('metabolites', 'names')">
+                                        (click)="insertSample('genesCombined')">
                                         <span>
-                                            &#60; Example of Metabolite Names
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('genes', 'ids')">
-                                        <span>
-                                            &#60; Example of Gene IDs
-                                        </span>
-                                    </button>
-                                </div>
-                                <div>
-                                    <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('genes', 'names')">
-                                        <span>
-                                            &#60; Example of Gene Names
+                                            &#60; Example of Genes
                                         </span>
                                     </button>
                                 </div>
@@ -568,12 +552,12 @@
                         </div>
                     </ng-template>
                 </mat-tab>
-                <mat-tab *ngIf="clusteringResults" textLabel="clusteringResults">
+                <mat-tab *ngIf="clusters" textLabel="clusters">
                     <ng-template mat-tab-label>
                         Clustering Table
                     </ng-template>
                     <ng-template matTabContent>
-                        <div class="results-message-container" *ngIf="clusteringResults.length == 0">
+                        <div class="results-message-container" *ngIf="clusters.length == 0">
                             Your query didn't yield any results.
                         </div>
                         <div class="error-message-container" *ngIf="errorMessage">
@@ -588,7 +572,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="results-table-container" *ngIf="clusteringResults && clusteringResults.length">
+                        <div class="results-table-container" *ngIf="clusters && clusters.length">
                             <div class="accordion-container">
                                 <mat-accordion>
                                     <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">
@@ -628,14 +612,14 @@
                                 </mat-accordion>
                             </div>
                             <div>
-                                <mat-paginator [length]="clusteringResults && clusteringResults.length || 0"
+                                <mat-paginator [length]="clusters && clusters.length || 0"
                                     [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
-                                    (page)="pageChange(clusteringResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    (page)="pageChange(clusters, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
                             </div>
                             <div class="table-container">
                                 <mat-table [dataSource]="pagedData" matSort
-                                    (matSortChange)="sortData(clusteringResults, $event)">
+                                    (matSortChange)="sortData(clusters, $event)">
                                     <ng-container [matColumnDef]="column.value"
                                         *ngFor="let column of clusteringColumns; index as index">
                                         <mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -652,15 +636,15 @@
                                 </mat-table>
                             </div>
                             <div>
-                                <mat-paginator [length]="clusteringResults && clusteringResults.length || 0"
+                                <mat-paginator [length]="clusters && clusters.length || 0"
                                     [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
-                                    (page)="pageChange(clusteringResults, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
+                                    (page)="pageChange(clusters, $event)" [pageSizeOptions]="[5, 10, 25, 100]">
                                 </mat-paginator>
                             </div>
                         </div>
                     </ng-template>
                 </mat-tab>
-                <mat-tab *ngIf="showPlots">
+                <!-- <mat-tab *ngIf="showPlots">
                     <ng-template mat-tab-label>
                         Plots
                     </ng-template>
@@ -693,7 +677,7 @@
                             </div>
                         </div>
                     </ng-template>
-                </mat-tab>
+                </mat-tab> -->
             </mat-tab-group>
         </mat-card-content>
     </mat-card>

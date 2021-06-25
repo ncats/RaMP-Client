@@ -7,7 +7,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { map } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
 import { LoadingService } from '../loading/loading.service';
-import { AnalyteColumns, AnalyteMatchesColumns, pathwayColumns } from '../pathway-enrichment-analysis/analysis-colums.constant';
+import { AnalyteColumns, AnalyteMatchesColumns, idTypeColumns, pathwayColumns } from '../pathway-enrichment-analysis/analysis-colums.constant';
 import { Analyte, AnalyteMatch } from '../pathway-enrichment-analysis/analyte.model';
 import { analyteExampleInputs } from '../pathway-enrichment-analysis/examples.constant';
 import { Pathway } from '../pathway-enrichment-analysis/pathway.model';
@@ -18,9 +18,10 @@ import { Pathway } from '../pathway-enrichment-analysis/pathway.model';
   styleUrls: ['./pathways-from-analytes.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('collapsed, void', style({ height: '0px' })),
       state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition('expanded <=> void', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
     ]),
   ]
 })
@@ -35,10 +36,13 @@ export class PathwaysFromAnalytesComponent implements OnInit {
   analytesParameters: Array<string>;
 
   // data for tables
+  idTypes: Array<{ analyteType: string; idTypes: string }>;
   analyteMatches: Array<AnalyteMatch>;
   pathways: Array<Pathway>;
 
   // tables columns
+  idTypeDisplayedColumns: Array<string>;
+  idTypeColumns = idTypeColumns;
   pathwayDisplayedColumns: Array<string>;
   pathwayColumns = pathwayColumns;
   analyteMatchesDisplayedColumns: Array<string>;
@@ -71,7 +75,16 @@ export class PathwaysFromAnalytesComponent implements OnInit {
     this.pathwayDisplayedColumns = pathwayColumns.map(item => item.value);
     this.analyteMatchesDisplayedColumns = this.analyteMatchesColumns.map(item => item.value);
     this.analyteDisplayedColumns = this.analyteColumns.map(item => item.value);
+    this.idTypeDisplayedColumns = this.idTypeColumns.map(item => item.value);
     this.analyteDisplayedColumns.unshift('isSelected');
+    this.loadIdTypes();
+  }
+
+  loadIdTypes(): void {
+    const url = `${this.apiBaseUrl}id-types`;
+    this.http.get<Array<{ analyteType: string; idTypes: string }>>(url).subscribe(response => {
+      this.idTypes = response;
+    });
   }
 
   findAnalytes(): void {
@@ -103,7 +116,9 @@ export class PathwaysFromAnalytesComponent implements OnInit {
               rampIdList: [],
               idTypesList: [],
               idTypes: '',
+              sourceIdsList: [],
               typesList: [],
+              sourceIds: '',
               types: '',
               numAnalytes: 0,
               commonName: '',
@@ -125,8 +140,10 @@ export class PathwaysFromAnalytesComponent implements OnInit {
               if (analyteMatches[index].rampIdList.indexOf(analyte.rampId) === -1) {
                 analyteMatches[index].rampIdList.push(analyte.rampId);
                 analyteMatches[index].numAnalytes++;
+                analyte.sourceIdsList = [analyte.sourceId];
                 analyte.idTypesList = [analyte.IDtype];
                 analyteMatches[index].analytes.push(analyte);
+                analyteMatches[index].sourceIdsList.push(analyte.sourceId);
                 if (analyteMatches[index].commonName === '') {
                   analyteMatches[index].commonName = analyte.commonName;
                 } else if (analyteMatches[index].commonName !== analyte.commonName) {
@@ -134,6 +151,7 @@ export class PathwaysFromAnalytesComponent implements OnInit {
                 }
               } else {
                 const existingAnalyite = analyteMatches[index].analytes.find(x => x.rampId === analyte.rampId);
+                existingAnalyite.sourceIdsList.push(analyte.sourceId);
                 if (existingAnalyite.idTypesList.indexOf(analyte.IDtype) === -1) {
                   existingAnalyite.idTypesList.push(analyte.IDtype);
                 }
@@ -150,7 +168,9 @@ export class PathwaysFromAnalytesComponent implements OnInit {
           analyteMatches.map(analyteMatch => {
             analyteMatch.idTypes = analyteMatch.idTypesList.join(', ');
             analyteMatch.types = analyteMatch.typesList.join(', ');
+            analyteMatch.sourceIds = analyteMatch.sourceIdsList.join(', ');
             analyteMatch.analytes.map(analyte => {
+              analyte.sourceIds = analyte.sourceIdsList.join(', ');
               analyte.idTypes = analyte.idTypesList.join(', ');
               return analyte;
             });
@@ -238,11 +258,11 @@ export class PathwaysFromAnalytesComponent implements OnInit {
       }, () => {});
   }
 
-  insertSample(inputType: 'metabolites' | 'genes', sampleType: 'ids' | 'names'): void {
-    if (inputType === 'metabolites') {
-      this.metabolitesInput = analyteExampleInputs[inputType][sampleType];
+  insertSample(inputType: 'metabolitesCombined' | 'genesCombined'): void {
+    if (inputType === 'metabolitesCombined') {
+      this.metabolitesInput = analyteExampleInputs[inputType];
     } else {
-      this.genesInput = analyteExampleInputs[inputType][sampleType];
+      this.genesInput = analyteExampleInputs[inputType];
     }
   }
 
@@ -311,7 +331,6 @@ export class PathwaysFromAnalytesComponent implements OnInit {
   }
 
   expandRow(row: AnalyteMatch): AnalyteMatch {
-    console.log(row);
     if (row.numAnalytes <= 1) {
       return null;
     } else {

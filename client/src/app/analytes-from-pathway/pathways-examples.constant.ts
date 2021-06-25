@@ -11,5 +11,12 @@ export const pathwayExampleInputs = {
         'Metabolism of RNA\r\n' +
         'VEGFA-VEGFR2 Signaling Pathway\r\n' +
         'Endocytosis\r\n' +
+        'GPCR ligand binding',
+    combined: '04740\r\n' +
+        'WP3604\r\n' +
+        'R-HSA-5684996\r\n' +
+        'Metabolism of RNA\r\n' +
+        'VEGFA-VEGFR2 Signaling Pathway\r\n' +
+        'Endocytosis\r\n' +
         'GPCR ligand binding'
 };

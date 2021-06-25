@@ -4,8 +4,8 @@ export const AnalyteMatchesColumns: Array<{ value: string; display: string }> = 
         display: 'Input'
     },
     {
-        value: 'idTypes',
-        display: 'Id Types'
+        value: 'sourceIds',
+        display: 'Source IDs'
     },
     {
         value: 'types',
@@ -23,8 +23,8 @@ export const AnalyteMatchesColumns: Array<{ value: string; display: string }> = 
 
 export const AnalyteColumns: Array<{ value: string; display: string }> = [
     {
-        value: 'idTypes',
-        display: 'Id Types'
+        value: 'sourceIds',
+        display: 'Source IDs'
     },
     {
         value: 'geneOrCompound',
@@ -85,20 +85,12 @@ export const fisherTestColumns: Array<{ value: string; display: string }> = [
 
 export const ClusteringColumns: Array<{ value: string; display: string }> = [
     {
-        value: 'pathwayName',
-        display: 'Pathway Name'
+        value: 'cluster',
+        display: 'Cluster'
     },
     {
-        value: 'pathwaysourceId',
-        display: 'Pathway Source Id'
-    },
-    {
-        value: 'pathwaysource',
-        display: 'Pathway Source'
-    },
-    {
-        value: 'cluster_assignment',
-        display: 'Cluster Assignment'
+        value: 'pathways',
+        display: 'Pathways'
     }
 ];
 
