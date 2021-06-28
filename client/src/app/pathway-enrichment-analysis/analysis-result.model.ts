@@ -2,8 +2,14 @@ export interface FisherTestResult {
     pathwayRampId: string;
     Pval?: number;
     Pval_combined?: number;
-    Num_In_Path: number;
-    Total_In_Path: number;
+    PvalGene?: number;
+    PvalMetab?: number;
+    Num_In_Path?: number;
+    Num_In_PathGene?: number;
+    Num_In_PathMetab?: number;
+    Total_In_Path?: number;
+    Total_In_PathGene?: number;
+    Total_In_PathMetab?: number;
     Pval_FDR?: number;
     Pval_combined_FDR?: number;
     Pval_Holm?: number;
@@ -13,6 +19,7 @@ export interface FisherTestResult {
     pathwaysource: string;
     cluster_assignment?: string;
     negativeLogPVal: number;
+    rampids: string;
 }
 
 export interface Cluster {

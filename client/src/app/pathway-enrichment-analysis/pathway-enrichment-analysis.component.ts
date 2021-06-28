@@ -6,7 +6,16 @@ import { FisherTestResult, Cluster } from './analysis-result.model';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { AnalyteColumns, AnalyteMatchesColumns, ClusteringColumns, fisherTestColumns, pathwayColumns, idTypeColumns } from './analysis-colums.constant';
+import {
+  AnalyteColumns,
+  AnalyteMatchesColumns,
+  ClusteringColumns,
+  fisherTestBaseColumns,
+  fisherTestSingleTypeColumns,
+  fisherTestMultiTypeColumns,
+  pathwayColumns,
+  idTypeColumns
+} from './analysis-colums.constant';
 import { Decimal } from 'decimal.js';
 import { _getOptionScrollPosition } from '@angular/material/core';
 import { Pathway } from './pathway.model';
@@ -48,7 +57,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   idTypeDisplayedColumns: Array<string>;
   idTypeColumns = idTypeColumns;
   fisherTestDisplayedColumns: Array<string>;
-  fisherTestColumns = fisherTestColumns;
+  fisherTestColumns: Array<{ value: string; display: string }>;
   pathwayDisplayedColumns: Array<string>;
   pathwayColumns = pathwayColumns;
   clusteringDisplayedColumns: Array<string>;
@@ -105,7 +114,6 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fisherTestDisplayedColumns = fisherTestColumns.map(item => item.value);
     this.pathwayDisplayedColumns = pathwayColumns.map(item => item.value);
     this.clusteringDisplayedColumns = this.clusteringColumns.map(item => item.value);
     this.analyteMatchesDisplayedColumns = this.analyteMatchesColumns.map(item => item.value);
@@ -308,32 +316,60 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.errorMessage = '';
     this.loadingService.setLoadingState(true);
     const url = `${this.apiBaseUrl}combined-fisher-test`;
-    this.http.post<any>(url, this.pathways).subscribe(
-      (response: {
-        fishresults: Array<FisherTestResult>,
-        analyte_type: Array<string>
-      }) => {
-        this.fisherTestResultsResponse = response;
-        if (response.fishresults != null) {
-          this.fisherTestResults = response.fishresults;
-        } else {
-          this.fisherTestResults = [];
-        }
-        setTimeout(() => {
-          this.selectedIndex = 3;
-        }, 15);
-        setTimeout(() => {
+    this.http.post<any>(url, this.pathways)
+      .pipe(
+        map(response => {
+          if (response.fishresults != null) {
+            response.fishresults.forEach(resultsObject => {
+              Object.keys(resultsObject).forEach(key => {
+                if (key.indexOf('.') > -1) {
+                  const newKey = key.replace(/\./g, '');
+                  resultsObject[newKey] = resultsObject[key];
+                  delete resultsObject[key];
+                }
+              });
+            });
+          }
+          return response;
+        })
+      )
+      .subscribe(
+        (response: {
+          fishresults: Array<FisherTestResult>,
+          analyte_type: Array<string>
+        }) => {
+          this.fisherTestColumns = fisherTestBaseColumns;
+          this.fisherTestDisplayedColumns = fisherTestBaseColumns.map(item => item.value);
+          if (response.analyte_type && response.analyte_type.length > 0) {
+            if (response.analyte_type[0] === 'both') {
+              this.fisherTestColumns = this.fisherTestColumns.concat(fisherTestMultiTypeColumns);
+              this.fisherTestDisplayedColumns = this.fisherTestDisplayedColumns.concat(fisherTestMultiTypeColumns.map(item => item.value));
+            } else {
+              this.fisherTestColumns = this.fisherTestColumns.concat(fisherTestSingleTypeColumns);
+              this.fisherTestDisplayedColumns = this.fisherTestDisplayedColumns.concat(fisherTestSingleTypeColumns.map(item => item.value));
+            }
+          }
+          this.fisherTestResultsResponse = response;
+          if (response.fishresults != null) {
+            this.fisherTestResults = response.fishresults;
+          } else {
+            this.fisherTestResults = [];
+          }
+          setTimeout(() => {
+            this.selectedIndex = 3;
+          }, 15);
+          setTimeout(() => {
+            this.loadingService.setLoadingState(false);
+          }, 5);
+        }, error => {
+          this.errorMessage = 'There was a problem processing your request.';
           this.loadingService.setLoadingState(false);
-        }, 5);
-      }, error => {
-        this.errorMessage = 'There was a problem processing your request.';
-        this.loadingService.setLoadingState(false);
-      }, () => {
-        this.filteredFisherTestResults = null;
-        this.clusters = null;
-        this.clusteringResults = null;
-        this.showPlots = false;
-      });
+        }, () => {
+          this.filteredFisherTestResults = null;
+          this.clusters = null;
+          this.clusteringResults = null;
+          this.showPlots = false;
+        });
   }
 
   filterFisherTestResults(): void {
@@ -352,31 +388,47 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       options.params['p_fdradj_cutoff'] = this.pfdrAdjCutoffInput;
     }
 
-    this.http.post<any>(url, this.fisherTestResultsResponse, options).subscribe(
-      (response: {
-        fishresults: Array<FisherTestResult>,
-        analyte_type: Array<string>
-      }) => {
-        this.filteredFisherTestResultsResponse = response;
-        if (response.fishresults != null) {
-          this.filteredFisherTestResults = response.fishresults;
-        } else {
-          this.fisherTestResults = [];
-        }
-        setTimeout(() => {
-          this.selectedIndex = 4;
-        }, 15);
-        setTimeout(() => {
+    this.http.post<any>(url, this.fisherTestResultsResponse, options)
+      .pipe(
+        map(response => {
+          if (response.fishresults != null) {
+            response.fishresults.forEach(resultsObject => {
+              Object.keys(resultsObject).forEach(key => {
+                if (key.indexOf('.') > -1) {
+                  const newKey = key.replace(/\./g, '');
+                  resultsObject[newKey] = resultsObject[key];
+                  delete resultsObject[key];
+                }
+              });
+            });
+          }
+          return response;
+        })
+      ).subscribe(
+        (response: {
+          fishresults: Array<FisherTestResult>,
+          analyte_type: Array<string>
+        }) => {
+          this.filteredFisherTestResultsResponse = response;
+          if (response.fishresults != null) {
+            this.filteredFisherTestResults = response.fishresults;
+          } else {
+            this.fisherTestResults = [];
+          }
+          setTimeout(() => {
+            this.selectedIndex = 4;
+          }, 15);
+          setTimeout(() => {
+            this.loadingService.setLoadingState(false);
+          }, 5);
+        }, error => {
+          this.errorMessage = 'There was a problem processing your request.';
           this.loadingService.setLoadingState(false);
-        }, 5);
-      }, error => {
-        this.errorMessage = 'There was a problem processing your request.';
-        this.loadingService.setLoadingState(false);
-      }, () => {
-        this.clusters = null;
-        this.clusteringResults = null;
-        this.showPlots = false;
-      });
+        }, () => {
+          this.clusters = null;
+          this.clusteringResults = null;
+          this.showPlots = false;
+        });
   }
 
   clusterFilteredFisherResults(): void {
@@ -413,6 +465,22 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     options.params['min_pathway_tocluster'] = this.minPathwayTocluster;
 
     this.http.post<any>(url, this.filteredFisherTestResultsResponse, options)
+      .pipe(
+        map(response => {
+          if (response.fishresults != null) {
+            response.fishresults.forEach(resultsObject => {
+              Object.keys(resultsObject).forEach(key => {
+                if (key.indexOf('.') > -1) {
+                  const newKey = key.replace(/\./g, '');
+                  resultsObject[newKey] = resultsObject[key];
+                  delete resultsObject[key];
+                }
+              });
+            });
+          }
+          return response;
+        })
+      )
       .subscribe((response: {
         fishresults: Array<FisherTestResult>,
         analyte_type: string,
@@ -420,7 +488,6 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
         pathway_matrix: Array<Array<number>>;
       }) => {
         if (response.fishresults && response.fishresults.length > 0) {
-
           const group = new Map();
 
           response.fishresults.map(item => {
@@ -429,12 +496,6 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
               const pVal = item.Pval != null ? item.Pval : item.Pval_combined;
               item.negativeLogPVal = Decimal.log10(new Decimal(1).dividedBy(pVal)).toNumber();
             }
-            Object.keys(item).forEach(key => {
-              if (key.indexOf('.') > -1) {
-                item[key.split('.')[0]] = item[key];
-                delete item[key];
-              }
-            });
 
             const keys = item.cluster_assignment.split(', ');
             keys.forEach(key => {
