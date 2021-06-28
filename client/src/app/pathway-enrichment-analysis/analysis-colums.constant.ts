@@ -36,7 +36,7 @@ export const AnalyteColumns: Array<{ value: string; display: string }> = [
     }
 ];
 
-export const fisherTestColumns: Array<{ value: string; display: string }> = [
+export const fisherTestBaseColumns: Array<{ value: string; display: string }> = [
     {
         value: 'pathwayName',
         display: 'Pathway Name'
@@ -49,13 +49,12 @@ export const fisherTestColumns: Array<{ value: string; display: string }> = [
         value: 'pathwaysource',
         display: 'Pathway Source'
     },
+];
+
+export const fisherTestSingleTypeColumns: Array<{ value: string; display: string }> = [
     {
         value: 'Pval',
         display: 'P Value'
-    },
-    {
-        value: 'Pval_combined',
-        display: 'Combined P Value'
     },
     {
         value: 'Num_In_Path',
@@ -70,12 +69,43 @@ export const fisherTestColumns: Array<{ value: string; display: string }> = [
         display: 'FDR P Value'
     },
     {
-        value: 'Pval_combined_FDR',
-        display: 'Combined FDR P Value'
-    },
-    {
         value: 'Pval_Holm',
         display: 'Holm P Value'
+    }
+];
+
+export const fisherTestMultiTypeColumns: Array<{ value: string; display: string }> = [
+    {
+        value: 'Pval_combined',
+        display: 'Combined P Value'
+    },
+    {
+        value: 'PvalMetab',
+        display: 'Metabolite P Value'
+    },
+    {
+        value: 'PvalGene',
+        display: 'Gene P Value'
+    },
+    {
+        value: 'Num_In_PathMetab',
+        display: '# Metabolites in Path'
+    },
+    {
+        value: 'Num_In_PathGene',
+        display: '# Genes in Path'
+    },
+    {
+        value: 'Total_In_PathMetab',
+        display: 'Total Metabolites in Path'
+    },
+    {
+        value: 'Total_In_PathGene',
+        display: 'Total Genes in Path'
+    },
+    {
+        value: 'Pval_combined_FDR',
+        display: 'Combined FDR P Value'
     },
     {
         value: 'Pval_combined_Holm',
