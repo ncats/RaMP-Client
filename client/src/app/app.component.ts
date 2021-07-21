@@ -1,25 +1,29 @@
-import { Component, ViewChild, HostListener, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, HostListener, AfterViewInit, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSidenav } from '@angular/material/sidenav';
-import { ActivationEnd, Router } from '@angular/router';
+import { ActivationEnd, ResolveEnd, Router } from '@angular/router';
 import { MainNavItem } from './main-nav.model';
+import { Subscription } from 'rxjs';
+import { GoogleAnalyticsService } from './google-analytics/google-analytics.service';
 
 @Component({
   selector: 'ramp-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   hasBackdrop = false;
   @ViewChild('sideNav', { read: MatSidenav, static: false }) sideNav: MatSidenav;
   navItems: Array<MainNavItem> = [];
   activeNavItemId = '';
+  private routerSubscription: Subscription;
 
   constructor(
     public iconRegistry: MatIconRegistry,
     public sanitizer: DomSanitizer,
-    private router: Router
+    private router: Router,
+    private gaService: GoogleAnalyticsService
   ){
     iconRegistry.addSvgIcon(
       'menu',
@@ -39,9 +43,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       })
       .sort((a, b) => a.order - b.order);
 
-    this.router.events.subscribe(event => {
+    this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof ActivationEnd) {
         this.activeNavItemId = event.snapshot.data && event.snapshot.data.id || '';
+      }
+      if (event instanceof ResolveEnd) {
+        this.gaService.sendPageView(event.state.root.firstChild.data.display, event.state.url);
       }
     });
   }
@@ -55,6 +62,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.hasBackdrop = false;
       this.sideNav.mode = 'side';
       this.sideNav.open();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription != null) {
+      this.routerSubscription.unsubscribe();
     }
   }
 

@@ -27,7 +27,7 @@ export class GoogleAnalyticsService {
 
   init() {
     this.gtag = window['gtag'];
-    this.gtag('config', 'G-RM2JHGHYEK', { send_page_view: false });
+    this.gtag('config', this.googleAnanlyticsId, { send_page_view: false });
     this.isActive = true;
   }
 
