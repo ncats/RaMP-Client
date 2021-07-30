@@ -246,12 +246,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
           }
           return item;
         });
-        setTimeout(() => {
-          this.loadingService.setLoadingState(false);
-        }, 5);
-        setTimeout(() => {
-          this.selectedIndex = 1;
-        }, 15);
+        this.loadingService.setLoadingState(false);
+        this.selectedIndex = 1;
       }, error => {
         this.errorMessage = 'There was a problem processing your request. Please review your input and make sure you entered the correct analyte identifiers and selected the correct options';
         this.loadingService.setLoadingState(false);
@@ -294,12 +290,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
       )
       .subscribe((response: Array<Pathway>) => {
         this.pathways = response;
-        setTimeout(() => {
-          this.loadingService.setLoadingState(false);
-        }, 5);
-        setTimeout(() => {
-          this.selectedIndex = 2;
-        }, 15);
+        this.loadingService.setLoadingState(false);
+        this.selectedIndex = 2;
       }, error => {
         this.errorMessage = 'There was a problem processing your request. Please review your input and make sure you entered the correct analyte identifiers and selected the correct options';
         this.loadingService.setLoadingState(false);
@@ -355,12 +347,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
           } else {
             this.fisherTestResults = [];
           }
-          setTimeout(() => {
-            this.selectedIndex = 3;
-          }, 15);
-          setTimeout(() => {
-            this.loadingService.setLoadingState(false);
-          }, 5);
+          this.loadingService.setLoadingState(false);
+          this.selectedIndex = 3;
         }, error => {
           this.errorMessage = 'There was a problem processing your request.';
           this.loadingService.setLoadingState(false);
@@ -415,12 +403,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
           } else {
             this.fisherTestResults = [];
           }
-          setTimeout(() => {
-            this.selectedIndex = 4;
-          }, 15);
-          setTimeout(() => {
-            this.loadingService.setLoadingState(false);
-          }, 5);
+          this.loadingService.setLoadingState(false);
+          this.selectedIndex = 4;
         }, error => {
           this.errorMessage = 'There was a problem processing your request.';
           this.loadingService.setLoadingState(false);
@@ -516,13 +500,8 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
           });
         }
         this.clusteringResults = response.fishresults;
-
-        setTimeout(() => {
-          this.selectedIndex = 5;
-        }, 10);
-        setTimeout(() => {
-          this.loadingService.setLoadingState(false);
-        }, 15);
+        this.loadingService.setLoadingState(false);
+        this.selectedIndex = 5;
       }, error => {
         this.errorMessage = 'There was a problem processing your request. Please review your input and make sure you entered the correct analyte identifiers.';
         this.loadingService.setLoadingState(false);
@@ -581,6 +560,7 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
     this.errorMessage = '';
     this.detailsPanelOpen = false;
     this.rFunctionPanelOpen = false;
+    this.selectedIndex = matTabChangeEvent.index;
     switch (matTabChangeEvent.index) {
       case 1: {
         const sort: Sort = {

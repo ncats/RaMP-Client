@@ -59,6 +59,8 @@ export class AnalytesFromPathwayComponent implements OnInit {
   expandedElement: PathwayMatch | null;
   detailsPanelOpen = false;
   rFunctionPanelOpen = false;
+  numFoundIds: number;
+  numSubmittedIds: number;
 
   constructor(
     private http: HttpClient,
@@ -81,6 +83,7 @@ export class AnalytesFromPathwayComponent implements OnInit {
     this.loadingService.setLoadingState(true);
     const url = `${this.apiBaseUrl}source/pathways`;
     const pathways = (this.pathwaysInput ? this.pathwaysInput.toString().split(/\r\n|\r|\n/g) : []).filter(pathway => pathway !== '');
+    this.numSubmittedIds = pathways.length;
     const options = {
       params: {
         identifier: pathways,
@@ -89,7 +92,7 @@ export class AnalytesFromPathwayComponent implements OnInit {
     this.http.get<any>(url, options)
       .pipe(
         map((response: Array<Pathway>) => {
-
+          this.numFoundIds = 0;
           const pathwayMatches: Array<PathwayMatch> = [];
           const pathwaysLower: Array<string> = [];
 
@@ -118,6 +121,7 @@ export class AnalytesFromPathwayComponent implements OnInit {
               index = pathwaysLower.indexOf(pathway.pathwayName.toLowerCase());
             }
             if (index > -1) {
+              this.numFoundIds++;
               if (pathwayMatches[index].pathwayRampIdList.indexOf(pathway.pathwayRampId) === -1) {
                 pathwayMatches[index].pathwayRampIdList.push(pathway.pathwayRampId);
                 pathwayMatches[index].numPathways++;
