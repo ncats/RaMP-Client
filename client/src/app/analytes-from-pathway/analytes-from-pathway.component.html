@@ -72,6 +72,11 @@
                             </div>
                         </div>
                         <div class="results-table-container" *ngIf="pathwayMatches && pathwayMatches.length">
+                            <div class="results-message-container">
+                                <span>We found <strong>{{numFoundIds}}</strong> of the
+                                    <strong>{{numSubmittedIds}}</strong>&nbsp;</span>
+                                <span>pathways you submitted.</span>
+                            </div>
                             <div class="accordion-container">
                                 <mat-accordion>
                                     <mat-expansion-panel (opened)="detailsPanelOpen = true" (closed)="detailsPanelOpen = false">

@@ -611,7 +611,32 @@
                                     </mat-expansion-panel>
                                 </mat-accordion>
                             </div>
-                            <div>
+                            <div class="cluster-table-top-options">
+                                <form #anlyteForm="ngForm" class="flex-row">
+                                    <div class="space-right">
+                                        <button mat-flat-button color="accent"
+                                            (click)="clusterFilteredFisherResults()"
+                                            [disabled]="anlyteForm.invalid">Re-cluster Fisher's Test Results</button>
+                                    </div>
+                                    <mat-form-field class="space-right number-input">
+                                        <mat-label>% analyte overlap</mat-label>
+                                        <input type="number" matInput [(ngModel)]="percAnalyteOverlap" required
+                                            name="percAnalyteOverlap">
+                                        <mat-hint>(1 - 100)</mat-hint>
+                                    </mat-form-field>
+                                    <mat-form-field class="space-right number-input">
+                                        <mat-label>% pathway overlap</mat-label>
+                                        <input type="number" matInput [(ngModel)]="percPathwayOverlap" required
+                                            name="percAnalyteOverlap">
+                                        <mat-hint>(1 - 100)</mat-hint>
+                                    </mat-form-field>
+                                    <mat-form-field class="number-input">
+                                        <mat-label>Min pathway to cluster</mat-label>
+                                        <input type="number" matInput [(ngModel)]="minPathwayTocluster" required
+                                            name="minPathwayTocluster">
+                                    </mat-form-field>
+                                </form>
+                                <div class="fill-middle"></div>
                                 <mat-paginator [length]="clusters && clusters.length || 0"
                                     [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
                                     (page)="pageChange(clusters, $event)" [pageSizeOptions]="[5, 10, 25, 100]">

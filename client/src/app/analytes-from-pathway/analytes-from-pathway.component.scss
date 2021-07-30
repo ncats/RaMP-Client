@@ -220,6 +220,10 @@
   .example-element-description-attribution {
     opacity: 0.5;
   }
+
+  .results-message-container {
+    font-size: 1.2em;
+  }
   
   @media(max-width: 1200px) {
     ::ng-deep .mat-tab-body-content {
