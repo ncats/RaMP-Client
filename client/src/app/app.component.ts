@@ -54,7 +54,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    if (window.innerWidth < 1300) {
+    if (window.innerWidth < 1200) {
       this.hasBackdrop = true;
       this.sideNav.mode = 'over';
       this.sideNav.close();
