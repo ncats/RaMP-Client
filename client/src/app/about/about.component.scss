@@ -28,3 +28,16 @@ section {
         height: auto;
     }
 }
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    font-weight: 500;
+}
+
+th, td {
+    padding: 0 5px;
+    border: 1px solid black;
+}

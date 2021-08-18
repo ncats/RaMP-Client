@@ -4,32 +4,6 @@
     </h1>
     <mat-card>
         <mat-card-content>
-            <section class="table-of-contents">
-                <h2>
-                    Table of Contents
-                </h2>
-                <div class="section-name">
-                    <a (click)="scrollTo('briefDescription')">
-                        Brief Description
-                    </a>
-                </div>
-                <div class="section-name">
-                    <a (click)="scrollTo('contact')">
-                        Contact
-                    </a>
-                </div>
-                <div class="section-name">
-                    <a (click)="scrollTo('citation')">
-                        Citation
-                    </a>
-                </div>
-                <div class="section-name">
-                    <a (click)="scrollTo('summaryStatistics')">
-                        Summary Statistics
-                    </a>
-                </div>
-            </section>
-            <mat-divider></mat-divider>
             <section #briefDescription>
                 <h2>
                     Brief Description
@@ -43,7 +17,7 @@
                     </span>
                 </div>
                 <div class="paragraph">
-                    <mat-table [dataSource]="entityCounts">
+                    <!-- <mat-table [dataSource]="entityCounts">
                         <ng-container matColumnDef="entity">
                             <mat-header-cell *matHeaderCellDef>
                                 <span>
@@ -67,7 +41,20 @@
                         </ng-container>
                         <mat-header-row *matHeaderRowDef="entityCountsColumns"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: entityCountsColumns;"></mat-row>
-                    </mat-table>
+                    </mat-table> -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th *ngFor="let column of entityCountsColumns; index as index"><div>{{column}}</div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let entityCount of entityCounts">
+                                <td>{{entityCount.entity}}</td>
+                                <td *ngFor="let column of entityCountsColumns.slice(1); index as index">{{entityCount.counts[column] | number}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="paragraph">
                     Of note, RaMP does not import all the information contained in these databases. Instead, RaMP includes pathway names and the genes and metabolites they include. RaMP is a work in progress and we will be expanding its content (reaction-level information, non-human compounds and genes, etc.).
@@ -99,6 +86,22 @@
                 </div>
                 <div class="paragraph">
                     More details can be found in <a href="http://www.mdpi.com/2218-1989/8/1/16" target="_blank">our manuscript</a>, and an example usage can be found in <a href="https://pubmed.ncbi.nlm.nih.gov/30725469/" target="_blank">this chapter</a>.
+                </div>
+            </section>
+            <mat-divider></mat-divider>
+            <section #summaryStatistics>
+                <h2>
+                    Summary Statistics
+                </h2>
+                <div class="upset-plots-container">
+                    <div>
+                        <ramp-upset title="Metabolite Overlap" [intersections]="compoundsIntersections" [soloSets]="compoundsSoloSets" [allData]="compoundsAllData" scale="log">
+                        </ramp-upset>
+                    </div>
+                    <div>
+                        <ramp-upset title="Gene Overlap" [intersections]="genesIntersections" [soloSets]="genesSoloSets" [allData]="genesAllData" scale="log">
+                        </ramp-upset>
+                    </div>
                 </div>
             </section>
             <mat-divider></mat-divider>
@@ -143,22 +146,6 @@
                 </div>
                 <div class="paragraph">
                     To access, <a href="https://www.mdpi.com/2218-1989/8/1/16" target="_blank">click here</a>.
-                </div>
-            </section>
-            <mat-divider></mat-divider>
-            <section #summaryStatistics>
-                <h2>
-                    Summary Statistics
-                </h2>
-                <div class="upset-plots-container">
-                    <div>
-                        <ramp-upset title="Metabolite Overlap" [intersections]="compoundsIntersections" [soloSets]="compoundsSoloSets" [allData]="compoundsAllData" scale="log">
-                        </ramp-upset>
-                    </div>
-                    <div>
-                        <ramp-upset title="Gene Overlap" [intersections]="genesIntersections" [soloSets]="genesSoloSets" [allData]="genesAllData" scale="log">
-                        </ramp-upset>
-                    </div>
                 </div>
             </section>
         </mat-card-content>
