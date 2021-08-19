@@ -42,6 +42,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import { SpaceToNewlinePipe } from './utilities/space-to-newline/space-to-newline.pipe';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { MatMenuModule } from '@angular/material/menu';
     OntologiesComponent,
     PathwaysFromAnalytesComponent,
     CommonReactionAnalytesComponent,
-    AnalytesFromPathwayComponent
+    AnalytesFromPathwayComponent,
+    SpaceToNewlinePipe
   ],
   imports: [
     BrowserModule,

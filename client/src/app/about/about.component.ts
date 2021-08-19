@@ -28,7 +28,7 @@ export class AboutComponent implements OnInit, AfterViewInit {
   elementsDict: { [elementName: string]: ElementRef<HTMLElement> } = {};
   sourceVersions: Array<SourceVersion>;
   entityCounts: Array<EntityCount>;
-  entityCountsColumns: Array<string> = ['Entity'];
+  entityCountsColumns: Array<string> = [''];
 
   constructor(
     private http: HttpClient,
