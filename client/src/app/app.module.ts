@@ -41,6 +41,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { SpaceToNewlinePipe } from './utilities/space-to-newline/space-to-newline.pipe';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     OntologiesComponent,
     PathwaysFromAnalytesComponent,
     CommonReactionAnalytesComponent,
-    AnalytesFromPathwayComponent
+    AnalytesFromPathwayComponent,
+    SpaceToNewlinePipe
   ],
   imports: [
     BrowserModule,
@@ -86,7 +89,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatExpansionModule,
     MatAutocompleteModule,
     MatChipsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatMenuModule
   ],
   providers: [
     ConfigService,
