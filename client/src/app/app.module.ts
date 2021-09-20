@@ -26,7 +26,6 @@ import { ScatterModule } from './visualization/scatter/scatter.module';
 import { BarModule } from './visualization/bar/bar.module';
 import { MatDividerModule } from '@angular/material/divider';
 import { UpsetModule } from './visualization/upset/upset.module';
-import { AnalytesComponent } from './analytes/analytes.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TableDialogComponent } from './table-dialog/table-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -50,7 +49,6 @@ import { SpaceToNewlinePipe } from './utilities/space-to-newline/space-to-newlin
     PageNotFoundComponent,
     PathwayEnrichmentAnalysisComponent,
     AboutComponent,
-    AnalytesComponent,
     TableDialogComponent,
     OntologiesComponent,
     PathwaysFromAnalytesComponent,

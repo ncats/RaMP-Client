@@ -7,7 +7,7 @@
             <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="selectedTabChange($event)">
                 <mat-tab textLabel="input">
                     <ng-template mat-tab-label>
-                        Input
+                        Input Analytes
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="error-message-container" *ngIf="errorMessage">
@@ -25,38 +25,38 @@
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
                                 <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="Analytes" spellcheck="false"
-                                        [(ngModel)]="metabolitesInput" name="metabolitesInput" [required]="!genesInput"></textarea>
-                                </div>
-                            </div>
-                            <div class="identifiers">
-                                <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="Genes" spellcheck="false"
-                                        [(ngModel)]="genesInput" name="genesInput" [required]="!metabolitesInput"></textarea>
+                                    <textarea class="targetBox" placeholder="List of Analyte IDs or names" spellcheck="false"
+                                        [(ngModel)]="analytesInput" name="analytesInput"
+                                        [required]="true"></textarea>
                                 </div>
                             </div>
                             <div class="description-right">
                                 <div class="space-bottom">
-                                    Enter a list of analyte names or IDs so the application can try to match them
-                                    against our database.
+                                    Enter a list of analyte (metabolites, genes) names or IDs so the application can try to match them
+                                    against our database. We recommend inputting a list of IDs because analytes can have many synomyns, leading to 
+                                    potential errors in mapping. If names are used, mappings should be verified.
                                 </div>
                                 <div class="space-bottom">
-                                    When entering IDs, prepend with the database of origin followed by a colon, for example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc..  It is possible to input IDs using multiple different sources.  RaMP currently supports the following id prefixes:
+                                    When entering IDs, prepend with the database of origin followed by a colon, for
+                                    example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc.. It is
+                                    possible to input IDs using multiple different sources. RaMP currently supports the
+                                    following id prefixes:
                                 </div>
-                                <table class="mat-table static-table space-bottom">
-                                    <tr class="mat-header-row">
-                                        <th class="mat-header-cell">Analyte Type</th>
-                                        <th class="mat-header-cell">ID Prefix Types</th>
-                                    </tr>
-                                    <tr class="mat-row">
-                                        <td class="mat-cell">Metabolites</td>
-                                        <td class="mat-cell">CAS, chebi, chemspider, enzymeNomenclature, hmdb, kegg, LIPIDMAPS, pubchem</td>
-                                    </tr>
-                                    <tr class="mat-row">
-                                        <td class="mat-cell">Genes/Proteins</td>
-                                        <td class="mat-cell">ensembl, entrez, uniprot</td>
-                                    </tr>
-                                </table>
+                                <mat-table [dataSource]="idTypes" class="space-bottom">
+                                    <ng-container [matColumnDef]="column.value"
+                                        *ngFor="let column of idTypeColumns; index as index">
+                                        <mat-header-cell *matHeaderCellDef>
+                                            <span>
+                                                {{column.display}}
+                                            </span>
+                                        </mat-header-cell>
+                                        <mat-cell *matCellDef="let row">
+                                            <span>{{row[column.value]}}</span>
+                                        </mat-cell>
+                                    </ng-container>
+                                    <mat-header-row *matHeaderRowDef="idTypeDisplayedColumns"></mat-header-row>
+                                    <mat-row *matRowDef="let row; columns: idTypeDisplayedColumns;"></mat-row>
+                                </mat-table>
                                 <div class="space-bottom">
                                     <button mat-flat-button color="accent" (click)="findAnalytes()"
                                         [disabled]="anlyteForm.invalid">
@@ -65,33 +65,9 @@
                                 </div>
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('metabolites', 'ids')">
+                                        (click)="insertSample()">
                                         <span>
-                                            &#60; Example of Metabolite ID's
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('metabolites', 'names')">
-                                        <span>
-                                            &#60; Example of Metabolite Names
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('genes', 'ids')">
-                                        <span>
-                                            &#60; Example of Gene ID's
-                                        </span>
-                                    </button>
-                                </div>
-                                <div>
-                                    <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('genes', 'names')">
-                                        <span>
-                                            &#60; Example of Gene Names
+                                            &#60; Example of Analytes
                                         </span>
                                     </button>
                                 </div>
