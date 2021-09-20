@@ -25,16 +25,9 @@
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
                                 <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="List of Metabolite IDs or names" spellcheck="false"
-                                        [(ngModel)]="metabolitesInput" name="metabolitesInput"
-                                        [required]="!genesInput"></textarea>
-                                </div>
-                            </div>
-                            <div class="identifiers">
-                                <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="List of Gene IDs or names" spellcheck="false"
-                                        [(ngModel)]="genesInput" name="genesInput"
-                                        [required]="!metabolitesInput"></textarea>
+                                    <textarea class="targetBox" placeholder="List of Analyte IDs or names" spellcheck="false"
+                                        [(ngModel)]="analytesInput" name="analytesInput"
+                                        [required]="true"></textarea>
                                 </div>
                             </div>
                             <div class="description-right">
@@ -72,17 +65,9 @@
                                 </div>
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('metabolitesCombined')">
+                                        (click)="insertSample()">
                                         <span>
-                                            &#60; Example of Metabolites
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('genesCombined')">
-                                        <span>
-                                            &#60; Example of Genes
+                                            &#60; Example of Analytes
                                         </span>
                                     </button>
                                 </div>

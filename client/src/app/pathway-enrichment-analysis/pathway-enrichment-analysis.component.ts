@@ -7,24 +7,22 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import {
-  AnalyteColumns,
-  AnalyteMatchesColumns,
   ClusteringColumns,
   fisherTestBaseColumns,
   fisherTestSingleTypeColumns,
   fisherTestMultiTypeColumns,
-  pathwayColumns,
-  idTypeColumns
+  pathwayColumns
 } from './analysis-colums.constant';
 import { Decimal } from 'decimal.js';
 import { _getOptionScrollPosition } from '@angular/material/core';
 import { Pathway } from './pathway.model';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { AnalyteMatch, Analyte } from './analyte.model';
-import { analyteExampleInputs } from './examples.constant';
+import { AnalyteMatch } from '../analyte/analyte.model';
 import { MatDialog } from '@angular/material/dialog';
 import { TableDialogComponent } from '../table-dialog/table-dialog.component';
 import { ConfigService } from '../config/config.service';
+import { AnalyteService } from '../analyte/analyte.service';
+import { AnalyteQueryBase } from '../analyte/analyte-query.abstract';
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -39,33 +37,21 @@ import { ConfigService } from '../config/config.service';
     ]),
   ]
 })
-export class PathwayEnrichmentAnalysisComponent implements OnInit {
-
-  // analytes
-  metabolitesInput: string;
-  genesInput: string;
+export class PathwayEnrichmentAnalysisComponent extends AnalyteQueryBase implements OnInit  {
 
   // data for tables
-  idTypes: Array<{ analyteType: string; idTypes: string }>;
-  analyteMatches: Array<AnalyteMatch>;
   pathways: Array<Pathway>;
   fisherTestResults: Array<FisherTestResult>;
   filteredFisherTestResults: Array<FisherTestResult>;
   clusters: Array<Cluster>;
 
   // tables columns
-  idTypeDisplayedColumns: Array<string>;
-  idTypeColumns = idTypeColumns;
   fisherTestDisplayedColumns: Array<string>;
   fisherTestColumns: Array<{ value: string; display: string }>;
   pathwayDisplayedColumns: Array<string>;
   pathwayColumns = pathwayColumns;
   clusteringDisplayedColumns: Array<string>;
   clusteringColumns = ClusteringColumns;
-  analyteMatchesDisplayedColumns: Array<string>;
-  analyteMatchesColumns = AnalyteMatchesColumns;
-  analyteDisplayedColumns: Array<string>;
-  analyteColumns = AnalyteColumns;
 
   // fisher test filter options
   pHolmAdjCutoffInput = 0.1;
@@ -105,147 +91,34 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
   };
 
   constructor(
-    private http: HttpClient,
+    public http: HttpClient,
     private loadingService: LoadingService,
     public dialog: MatDialog,
-    private configService: ConfigService
+    public configService: ConfigService,
+    public analyteService: AnalyteService
   ) {
+    super(
+      http,
+      configService,
+      analyteService
+    );
     this.apiBaseUrl = configService.configData.apiBaseUrl;
   }
 
   ngOnInit(): void {
     this.pathwayDisplayedColumns = pathwayColumns.map(item => item.value);
     this.clusteringDisplayedColumns = this.clusteringColumns.map(item => item.value);
-    this.analyteMatchesDisplayedColumns = this.analyteMatchesColumns.map(item => item.value);
-    this.analyteDisplayedColumns = this.analyteColumns.map(item => item.value);
-    this.idTypeDisplayedColumns = this.idTypeColumns.map(item => item.value);
-    this.analyteDisplayedColumns.unshift('isSelected');
-    this.loadIdTypes();
-  }
-
-  loadIdTypes(): void {
-    const url = `${this.apiBaseUrl}id-types`;
-    this.http.get<Array<{ analyteType: string; idTypes: string }>>(url).subscribe(response => {
-      this.idTypes = response;
-    });
+    super.ngOnInit();
   }
 
   findAnalytes(): void {
     this.errorMessage = '';
     this.selectedIndex = 0;
     this.loadingService.setLoadingState(true);
-    const url = `${this.apiBaseUrl}source/analytes`;
-    const metabolites = this.metabolitesInput ? this.metabolitesInput.toString().split(/\r\n|\r|\n/g) : [];
-    const genes = this.genesInput ? this.genesInput.toString().split(/\r\n|\r|\n/g) : [];
-    const analytes = metabolites.concat(genes).filter(analyte => analyte !== '');
-    const options = {
-      params: {
-        identifier: analytes,
-      }
-    };
-    this.http.get<any>(url, options)
-      .pipe(
-        map((response: Array<Analyte>) => {
+    const analytes = (this.analytesInput ? this.analytesInput.toString().split(/\r\n|\r|\n/g) : []).filter(analyte => analyte !== '');
 
-          const analyteMatches: Array<AnalyteMatch> = [];
-          const analytesLower: Array<string> = [];
-
-          analytes.forEach(analyteItendifier => {
-
-            const analyteLower = analyteItendifier.toLowerCase();
-            analytesLower.push(analyteLower);
-            const analyteMatch: AnalyteMatch = {
-              input: analyteItendifier,
-              rampIdList: [],
-              idTypesList: [],
-              idTypes: '',
-              sourceIdsList: [],
-              typesList: [],
-              sourceIds: '',
-              types: '',
-              numAnalytes: 0,
-              commonName: '',
-              analytes: []
-            };
-
-            analyteMatches.push(analyteMatch);
-          });
-
-          response.forEach(analyte => {
-            let index = analytesLower.indexOf(analyte.sourceId.toLowerCase());
-            if (index === -1) {
-              index = analytesLower.indexOf(analyte.commonName.toLowerCase());
-            }
-            if (index === -1 && analyte.synonym) {
-              index = analytesLower.indexOf(analyte.synonym.toLowerCase());
-            }
-            if (index > -1) {
-              if (analyteMatches[index].rampIdList.indexOf(analyte.rampId) === -1) {
-                analyteMatches[index].rampIdList.push(analyte.rampId);
-                analyteMatches[index].numAnalytes++;
-                analyte.sourceIdsList = [analyte.sourceId];
-                analyte.idTypesList = [analyte.IDtype];
-                analyteMatches[index].analytes.push(analyte);
-                analyteMatches[index].sourceIdsList.push(analyte.sourceId);
-                if (analyteMatches[index].commonName === '') {
-                  analyteMatches[index].commonName = analyte.commonName;
-                } else if (analyteMatches[index].commonName !== analyte.commonName) {
-                  analyteMatches[index].commonName = 'multiple - click to view';
-                }
-              } else {
-                const existingAnalyite = analyteMatches[index].analytes.find(x => x.rampId === analyte.rampId);
-                existingAnalyite.sourceIdsList.push(analyte.sourceId);
-                if (existingAnalyite.idTypesList.indexOf(analyte.IDtype) === -1) {
-                  existingAnalyite.idTypesList.push(analyte.IDtype);
-                }
-              }
-              if (analyteMatches[index].idTypesList.indexOf(analyte.IDtype) === -1) {
-                analyteMatches[index].idTypesList.push(analyte.IDtype);
-              }
-              if (analyteMatches[index].typesList.indexOf(analyte.geneOrCompound) === -1) {
-                analyteMatches[index].typesList.push(analyte.geneOrCompound);
-              }
-            }
-          });
-
-          analyteMatches.map(analyteMatch => {
-            analyteMatch.idTypes = analyteMatch.idTypesList.join(', ');
-            analyteMatch.types = analyteMatch.typesList.join(', ');
-            analyteMatch.sourceIds = analyteMatch.sourceIdsList.join(', ');
-            analyteMatch.analytes.map(analyte => {
-              analyte.sourceIds = analyte.sourceIdsList.join(', ');
-              analyte.idTypes = analyte.idTypesList.join(', ');
-              return analyte;
-            });
-            return analyteMatch;
-          });
-
-          return analyteMatches;
-        })
-      )
-      .subscribe((response: Array<AnalyteMatch>) => {
-        this.analyteMatches = response.map(item => {
-          if (item.analytes && item.analytes.length > 0) {
-            let selected = false;
-            if (item.analytes.length > 1) {
-              // tslint:disable-next-line:prefer-for-of
-              for (let i = 0; i < item.analytes.length; i++){
-                if (
-                  item.analytes[i].commonName === item.input
-                  || item.analytes[i].sourceId === item.input
-                  || (item.analytes[i].synonym && item.analytes[i].synonym === item.input)) {
-                  item.analytes[i].isSelected = true;
-                  selected = true;
-                  break;
-                }
-              }
-            }
-            if (!selected) {
-              item.analytes[0].isSelected = true;
-            }
-          }
-          return item;
-        });
+    this.analyteService.findAnalytes(analytes).subscribe((response: Array<AnalyteMatch>) => {
+        this.analyteMatches = this.setSelectedAnalyteMatches(response);
         this.loadingService.setLoadingState(false);
         this.selectedIndex = 1;
       }, error => {
@@ -506,14 +379,6 @@ export class PathwayEnrichmentAnalysisComponent implements OnInit {
         this.errorMessage = 'There was a problem processing your request. Please review your input and make sure you entered the correct analyte identifiers.';
         this.loadingService.setLoadingState(false);
       });
-  }
-
-  insertSample(inputType: 'metabolitesCombined' | 'genesCombined'): void {
-    if (inputType === 'metabolitesCombined') {
-      this.metabolitesInput = analyteExampleInputs[inputType];
-    } else {
-      this.genesInput = analyteExampleInputs[inputType];
-    }
   }
 
   pageChange(data: Array<any> = [], pageEvent?: PageEvent): void {

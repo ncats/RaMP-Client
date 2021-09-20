@@ -119,5 +119,78 @@ export const analyteExampleInputs = {
         'HRAS\r\n' +
         'ITPR1\r\n' +
         'PRKACA;proteinkinasecAMP-activ\r\n' +
-        'CHKA'
+        'CHKA',
+    // analytesCombined: '4-Hydroxyproline\r\n' +
+    //     'Malic acid\r\n' +
+    //     'kegg:C00275\r\n' +
+    //     'L-Glutamic acid\r\n' +
+    //     'CAS:10326-41-7\r\n' +
+    //     'L-Kynurenine\r\n' +
+    //     'Dihydrouracil\r\n' +
+    //     'pubchem:700\r\n' +
+    //     'L-Lactic acid\r\n' +
+    //     'Uracil\r\n' +
+    //     'chebi:16235\r\n' +
+    //     'chebi:17553\r\n' +
+    //     'pubchem:9547068\r\n' +
+    //     'pubchem:24779463\r\n' +
+    //     'Sphingosine\r\n' +
+    //     'pubchem:23327\r\n' +
+    //     'Putrescine\r\n' +
+    //     'chebi:61553\r\n' +
+    //     'chebi:17561\r\n' +
+    //     'chebi:16244\r\n' +
+    //     'chemspider:13207\r\n' +
+    //     'L-Aspartic acid\r\n' +
+    //     'pubchem:611\r\n' +
+    //     'Indoleacetic acid\r\n' +
+    //     'hmdb:HMDB0003971\r\n' +
+    //     'gene_symbol:AOC3\r\n' +
+    //     'uniprot:E9PRS4\r\n' +
+    //     'entrez:2719\r\n' +
+    //     'gene_symbol:SAA1\r\n' +
+    //     'SLC19A3\r\n' +
+    //     'ensembl:ENSG00000174697\r\n' +
+    //     'ensembl:ENSG00000101938\r\n' +
+    //     'THRSP\r\n' +
+    //     'LPL\r\n' +
+    //     'GYG2\r\n' +
+    //     'RBP4\r\n' +
+    //     'gene_symbol:ADH1C\r\n' +
+    //     'LYVE1\r\n' +
+    //     'FABP4\r\n' +
+    //     'GPD1\r\n' +
+    //     'entrez:125\r\n' +
+    //     'ACVR1C\r\n' +
+    //     'AKR1C2\r\n' +
+    //     'GHR\r\n' +
+    //     'CD36\r\n' +
+    //     'FHL1\r\n' +
+    //     'CIDEC\r\n' +
+    //     'hmdb:HMDBP00784\r\n' +
+    //     'uniprot:Q9NS61\r\n' +
+    //     'HBB\r\n' +
+    //     'ABCA8\r\n' +
+    //     'gene_symbol:GPAM\r\n' +
+    //     'ADIPOQ\r\n' +
+    //     'PLIN1\r\n' +
+    //     'LIPE\r\n' +
+    //     'gene_symbol:GLYAT\r\n' +
+    //     'ACACB\r\n'
+    analytesCombined: 'pubchem:10350317\r\n' +
+        'pubchem:5289133\r\n' +
+        'hmdb:HMDB0062552\r\n' +
+        'Adenine\r\n' +
+        'kegg:C05282\r\n' +
+        '2-Oxoglutarate\r\n' +
+        'hmdb:HMDB0029159\r\n' +
+        'Glutamic acid\r\n' +
+        'hmdb:HMDB0004971\r\n' +
+        'kegg:C06424\r\n' +
+        'hmdb:HMDB0000532\r\n' +
+        'Ornithine\r\n' +
+        'hmdb:HMDB0010169\r\n' +
+        'kegg:C01530\r\n' +
+        'Trigonelline\r\n' +
+        'kegg:C00366'
 };

@@ -25,25 +25,22 @@
                         <form #anlyteForm="ngForm" class="analyte-form">
                             <div class="identifiers">
                                 <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="List of Metabolite IDs or names" spellcheck="false"
-                                        [(ngModel)]="metabolitesInput" name="metabolitesInput"
-                                        [required]="!genesInput"></textarea>
-                                </div>
-                            </div>
-                            <div class="identifiers">
-                                <div class="text-input-container">
-                                    <textarea class="targetBox" placeholder="List of Gene IDs or names" spellcheck="false"
-                                        [(ngModel)]="genesInput" name="genesInput"
-                                        [required]="!metabolitesInput"></textarea>
+                                    <textarea class="targetBox" placeholder="List of Analyte IDs or names" spellcheck="false"
+                                        [(ngModel)]="analytesInput" name="analytesInput"
+                                        [required]="true"></textarea>
                                 </div>
                             </div>
                             <div class="description-right">
                                 <div class="space-bottom">
-                                    Enter a list of analyte names or IDs so the application can try to match them
-                                    against our database.
+                                    Enter a list of analyte (metabolites, genes) names or IDs so the application can try to match them
+                                    against our database. We recommend inputting a list of IDs because analytes can have many synomyns, leading to 
+                                    potential errors in mapping. If names are used, mappings should be verified.
                                 </div>
                                 <div class="space-bottom">
-                                    When entering IDs, prepend with the database of origin followed by a colon, for example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc..  It is possible to input IDs using multiple different sources.  RaMP currently supports the following id prefixes:
+                                    When entering IDs, prepend with the database of origin followed by a colon, for
+                                    example <strong>kegg</strong>:C02712, <strong>hmdb</strong>:HMDB04824, etc.. It is
+                                    possible to input IDs using multiple different sources. RaMP currently supports the
+                                    following id prefixes:
                                 </div>
                                 <mat-table [dataSource]="idTypes" class="space-bottom">
                                     <ng-container [matColumnDef]="column.value"
@@ -68,17 +65,9 @@
                                 </div>
                                 <div class="space-bottom">
                                     <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('metabolitesCombined')">
+                                        (click)="insertSample()">
                                         <span>
-                                            &#60; Example of Metabolites
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="space-bottom">
-                                    <button class="form-divider" mat-stroked-button
-                                        (click)="insertSample('genesCombined')">
-                                        <span>
-                                            &#60; Example of Genes
+                                            &#60; Example of Analytes
                                         </span>
                                     </button>
                                 </div>
