@@ -32,16 +32,16 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
 
-    this.navItems = this.router.config
-      .filter(item => item.data != null && item.data.isMainNav).map(item => {
-        return {
-          id: item.data.id,
-          path: `/${item.data.path || item.path}`,
-          display: item.data.display,
-          order: item.data.order
-        };
-      })
-      .sort((a, b) => a.order - b.order);
+    // this.navItems = this.router.config
+    //   .filter(item => item.data != null && item.data.isMainNav).map(item => {
+    //     return {
+    //       id: item.data.id,
+    //       path: `/${item.data.path || item.path}`,
+    //       display: item.data.display,
+    //       order: item.data.order
+    //     };
+    //   })
+    //   .sort((a, b) => a.order - b.order);
 
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof ActivationEnd) {
@@ -54,15 +54,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    if (window.innerWidth < 1800) {
-      this.hasBackdrop = true;
-      this.sideNav.mode = 'over';
-      this.sideNav.close();
-    } else {
-      this.hasBackdrop = false;
-      this.sideNav.mode = 'side';
-      this.sideNav.open();
-    }
+    // if (window.innerWidth < 1200) {
+    //   this.hasBackdrop = true;
+    //   this.sideNav.mode = 'over';
+    //   this.sideNav.close();
+    // } else {
+    //   this.hasBackdrop = false;
+    //   this.sideNav.mode = 'side';
+    //   this.sideNav.open();
+    // }
   }
 
   ngOnDestroy() {
@@ -71,10 +71,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  openSideNav(): void {
-    this.sideNav.mode = 'over';
-    this.sideNav.open();
-  }
+  // openSideNav(): void {
+  //   this.sideNav.mode = 'over';
+  //   this.sideNav.open();
+  // }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {

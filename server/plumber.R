@@ -203,10 +203,10 @@ function() {
 #* @get /api/id-types
 function() {
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
@@ -238,10 +238,10 @@ function(identifier) {
     identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
@@ -272,10 +272,10 @@ function(identifier) {
     identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
                           dbname = dbname,
@@ -313,10 +313,10 @@ function(identifier) {
 #* @get /api/ontologies
 function(metabolite="", type="biological") {
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
 
     metabolites_ids <- c(metabolite)
     num_submitted_ids <- length(metabolites_ids)
@@ -387,10 +387,10 @@ function(metabolite="", type="biological") {
 #* @get /api/ontology-summaries
 function(contains="") {
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
 
     con <- DBI::dbConnect(RMariaDB::MariaDB(),
                           user = username,
@@ -419,10 +419,10 @@ function(contains="") {
 #* @get /api/metabolites
 function(ontology="") {
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
 
     ontologies_names <- c(ontology)
     num_submitted_names <- length(ontologies_names)
@@ -482,10 +482,10 @@ function(pathway="") {
     pathways <- c(pathway)
     print(pathways)
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     analytes_df <- tryCatch({
         analytes_df <- RaMP::getAnalyteFromPathway(
             pathway = pathways,
@@ -508,10 +508,10 @@ function(pathway="") {
 function(analyte="") {
     analytes <- c(analyte)
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     pathways_df_ids <- tryCatch({
         pathways_df <- RaMP::getPathwayFromAnalyte(
             analytes = analytes,
@@ -548,10 +548,10 @@ function(analyte="") {
 #' @post /api/combined-fisher-test
 function(req) {
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     print(req)
     pathways_df <- as.data.frame(req$body)
     print(pathways_df)
@@ -573,10 +573,10 @@ function(req) {
 #' @post /api/filter-fisher-test-results
 function(req, p_holmadj_cutoff=0.05, p_fdradj_cutoff=NULL) {
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     filtered_results <- RaMP::FilterFishersResults(
@@ -606,10 +606,10 @@ function(
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
@@ -642,10 +642,10 @@ function(
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
@@ -732,10 +732,10 @@ function(
 function(analyte="") {
     analytes <- c(analyte)
     config <- config::get()
-    host <- config$db_host_v1
-    dbname <- config$db_dbname_v1
-    username <- config$db_username_v1
-    conpass <- config$db_password_v1
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
     analytes_df_ids <- tryCatch({
         analytes_df <- RaMP::rampFastCata(
             analytes = analytes,

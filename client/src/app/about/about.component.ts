@@ -1,10 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { UpsetIntersection } from '../visualization/upset/intersection.model';
 import { ConfigService } from '../config/config.service';
 import { SourceVersion } from './source-version.model';
 import { EntityCount, SourceCount } from './entity-count.model';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'ramp-about',
@@ -26,11 +28,12 @@ export class AboutComponent implements OnInit, AfterViewInit {
   elementsDict: { [elementName: string]: ElementRef<HTMLElement> } = {};
   sourceVersions: Array<SourceVersion>;
   entityCounts: Array<EntityCount>;
-  entityCountsColumns: Array<string> = ['entity'];
+  entityCountsColumns: Array<string> = [''];
 
   constructor(
     private http: HttpClient,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private route: ActivatedRoute
   ) {
     this.apiBaseUrl = configService.configData.apiBaseUrl;
   }
@@ -50,6 +53,13 @@ export class AboutComponent implements OnInit, AfterViewInit {
     this.elementsDict['citation'] = this.citation;
     // tslint:disable-next-line:no-string-literal
     this.elementsDict['summaryStatistics'] = this.summaryStatistics;
+    this.route.queryParams.pipe(
+      filter(params => params.scrollTo)
+    )
+    .subscribe(params => {
+        this.scrollTo(params.scrollTo);
+      }
+    );
   }
 
   getVersionInfo(): void {
@@ -66,6 +76,7 @@ export class AboutComponent implements OnInit, AfterViewInit {
         response = [];
       }
       this.entityCounts = this.processEntityCounts(response);
+      console.log(this.entityCounts);
     });
   }
 

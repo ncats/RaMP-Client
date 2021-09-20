@@ -9,6 +9,9 @@ export interface AnalyteMatch {
     types: string;
     numAnalytes: number;
     commonName: string;
+    commonNameList: Array<string>;
+    synonym?: string;
+    synonymList: Array<string>;
     analytes: Array<Analyte>;
 }
 
@@ -22,6 +25,8 @@ export interface Analyte {
     idTypes?: string;
     geneOrCompound: string;
     commonName: string;
+    commonNameList: Array<string>;
     synonym?: string;
+    synonymList: Array<string>;
     isSelected?: boolean;
 }

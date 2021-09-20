@@ -24,3 +24,7 @@ To run this application localy or on a server, you'll need to have the following
 There are two application to run, the client and the API. They communicate with each other via the HTTPS protocol and send data back and forth in JSON format.
 
 Please follow [these instructions](client/CLIENT_INSTRUCTIONS.md) to run the client application and [these instructions](server/SERVER_INSTRUCTIONS.MD) to run the API.
+
+## API
+
+API documentation can be found [here](https://ramp-api-alpha.ncats.io/__docs__/)

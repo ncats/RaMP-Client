@@ -20,11 +20,56 @@ section {
 }
 
 .functionality-flowchart {
-    width: 400px;
-    max-width: 100%;
+    padding-left: 40px;
+    align-items: center;
 
     img {
-        width: 100%;
-        height: auto;
+        width: auto;
+        height: 400px;
+        max-width: 500px;
+    }
+}
+
+.table-graph-container {
+    display: flex;
+    flex-direction: row;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    padding-top: 2px;
+    font-weight: 500;
+    padding-bottom: 2px;
+}
+
+td {
+
+    &.main {
+        font-weight: 500;
+    }
+}
+
+th, td {
+    padding: 0 7px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+@media(max-width: 1080px) {
+    .table-graph-container {
+        flex-direction: column;
+    }
+    .functionality-flowchart {
+        margin-top: 20px;
+        padding-left: 0;
+        
+        img {
+            height: auto;
+            max-width: 100%;
+            max-height: 400px;
+        }
     }
 }
