@@ -42,6 +42,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { SpaceToNewlinePipe } from './utilities/space-to-newline/space-to-newline.pipe';
+import { ChemicalAnalysisComponent } from './chemical-analysis/chemical-analysis.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { SpaceToNewlinePipe } from './utilities/space-to-newline/space-to-newlin
     PathwaysFromAnalytesComponent,
     CommonReactionAnalytesComponent,
     AnalytesFromPathwayComponent,
-    SpaceToNewlinePipe
+    SpaceToNewlinePipe,
+    ChemicalAnalysisComponent
   ],
   imports: [
     BrowserModule,
@@ -88,7 +91,8 @@ import { SpaceToNewlinePipe } from './utilities/space-to-newline/space-to-newlin
     MatAutocompleteModule,
     MatChipsModule,
     MatProgressBarModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSelectModule
   ],
   providers: [
     ConfigService,

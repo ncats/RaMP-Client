@@ -97,7 +97,7 @@ export const analyteExampleInputs = {
         'Spermine\r\n' +
         'Arabinosylhypoxanthine\r\n' +
         '11-cis-Retinol\r\n' +
-        'Cortisol;\r\n' +
+        'Cortisol\r\n' +
         'Peroxynitrite\r\n' +
         'Phosphoenolpyruvic acid',
     genesCombined: 'ensembl:ENSG00000134255\r\n' +
