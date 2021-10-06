@@ -18,13 +18,17 @@ export class AnalyteService {
     this.apiBaseUrl = configService.configData.apiBaseUrl;
   }
 
-  findAnalytes(analytes: Array<string>): Observable<Array<AnalyteMatch>> {
+  findAnalytes(analytes: Array<string>, type?: 'compound'|'gene'): Observable<Array<AnalyteMatch>> {
     const url = `${this.apiBaseUrl}source/analytes`;
     const options = {
       params: {
-        identifier: analytes,
+        identifier: analytes
       }
     };
+    if (type != null) {
+      // tslint:disable-next-line:no-string-literal
+      options.params['type'] = type;
+    }
     return this.http.get<Array<Analyte>>(url, options)
       .pipe(
         map((response: Array<Analyte>) => {
@@ -57,13 +61,15 @@ export class AnalyteService {
           });
 
           response.forEach(analyte => {
+            // match user input with either sourceId or common name
+            // and get index of matched input
             let index = analytesLower.indexOf(analyte.sourceId.toLowerCase());
             if (index === -1) {
               index = analytesLower.indexOf(analyte.commonName.toLowerCase());
             }
-            if (index === -1 && analyte.synonym) {
-              index = analytesLower.indexOf(analyte.synonym.toLowerCase());
-            }
+            // if (index === -1 && analyte.synonym) {
+            //   index = analytesLower.indexOf(analyte.synonym.toLowerCase());
+            // }
             if (index > -1) {
               if (analyteMatches[index].rampIdList.indexOf(analyte.rampId) === -1) {
                 analyteMatches[index].rampIdList.push(analyte.rampId);
@@ -71,7 +77,7 @@ export class AnalyteService {
                 analyte.sourceIdsList = [analyte.sourceId];
                 analyte.idTypesList = [analyte.IDtype];
                 analyte.commonNameList = [analyte.commonName];
-                analyte.synonymList = analyte.synonym ? [analyte.synonym] : [];
+                // analyte.synonymList = analyte.synonym ? [analyte.synonym] : [];
                 analyteMatches[index].analytes.push(analyte);
                 analyteMatches[index].sourceIdsList.push(analyte.sourceId);
               } else {
@@ -83,16 +89,19 @@ export class AnalyteService {
                 if (existingAnalyte.commonNameList.indexOf(analyte.commonName) === -1) {
                   existingAnalyte.commonNameList.push(analyte.commonName);
                 }
-                if (analyte.synonym && existingAnalyte.synonymList.indexOf(analyte.synonym) === -1) {
-                  existingAnalyte.synonymList.push(analyte.synonym);
-                }
+                // if (analyte.synonym && existingAnalyte.synonymList.indexOf(analyte.synonym) === -1) {
+                //   existingAnalyte.synonymList.push(analyte.synonym);
+                // }
+              }
+              if (analyteMatches[index].sourceIdsList.indexOf(analyte.sourceId) === -1) {
+                analyteMatches[index].sourceIdsList.push(analyte.sourceId);
               }
               if (analyteMatches[index].commonNameList.indexOf(analyte.commonName) === -1) {
                 analyteMatches[index].commonNameList.push(analyte.commonName);
               }
-              if (analyte.synonym && analyteMatches[index].synonymList.indexOf(analyte.synonym) === -1) {
-                analyteMatches[index].synonymList.push(analyte.synonym);
-              }
+              // if (analyte.synonym && analyteMatches[index].synonymList.indexOf(analyte.synonym) === -1) {
+              //   analyteMatches[index].synonymList.push(analyte.synonym);
+              // }
               if (analyteMatches[index].idTypesList.indexOf(analyte.IDtype) === -1) {
                 analyteMatches[index].idTypesList.push(analyte.IDtype);
               }
@@ -109,16 +118,16 @@ export class AnalyteService {
               analyte.sourceIds = analyte.sourceIdsList.join(', ');
               analyte.idTypes = analyte.idTypesList.join(', ');
               analyte.commonName = analyte.commonNameList.join('; ');
-              analyte.synonym = analyte.synonymList.join('; ');
+              // analyte.synonym = analyte.synonymList.join('; ');
               return analyte;
             });
             if (analyteMatch.rampIdList.length > 1) {
               analyteMatch.commonName = 'multiple analytes - click to view';
-              analyteMatch.synonym = 'multiple analytes - click to view';
+              // analyteMatch.synonym = 'multiple analytes - click to view';
               analyteMatch.sourceIds = 'multiple analytes - click to view';
             } else {
               analyteMatch.commonName = analyteMatch.commonNameList.join('; ');
-              analyteMatch.synonym = analyteMatch.synonymList.join('; ');
+              // analyteMatch.synonym = analyteMatch.synonymList.join('; ');
               analyteMatch.sourceIds = analyteMatch.sourceIdsList.join(', ');
             }
             return analyteMatch;

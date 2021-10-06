@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AboutComponent } from './about/about.component';
 import { AnalytesFromPathwayComponent } from './analytes-from-pathway/analytes-from-pathway.component';
+import { ChemicalAnalysisComponent } from './chemical-analysis/chemical-analysis.component';
 import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
 import { OntologiesComponent } from './ontologies/ontologies.component';
 import { PathwayEnrichmentAnalysisComponent } from './pathway-enrichment-analysis/pathway-enrichment-analysis.component';
@@ -65,6 +66,16 @@ const routes: Routes = [
       id: 'ontologies',
       display: 'Ontologies',
       order: 6,
+      isMainNav: true
+    }
+  },
+  {
+    path: 'chemical-analysis',
+    component: ChemicalAnalysisComponent,
+    data: {
+      id: 'chemicalAnalysis',
+      display: 'Chemical Analysis',
+      order: 7,
       isMainNav: true
     }
   },
