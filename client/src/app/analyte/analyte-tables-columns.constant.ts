@@ -29,11 +29,11 @@ export const analyteMatchesColumns: Array<{ value: string; display: string }> = 
     {
         value: 'commonName',
         display: 'Common Names'
-    },
-    {
-        value: 'synonym',
-        display: 'synonyms'
-    }
+    }// ,
+    // {
+    //     value: 'synonym',
+    //     display: 'synonyms'
+    // }
 ];
 
 export const analyteColumns: Array<{ value: string; display: string }> = [
@@ -48,9 +48,9 @@ export const analyteColumns: Array<{ value: string; display: string }> = [
     {
         value: 'commonName',
         display: 'Common Name'
-    },
-    {
-        value: 'synonym',
-        display: 'synonyms'
-    }
+    }// ,
+    // {
+    //     value: 'synonym',
+    //     display: 'synonyms'
+    // }
 ];

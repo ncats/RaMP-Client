@@ -265,9 +265,12 @@ function(identifier) {
 
 #* Return analytes from source database
 #* @param identifier
+#* @param type
+#* @param find_synonym:bool
+#* @param names_or_ids
 #* @serializer unboxedJSON
 #* @get /api/source/analytes
-function(identifier) {
+function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
     identifiers <- c(identifier)
     identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
@@ -281,26 +284,67 @@ function(identifier) {
                           dbname = dbname,
                           password = conpass,
                           host = host)
+
+    name_or_ids_condition <- ""
+
+    if (is.null(names_or_ids)) {
+        name_or_ids_condition <- paste0(
+            "s.sourceId in (", identifiers, ") ",
+            "or s.commonName in (", identifiers, ") "
+        )
+    } else if (names_or_ids == "ids") {
+        name_or_ids_condition <- paste0(
+            "s.sourceId in (", identifiers, ") "
+        )
+    } else {
+        name_or_ids_condition <- paste0(
+            "s.commonName in (", identifiers, ") "
+        )
+    }
+
+    synonum_property <- ""
+    synonum_join <- ""
+    synonum_condition <- ""
+    find_synonym <- as.logical(find_synonym)
+    if (
+        find_synonym == TRUE
+        && (is.null(names_or_ids) || names_or_ids == "names")
+        ) {
+        synonum_property <- ", min(ansyn.Synonym) as synonym "
+        synonum_join <- paste0(
+            "left join analytesynonym as ",
+            "ansyn on s.rampId = ansyn.rampId and ",
+            "ansyn.Synonym in (", identifiers, ") ")
+        synonum_condition <- paste0(
+            "or s.rampId in (",
+                "select analytesynonym.rampId ",
+                "from analytesynonym ",
+                "where analytesynonym.Synonym in (", identifiers, ")",
+            ") "
+        )
+    }
+
+    type_condition <- ""
+
+    if (!is.null(type)) {
+        type_condition <- paste0("and s.geneOrCompound = '", type, "' ")
+    }
+
     query <- paste0(
         "select ",
             "s.rampId, ",
             "s.sourceId, ",
             "s.IDtype, ",
             "s.geneOrCompound, ",
-            "s.commonName, ",
-            "min(ansyn.Synonym) as synonym ",
+            "s.commonName ",
+            synonum_property,
         "from source as s ",
-        "left join analytesynonym as ",
-            "ansyn on s.rampId = ansyn.rampId and ",
-            "ansyn.Synonym in (", identifiers, ") ",
-        "where s.sourceId in (", identifiers, ") ",
-        "or s.commonName in (", identifiers, ") ",
-        "or s.rampId in (",
-            "select analytesynonym.rampId ",
-            "from analytesynonym ",
-            "where analytesynonym.Synonym in (", identifiers, ")",
-        ") ",
-        "group by s.sourceId, s.IDtype, s.geneOrCompound, s.commonName"
+        synonum_join,
+        "where ",
+            name_or_ids_condition,
+            synonum_condition,
+            type_condition,
+        "group by s.sourceId, s.IDtype, s.geneOrCompound"
     )
     analytes <- DBI::dbGetQuery(con, query)
     DBI::dbDisconnect(con)
@@ -552,9 +596,7 @@ function(req) {
     dbname <- config$db_dbname_v2
     username <- config$db_username_v2
     conpass <- config$db_password_v2
-    print(req)
     pathways_df <- as.data.frame(req$body)
-    print(pathways_df)
     fishers_results_df <- RaMP::runCombinedFisherTest(
         pathwaydf = pathways_df,
         conpass = conpass,
@@ -765,4 +807,36 @@ function(analyte="") {
     )
     analytes_df <- rbind(analytes_df_ids, analytes_df_names)
     return(unique(analytes_df))
+}
+
+#' Return chemical properties of given metabolites
+#' @param metabolite
+#' @param property
+#' @get /api/metabolites/chemical-properties
+function(metabolite="", property=NULL) {
+    metabolites <- c(metabolite)
+    properties <- NULL
+    if (!is.null(property)) {
+        properties <- c(property)
+    }
+    config <- config::get()
+    host <- config$db_host_v2
+    dbname <- config$db_dbname_v2
+    username <- config$db_username_v2
+    conpass <- config$db_password_v2
+    chemical_properties_df <- tryCatch({
+        analytes_df <- RaMP::getChemicalProperties(
+            metabolites,
+            propertyList = properties,
+            conpass = conpass,
+            host = host,
+            dbname = dbname,
+            username = username
+        )
+    },
+    error = function(cond) {
+        print(cond)
+        return(data.frame(stringsAsFactors = FALSE))
+    })
+    return(chemical_properties_df)
 }

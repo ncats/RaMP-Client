@@ -113,6 +113,8 @@ a {
 
 router-outlet + * {
     flex-grow: 1;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .route-container {
@@ -133,15 +135,15 @@ router-outlet + * {
     margin-bottom: 15px;
 }
 
-td.mat-cell:last-of-type {
+.mat-header-cell:last-of-type, .mat-cell:last-of-type {
     padding-left: 7px;
 }
 
-td.mat-cell:first-of-type {
+.mat-header-cell:first-of-type, .mat-cell:first-of-type {
     padding-right: 7px;
 }
 
-td.mat-cell:not(:first-of-type):not(:last-of-type) {
+.mat-header-cell:not(:first-of-type):not(:last-of-type), .mat-cell:not(:first-of-type):not(:last-of-type) {
     padding-left: 7px;
     padding-right: 7px;
 }

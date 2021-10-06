@@ -1,5 +1,5 @@
 devtools::install_github(
-    "ncats/RAMP-DB@RaMP2.0",
+    "ncats/RAMP-DB@chem_class_query",
     force = TRUE,
     dependencies = TRUE
 )

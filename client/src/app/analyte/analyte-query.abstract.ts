@@ -17,7 +17,7 @@ export abstract class AnalyteQueryBase implements OnInit {
     analyteMatchesDisplayedColumns: Array<string>;
     analyteMatchesColumns = analyteMatchesColumns;
     analyteDisplayedColumns: Array<string>;
-  analyteColumns = analyteColumns;
+    analyteColumns = analyteColumns;
 
     // utilities
     apiBaseUrl: string;
@@ -71,8 +71,12 @@ export abstract class AnalyteQueryBase implements OnInit {
         return analyteMatches;
     }
 
-    insertSample(): void {
-        // tslint:disable-next-line:no-string-literal
-        this.analytesInput = analyteExampleInputs['analytesCombined'];
+    insertSample(type?: 'genesCombined'|'metabolitesCombined'): void {
+        if (type == null) {
+            // tslint:disable-next-line:no-string-literal
+            this.analytesInput = analyteExampleInputs['analytesCombined'];
+        } else {
+            this.analytesInput = analyteExampleInputs[type];
+        }
     }
 }
