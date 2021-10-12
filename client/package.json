@@ -25,7 +25,6 @@
     "decimal.js": "10.2.1",
     "rxjs": "6.5.4",
     "tslib": "^2.0.0",
-    "venn.js": "0.2.20",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
