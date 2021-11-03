@@ -13,6 +13,7 @@ import { GoogleAnalyticsService } from './google-analytics/google-analytics.serv
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
+  title = 'ramp-client';
   hasBackdrop = false;
   @ViewChild('sideNav', { read: MatSidenav, static: false }) sideNav: MatSidenav;
   navItems: Array<MainNavItem> = [];

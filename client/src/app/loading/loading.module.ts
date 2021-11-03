@@ -17,7 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   ]
 })
 export class LoadingModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<LoadingModule> {
     return {
       ngModule: LoadingModule,
       providers: [

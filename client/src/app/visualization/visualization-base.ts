@@ -1,9 +1,11 @@
-import { Input } from '@angular/core';
+import {Injectable, Input} from '@angular/core';
 import * as d3 from 'd3';
 import { ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Decimal } from 'decimal.js';
 
+
+@Injectable()
 export abstract class VisualizationBase {
     svg: any;
     margin = 50;
