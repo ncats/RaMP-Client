@@ -6,10 +6,10 @@
         <mat-card-content>
             <section #briefDescription>
                 <h2>
-                    Brief Description
+                    About
                 </h2>
                 <div class="paragraph">
-                    <span>RaMP is an integrative pathway database harmonizing analyte (genes, proteins, and metabolites) and pathway information from the following data sources: </span>
+                    <span>RaMP (Relational database of Metabolomic Pathways) is a multi-sourced integrated database with comprehensive pathway, chemical, and ontology annoations for genes, proteins, and metabolites.  Information within RaMP is harmonized from the following data sources: </span>
                     <span *ngFor="let version of sourceVersions; index as i; last as isLast">
                         <a [attr.href]="version.dataSourceUrl" target="_blank">{{version.dataSourceName}}</a><span> {{version.dataSourceVersion}}</span>
                         <span *ngIf="!isLast">, </span>
@@ -17,7 +17,7 @@
                     </span>
                 </div>
                 <div class="paragraph">
-                    This application allows users to interface with RaMP without any programming experience.
+                    This web application allows users to interact with RaMP without any programming experience by performing basic queries on pathways, common reactions, ontologies, and chemical structures/classes.  The app also supports pathway and chemical class enrichment analysis (using Fisher's tests). To facilitate the interpretation of multi-omic data, users can input gene, protein, and metabolite IDs for queries and analyses. The inclusion of a mix of ID types as input is supported (e.g. users must prepend IDs with the source, such as hmdb:HMDB0000562).  Further details on which IDs are supported is provided for each query or analyses module.  
                 </div>
                 <div class="paragraph">
                     <!-- <mat-table [dataSource]="entityCounts">
@@ -75,7 +75,7 @@
                     <ul>
                         <li>
                             <a matLine routerLink="/pathway-enrichment-analysis">Perform a pathway enrichment analysis given a list of analyte names or IDs</a>,
-                        </li>
+                        <The inclusion of a mix of ID types as input is supported (e.g. users must prepend IDs with the source, such as hmdb:HMDB0000562).  Further details on which IDs are supported is provided for each query or analyses module.  >
                         <li>
                             <a matLine routerLink="/analytes-from-pathways">Retrieve the analytes involved in a given list of pathways</a>,
                         </li>
@@ -116,25 +116,19 @@
             <mat-divider></mat-divider>
             <section #citation>
                 <h2>
-                    Citation
+                    Citations and resources
                 </h2>
                 <div class="paragraph">
                     If you use RaMP, please cite the following work:
                 </div>
                 <div class="paragraph">
-                    Zhang, B., et al., RaMP: A Comprehensive Relational Database of Metabolomics Pathways for Pathway Enrichment Analysis of Genes and Metabolites. Metabolites, 2018. 8(1).
-                </div>
-                <div class="paragraph">
-                    PMID: 29470400; PMCID: PMC5876005; DOI: 10.3390/metabo8010016
-                </div>
-                <div class="paragraph">
-                    To access, <a href="https://www.mdpi.com/2218-1989/8/1/16" target="_blank">click here</a>.
+                     <a href="https://www.mdpi.com/2218-1989/8/1/16" target="_blank">Zhang, B., et al., RaMP: A Comprehensive Relational Database of Metabolomics Pathways for Pathway Enrichment Analysis of Genes and Metabolites. Metabolites, 2018. 8(1). PMID: 29470400; PMCID: PMC5876005; DOI: 10.3390/metabo8010016</a>
                 </div>
             </section>
             <mat-divider></mat-divider>
             <section #contact>
                 <h2>
-                    Contact
+                   RaMP Team and Contact Info
                 </h2>
                 <ul> 
                     <li>
@@ -150,7 +144,13 @@
                         Andrew Patt
                     </li>
                     <li>
+                        Tim Sheils
+                    </li>
+                    <li>
                         Kyle Spencer
+                    </li>
+                    <li>
+                        Cole Tindall
                     </li>
                 </ul>
                 <div class="paragraph">
