@@ -44,6 +44,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { SpaceToNewlinePipe } from './utilities/space-to-newline/space-to-newline.pipe';
 import { ChemicalAnalysisComponent } from './chemical-analysis/chemical-analysis.component';
 import { MatSelectModule } from '@angular/material/select';
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatChipsModule,
     MatProgressBarModule,
     MatMenuModule,
-    MatSelectModule
+    MatSelectModule,
+    FlexLayoutModule
   ],
   providers: [
     ConfigService,
