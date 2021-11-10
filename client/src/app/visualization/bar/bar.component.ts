@@ -14,6 +14,7 @@ import { TooltipService } from '../tooltip/tooltip.service';
 })
 export class BarComponent extends VisualizationBase implements OnInit, AfterViewInit {
   @ViewChild('barChartBox', { read: ElementRef, static: false }) barChartElement: ElementRef;
+  @Input() title? = 'Graph';
   calculation: 'average'|'sum';
   processedData: Array<ProcessedData>;
   @Output() barClicked = new EventEmitter();

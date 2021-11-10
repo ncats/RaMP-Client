@@ -203,7 +203,7 @@ router-outlet + * {
     padding-left: 20px;
 }
 
-.code-containder {
+.code-container {
     padding: 15px;
     background-color: #404040;
     color: white;
@@ -223,10 +223,10 @@ router-outlet + * {
 .accordion-container {
     margin-bottom: 15px;
 }
-
+/*
 .responsive {
     max-width: 100%;
-    overflow: auto;   
+    overflow: auto;
 }
 
 @media(min-width: 600px) {
@@ -261,4 +261,4 @@ router-outlet + * {
         height: calc(100vh - 56px);
         margin-top: 56px;
     }
-}
+}*/

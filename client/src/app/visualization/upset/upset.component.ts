@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  EventEmitter,
+  HostListener
+} from '@angular/core';
 import { VisualizationBase } from '../visualization-base';
 import { take } from 'rxjs/operators';
 import * as d3 from 'd3';
@@ -17,6 +27,7 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
   dataNameKey: string;
   dataValuesKey: string;
   isViewInit = false;
+  @Input() title? = 'Graph';
   @Input() scale: 'linear'|'log' = 'linear';
   @Input() showSetsSelection = false;
   @Output() upSetBarClicked = new EventEmitter();
@@ -24,6 +35,13 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
 
   @ViewChild('upsetPlotBox', { read: ElementRef, static: false }) upsetPlotElement: ElementRef;
 
+  /**
+   * listener to resize the chart on page resize
+   */
+  @HostListener('window:resize', [])
+  onResize() {
+    this.drawChart();
+  }
   constructor() {
     super();
   }
@@ -129,6 +147,11 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
     this.drawChart();
   }
 
+  redrawChart(): void {
+    d3.select(this.upsetPlotElement?.nativeElement).selectAll('*').remove();
+    this.drawContainer();
+    this.drawChart();
+  }
   drawContainer(): void {
     if (this.isViewInit && this.allData && this.soloSets) {
       let maxLabelSize = 0;
@@ -142,11 +165,11 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
       const canvasElement = document.createElement('canvas');
       const context = canvasElement.getContext('2d');
       context.font = '400 14px/20px Roboto, "Helvetica Neue", sans-serif';
-      const marginLeft = context.measureText(maxLabelText).width + 10;
+      const marginLeft = Math.max(context.measureText(maxLabelText).width * 1.25, context.measureText(maxLabelText).width + 30);
       const height = 300;
       const marginBottom = this.soloSets.length * 45;
       const width = 52 + ((this.allData.length - 1) * (this.circRad * 2.7));
-      this.createSvg(this.upsetPlotElement.nativeElement, width, height, marginLeft, marginBottom, 0, 20);
+      this.createSvg(this.upsetPlotElement?.nativeElement, width, height, marginLeft, marginBottom, 0, 20);
     }
   }
 
@@ -283,7 +306,9 @@ export class UpsetComponent extends VisualizationBase implements OnInit, AfterVi
           .attr('text-anchor', 'end')
           .attr('fill', 'black')
           .style('font-size', 15)
-          .text(x.name);
+          .text(x.name)
+          // this is in the pharos version, but doesn'tt seem to do anything
+        // .append('title').text(x.name);
       });
 
       // sort data decreasing

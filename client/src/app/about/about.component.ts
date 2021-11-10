@@ -1,4 +1,13 @@
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  ViewChildren,
+  QueryList,
+  ChangeDetectorRef
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
@@ -7,6 +16,8 @@ import { ConfigService } from '../config/config.service';
 import { SourceVersion } from './source-version.model';
 import { EntityCount, SourceCount } from './entity-count.model';
 import { filter } from 'rxjs/operators';
+import {CdkScrollable, ScrollDispatcher} from "@angular/cdk/overlay";
+import {LoadingService} from "../loading/loading.service";
 
 @Component({
   selector: 'ramp-about',
@@ -14,6 +25,14 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit, AfterViewInit {
+  @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
+
+  /**
+   * default active element for menu highlighting, will be replaced on scroll
+   * @type {string}
+   */
+  activeElement = 'about';
+
   genesIntersections: Array<UpsetIntersection>;
   genesSoloSets: Array<UpsetIntersection> | any;
   genesAllData: Array<UpsetIntersection>;
@@ -21,11 +40,6 @@ export class AboutComponent implements OnInit, AfterViewInit {
   compoundsSoloSets: Array<UpsetIntersection> | any;
   compoundsAllData: Array<UpsetIntersection>;
   apiBaseUrl: string;
-  @ViewChild('briefDescription', { static: false }) briefDescription: ElementRef<HTMLElement>;
-  @ViewChild('contact', { static: false }) contact: ElementRef<HTMLElement>;
-  @ViewChild('citation', { static: false }) citation: ElementRef<HTMLElement>;
-  @ViewChild('summaryStatistics', { static: false }) summaryStatistics: ElementRef<HTMLElement>;
-  elementsDict: { [elementName: string]: ElementRef<HTMLElement> } = {};
   sourceVersions: Array<SourceVersion>;
   entityCounts: Array<EntityCount>;
   entityCountsColumns: Array<string> = [''];
@@ -33,33 +47,48 @@ export class AboutComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private changeDetector: ChangeDetectorRef,
+    private scrollDispatcher: ScrollDispatcher,
+    private loadingService: LoadingService
   ) {
     this.apiBaseUrl = configService.configData.apiBaseUrl;
   }
 
   ngOnInit(): void {
+    this.loadingService.setLoadingState(true);
     this.getVersionInfo();
     this.setEntityCounts();
     this.getAnalytesSourceIntersects();
+
+    this.scrollDispatcher.scrolled().subscribe((data: CdkScrollable) => {
+      if (data) {
+        console.log(data);
+        let scrollTop: number = data.measureScrollOffset("top")+20;
+        if (scrollTop === 100) {
+          this.activeElement = 'about';
+          this.changeDetector.detectChanges();
+        } else {
+          this.scrollSections.forEach(section => {
+            scrollTop = scrollTop - section.nativeElement.scrollHeight;
+            if (scrollTop >= 0) {
+              this.activeElement = section.nativeElement.nextSibling.id;
+              this.changeDetector.detectChanges();
+            }
+          });
+        }
+      }
+    });
   }
 
   ngAfterViewInit(): void {
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['briefDescription'] = this.briefDescription;
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['contact'] = this.contact;
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['citation'] = this.citation;
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['summaryStatistics'] = this.summaryStatistics;
-    this.route.queryParams.pipe(
+    /*this.route.queryParams.pipe(
       filter(params => params.scrollTo)
     )
     .subscribe(params => {
-        this.scrollTo(params.scrollTo);
+        this.scroll(params.scrollTo);
       }
-    );
+    );*/
   }
 
   getVersionInfo(): void {
@@ -225,10 +254,28 @@ export class AboutComponent implements OnInit, AfterViewInit {
       this.compoundsIntersections = compoundsIntersections;
       this.compoundsSoloSets = compoundsSoloSets;
       this.compoundsAllData = compoundsAllData;
+      this.loadingService.setLoadingState(false);
     });
   }
 
-  scrollTo(element: string): void {
-    this.elementsDict[element].nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  /**
+   * scroll to section
+   * @param el
+   */
+  public scroll(el: any): void {
+    console.log(el);
+    el.scrollIntoView(true);
+  // el.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
   }
+
+  /**
+   * check which section is active
+   * @param {string} check
+   * @returns {boolean}
+   */
+  isActive(check: string): boolean {
+    return this.activeElement === check;
+  }
+
+
 }
