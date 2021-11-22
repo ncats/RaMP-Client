@@ -1,10 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="space-around center">
-  <div fxFlex="100" fxFlex.lt-md="80">
-<h1 class="ramp-title">
-  <b>RaMP</b>: Relational Database of Metabolomics Pathways
-</h1>
-  </div>
-</div>
+
 <div fxLayout="row" class="about-content">
   <div fxFlex="5" fxShow.lt-sm></div>
   <div fxFlex="20" fxHide.lt-sm class="toc-wrapper">
@@ -23,24 +17,28 @@
         <a mat-list-item class="list-button" (click)="scroll(summaryStatistics)"
            [ngClass]="{'active': isActive('summaryStatistics')}">Summary Statistics
         </a>
-        <a mat-list-item class="list-button" (click)="scroll(queries)"
-           [ngClass]="{'active': isActive('queries')}">Saved Queries
-        </a>
         <a mat-list-item class="list-button" (click)="scroll(citation)"
            [ngClass]="{'active': isActive('citation')}">
-          Citations and Resources
+          Citation
         </a>
         <a mat-list-item class="list-button" (click)="scroll(contact)"
            [ngClass]="{'active': isActive('contact')}">
           RaMP Team and Contact
         </a>
         <a mat-list-item class="list-button" (click)="scroll(license)" [ngClass]="{'active': isActive('license')}">
-          License??????
+          License
         </a>
       </mat-nav-list>
     </div>
   </div>
   <div fxFlex="80" fxFlex.lt-sm="90" id="scroller-wrapper" class="about-wrapper" cdkScrollable>
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+      <div fxFlex="100">
+        <h1 class="ramp-title">
+          <b>RaMP</b>: Relational Database of Metabolomics Pathways
+        </h1>
+      </div>
+    </div>
     <div fxLayout="row" id="about" #about #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div class="section-header" [ngClass]="{'active': isActive('about')}">About RaMP</div>
@@ -59,7 +57,7 @@
           <p>
             This web application allows users to interact with RaMP without any programming experience by
             performing basic queries on pathways, common reactions, ontologies, and chemical structures/classes.
-            The app also supports pathway and chemical class enrichment analysis (using Fisher's tests). To
+            The app also supports pathway and chemical class enrichment analysis (using Fisher's Exact Test). To
             facilitate the interpretation of multi-omic data, users can input gene, protein, and metabolite IDs
             for queries and analyses. The inclusion of a mix of ID types as input is supported (e.g. users must
             prepend IDs with the source, such as hmdb:HMDB0000562). Further details on which IDs are supported is
@@ -115,10 +113,6 @@
       <div fxFlex="75" fxFlex.lt-md="100">
         <div class="section-header" [ngClass]="{'active': isActive('dataSources')}">Data Sources</div>
         <div class="section-content">
-          <p>
-            RaMP incorporates and integrates annotations from HMDB, LipidMAPS, Reactome, WikiPathways, KEGG, and ChEBI.
-            The following table summarizes the information retrieved:
-          </p>
           <table>
             <thead>
             <tr>
@@ -155,47 +149,22 @@
           Because RaMP draws from multiple sources, its information content exceeds that of each individual resource.
           The following UpSet plots highlight the common and unique metabolites and genes covered for each resource.
         </p>
-        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-between center">
-          <div fxFlex.gt-md="40" fxFlex.lt-md="100">
-            <ramp-upset [title]="'Metabolite Overlap'" [intersections]="compoundsIntersections"
-                        [soloSets]="compoundsSoloSets" [allData]="compoundsAllData" scale="log">
-            </ramp-upset>
-          </div>
-          <div fxFlex.gt-md="40" fxFlex.lt-md="100">
-            <ramp-upset title="Gene Overlap" [intersections]="genesIntersections" [soloSets]="genesSoloSets"
-                        [allData]="genesAllData" scale="log">
-            </ramp-upset>
-          </div>
+          <div fxLayout="row wrap" fxLayoutAlign="space-around center">
+            <div fxFlex.gt-md="48" fxFlex.lt-md="95">
+              <ramp-upset [title]="'Metabolite Overlap'"
+                          [data] = compoundsData
+                          scale="log" *ngIf="compoundsData">
+              </ramp-upset>
+            </div>
+            <div fxFlex.gt-md="48" fxFlex.lt-md="95">
+              <ramp-upset [title]="'Gene Overlap'"
+                          [data] = genesData
+                          scale="log" *ngIf="genesData">
+              </ramp-upset>
+            </div>
           </div>
         </div>
         </div>
-    </div>
-    <div fxLayout="row" id="queries" #queries #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{'active': isActive('queries')}">Saved Queries</div>
-        <div class="section-content">
-<p>For auto-populating options when users type in analyte or annotation names, these may come in handy
-  (they were part of the original RShiny app)</p>
-          <ul class = "ramp-list">
-            <li>
-              <div >Description here</div>
-              <div class="code-container" >
-                kw_biofluid <- unname(unlist(unique(as.vector(DBI::dbGetQuery(con,'select commonName from ontology;')))))
-              </div>
-            </li>
-            <li>
-              <p >Description here</p>
-              <div class="code-container" >
-                kw_pathway <- unname(unlist(unique(as.vector(DBI::dbGetQuery(con,'select pathwayName from pathway;')))))              </div>
-            </li>
-            <li>
-              <p >Description here</p>
-              <div class="code-container" >
-                kw_analyte <- unname(unlist(unique(as.vector(DBI::dbGetQuery(con,'select Synonym from analytesynonym;')))              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
 
 
@@ -212,12 +181,17 @@
             Metabolites, 2018. 8(1). PMID: 29470400; PMCID: PMC5876005; DOI: 10.3390/metabo8010016</a>
         </p>
         <p>
-      More details can be found in <a href="http://www.mdpi.com/2218-1989/8/1/16" target="_blank" rel="noreferrer"
-                                      aria-label="Link to the RaMP manuscript">our manuscript</a>,
-      and an example usage can be found in <a href="https://pubmed.ncbi.nlm.nih.gov/30725469/" target="_blank"
+      An example usage can be found in <a href="https://pubmed.ncbi.nlm.nih.gov/30725469/" target="_blank"
                                               rel="noreferrer"
                                               aria-label="Link to a book chapter about RaMP">this chapter</a>.
       </p>
+          <p>
+            Detailed instructions for installing RaMP locally are below. </p>
+          <p>We've also put together <a href = "https://ncats.github.io/RaMP-DB/RaMP_Vignette.html" target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Link to the RaMP vignette">
+            a vignette</a> to help get you started on analysis.
+          </p>
     </div>
   </div>
     </div>

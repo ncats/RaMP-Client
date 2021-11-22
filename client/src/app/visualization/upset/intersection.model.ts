@@ -4,3 +4,9 @@ export interface UpsetIntersection {
     setName?: string;
     values?: Array<any>;
 }
+
+export class UpsetData {
+  intersections: Array<UpsetIntersection>
+  soloSets: Array<UpsetIntersection> | any
+  allData: Array<UpsetIntersection>
+}
