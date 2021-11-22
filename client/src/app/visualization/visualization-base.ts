@@ -22,6 +22,8 @@ export abstract class VisualizationBase {
     legendItems: Array<{ color: string; label: string }> = [];
     xAxis: any;
     yAxis: any;
+ // @Input() title? = 'Graph';
+
 
   createSvg(
         element: HTMLElement,

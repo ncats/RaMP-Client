@@ -1,18 +1,2 @@
 <h3>{{title}}</h3>
-<div *ngIf="showSetsSelection">
-    <div class="sets-container">
-        <div class="set" *ngFor="let dataPoint of data">
-            <mat-checkbox [(ngModel)]="dataPoint.isSelected">{{dataPoint[dataNameKey]}}</mat-checkbox>
-        </div>
-    </div>
-    <div>
-        <button
-            mat-flat-button color="accent"
-            (click)="redrawPlot()">
-            Redraw plot
-        </button>
-    </div>
-    </div>
-<div class="plot-legend-container">
-    <figure #upsetPlotBox class="upset-plot"></figure>
-</div>
+<div #upsetPlotBox class="upset-plot"></div>

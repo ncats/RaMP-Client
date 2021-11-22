@@ -2,12 +2,18 @@
 .about-content {
   display: flex;
   height: 100vh;
-//  padding-top: 75px;
+  padding-top: 64px;
+}
+
+.title-row {
+  position: fixed;
+  width: 100vw;
+  background-color: white;
 }
 
 .toc-wrapper {
   padding-left: .3vw;
-  height: 100vh;
+  margin-top: 2vh;
 }
 
 .ramp-list {
@@ -26,7 +32,8 @@
 .ramp-title {
   font: 300 3.0rem Roboto, "Helvetica Neue", sans-serif;
   padding-left: 1vw;
-  margin-top: 8vh;
+  margin-top: 2vh;
+  margin-bottom: 0;
 }
 
 .section-header {
@@ -85,7 +92,7 @@ th, td {
 
   .ramp-title {
     font: 300 2.0rem Roboto, "Helvetica Neue", sans-serif;
-    margin-top: 8vh;
+    margin-top: 2vh;
   }
 }
 
@@ -98,8 +105,8 @@ th, td {
 .ramp-portrait {
   margin: 0 auto;
   border-radius: 100%;
-  height: 10vh;
-  width: 10vh;
+  height: 8vw;
+  width: 8vw;
 }
 
 
