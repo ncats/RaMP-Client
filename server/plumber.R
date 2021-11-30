@@ -342,7 +342,7 @@ function(metabolite="", type="biological") {
 #            ontologies_df <- ontologies_df[
 #                ontologies_df$biofluidORcellular %in% c("origins"),
 #            ]
-        }
+#        }
 
       if(is.null(ontologies_df)) {
         return(
