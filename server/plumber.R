@@ -325,9 +325,12 @@ function(metabolite="", type="biological") {
     #DBI::dbDisconnect(con)
 #    if (nrow(metabolites) > 0) 
 
-        ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites)
+        if (type == "biological") {
+		 ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites)
+	} else { # EM: this is a place holder although we could consider implementing only one type, or subsetting to the 7 different types (e.g. source, subcellular, etc)
+		ontologies_df <- NULL
+	}
 
-#        if (type == "biological") {
 #            ontologies_df <- ontologies_df[
 #                ontologies_df$biofluidORcellular %in% c(
 #                    "biofluid",
@@ -339,7 +342,7 @@ function(metabolite="", type="biological") {
 #            ontologies_df <- ontologies_df[
 #                ontologies_df$biofluidORcellular %in% c("origins"),
 #            ]
-#        }
+        }
 
       if(is.null(ontologies_df)) {
         return(
