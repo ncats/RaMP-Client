@@ -7,6 +7,7 @@ export const environment = {
   baseHref: '/',
   //apiBaseUrl: '/api/',
   apiBaseUrl: 'https://ramp-api-alpha.ncats.io/api/',
+//  apiBaseUrl: 'http://127.0.0.1:5762/api/',
   configFileLocation: null,
   googleAnalyticsId: null
 };

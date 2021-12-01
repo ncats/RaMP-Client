@@ -23,7 +23,7 @@ cors <- function(req, res) {
 #* @serializer unboxedJSON
 #* @get /api/source_versions
 function() {
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select ",
@@ -46,7 +46,7 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/entity_counts
 function() {
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select ",
@@ -106,7 +106,7 @@ get_count_query <- function(
 }
 
 get_data_source_intercepts <- function() {
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
   tryCatch({
     analyte_types <- c("compound", "gene")
@@ -175,7 +175,7 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/id-types
 function() {
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select ",
@@ -202,7 +202,7 @@ function(identifier) {
     identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
 
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select ",
@@ -232,7 +232,7 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
     identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
 
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
     name_or_ids_condition <- ""
 
@@ -308,45 +308,20 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
 function(metabolite="", type="biological") {
     metabolites_ids <- c(metabolite)
     num_submitted_ids <- length(metabolites_ids)
-    metabolites_ids <- sapply(metabolites_ids, shQuote)
+#    metabolites_ids <- sapply(metabolites_ids, shQuote)
     metabolites_ids <- paste(metabolites_ids, collapse = ",")
-
-    #con <- connectToRaMP()
-
-    #query <- paste0(
-    #    "select s.sourceId ",
-    #    "from source as s ",
-    #    "inner join analyte as a on s.rampId = a.rampId ",
-    #    "where s.sourceId in (", metabolites_ids, ") "
-    #)
-
-    #metabolites <- DBI::dbGetQuery(con, query)
-
-    #DBI::dbDisconnect(con)
-#    if (nrow(metabolites) > 0) 
+#print(metabolites_ids)
 
         if (type == "biological") {
-		 ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites)
+		 ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
 	} else { # EM: this is a place holder although we could consider implementing only one type, or subsetting to the 7 different types (e.g. source, subcellular, etc)
 		ontologies_df <- NULL
 	}
 
-#            ontologies_df <- ontologies_df[
-#                ontologies_df$biofluidORcellular %in% c(
-#                    "biofluid",
-#                    "tissue location",
-#                    "cellular location"
-#                ),
-#            ]
-#        } else {
-#            ontologies_df <- ontologies_df[
-#                ontologies_df$biofluidORcellular %in% c("origins"),
-#            ]
-#        }
-
       if(is.null(ontologies_df)) {
         return(
             list(
+		temp=metabolites_ids,
                 num_submitted_ids = num_submitted_ids,
                 numFoundIds = 0,
                 data = vector()
@@ -355,8 +330,9 @@ function(metabolite="", type="biological") {
       } else {
         return(
             list(
+    		temp=metabolites_ids,
                 num_submitted_ids = num_submitted_ids,
-                numFoundIds = nrow(metabolites),
+                numFoundIds = length(unique(ontologies_df$sourceId)),
                 data = ontologies_df
             )
         )
@@ -368,7 +344,7 @@ function(metabolite="", type="biological") {
 #* @serializer unboxedJSON
 #* @get /api/ontology-summaries
 function(contains="") {
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select commonName as Ontology, biofluidORcellular ",
@@ -395,7 +371,7 @@ function(ontology="") {
     ontologies_names <- sapply(ontologies_names, shQuote)
     ontologies_names <- paste(ontologies_names, collapse = ",")
 
-    con <- connectToRaMP()
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select o.commonName ",
@@ -409,13 +385,7 @@ function(ontology="") {
 
     if (nrow(ontologies) > 0) {
 
-        metabolites_df <- RaMP::getMetaFromOnto(
-            ontology = ontologies,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
-        )
+        metabolites_df <- RaMP::getMetaFromOnto(ontology = ontologies)
 
         return(
             list(
@@ -444,13 +414,7 @@ function(pathway="") {
     pathways <- c(pathway)
     print(pathways)
     analytes_df <- tryCatch({
-        analytes_df <- RaMP::getAnalyteFromPathway(
-            pathway = pathways,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
-        )
+        analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathways)
     },
     error = function(cond) {
         print(cond)
@@ -465,12 +429,7 @@ function(pathway="") {
 function(analyte="") {
     analytes <- c(analyte)
     pathways_df_ids <- tryCatch({
-        pathways_df <- RaMP::getPathwayFromAnalyte(
-            analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
+        pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
             NameOrIds = "ids"
         )
     },
@@ -480,10 +439,6 @@ function(analyte="") {
     pathways_df_names <- tryCatch({
         pathways_df <- RaMP::getPathwayFromAnalyte(
             analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
             NameOrIds = "names"
         )
     },
@@ -501,11 +456,7 @@ function(analyte="") {
 function(req) {
     pathways_df <- as.data.frame(req$body)
     fishers_results_df <- RaMP::runCombinedFisherTest(
-        pathwaydf = pathways_df,
-        conpass = conpass,
-        host = host,
-        dbname = dbname,
-        username = username
+        pathwaydf = pathways_df
     )
     return(fishers_results_df)
 }
@@ -638,12 +589,7 @@ function(
         "group by s.sourceId, s.commonName"
     )
 
-    con <- RaMP::connectToRaMP(
-        dbname = dbname,
-        username = username,
-        conpass = conpass,
-        host = host
-    )
+    con <- RaMP::connectToRaMP()
     cids <- DBI::dbGetQuery(con, query)
     DBI::dbDisconnect(con)
 
@@ -664,10 +610,6 @@ function(analyte="") {
     analytes_df_ids <- tryCatch({
         analytes_df <- RaMP::rampFastCata(
             analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
             NameOrIds = "ids"
         )
     },
@@ -677,10 +619,6 @@ function(analyte="") {
     analytes_df_names <- tryCatch({
         analytes_df <- RaMP::rampFastCata(
             analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
             NameOrIds = "names"
         )
     },
@@ -705,11 +643,7 @@ function(metabolite="", property=NULL) {
     chemical_properties_df <- tryCatch({
         analytes_df <- RaMP::getChemicalProperties(
             metabolites,
-            propertyList = properties,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
+            propertyList = properties
         )
     },
     error = function(cond) {
