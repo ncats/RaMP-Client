@@ -170,27 +170,15 @@ function() {
     return(response)
 }
 
-
+####
 #* Return analyte ID types
 #* @serializer unboxedJSON
 #* @get /api/id-types
 function() {
-    con <- RaMP::connectToRaMP()
+   met <- getPrefixesFromAnalytes("metabolite")
+   gene <- getPrefixesFromAnalytes("gene")
 
-    query <- paste0(
-        "select ",
-            "CASE ",
-                "when geneOrCompound = 'compound' then 'Metabolites' ",
-                "else 'Genes/Proteins' ",
-            "END as analyteType, ",
-            "GROUP_CONCAT(DISTINCT IDtype SEPARATOR ', ') as idTypes ",
-        "from source ",
-        "where geneOrCompound = 'compound' or geneOrCompound = 'gene' ",
-        "GROUP BY AnalyteType "
-    )
-    idtypes <- DBI::dbGetQuery(con, query)
-    DBI::dbDisconnect(con)
-    return(idtypes)
+    return(rbind(met,gene))
 }
 
 #* Return pathways from source database
