@@ -87,6 +87,7 @@ margin = {top: 5, bottom: 5, left: 5, right: 5}
           this.allSetIds = [...new Set(this.allSetIds)];
           // Process data: check set membership for each combination
           data.forEach((combination) => {
+            console.log(combination);
             combination.combinations = [];
             this.allSetIds.forEach((d) => {
               combination.combinations.push({
@@ -101,7 +102,7 @@ margin = {top: 5, bottom: 5, left: 5, right: 5}
                 this.allSetIds.indexOf(d)
               );
             } else {
-              combination.connectorIndices = [];
+              combination.connectorIndices = [0,0];
             }
           });
           this.allSetIds = [...new Set(this.allSetIds)];
