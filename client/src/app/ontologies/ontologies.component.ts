@@ -162,7 +162,7 @@ export class OntologiesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isReturnNoOptions = false;
     this.errorMessage = '';
     this.selectedIndex = 0;
-    this.loadingService.setLoadingState(true);
+ //   this.loadingService.setLoadingState(true);
     let url: string;
 
     const options = {
@@ -180,7 +180,7 @@ export class OntologiesComponent implements OnInit, OnDestroy, AfterViewInit {
       // tslint:disable-next-line:no-string-literal
       options.params['metabolite'] = this.identifiersParams;
       // tslint:disable-next-line:no-string-literal
-      options.params['type'] = this.ontoQueryType[this.queryType];
+      options.params['type'] = "biological"; //this.ontoQueryType[this.queryType];
     }
     this.http.get<any>(url, options).subscribe(response => {
       this.numSubmittedIds =  response.numSubmittedIds;
