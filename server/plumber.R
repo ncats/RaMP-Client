@@ -23,16 +23,7 @@ cors <- function(req, res) {
 #* @serializer unboxedJSON
 #* @get /api/source_versions
 function() {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                        user = username,
-                        dbname = dbname,
-                        password = conpass,
-                        host = host)
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select ",
@@ -55,16 +46,7 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/entity_counts
 function() {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                        user = username,
-                        dbname = dbname,
-                        password = conpass,
-                        host = host)
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select ",
@@ -124,16 +106,7 @@ get_count_query <- function(
 }
 
 get_data_source_intercepts <- function() {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                        user = username,
-                        dbname = dbname,
-                        password = conpass,
-                        host = host)
+    con <- RaMP::connectToRaMP()
 
   tryCatch({
     analyte_types <- c("compound", "gene")
@@ -202,16 +175,7 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/id-types
 function() {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                          user = username,
-                          dbname = dbname,
-                          password = conpass,
-                          host = host)
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select ",
@@ -237,16 +201,9 @@ function(identifier) {
     identifiers <- c(identifier)
     identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                          user = username,
-                          dbname = dbname,
-                          password = conpass,
-                          host = host)
+
+    con <- RaMP::connectToRaMP()
+
     query <- paste0(
         "select ",
             "p.pathwayRampId, ",
@@ -274,16 +231,8 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
     identifiers <- c(identifier)
     identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                          user = username,
-                          dbname = dbname,
-                          password = conpass,
-                          host = host)
+
+    con <- RaMP::connectToRaMP()
 
     name_or_ids_condition <- ""
 
@@ -351,78 +300,43 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
     return(analytes)
 }
 
+#####
 #* Return ontologies from list of metabolites
 #* @param metabolite
 #* @serializer unboxedJSON
 #* @get /api/ontologies
 function(metabolite="", type="biological") {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-
     metabolites_ids <- c(metabolite)
     num_submitted_ids <- length(metabolites_ids)
-    metabolites_ids <- sapply(metabolites_ids, shQuote)
+#    metabolites_ids <- sapply(metabolites_ids, shQuote)
     metabolites_ids <- paste(metabolites_ids, collapse = ",")
-
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                          user = username,
-                          dbname = dbname,
-                          password = conpass,
-                          host = host)
-    query <- paste0(
-        "select s.sourceId ",
-        "from source as s ",
-        "inner join analyte as a on s.rampId = a.rampId ",
-        "where s.sourceId in (", metabolites_ids, ") "
-    )
-
-    metabolites <- DBI::dbGetQuery(con, query)
-
-    DBI::dbDisconnect(con)
-
-    if (nrow(metabolites) > 0) {
-
-        ontologies_df <- RaMP::getOntoFromMeta(
-            analytes = metabolites,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
-        )
+#print(metabolites_ids)
 
         if (type == "biological") {
-            ontologies_df <- ontologies_df[
-                ontologies_df$biofluidORcellular %in% c(
-                    "biofluid",
-                    "tissue location",
-                    "cellular location"
-                ),
-            ]
-        } else {
-            ontologies_df <- ontologies_df[
-                ontologies_df$biofluidORcellular %in% c("origins"),
-            ]
-        }
+		 ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
+	} else { # EM: this is a place holder although we could consider implementing only one type, or subsetting to the 7 different types (e.g. source, subcellular, etc)
+		ontologies_df <- NULL
+	}
 
+      if(is.null(ontologies_df)) {
         return(
             list(
-                num_submitted_ids = num_submitted_ids,
-                numFoundIds = nrow(metabolites),
-                data = ontologies_df
-            )
-        )
-    } else {
-        return(
-            list(
+		temp=metabolites_ids,
                 num_submitted_ids = num_submitted_ids,
                 numFoundIds = 0,
                 data = vector()
             )
         )
-    }
+      } else {
+        return(
+            list(
+    		temp=metabolites_ids,
+                num_submitted_ids = num_submitted_ids,
+                numFoundIds = length(unique(ontologies_df$sourceId)),
+                data = ontologies_df
+            )
+        )
+    } 
 }
 
 #* Return ontologies from list of metabolites
@@ -430,17 +344,7 @@ function(metabolite="", type="biological") {
 #* @serializer unboxedJSON
 #* @get /api/ontology-summaries
 function(contains="") {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                          user = username,
-                          dbname = dbname,
-                          password = conpass,
-                          host = host)
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select commonName as Ontology, biofluidORcellular ",
@@ -462,22 +366,12 @@ function(contains="") {
 #* @serializer unboxedJSON
 #* @get /api/metabolites
 function(ontology="") {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
-
     ontologies_names <- c(ontology)
     num_submitted_names <- length(ontologies_names)
     ontologies_names <- sapply(ontologies_names, shQuote)
     ontologies_names <- paste(ontologies_names, collapse = ",")
 
-    con <- DBI::dbConnect(RMariaDB::MariaDB(),
-                          user = username,
-                          dbname = dbname,
-                          password = conpass,
-                          host = host)
+    con <- RaMP::connectToRaMP()
 
     query <- paste0(
         "select o.commonName ",
@@ -491,13 +385,7 @@ function(ontology="") {
 
     if (nrow(ontologies) > 0) {
 
-        metabolites_df <- RaMP::getMetaFromOnto(
-            ontology = ontologies,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
-        )
+        metabolites_df <- RaMP::getMetaFromOnto(ontology = ontologies)
 
         return(
             list(
@@ -525,19 +413,8 @@ function(ontology="") {
 function(pathway="") {
     pathways <- c(pathway)
     print(pathways)
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     analytes_df <- tryCatch({
-        analytes_df <- RaMP::getAnalyteFromPathway(
-            pathway = pathways,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
-        )
+        analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathways)
     },
     error = function(cond) {
         print(cond)
@@ -551,18 +428,8 @@ function(pathway="") {
 #' @get /api/pathways
 function(analyte="") {
     analytes <- c(analyte)
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     pathways_df_ids <- tryCatch({
-        pathways_df <- RaMP::getPathwayFromAnalyte(
-            analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
+        pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
             NameOrIds = "ids"
         )
     },
@@ -572,10 +439,6 @@ function(analyte="") {
     pathways_df_names <- tryCatch({
         pathways_df <- RaMP::getPathwayFromAnalyte(
             analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
             NameOrIds = "names"
         )
     },
@@ -591,18 +454,9 @@ function(analyte="") {
 #' @parser json
 #' @post /api/combined-fisher-test
 function(req) {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     pathways_df <- as.data.frame(req$body)
     fishers_results_df <- RaMP::runCombinedFisherTest(
-        pathwaydf = pathways_df,
-        conpass = conpass,
-        host = host,
-        dbname = dbname,
-        username = username
+        pathwaydf = pathways_df
     )
     return(fishers_results_df)
 }
@@ -614,11 +468,6 @@ function(req) {
 #' @parser json
 #' @post /api/filter-fisher-test-results
 function(req, p_holmadj_cutoff=0.05, p_fdradj_cutoff=NULL) {
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     filtered_results <- RaMP::FilterFishersResults(
@@ -647,11 +496,6 @@ function(
     if (typeof(min_pathway_tocluster) == "character") {
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
@@ -683,11 +527,6 @@ function(
     if (typeof(min_pathway_tocluster) == "character") {
         min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
     }
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     clustering_results <- RaMP::findCluster(
@@ -750,12 +589,7 @@ function(
         "group by s.sourceId, s.commonName"
     )
 
-    con <- RaMP::connectToRaMP(
-        dbname = dbname,
-        username = username,
-        conpass = conpass,
-        host = host
-    )
+    con <- RaMP::connectToRaMP()
     cids <- DBI::dbGetQuery(con, query)
     DBI::dbDisconnect(con)
 
@@ -773,18 +607,9 @@ function(
 #' @get /api/common-reaction-analytes
 function(analyte="") {
     analytes <- c(analyte)
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     analytes_df_ids <- tryCatch({
         analytes_df <- RaMP::rampFastCata(
             analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
             NameOrIds = "ids"
         )
     },
@@ -794,10 +619,6 @@ function(analyte="") {
     analytes_df_names <- tryCatch({
         analytes_df <- RaMP::rampFastCata(
             analytes = analytes,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username,
             NameOrIds = "names"
         )
     },
@@ -819,19 +640,10 @@ function(metabolite="", property=NULL) {
     if (!is.null(property)) {
         properties <- c(property)
     }
-    config <- config::get()
-    host <- config$db_host_v2
-    dbname <- config$db_dbname_v2
-    username <- config$db_username_v2
-    conpass <- config$db_password_v2
     chemical_properties_df <- tryCatch({
         analytes_df <- RaMP::getChemicalProperties(
             metabolites,
-            propertyList = properties,
-            conpass = conpass,
-            host = host,
-            dbname = dbname,
-            username = username
+            propertyList = properties
         )
     },
     error = function(cond) {

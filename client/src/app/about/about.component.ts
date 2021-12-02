@@ -1,12 +1,14 @@
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { UpsetIntersection } from '../visualization/upset/intersection.model';
-import { ConfigService } from '../config/config.service';
-import { SourceVersion } from './source-version.model';
-import { EntityCount, SourceCount } from './entity-count.model';
-import { filter } from 'rxjs/operators';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import {UpsetData, UpsetIntersection} from '../visualization/upset/intersection.model';
+import {ConfigService} from '../config/config.service';
+import {SourceVersion} from './source-version.model';
+import {EntityCount, SourceCount} from './entity-count.model';
+import {CdkScrollable, ScrollDispatcher} from "@angular/cdk/overlay";
+import {LoadingService} from "../loading/loading.service";
+
 
 @Component({
   selector: 'ramp-about',
@@ -14,18 +16,24 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit, AfterViewInit {
-  genesIntersections: Array<UpsetIntersection>;
+  @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
+
+  /**
+   * default active element for menu highlighting, will be replaced on scroll
+   * @type {string}
+   */
+  activeElement = 'about';
+
+  genesData: any;
+  compoundsData: any;
+
+  /*genesIntersections: Array<UpsetIntersection>;
   genesSoloSets: Array<UpsetIntersection> | any;
   genesAllData: Array<UpsetIntersection>;
   compoundsIntersections: Array<UpsetIntersection>;
   compoundsSoloSets: Array<UpsetIntersection> | any;
-  compoundsAllData: Array<UpsetIntersection>;
+  compoundsAllData: Array<UpsetIntersection>;*/
   apiBaseUrl: string;
-  @ViewChild('briefDescription', { static: false }) briefDescription: ElementRef<HTMLElement>;
-  @ViewChild('contact', { static: false }) contact: ElementRef<HTMLElement>;
-  @ViewChild('citation', { static: false }) citation: ElementRef<HTMLElement>;
-  @ViewChild('summaryStatistics', { static: false }) summaryStatistics: ElementRef<HTMLElement>;
-  elementsDict: { [elementName: string]: ElementRef<HTMLElement> } = {};
   sourceVersions: Array<SourceVersion>;
   entityCounts: Array<EntityCount>;
   entityCountsColumns: Array<string> = [''];
@@ -33,33 +41,40 @@ export class AboutComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private changeDetector: ChangeDetectorRef,
+    private scrollDispatcher: ScrollDispatcher,
+    private loadingService: LoadingService
   ) {
     this.apiBaseUrl = configService.configData.apiBaseUrl;
   }
 
   ngOnInit(): void {
+    this.loadingService.setLoadingState(true);
     this.getVersionInfo();
     this.setEntityCounts();
     this.getAnalytesSourceIntersects();
+
+    this.scrollDispatcher.scrolled().subscribe((data: CdkScrollable) => {
+      if (data) {
+        let scrollTop: number = data.getElementRef().nativeElement.scrollTop + 100;
+        if (scrollTop === 175) {
+          this.activeElement = 'about';
+          this.changeDetector.detectChanges();
+        } else {
+          this.scrollSections.forEach(section => {
+            scrollTop = scrollTop - section.nativeElement.scrollHeight;
+            if (scrollTop >= 0) {
+              this.activeElement = section.nativeElement.nextSibling.id;
+              this.changeDetector.detectChanges();
+            }
+          });
+        }
+      }
+    });
   }
 
   ngAfterViewInit(): void {
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['briefDescription'] = this.briefDescription;
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['contact'] = this.contact;
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['citation'] = this.citation;
-    // tslint:disable-next-line:no-string-literal
-    this.elementsDict['summaryStatistics'] = this.summaryStatistics;
-    this.route.queryParams.pipe(
-      filter(params => params.scrollTo)
-    )
-    .subscribe(params => {
-        this.scrollTo(params.scrollTo);
-      }
-    );
   }
 
   getVersionInfo(): void {
@@ -76,7 +91,6 @@ export class AboutComponent implements OnInit, AfterViewInit {
         response = [];
       }
       this.entityCounts = this.processEntityCounts(response);
-      console.log(this.entityCounts);
     });
   }
 
@@ -108,127 +122,40 @@ export class AboutComponent implements OnInit, AfterViewInit {
   getAnalytesSourceIntersects(): void {
     const url = `${this.apiBaseUrl}analyte_intersects`;
 
-    const genesIntersections: Array<UpsetIntersection> = [];
-    const genesSoloSets: Array<UpsetIntersection> | any = [];
-    const genesAllData: Array<UpsetIntersection> = [];
-    const compoundsIntersections: Array<UpsetIntersection> = [];
-    const compoundsSoloSets: Array<UpsetIntersection> | any = [];
-    const compoundsAllData: Array<UpsetIntersection> = [];
-
-    this.http.get<any>(url).pipe(
-      map((response) => {
-        Object.keys(response).forEach(key => {
-          response[key].map(intercept => {
-            if (typeof intercept.sets === 'string') {
-              intercept.sets = [intercept.sets];
-            }
-            return intercept;
-          });
-        });
-        return response;
-      })
-    ).subscribe(response => {
-      const nameStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-      let compoundNameStrIndex = 0;
-      const compoundSetNameDict = {};
-      const compounds = response.compounds.sort((a, b) => {
-        if (a.sets.length < b.sets.length) {
-          return -1;
-        }
-        if (b.sets.length < a.sets.length) {
-          return 1;
-        }
-        if (a.sets[0] < b.sets[0]) {
-          return -1;
-        }
-        if (b.sets[0] < a.sets[0]) {
-          return 1;
-        }
-        return 0;
-      });
-
-      let geneNameStrIndex = 0;
-      const geneSetNameDict = {};
-      const genes = response.genes.sort((a, b) => {
-        if (a.sets.length < b.sets.length) {
-          return -1;
-        }
-        if (b.sets.length < a.sets.length) {
-          return 1;
-        }
-        if (a.sets[0] < b.sets[0]) {
-          return -1;
-        }
-        if (b.sets[0] < a.sets[0]) {
-          return 1;
-        }
-        return 0;
-      });
-
-      for (let i = 0; i < compounds.length; i++) {
-        let compoundIntersection: UpsetIntersection;
-
-        if (compounds[i].sets.length === 1) {
-
-          compoundIntersection = {
-            name: compounds[i].sets[0],
-            num: compounds[i].size,
-            setName: nameStr.substr(compoundNameStrIndex, 1)
-          };
-          compoundsSoloSets.push(compoundIntersection);
-          compoundSetNameDict[compoundIntersection.name]  = compoundIntersection.setName;
-          compoundNameStrIndex++;
-        } else if (compounds[i].sets.length > 1) {
-          compoundIntersection = {
-            name: response.compounds[i].sets.sort().join(' + '),
-            num: response.compounds[i].size,
-          };
-          compoundIntersection.setName = '';
-          response.compounds[i].sets.forEach(set => {
-            compoundIntersection.setName += compoundSetNameDict[set];
-          });
-          compoundsIntersections.push(compoundIntersection);
-        }
-
-        compoundsAllData.push(compoundIntersection);
-
-        let geneIntersection: UpsetIntersection;
-        if (genes[i].sets.length === 1) {
-
-          geneIntersection = {
-            name: genes[i].sets[0],
-            num: genes[i].size,
-            setName: nameStr.substr(geneNameStrIndex, 1)
-          };
-
-          genesSoloSets.push(geneIntersection);
-          geneSetNameDict[geneIntersection.name]  = geneIntersection.setName;
-          geneNameStrIndex++;
-        } else if (genes[i].sets.length > 1) {
-          geneIntersection = {
-            name: response.genes[i].sets.sort().join(' + '),
-            num: response.genes[i].size,
-          };
-          geneIntersection.setName = '';
-          response.genes[i].sets.forEach(set => {
-            geneIntersection.setName += geneSetNameDict[set];
-          });
-          genesIntersections.push(geneIntersection);
-        }
-        genesAllData.push(geneIntersection);
-      }
-
-      this.genesIntersections = genesIntersections;
-      this.genesSoloSets = genesSoloSets;
-      this.genesAllData = genesAllData;
-      this.compoundsIntersections = compoundsIntersections;
-      this.compoundsSoloSets = compoundsSoloSets;
-      this.compoundsAllData = compoundsAllData;
+    this.http.get<any>(url)
+      .subscribe(response => {
+        const ret = {compounds: [], genes:[]};
+        Object.keys(response).map(key => ret[key] = response[key].map((val,i) =>{
+          val.id = i;
+          if (typeof val.sets === 'string') {
+            val.sets = [val.sets];
+          }
+          return val;
+        }))
+        this.compoundsData = ret.compounds
+        this.genesData = ret.genes
+      this.loadingService.setLoadingState(false);
     });
   }
 
-  scrollTo(element: string): void {
-    this.elementsDict[element].nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  /**
+   * scroll to section
+   * @param el
+   */
+  public scroll(el: any): void {
+    console.log(el);
+  //  el.scrollIntoView(true);
+   el.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
   }
+
+  /**
+   * check which section is active
+   * @param {string} check
+   * @returns {boolean}
+   */
+  isActive(check: string): boolean {
+    return this.activeElement === check;
+  }
+
+
 }

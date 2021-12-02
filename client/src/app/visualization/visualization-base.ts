@@ -1,9 +1,11 @@
-import { Input } from '@angular/core';
+import {Injectable, Input} from '@angular/core';
 import * as d3 from 'd3';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject} from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Decimal } from 'decimal.js';
 
+
+@Injectable()
 export abstract class VisualizationBase {
     svg: any;
     margin = 50;
@@ -17,15 +19,16 @@ export abstract class VisualizationBase {
     yMax: number;
     xMin: number;
     xMax: number;
-    @Input() title = 'Graph';
     legendItems: Array<{ color: string; label: string }> = [];
     xAxis: any;
     yAxis: any;
+ // @Input() title? = 'Graph';
 
-    createSvg(
+
+  createSvg(
         element: HTMLElement,
-        width = this.width,
-        height = this.height,
+        width = this.width-10,
+        height = this.height-10,
         marginLeft = this.margin,
         marginBottom = this.margin,
         marginRight = 0,
