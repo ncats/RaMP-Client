@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+// Import library functions for theme creation.
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin header-theme($theme) {
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+
+  // Define any styles affected by the theme.
+  .header {
+    .toolbar-template {
+      position: fixed;
+      margin-bottom: 60px;
+      background-color: mat.get-color-from-palette($primary);
+    }
+  }
+}

@@ -1,0 +1,63 @@
+<ramp-header></ramp-header>
+<div class="main-content">
+  <router-outlet></router-outlet>
+</div>
+<!--
+<ramp-loading></ramp-loading>
+<mat-toolbar class="mat-elevation-z3" color="primary">
+  <div class="logo">
+    <img src="/assets/images/RaMPLogoNCATS.png">
+  </div>
+  <div class="nav">
+    <div class="nav-item">
+      <button mat-button [matMenuTriggerFor]="home">Home</button>
+      <mat-menu #home="matMenu">
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'briefDescription'}">Brief Description</button>
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'summaryStatistics'}">Summary Statistics</button>
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'citation'}">Citation</button>
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'contact'}">Contact</button>
+      </mat-menu>
+    </div>
+    <div class="nav-item">
+      <button mat-button [matMenuTriggerFor]="query">Query</button>
+      <mat-menu #query="matMenu">
+        <button mat-menu-item [routerLink]="['/analytes-from-pathways']">Analytes from pathways</button>
+        <button mat-menu-item [routerLink]="['/pathways-from-analytes']">Pathways from analytes</button>
+        <button mat-menu-item [routerLink]="['/common-reaction-analytes']">Common reaction analytes</button>
+        <button mat-menu-item [routerLink]="['/ontologies']">Ontologies</button>
+      </mat-menu>
+    </div>
+    <div class="nav-item">
+      <button mat-button [matMenuTriggerFor]="analyses">Analyses</button>
+      <mat-menu #analyses="matMenu">
+        <button mat-menu-item [routerLink]="['/pathway-enrichment-analysis']">Pathway enrichment analysis</button>
+        <button mat-menu-item [routerLink]="['/chemical-analysis']">Chemical analysis</button>
+      </mat-menu>
+    </div>
+  </div>
+  <div class="fill-middle"></div>
+</mat-toolbar>
+<div class="content-container">
+  <router-outlet></router-outlet>
+</div>
+&lt;!&ndash; <mat-sidenav-container [hasBackdrop]="hasBackdrop">
+  <mat-sidenav #sideNav mode="side" opened opened="false">
+    <mat-nav-list>
+      <mat-list-item *ngFor="let navItem of navItems" [ngClass]="{'active': navItem.id == activeNavItemId}">
+        <a matLine [routerLink]="navItem.path">{{navItem.display}}</a>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="content-container">
+      <div class="hamburger-container">
+        <button mat-icon-button aria-label="Open side navigation" color="accent" (click)="openSideNav()">
+          <mat-icon svgIcon="menu"></mat-icon>
+        </button>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container> &ndash;&gt;
+
+-->
