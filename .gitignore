@@ -10,3 +10,4 @@
 sql-queries/
 .idea/
 node_modules/
+config.yml
