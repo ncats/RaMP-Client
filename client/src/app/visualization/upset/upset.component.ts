@@ -1,321 +1,417 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter, HostListener,
-  Inject,
-  Input,
-  OnInit,
-  Output, PLATFORM_ID,
-  ViewChild, ViewEncapsulation
-} from '@angular/core';
-import {map, take, takeUntil} from 'rxjs/operators';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
+import { VisualizationBase } from '../visualization-base';
+import { take } from 'rxjs/operators';
 import * as d3 from 'd3';
-import {UpsetData, UpsetIntersection} from './intersection.model';
-import {VisualizationBase} from "../visualization-base";
-import Decimal from 'decimal.js';
-import {BehaviorSubject, Subject} from "rxjs";
-import {isPlatformBrowser} from "@angular/common";
+import { UpsetIntersection } from './intersection.model';
 
 @Component({
   selector: 'ramp-upset',
   templateUrl: './upset.component.html',
-  styleUrls: ['./upset.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./upset.component.scss']
 })
-export class UpsetComponent implements OnInit {
-  @Input() scale: 'linear' | 'log' = 'linear';
+export class UpsetComponent extends VisualizationBase implements OnInit, AfterViewInit {
+  selectedData: Array<any>;
+  intersections: Array<UpsetIntersection>;
+  soloSets: Array<UpsetIntersection> | any;
+  allData: Array<UpsetIntersection>;
+  dataNameKey: string;
+  dataValuesKey: string;
+  isViewInit = false;
+  @Input() scale: 'linear'|'log' = 'linear';
+  @Input() showSetsSelection = false;
   @Output() upSetBarClicked = new EventEmitter();
-  @Input() title!: string;
-  @ViewChild('upsetPlotBox', {static: true}) upsetPlotElement: ElementRef;
-svg: any;
-width: number = 300;
-height: number = 300;
-margin = {top: 5, bottom: 5, left: 5, right: 5}
-  allSetIds= [];
-  /**
-   * Behaviour subject to allow extending class to unsubscribe on destroy
-   * @type {Subject<any>}
-   */
-  protected ngUnsubscribe: Subject<any> = new Subject();
+  private circRad = 11;
 
-  /**
-   * initialize a private variable _data, it's a BehaviorSubject
-   * @type {BehaviorSubject<any>}
-   * @private
-   */
-  protected _data = new BehaviorSubject<any>(null);
+  @ViewChild('upsetPlotBox', { read: ElementRef, static: false }) upsetPlotElement: ElementRef;
 
-  /**
-   * pushes changed data to {BehaviorSubject}
-   * @param value
-   */
-  @Input()
-  set data(value: any | null) {
-      this._data.next(value);
-  }
-
-  /**
-   * returns value of {BehaviorSubject}
-   * @returns {UpsetData}
-   */
-  get data(): any | null {
-    return this._data.getValue();
-  }
-
-  /**
-   * function to redraw/scale the graph on window resize
-   */
-  @HostListener('window:resize', [])
-  onResize() {
-    this.redrawChart();
-  }
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformID: any
-  ) {
+  constructor() {
+    super();
   }
 
   ngOnInit(): void {
-    this._data
-      // listen to data as long as term is undefined or null
-      // Unsubscribe once term has value
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        map(data => {
-          data.forEach((d) => this.allSetIds.push(...d.sets));
-          this.allSetIds = [...new Set(this.allSetIds)];
-          // Process data: check set membership for each combination
-          data.forEach((combination) => {
-            console.log(combination);
-            combination.combinations = [];
-            this.allSetIds.forEach((d) => {
-              combination.combinations.push({
-                setId: d,
-                member: combination.sets.includes(d)
-              });
-            });
-
-            // Determine which sets (circles in the combination matrix) should be connected with a line
-            if (combination.sets.length > 1) {
-              combination.connectorIndices = d3.extent(combination.sets, (d) =>
-                this.allSetIds.indexOf(d)
-              );
-            } else {
-              combination.connectorIndices = [0,0];
-            }
-          });
-          this.allSetIds = [...new Set(this.allSetIds)];
-        })
-      )
-      .subscribe(data => {
-        if (isPlatformBrowser(this.platformID)){
-          this.drawContainer();
-        }
-      });
+    this.svgReady.pipe(take(1)).subscribe(() => {
+      this.drawChart();
+    });
   }
 
-  redrawChart(): void {
-    d3.select(this.upsetPlotElement.nativeElement).selectAll('*').remove();
+  ngAfterViewInit(): void {
+    this.isViewInit = true;
     this.drawContainer();
   }
 
-  drawContainer(): void {
 
-    const element = this.upsetPlotElement.nativeElement;
-    this.width = element.offsetWidth - this.margin.left - this.margin.right;
-    this.height = element.offsetHeight- this.margin.top - this.margin.bottom;
 
-    const innerMargin = 10;
-    const tooltipMargin = 10;
+  @Input('intersections')
+  set intersectionsInput(intersections: Array<UpsetIntersection>) {
+    if (intersections != null) {
+      this.intersections = intersections;
+      this.drawContainer();
+    }
+  }
 
-   // const width = this.width - margin.left - margin.right;
-  //  const height = this.height - margin.top - margin.left;
+  @Input('soloSets')
+  set soloSetsInput(soloSets: Array<UpsetIntersection> | any) {
+    if (soloSets != null) {
+      this.soloSets = soloSets;
+      this.drawContainer();
+    }
+  }
 
-    const leftColWidth = this.width *.25;
-    const rightColWidth = this.width - leftColWidth;
+  @Input('allData')
+  set allDataInput(allData: Array<UpsetIntersection>) {
+    if (allData != null) {
+      this.allData = allData;
+      this.drawContainer();
+    }
+  }
 
-    const topRowHeight = this.height * .66;
-    const bottomRowHeight = this.height - topRowHeight - innerMargin;
-
-    // Initialize scales
-    const xScale = d3
-      .scaleBand()
-      .domain(this.data.map((d) => d.id))
-      .range([0, rightColWidth])
-      .paddingInner(0.2);
-
-    const yCombinationScale = d3
-      .scaleBand()
-      .domain(this.allSetIds)
-      .range([0, bottomRowHeight])
-      .paddingInner(0.2);
-
-    let yAxis;
-let intersectionSizeScale;
-
-    if (this.scale === 'log') {
-       intersectionSizeScale = d3
-         .scaleLog()
-         .domain([1, d3.max(this.data, (d: {size: number}) => d.size)])
-        .range([topRowHeight, 0]);
-
-      yAxis = d3
-        .axisLeft(intersectionSizeScale)
-        .scale(intersectionSizeScale)
-        .tickFormat((d, i) => {
-          return i % 5 === 0 && d3.format(',d')(Number(d)) || '';
-        })
-        .tickSize(5);
-
-    } else {
-      intersectionSizeScale = d3
-        .scaleLinear()
-        .domain([1, d3.max(this.data, (d: {size: number}) => d.size)])
-        .range([topRowHeight, 0]);
-
-      yAxis = d3.axisLeft(intersectionSizeScale)
-        .tickSize(5);
+  @Input('nameKey')
+    set dataXKeyInput(nameKey: string) {
+        if (nameKey != null) {
+            this.dataNameKey = nameKey;
+            this.processData();
+            this.svgReady.pipe(take(1)).subscribe(() => {
+                this.drawChart();
+            });
+        }
     }
 
-    // Prepare the overall layout
-    const svg = d3
-      .select(element)
-      .append("svg:svg")
-      .attr("width", this.width)
-      .attr("height", this.height)
-     /* .append("svg:g")
-      .attr("transform", `translate(0, ${this.margin.top})`);
-*/
-    const setSizeChart = svg
-      .append("svg:g")
-      .attr("transform", `translate(0, ${topRowHeight + innerMargin})`);
+    @Input('valuesKey')
+    set dataYKeyInput(valuesKey: string) {
+        if (valuesKey != null) {
+            this.dataValuesKey = valuesKey;
+            this.processData();
+            this.svgReady.pipe(take(1)).subscribe(() => {
+                this.drawChart();
+            });
+        }
+    }
 
-    const intersectionSizeChart = svg
-      .append("svg:g")
-      .attr("class", "intersection-size")
-      .attr("transform", `translate(${leftColWidth}, 0)`);
-
-    const combinationMatrix = svg
-      .append("svg:g")
-      .attr(
-        "transform",
-        `translate(${leftColWidth}, ${topRowHeight + innerMargin})`
-      );
-
-    /*
-     * Combination matrix
-     */
-
-    // Create a group for each combination
-    const combinationGroup = combinationMatrix
-      .selectAll(".combination")
-      .data(this.data)
-      .join("svg:g")
-      .attr("class", "combination")
-      .attr(
-        "transform",
-        (d: {id}) => `translate(${xScale(d.id) + xScale.bandwidth() / 2}, 0)`
-      );
-
-    // Select all circles within each group and bind the inner array per data item
-    const circle = combinationGroup
-      .selectAll("circle")
-      .data((combination: {combinations: []}) => combination.combinations)
-      .join("circle")
-      .classed("member", (d: {member: boolean}) => d.member)
-   //   .style('fill', '#00667a')
-      .attr("cy", (d: {setId}) => yCombinationScale(d.setId) + yCombinationScale.bandwidth() / 2)
-      .attr("r", (d) => yCombinationScale.bandwidth() / 4);
-
-    // Connect the sets with a vertical line
-    const connector = combinationGroup
-      .filter((d: {connectorIndices: []}) => d.connectorIndices.length > 0)
-      .append("svg:line")
-      .style('fill', '#00667a')
-      .attr("class", "connector")
-      .attr(
-        "y1",
-        // @ts-ignore
-        (d:{connectorIndices: []}) => yCombinationScale(this.allSetIds[d.connectorIndices[0]]) + yCombinationScale.bandwidth() / 2
-      )
-      .attr(
-        "y2",
-        // @ts-ignore
-        (d: {connectorIndices: []}) => yCombinationScale(this.allSetIds[d.connectorIndices[1]]) + yCombinationScale.bandwidth() / 2
-      );
-
-    /*
-     * Set size chart
-     */
-    svg.append("svg:g").attr("transform", (d) => `translate(0, ${topRowHeight})`);
-
-    setSizeChart
-      .selectAll(".set-name")
-      .data(this.allSetIds)
-      .join("text")
-      .attr("class", "set-name")
-      .attr("text-anchor", "end")
-      .attr('font-size', '.8em')
-      .attr("x", leftColWidth- this.margin.left)
-      .attr("y", (d) => yCombinationScale(d) + yCombinationScale.bandwidth() / 2)
-      .attr("dy", "0.35em")
-      .text((d) => d);
-
-    /*
-     * Intersection size chart
-     */
-
-   // const intersectionSizeAxis = d3.axisLeft(intersectionSizeScale).ticks(3);
-    const intersectionSizeAxis = d3
-      .axisLeft(intersectionSizeScale)
-      .scale(intersectionSizeScale)
-      .tickFormat((d, i) => {
-        return (i % 5 === 0 && d3.format(",d")(Number(d))) || "";
-      })
-      .tickSize(5);
-
-    intersectionSizeChart
-      .append("g")
-      .attr("transform", (d) => `translate(${-(this.margin.left + this.margin.right)}, ${this.margin.top + this.margin.bottom})`)
-      .call(intersectionSizeAxis);
-
-    intersectionSizeChart
-      .append("g")
-      .attr("transform", (d) => `translate(0, ${this.margin.top + this.margin.bottom})`)
-      .selectAll("rect")
-      .data(this.data)
-      .join("rect")
-      .attr("class", "bar")
-      .style('fill', '#00667a')
-      .attr("height", (d: {size} ) => topRowHeight - intersectionSizeScale(d.size))
-      .attr("width", xScale.bandwidth())
-      .attr("x", (d: {id} ) => xScale(d.id))
-      .attr("y", (d: {size} ) => intersectionSizeScale(d.size))
-      .on("mouseover", (event, d) => {
-        //  d3.select("#tooltip").style("opacity", 1).html(d.values.join("<br/>"));
-      })
-      .on("mousemove", (event) => {
-        d3.select("#tooltip")
-          .style("left", event.pageX + tooltipMargin + "px")
-          .style("top", event.pageY + tooltipMargin + "px");
-      })
-      .on("mouseout", () => {
-        d3.select("#tooltip").style("opacity", 0);
+  processData(): void {
+    super.processData();
+    if (this.data != null && this.dataValuesKey != null) {
+      this.data = this.data.sort((a, b) => {
+        if (a[this.dataValuesKey] == null) {
+          a[this.dataValuesKey] = [];
+        }
+        if (b[this.dataValuesKey] == null) {
+          b[this.dataValuesKey] = [];
+        }
+        if (a[this.dataValuesKey].length > b[this.dataValuesKey].length) {
+          return -1;
+        }
+        if (b[this.dataValuesKey].length > a[this.dataValuesKey].length) {
+          return 1;
+        }
+        return 0;
       });
-    intersectionSizeChart
-      .append('svg:g')
-      .attr("transform", (d) => `translate(0, ${this.margin.top -1})`)
-      .attr('class', 'bar-labels')
-      .selectAll('.text')
-      .data(this.data)
-      .enter()
-      .append('text')
-      .attr('font-size', '.6em')
-      // .attr('dy', '.75em')
-      .attr('x', (d: {id}) =>  xScale(d.id))
-      .attr('y', (d: {size: number}) => d.size > 0 ? intersectionSizeScale(d.size) + this.margin.top : intersectionSizeScale(1) + this.margin.top)
-      //.attr('text-anchor', 'middle')
-      .text((d: {size: number}) => d3.format(',d')(Number(d.size)));
+      this.selectedData = [];
+      for (let i = 0; i < this.data.length; i++) {
+        if (i < 5) {
+          this.data[i].isSelected = true;
+          this.selectedData.push(this.data[i]);
+        } else {
+          break;
+        }
+      }
+      this.formatIntersectionData();
+      this.allData = this.insertSoloDataOutersect();
+      this.drawContainer();
+    }
+  }
+
+  redrawPlot(): void {
+    this.selectedData = this.data.filter(item => item.isSelected);
+    this.formatIntersectionData();
+    this.allData = this.insertSoloDataOutersect();
+    d3.select(this.upsetPlotElement.nativeElement).selectAll('*').remove();
+    this.drawContainer();
+    this.drawChart();
+  }
+
+  drawContainer(): void {
+    if (this.isViewInit && this.allData && this.soloSets) {
+      let maxLabelSize = 0;
+      let maxLabelText = '';
+      this.soloSets.forEach(element => {
+        if (element.name.length > maxLabelSize) {
+          maxLabelSize = element.name.length;
+          maxLabelText = element.name;
+        }
+      });
+      const canvasElement = document.createElement('canvas');
+      const context = canvasElement.getContext('2d');
+      context.font = '400 14px/20px Roboto, "Helvetica Neue", sans-serif';
+      const marginLeft = context.measureText(maxLabelText).width + 10;
+      const height = 300;
+      const marginBottom = this.soloSets.length * 45;
+      const width = 52 + ((this.allData.length - 1) * (this.circRad * 2.7));
+      this.createSvg(this.upsetPlotElement.nativeElement, width, height, marginLeft, marginBottom, 0, 20);
+    }
+  }
+
+  // format intersection data
+  formatIntersectionData() {
+
+    if (this.selectedData != null && this.dataValuesKey != null && this.dataNameKey != null && this.scale) {
+      // compiling solo set data - how many values per set
+      const soloSets = [];
+
+      // nameStr is for the setName, which makes it easy to compile
+      // each name would be A, then B, so on..
+      const nameStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substr(0, this.selectedData.length);
+
+      this.selectedData.forEach((x, i) => {
+        soloSets.push({
+          name: x[this.dataNameKey],
+          setName: nameStr.substr(i, 1),
+          num: x[this.dataValuesKey].length,
+          values: x[this.dataValuesKey],
+        });
+      });
+
+      let intNames = this.getIntNames(0, nameStr.length, nameStr);
+
+      // removing solo names
+      intNames = intNames.filter((x) => x.length !== 1);
+
+      let intersections = [];
+
+      // compile intersections of values for each intersection name
+      intNames.forEach((intName) => {
+        // collecting all values: [pub1arr, pub2arr, ...]
+        const values = intName.split('').map((set) => soloSets.find((x) => x.setName === set).values);
+
+        // getting intersection
+        // https://stackoverflow.com/questions/37320296/how-to-calculate-intersection-of-multiple-arrays-in-javascript-and-what-does-e
+        const result = values.reduce((a, b) => a.filter((c) => b.includes(c)));
+        intersections.push({
+          name: intName.split('').map((set) => soloSets.find((x) => x.setName === set).name).join(' + '),
+          setName: intName,
+          num: result.length,
+          values: result,
+        });
+
+      });
+
+      // taking out all 0s
+      intersections = intersections.filter((x) => x.value !== 0);
+      this.intersections = intersections;
+      this.soloSets = soloSets;
+    }
+  }
+
+  // compiling list of intersection names recursively
+  // ['A', 'AB', 'ABC', ...]
+  getIntNames(start, end, nameStr) {
+    // eg. BCD
+    const name = nameStr.substring(start, end);
+
+    // when reaching the last letter
+    if (name.length === 1) {
+      return [name];
+    }
+    const retArr = this.getIntNames(start + 1, end, nameStr);
+
+    // eg. for name = BCD, would return [B] + [BC,BCD,BD] + [C,CD,D]
+    return [name[0]].concat(retArr.map((x) => name[0] + x), retArr);
+  }
+
+  // include solo sets with all its data
+  insertSoloDataAll() {
+    const allData = this.intersections.slice();
+    this.soloSets.forEach(x => {
+      allData.push(x);
+    });
+    return allData;
+  }
+
+  // include solo sets with only the values that ARE NOT in other sets
+  insertSoloDataOutersect() {
+    if (this.intersections != null && this.soloSets != null) {
+      const allData = this.intersections.slice();
+      const soloSets = this.soloSets.slice();
+
+      soloSets.forEach(x => {
+        // compile all unique values from other sets except current set
+        const otherSets = [...new Set(soloSets.map(y => y.setName === x.setName ? [] : y.values).flat())];
+        // subtract otherSets values from current set values
+        const values = x.values.filter(y => !otherSets.includes(y));
+        allData.push({
+          name: x.name,
+          setName: x.setName,
+          num: values.length,
+          // tslint:disable-next-line:object-literal-shorthand
+          values: values,
+        });
+
+      });
+
+      return allData;
+    }
+  }
+
+  drawChart() {
+
+    if (this.svg != null && this.allData != null && this.soloSets != null) {
+      // all sets
+      const allSetNames = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substr(0, this.soloSets.length).split('');
+
+      const rad = this.circRad;
+
+      const width = 42 + ((this.allData.length - 1) * (rad * 2.7));
+      const height = 300;
+
+      // make the canvas
+      this.svg
+        .attr('xmlns', 'http://www.w3.org/2000/svg')
+        .attr('xmlns:xlink', 'http://www.w3.org/1999/xlink')
+        .attr('class', 'plot')
+        .append('g')
+        .attr('fill', 'white');
+
+      // make a group for the upset circle intersection things
+      const upsetCircles = this.svg.append('g')
+        .attr('id', 'upsetCircles')
+        .attr('transform', `translate(20,${height + 25})`);
+
+      // making dataset labels
+      this.soloSets.forEach((x, i) => {
+        upsetCircles.append('text')
+          .attr('dx', -30)
+          .attr('dy', 5 + i * (rad * 2.7))
+          .attr('text-anchor', 'end')
+          .attr('fill', 'black')
+          .style('font-size', 15)
+          .text(x.name);
+      });
+
+      // sort data decreasing
+      // this.allData.sort((a, b) => parseFloat(b.num.toString()) - parseFloat(a.num.toString()));
+      this.allData.sort((a, b) => parseFloat(a.name.split(' + ').length.toString()) - parseFloat(b.name.split(' + ').length.toString()));
+
+      // make the bars
+      const upsetBars = this.svg.append('g')
+        .attr('id', 'upsetBars');
+
+      const nums: Array<any> = this.allData.map((x) => x.num);
+
+      // set range for data by domain, and scale by range
+
+      let yrange;
+      let yAxis;
+
+      if (this.scale === 'log') {
+        yrange = d3.scaleLog()
+          .domain([1, d3.max(nums)])
+          .range([height, 0]);
+
+        yAxis = d3.axisLeft(yrange)
+          .scale(yrange)
+          .tickFormat((d, i) => {
+            return i % 5 === 0 && d3.format(',d')(Number(d)) || '';
+          })
+          .tickSize(5);
+
+      } else {
+        yrange = d3.scaleLinear()
+          .domain([0, d3.max(nums)])
+          .range([height, 0]);
+
+        yAxis = d3.axisLeft(yrange)
+          // .scale(yrange)
+          .tickSize(5);
+      }
+
+      const xrange = d3.scaleLinear()
+        .domain([0, nums.length])
+        .range([0, width]);
+
+      // set axes for graph
+      const xAxis = d3.axisBottom(xrange)
+        // .scale(xrange)
+        .tickPadding(2)
+        .tickFormat((d, i) => this.allData[i].setName)
+        .tickValues(d3.range(this.allData.length));
+
+      // add X axis
+      upsetBars.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', `translate(0,${height})`)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
+        .call(xAxis)
+        .selectAll('.tick')
+        .remove();
+
+
+      // Add the Y Axis
+      upsetBars.append('g')
+        .attr('class', 'y axis')
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
+        .call(yAxis)
+        .selectAll('text')
+        .attr('fill', 'black')
+        .attr('stroke', 'none');
+
+
+      const chart = upsetBars.append('g')
+        .attr('transform', 'translate(1,0)')
+        .attr('id', 'chart');
+
+      // adding each bar
+      const bars = chart.selectAll('.bar')
+        .data(this.allData)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar clickable')
+        .attr('width', 20)
+        .attr('x', (d, i) => 12 + i * (rad * 2.7))
+        .attr('y', (d) => yrange(d.num))
+        .style('fill', '#00667a')
+        .attr('height', (d) => height - yrange(d.num))
+        .on('click', (d, i) => { this.upSetBarClicked.emit(i); });
+
+      const labels = chart.selectAll('.text')
+        .data(this.allData)
+        .enter()
+        .append('text')
+        .attr('font-size', 11)
+        .attr('dy', '.75em')
+        .attr('x', (d, i) => 12 + i * (rad * 2.7) + 10)
+        .attr('y', (d) => d.num > 0 ? yrange(d.num) - 13 : yrange(1) - 13)
+        .attr('text-anchor', 'middle')
+        .text((d) => d3.format(',d')(Number(d.num)));
+
+      // circles
+      this.allData.forEach((x, i) => {
+        allSetNames.forEach((y, j) => {
+          upsetCircles.append('circle')
+            .attr('cx', i * (rad * 2.7) + 3)
+            .attr('cy', j * (rad * 2.7))
+            .attr('r', rad)
+            .attr('class', `set-${x.setName}`)
+            .style('opacity', 1)
+            .attr('fill', () => {
+              if (x.setName.indexOf(y) !== -1) {
+                return '#00667a';
+              }
+              return 'silver';
+            });
+        });
+
+        upsetCircles.append('line')
+          .attr('id', `setline${i}`)
+          .attr('x1', i * (rad * 2.7) + 3)
+          .attr('y1', allSetNames.indexOf(x.setName[0]) * (rad * 2.7))
+          .attr('x2', i * (rad * 2.7) + 3)
+          .attr('y2', allSetNames.indexOf(x.setName[x.setName.length - 1]) * (rad * 2.7))
+          .style('stroke', '#00667a')
+          .attr('stroke-width', 4);
+      });
+    }
   }
 }

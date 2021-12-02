@@ -31,7 +31,7 @@
                                     <span *ngIf="queryType == 'metaFromOnto'">
                                         Start typing the name of an ontology to see a list of options. They will be grouped by type. You can select multiple ontologies.
                                     </span>
-
+                                    
                                 </div>
                                 <div class="text-input-container" *ngIf="queryType == 'metaFromOnto'; else ontoFromMeta">
                                     <div class="chip-list-container">
@@ -54,7 +54,7 @@
                                                     [matChipInputFor]="ontologiesChipList"
                                                     [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                                     (matChipInputTokenEnd)="processAutocompleteInputEnd($event)">
-
+                                                
                                             </mat-chip-list>
                                             <mat-autocomplete #ontologyInputAutocomplete="matAutocomplete" (optionSelected)=selectOntology($event)>
                                                 <mat-optgroup *ngFor="let ontologyGroup of ontologyGroupedOptions"
@@ -87,10 +87,8 @@
                                         <mat-radio-button value="bioOnto">Retrieve biological ontologies from
                                             metabolites
                                         </mat-radio-button>
-<!--
                                         <mat-radio-button value="originOnto">Retrieve origin ontologies from metabolites
                                         </mat-radio-button>
--->
                                     </mat-radio-group>
                                 </div>
                                 <div>
@@ -157,7 +155,7 @@
                                                 to collapse panel'}}
                                             </mat-panel-description>
                                         </mat-expansion-panel-header>
-                                        <div class="code-container"
+                                        <div class="code-containder"
                                             *ngIf="queryType == 'bioOnto' || queryType == 'originOnto'">
                                             <div>RaMP::getOntoFromMeta(</div>
                                             <div class="indent">analytes = c({{identifiersParams.join(', ')}}),</div>
@@ -168,7 +166,7 @@
                                             <div class="indent">NameOrIds = 'ids' or 'names'</div>
                                             <div>)</div>
                                         </div>
-                                        <div class="code-container" *ngIf="queryType == 'metaFromOnto'">
+                                        <div class="code-containder" *ngIf="queryType == 'metaFromOnto'">
                                             <div>RaMP::getMetaFromOnto(</div>
                                             <div class="indent">ontology = c({{identifiersParams.join(', ')}}),</div>
                                             <div class="indent">conpass = &#123;conpass&#125;,</div>

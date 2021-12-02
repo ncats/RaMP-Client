@@ -1,305 +1,162 @@
-
-<div fxLayout="row" class="about-content">
-  <div fxFlex="5" fxShow.lt-sm></div>
-  <div fxFlex="20" fxHide.lt-sm class="toc-wrapper">
-    <div class="toc">
-      <mat-nav-list>
-        <a mat-list-item class="list-button" (click)="scroll(about)"
-           [ngClass]="{'active': isActive('about')}">
-          About
-        </a>
-        <a mat-list-item class="list-button" (click)="scroll(capabilities)"
-           [ngClass]="{'active': isActive('capabilities')}">Capabilities
-        </a>
-        <a mat-list-item class="list-button" (click)="scroll(dataSources)"
-           [ngClass]="{'active': isActive('dataSources')}">Data Sources
-        </a>
-        <a mat-list-item class="list-button" (click)="scroll(summaryStatistics)"
-           [ngClass]="{'active': isActive('summaryStatistics')}">Summary Statistics
-        </a>
-        <a mat-list-item class="list-button" (click)="scroll(citation)"
-           [ngClass]="{'active': isActive('citation')}">
-          Citation
-        </a>
-        <a mat-list-item class="list-button" (click)="scroll(contact)"
-           [ngClass]="{'active': isActive('contact')}">
-          RaMP Team and Contact
-        </a>
-        <a mat-list-item class="list-button" (click)="scroll(license)" [ngClass]="{'active': isActive('license')}">
-          License
-        </a>
-      </mat-nav-list>
-    </div>
-  </div>
-  <div fxFlex="80" fxFlex.lt-sm="90" id="scroller-wrapper" class="about-wrapper" cdkScrollable>
-    <div fxLayout="row" fxLayoutAlign="space-around center">
-      <div fxFlex="100">
-        <h1 class="ramp-title">
-          <b>RaMP</b>: Relational Database of Metabolomics Pathways
-        </h1>
-      </div>
-    </div>
-    <div fxLayout="row" id="about" #about #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{'active': isActive('about')}">About RaMP</div>
-        <div class="section-content">
-          <p>RaMP (Relational database of Metabolomic Pathways) is a multi-sourced integrated database with
-            comprehensive pathway, chemical, and ontology annoations for genes, proteins, and metabolites.
-            Information within RaMP is harmonized from the following data sources: </p>
-          <ul class="ramp-list">
-            <li *ngFor="let version of sourceVersions">
-              <a href={{version.dataSourceUrl}} target="_blank" rel="noreferrer"
-                 attr.aria-label="Hyperlink to the {{version.dataSourceName}} website. Link opens in a new tab."
-              > {{version.dataSourceName}}</a> &nbsp;
-              <span>{{version.dataSourceVersion}}</span>
-            </li>
-          </ul>
-          <p>
-            This web application allows users to interact with RaMP without any programming experience by
-            performing basic queries on pathways, common reactions, ontologies, and chemical structures/classes.
-            The app also supports pathway and chemical class enrichment analysis (using Fisher's Exact Test). To
-            facilitate the interpretation of multi-omic data, users can input gene, protein, and metabolite IDs
-            for queries and analyses. The inclusion of a mix of ID types as input is supported (e.g. users must
-            prepend IDs with the source, such as hmdb:HMDB0000562). Further details on which IDs are supported is
-            provided for each query or analyses module.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div fxLayout="row" id="capabilities" #capabilities #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{'active': isActive('capabilities')}">Capabilities</div>
-        <div class="section-content">
-          <ul class="ramp-list">
-            <li><b>Pathways</b> refers to biological pathways as drawn from
-              <a href="https://www.genome.jp/kegg/" target="_blank" rel="noreferrer"
-                 aria-label="Hyperlink to the KEGG website. Link opens in a new tab.">KEGG</a>
-              (through <a href="https://hmdb.ca/" target="_blank" rel="noreferrer"
-                          aria-label="Hyperlink to the HMDB  website. Link opens in a new tab.">HMDB</a>),
-              <a href="https://reactome.org/" target="_blank" rel="noreferrer"
-                 aria-label="Hyperlink to the Reactome website. Hyperlink opens in a new tab.">Reactome</a>
-              , and
-              <a href="https://www.wikipathways.org/index.php/WikiPathways" target="_blank" rel="noreferrer"
-                 aria-label="Hyperlink to the WikiPathways website. Hyperlink opens in a new tab.">WikiPathways</a>.
-            </li>
-            <li><b>Common Reactions</b> refers to the retrieval of genes/enzymes that modulate levels of metabolites,
-              or vice versa.
-            </li>
-            <li><b>Ontologies</b> refers to chemical and functional ontologies from
-              <a href="https://hmdb.ca/" target="_blank" rel="noreferrer" aria-label="Hyperlink to the HMDB
-                  website. Link opens in a new tab">HMDB</a>, which is based on a
-              standardized set of ontological definitions on metabolite processes, roles, physiological effects and
-              disposition (e.g., biological location and source).
-            </li>
-            <li><b>Chemical Structures/Class</b> refers to
-              <a href="http://classyfire.wishartlab.com/" target="_blank" rel="noreferrer" aria-label="Hyperlink
-                  to the ClassyFire Chemical Taxonomy website. Link opens in a new tab.">HMDB’s ClassyFire Chemical
-                Taxonomy</a> and
-              <a href="https://www.lipidmaps.org/" target="_blank" rel="noreferrer" aria-label="Hyperlink
-                  to the LipidMAPS website. Link opens in a new tab.">LipidMAPS</a>
-              lipid classification system
-            </li>
-          </ul>
-          <picture>
-            <source srcset="/assets/images/Supported_Queries.webp" type="image/webp">
-            <source srcset="/assets/images/Supported_Queries.png" type="image/png">
-            <img src="/assets/images/Supported_Queries.png" class="ramp-capabilities-image"
-                 alt="flow diagram illustrating the RaMP data types, annotations and analysis">
-          </picture>
-        </div>
-      </div>
-    </div>
-    <div fxLayout="row" id="dataSources" #dataSources #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{'active': isActive('dataSources')}">Data Sources</div>
-        <div class="section-content">
-          <table>
-            <thead>
-            <tr>
-              <th *ngFor="let column of entityCountsColumns; index as index" [innerHTML]="column | spaceToNewline">
-                <div></div>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let entityCount of entityCounts">
-              <td [innerHTML]="entityCount.entity | spaceToNewline" class="main"></td>
-              <td
-                *ngFor="let column of entityCountsColumns.slice(1); index as index">{{entityCount.counts[column] | number}}</td>
-            </tr>
-            </tbody>
-          </table>
-          <br>
-          <p>
-            The harmonization of metabolites across all the data sources is a semi-automated process that is
-            supplemented by manual curation. The semi-automated process relies on ID links provided from each resource
-            and applies
-            heuristics to ensure accuracy of connections. Inconsistencies captured are manually checked and corrected,
-            and corrected links are stored for reuse in future RaMP updates. This process is further described in our
-            manuscript.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div fxLayout="row" fxLayout.lt-md="column" id="summaryStatistics" #summaryStatistics #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{'active': isActive('summaryStatistics')}">Summary Statistics</div>
-        <div class="section-content">
-        <p>
-          Because RaMP draws from multiple sources, its information content exceeds that of each individual resource.
-          The following UpSet plots highlight the common and unique metabolites and genes covered for each resource.
-        </p>
-          <div fxLayout="row wrap" fxLayoutAlign="space-around center">
-            <div fxFlex.gt-md="48" fxFlex.lt-md="95">
-              <ramp-upset [title]="'Metabolite Overlap'"
-                          [data] = compoundsData
-                          scale="log" *ngIf="compoundsData">
-              </ramp-upset>
-            </div>
-            <div fxFlex.gt-md="48" fxFlex.lt-md="95">
-              <ramp-upset [title]="'Gene Overlap'"
-                          [data] = genesData
-                          scale="log" *ngIf="genesData">
-              </ramp-upset>
-            </div>
-          </div>
-        </div>
-        </div>
-    </div>
-
-
-    <div fxLayout="row" id="citation" #citation #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{'active': isActive('citation')}">Citation</div>
-        <div class="section-content">
-        <p>
-          If you use RaMP, please cite the following work:
-        </p>
-        <p>
-          <a href="https://www.mdpi.com/2218-1989/8/1/16" target="_blank">Zhang, B., et al., RaMP: A Comprehensive
-            Relational Database of Metabolomics Pathways for Pathway Enrichment Analysis of Genes and Metabolites.
-            Metabolites, 2018. 8(1). PMID: 29470400; PMCID: PMC5876005; DOI: 10.3390/metabo8010016</a>
-        </p>
-        <p>
-      An example usage can be found in <a href="https://pubmed.ncbi.nlm.nih.gov/30725469/" target="_blank"
-                                              rel="noreferrer"
-                                              aria-label="Link to a book chapter about RaMP">this chapter</a>.
-      </p>
-          <p>
-            Detailed instructions for installing RaMP locally are below. </p>
-          <p>We've also put together <a href = "https://ncats.github.io/RaMP-DB/RaMP_Vignette.html" target="_blank"
-                                        rel="noreferrer"
-                                        aria-label="Link to the RaMP vignette">
-            a vignette</a> to help get you started on analysis.
-          </p>
-    </div>
-  </div>
-    </div>
-<div fxLayout="row" id="contact" #contact #scrollSection>
-  <div fxFlex="75" fxFlex.lt-md="100">
-    <div class="section-header" [ngClass]="{'active': isActive('contact')}">RaMP Team and Contact</div>
-    <div class="section-content">
-      <div fxLayout="row" fxLayoutAlign="space-around center">
-        <div fxFlex="20" class="portrait-holder">
-          <picture>
-            <source srcset="/assets/images/team/John_650x800px.webp" type="image/webp">
-            <source srcset="/assets/images/team/John_650x800px.jpeg" type="image/jpeg">
-            <img src="/assets/images/team/John_650x800px.jpeg" alt="John Braisted portrait" class="ramp-portrait">
-          </picture>
-          <br>
-          <h2>John Braisted</h2>
-        </div>
-        <div fxFlex="20" class="portrait-holder">
-          <picture>
-            <source srcset="/assets/images/team/Ewy_Pic_650x800px.webp" type="image/webp">
-            <source  srcset="/assets/images/team/Ewy_Pic_650x800px.jpeg" type="image/jpeg">
-            <img  src="/assets/images/team/Ewy_Pic_650x800px.jpeg" alt="Ewy Mathé portrait" class="ramp-portrait">
-          </picture>
-          <h2>Ewy Mathé</h2>
-        </div>
-        <div fxFlex="20" class="portrait-holder">
-          <picture>
-            <source  srcset="/assets/images/team/unknown_1.webp" type="image/webp">
-            <source  srcset="/assets/images/team/unknown_1.jpeg" type="image/jpeg">
-            <img  src="/assets/images/team/unknown_1.jpeg" alt="Jorge Neyra portrait" class="ramp-portrait">
-          </picture>
-          <h2> Jorge Neyra</h2>
-        </div>
-      <div fxFlex="20" class="portrait-holder">
-        <picture>
-          <source  srcset="/assets/images/team/Andy_650x800px.webp" type="image/webp">
-          <source  srcset="/assets/images/team/Andy_650x800px.jpeg" type="image/jpeg">
-          <img  src="/assets/images/team/Andy_650x800px.jpeg" alt="Andrew Patt portrait" class="ramp-portrait">
-        </picture>
-        <h2> Andrew Patt</h2>
-      </div>
-      </div>
-      <div fxLayout="row" fxLayoutAlign="space-around center">
-        <div fxFlex="20" class="portrait-holder">
-          <picture>
-            <source  srcset="/assets/images/team/SheilsTimothy_650x800px.webp" type="image/webp">
-            <source  srcset="/assets/images/team/SheilsTimothy_650x800px.jpeg" type="image/jpeg">
-            <img  src="/assets/images/team/SheilsTimothy_650x800px.jpeg" alt="Timothy Sheils portrait" class="ramp-portrait">
-          </picture>
-          <h2> Timothy Sheils</h2>
-        </div>
-        <div fxFlex="20" class="portrait-holder">
-          <picture>
-            <source  srcset="/assets/images/team/Kyle-Spencer_650x800px.webp" type="image/webp">
-            <source  srcset="/assets/images/team/Kyle-Spencer_650x800px.jpeg" type="image/jpeg">
-            <img  src="/assets/images/team/Kyle-Spencer_650x800px.jpeg" alt="Kyle Spencer portrait" class="ramp-portrait">
-          </picture>
-          <h2>Kyle Spencer</h2>
-        </div>
-        <div fxFlex="20" class="portrait-holder">
-          <picture>
-            <source  srcset="/assets/images/team/unknown_1.webp" type="image/webp">
-            <source  srcset="/assets/images/team/unknown_1.jpeg" type="image/jpeg">
-            <img  src="/assets/images/team/unknown_1.jpeg" alt="Cole Tindall portrait" class="ramp-portrait">
-          </picture>
-          <h2>Cole Tindall</h2>
-        </div>
-        </div>
-    <p>
-        For questions or issues, please submit an issue on our
-      <a href="https://github.com/ncats/RaMP-DB/issues" target="_blank" rel="noreferrer"
-         aria-label="Link to the RaMP DB codebase">GitHub site</a>
-      or send us an email at <a href="mailto:NCATSRaMP@nih.gov">NCATSRaMP@nih.gov</a>
-    </p>
-  </div>
-  </div>
-</div>
-
-<div fxLayout="row" id="datadownload" #datadownload #scrollSection>
-  <div fxFlex="75" fxFlex.lt-md="100">
-    <div class="section-header" [ngClass]="{'active': isActive('datadownload')}">Data Download</div>
-    <div class="section-content">
-
-    </div>
-  </div>
-</div>
-<div fxLayout="row" id="code" #code #scrollSection>
-  <div fxFlex="75" fxFlex.lt-md="100">
-    <div class="section-header" [ngClass]="{'active': isActive('code')}">Code</div>
-    <div class="section-content">
-       RaMP code is freely available via our GitHub pages:
-      <mat-list>
-        <mat-list-item><a href = "https://github.com/ncats/RaMP-DB" target="_blank" rel="noreferrer" aria-label="Link to the RaMP DB GitHub page">RaMP DB</a></mat-list-item>
-        <mat-list-item><a href = "https://github.com/ncats/RaMP-Client" target="_blank" rel="noreferrer" aria-label="Link to the RaMP Client GitHub page">RaMP Client</a></mat-list-item>
-      </mat-list>
-    </div>
-  </div>
-</div>
-<div fxLayout="row" id="license" #license #scrollSection>
-  <div fxFlex="75" fxFlex.lt-md="100">
-    <div class="section-header" [ngClass]="{'active': isActive('license')}">License</div>
-    <div class="section-content">
-      <p>The RaM-DB R package is released under a
-        <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html" target="_blank" rel="noreferrer"
-        aria-label="Link to the GPL-2 license site">GPL-2</a> license.</p>
-    </div>
-  </div>
-</div>
-<div class="spacer"></div>
-</div>
+<div class="route-container">
+    <h1 class="page-title">
+        RaMP: Relational Database of Metabolomics Pathways
+    </h1>
+    <mat-card>
+        <mat-card-content>
+            <section #briefDescription>
+                <h2>
+                    Brief Description
+                </h2>
+                <div class="paragraph">
+                    <span>RaMP is an integrative pathway database harmonizing analyte (genes, proteins, and metabolites) and pathway information from the following data sources: </span>
+                    <span *ngFor="let version of sourceVersions; index as i; last as isLast">
+                        <a [attr.href]="version.dataSourceUrl" target="_blank">{{version.dataSourceName}}</a><span> {{version.dataSourceVersion}}</span>
+                        <span *ngIf="!isLast">, </span>
+                        <span *ngIf="isLast">.</span>
+                    </span>
+                </div>
+                <div class="paragraph">
+                    This application allows users to interface with RaMP without any programming experience.
+                </div>
+                <div class="paragraph">
+                    <!-- <mat-table [dataSource]="entityCounts">
+                        <ng-container matColumnDef="entity">
+                            <mat-header-cell *matHeaderCellDef>
+                                <span>
+                                    Entity
+                                </span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <span>{{row.entity}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container [matColumnDef]="column"
+                            *ngFor="let column of entityCountsColumns.slice(1); index as index">
+                            <mat-header-cell *matHeaderCellDef>
+                                <span>
+                                    {{column}}
+                                </span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <span>{{row.counts[column] | number}}</span>
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="entityCountsColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: entityCountsColumns;"></mat-row>
+                    </mat-table> -->
+                    <div class="table-graph-container">
+                        <div class="responsive">
+                            <h3>Data Sources</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let column of entityCountsColumns; index as index" [innerHTML]="column | spaceToNewline"><div></div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let entityCount of entityCounts">
+                                        <td [innerHTML]="entityCount.entity | spaceToNewline" class="main"></td>
+                                        <td *ngFor="let column of entityCountsColumns.slice(1); index as index">{{entityCount.counts[column] | number}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="functionality-flowchart">
+                            <h3>Capabilities</h3>
+                            <img src="/assets/images/Supported_Queries.png">
+                        </div>
+                    </div>
+                </div>
+                <div class="paragraph">
+                    Of note, RaMP does not import all the information contained in these databases. Instead, RaMP includes pathway names and the genes and metabolites they include. RaMP is a work in progress and we will be expanding its content (reaction-level information, non-human compounds and genes, etc.).
+                </div>
+                <!-- <div>
+                    <ul>
+                        <li>
+                            <a matLine routerLink="/pathway-enrichment-analysis">Perform a pathway enrichment analysis given a list of analyte names or IDs</a>,
+                        </li>
+                        <li>
+                            <a matLine routerLink="/analytes-from-pathways">Retrieve the analytes involved in a given list of pathways</a>,
+                        </li>
+                        <li>
+                            <a matLine routerLink="/pathways-from-analytes">Retrieve the pathways containing a given list of analytes</a>,
+                        </li>
+                        <li>
+                            <a matLine routerLink="/common-reaction-analytes">Find the analytes involved in the same reaction</a>, and
+                        </li>
+                        <li>
+                            <a matLine routerLink="ontologies">Find the ontologies for a given list of metabolites or viceversa</a>.
+                        </li>
+                    </ul>
+                </div>
+                <div class="paragraph functionality-flowchart">
+                    <img src="/assets/images/ramp_flowchart.png">
+                </div> -->
+                <div class="paragraph">
+                    More details can be found in <a href="http://www.mdpi.com/2218-1989/8/1/16" target="_blank">our manuscript</a>, and an example usage can be found in <a href="https://pubmed.ncbi.nlm.nih.gov/30725469/" target="_blank">this chapter</a>.
+                </div>
+            </section>
+            <mat-divider></mat-divider>
+            <section #summaryStatistics>
+                <h2>
+                    Summary Statistics
+                </h2>
+                <div class="upset-plots-container">
+                    <div class="responsive">
+                        <ramp-upset title="Metabolite Overlap" [intersections]="compoundsIntersections" [soloSets]="compoundsSoloSets" [allData]="compoundsAllData" scale="log">
+                        </ramp-upset>
+                    </div>
+                    <div class="responsive">
+                        <ramp-upset title="Gene Overlap" [intersections]="genesIntersections" [soloSets]="genesSoloSets" [allData]="genesAllData" scale="log">
+                        </ramp-upset>
+                    </div>
+                </div>
+            </section>
+            <mat-divider></mat-divider>
+            <section #citation>
+                <h2>
+                    Citation
+                </h2>
+                <div class="paragraph">
+                    If you use RaMP, please cite the following work:
+                </div>
+                <div class="paragraph">
+                    Zhang, B., et al., RaMP: A Comprehensive Relational Database of Metabolomics Pathways for Pathway Enrichment Analysis of Genes and Metabolites. Metabolites, 2018. 8(1).
+                </div>
+                <div class="paragraph">
+                    PMID: 29470400; PMCID: PMC5876005; DOI: 10.3390/metabo8010016
+                </div>
+                <div class="paragraph">
+                    To access, <a href="https://www.mdpi.com/2218-1989/8/1/16" target="_blank">click here</a>.
+                </div>
+            </section>
+            <mat-divider></mat-divider>
+            <section #contact>
+                <h2>
+                    Contact
+                </h2>
+                <ul> 
+                    <li>
+                        John Braisted
+                    </li>
+                    <li>
+                        Ewy Mathé
+                    </li>
+                    <li>
+                        Jorge Neyra
+                    </li>
+                    <li>
+                        Andrew Patt
+                    </li>
+                    <li>
+                        Kyle Spencer
+                    </li>
+                </ul>
+                <div class="paragraph">
+                    For questions or issues, please submit an issue on our GitHub site at <a href="https://github.com/ncats/RaMP-DB/issues" target="_blank">https://github.com/ncats/RaMP-DB</a> or send us an email to <a href="mailto:NCATSRaMP@nih.gov">NCATSRaMP@nih.gov</a>
+                </div>
+            </section>
+        </mat-card-content>
+    </mat-card>
 </div>
