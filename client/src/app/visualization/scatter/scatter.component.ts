@@ -12,7 +12,6 @@ import { TooltipService } from '../tooltip/tooltip.service';
 })
 export class ScatterComponent extends VisualizationBase implements OnInit, AfterViewInit {
   @ViewChild('scatterPlotBox', { read: ElementRef, static: false }) scatterPlotElement: ElementRef;
-  @Input() title? = 'Graph';
   private clustersKey: string;
   private clusters: { [cluster: string]: { color: string, data: Array<any> } } = {};
   @Input() tooltipKey: string;

@@ -1,11 +1,17 @@
 <ramp-loading></ramp-loading>
 <mat-toolbar class="mat-elevation-z3" color="primary">
-  <div class="logo" [routerLink]="['/home']">
+  <div class="logo">
     <img src="/assets/images/RaMPLogoNCATS.png">
   </div>
   <div class="nav">
     <div class="nav-item">
-      <button mat-button [routerLink]="['/about']">About</button>
+      <button mat-button [matMenuTriggerFor]="home">Home</button>
+      <mat-menu #home="matMenu">
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'briefDescription'}">Brief Description</button>
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'summaryStatistics'}">Summary Statistics</button>
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'citation'}">Citation</button>
+        <button mat-menu-item [routerLink]="['/home']" [queryParams]="{ scrollTo: 'contact'}">Contact</button>
+      </mat-menu>
     </div>
     <div class="nav-item">
       <button mat-button [matMenuTriggerFor]="query">Query</button>
@@ -26,11 +32,9 @@
   </div>
   <div class="fill-middle"></div>
 </mat-toolbar>
-<main role ="main">
-<div class="content-container main">
+<div class="content-container">
   <router-outlet></router-outlet>
 </div>
-</main>
 <!-- <mat-sidenav-container [hasBackdrop]="hasBackdrop">
   <mat-sidenav #sideNav mode="side" opened opened="false">
     <mat-nav-list>

@@ -1,12 +1,12 @@
 // Custom Theming for Angular Material
-@use '~@angular/material' as mat;
 // For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat.core();
+@include mat-core();
 
 $ncats-teal: (
     50: #e6fbff,
@@ -77,19 +77,19 @@ $ncats-purple: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$ramp-client-primary: mat.define-palette($ncats-teal, 900, 50);
-$ramp-client-accent: mat.define-palette($ncats-purple, 400, 200, 100);
+$ramp-client-primary: mat-palette($ncats-teal, 900, 50);
+$ramp-client-accent: mat-palette($ncats-purple, 400, 200, 100);
 
 // The warn palette is optional (defaults to red).
-$ramp-client-warn: mat.define-palette(mat.$red-palette);
+$ramp-client-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$ramp-client-theme: mat.define-light-theme($ramp-client-primary, $ramp-client-accent, $ramp-client-warn);
+$ramp-client-theme: mat-light-theme($ramp-client-primary, $ramp-client-accent, $ramp-client-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($ramp-client-theme);
+@include angular-material-theme($ramp-client-theme);
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -203,7 +203,7 @@ router-outlet + * {
     padding-left: 20px;
 }
 
-.code-container {
+.code-containder {
     padding: 15px;
     background-color: #404040;
     color: white;
@@ -223,10 +223,10 @@ router-outlet + * {
 .accordion-container {
     margin-bottom: 15px;
 }
-/*
+
 .responsive {
     max-width: 100%;
-    overflow: auto;
+    overflow: auto;   
 }
 
 @media(min-width: 600px) {
@@ -261,4 +261,4 @@ router-outlet + * {
         height: calc(100vh - 56px);
         margin-top: 56px;
     }
-}*/
+}

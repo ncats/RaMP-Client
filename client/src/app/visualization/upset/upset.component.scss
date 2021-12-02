@@ -2,25 +2,17 @@ figure {
     margin: 0;
 }
 
+.sets-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: center;
+}
+
 .set {
     margin: 10px 15px;
 }
 
-.upset-plot {
-    margin: 0 auto;
-  min-height: 300px;
-  min-width: 300px;
-  }
-
-.combination circle {
-  fill: #e0e0e0;
-}
-
-.combination circle.member {
-  fill: #00667a;
-}
-
-.combination .connector {
-  stroke: #00667a;
-  stroke-width: 3px;
+.plot-legend-container {
+    display: flex;
 }

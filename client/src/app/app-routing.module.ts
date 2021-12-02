@@ -10,11 +10,11 @@ import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways
 
 const routes: Routes = [
   {
-    path: 'about',
+    path: 'home',
     component: AboutComponent,
     data: {
-      id: 'about',
-      display: 'About',
+      id: 'home',
+      display: 'Home',
       order: 1,
       isMainNav: true
     }
@@ -86,15 +86,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'top',
-      anchorScrolling: 'enabled',
-      onSameUrlNavigation: 'reload',
-     // scrollOffset: [0, 120],
-      initialNavigation: 'enabled'
-    })
-  ],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

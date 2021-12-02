@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import {Injectable, OnInit} from '@angular/core';
+import { OnInit } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { analyteIdTypeColumns, analyteMatchesColumns, analyteColumns } from './analyte-tables-columns.constant';
 import { AnalyteMatch } from './analyte.model';
 import { AnalyteService } from './analyte.service';
 import { analyteExampleInputs } from './examples.constant';
 
-@Injectable()
 export abstract class AnalyteQueryBase implements OnInit {
     analytesInput: string;
     idTypes: Array<{ analyteType: string; idTypes: string }>;

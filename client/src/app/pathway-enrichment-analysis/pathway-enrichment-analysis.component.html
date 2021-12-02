@@ -33,7 +33,7 @@
                             <div class="description-right">
                                 <div class="space-bottom">
                                     Enter a list of analyte (metabolites, genes) names or IDs so the application can try to match them
-                                    against our database. We recommend inputting a list of IDs because analytes can have many synomyns, leading to
+                                    against our database. We recommend inputting a list of IDs because analytes can have many synomyns, leading to 
                                     potential errors in mapping. If names are used, mappings should be verified.
                                 </div>
                                 <div class="space-bottom">
@@ -243,7 +243,7 @@
                                                 {{!rFunctionPanelOpen ? 'Click to see the R package function' : 'Click to collapse panel'}}
                                             </mat-panel-description>
                                         </mat-expansion-panel-header>
-                                        <div class="code-container">
+                                        <div class="code-containder">
                                             <div>pathways_df &#60;- RaMP::getPathwayFromAnalyte(</div>
                                                 <div class="indent">analytes = c({{analytesParameters.join(', ')}}),</div>
                                                 <div class="indent">conpass = &#123;conpass&#125;,</div>
@@ -346,7 +346,7 @@
                                             <div class="space-bottom">
                                                 <span class="code">pathways_df</span> is the dataframe returned by the <span class="code">RaMP::getPathwayFromAnalyte</span> function.
                                             </div>
-                                            <div class="code-container">
+                                            <div class="code-containder">
                                                 <div>fishers_results_df &#60;- RaMP::runCombinedFisherTest(</div>
                                                     <div class="indent">pathwaydf = pathways_df,</div>
                                                     <div class="indent">conpass = &#123;conpass&#125;,</div>
@@ -464,7 +464,7 @@
                                             <div class="space-bottom">
                                                 <span class="code">fishers_results_df</span> is the dataframe returned by the <span class="code">RaMP::runCombinedFisherTest</span> function.
                                             </div>
-                                            <div class="code-container">
+                                            <div class="code-containder">
                                                 <div>filtered_results &#60;- RaMP::FilterFishersResults(</div>
                                                     <div class="indent">fishers_df = fishers_results_df,</div>
                                                     <div class="indent">p_holmadj_cutoff = {{pHolmAdjCutoffInput}},</div>
@@ -585,7 +585,7 @@
                                         <div class="space-bottom">
                                             <span class="code">filtered_results</span> is the object returned by the <span class="code">RaMP::FilterFishersResults</span> function.
                                         </div>
-                                        <div class="code-container">
+                                        <div class="code-containder">
                                             <div>clustering_results &#60;- RaMP::findCluster(</div>
                                                 <div class="indent">fishers_df = filtered_results,</div>
                                                 <div class="indent">perc_analyte_overlap = {{percAnalyteOverlap}},</div>
