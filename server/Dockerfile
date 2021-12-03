@@ -10,4 +10,4 @@ COPY install.R install.R
 
 RUN Rscript install.R
 
-CMD ["usr/local/lib/R/site-library/runRamp.R"]
+CMD ["/usr/local/lib/R/site-library/RaMP/runRamp.R"]
