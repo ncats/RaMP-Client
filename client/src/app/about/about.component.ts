@@ -3,11 +3,11 @@ import {ActivatedRoute} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {UpsetData, UpsetIntersection} from '../visualization/upset/intersection.model';
-import {ConfigService} from '../config/config.service';
 import {SourceVersion} from './source-version.model';
 import {EntityCount, SourceCount} from './entity-count.model';
 import {CdkScrollable, ScrollDispatcher} from "@angular/cdk/overlay";
 import {LoadingService} from "../loading/loading.service";
+import {environment} from "../../environments/environment";
 
 
 @Component({
@@ -40,13 +40,12 @@ export class AboutComponent implements OnInit, AfterViewInit {
 
   constructor(
     private http: HttpClient,
-    private configService: ConfigService,
     private route: ActivatedRoute,
     private changeDetector: ChangeDetectorRef,
     private scrollDispatcher: ScrollDispatcher,
     private loadingService: LoadingService
   ) {
-    this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiBaseUrl = environment.apiBaseUrl;
   }
 
   ngOnInit(): void {

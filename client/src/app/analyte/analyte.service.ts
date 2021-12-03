@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ConfigService } from '../config/config.service';
 import { AnalyteMatch, Analyte } from './analyte.model';
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +12,9 @@ export class AnalyteService {
   apiBaseUrl: string;
 
   constructor(
-    private http: HttpClient,
-    private configService: ConfigService
+    private http: HttpClient
   ) {
-    this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiBaseUrl = environment.apiBaseUrl;
   }
 
   findAnalytes(analytes: Array<string>, type?: 'compound'|'gene'): Observable<Array<AnalyteMatch>> {

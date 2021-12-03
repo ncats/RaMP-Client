@@ -70,7 +70,6 @@ pipeline {
                 cleanWs()
                 configFileProvider([
                     configFile(fileId: 'rampdb-client-docker-compose.yml', targetLocation: 'docker-compose.yml'),
-                    configFile(fileId: 'config.json', targetLocation: 'config.json')
                 ]) {
                     withEnv([
                             "IMAGE_NAME=rampdb-client",
@@ -78,7 +77,6 @@ pipeline {
                         ]) {
                         withAWS(credentials:'aws-jenkins-build') {
                             sh '''
-                            chmod 755 config.json
                             export DOCKER_LOGIN="`aws ecr get-login --no-include-email --region us-east-1`"
                             $DOCKER_LOGIN
                             '''

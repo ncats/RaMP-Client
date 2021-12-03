@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import {Injectable, OnInit} from '@angular/core';
-import { ConfigService } from '../config/config.service';
 import { analyteIdTypeColumns, analyteMatchesColumns, analyteColumns } from './analyte-tables-columns.constant';
 import { AnalyteMatch } from './analyte.model';
 import { AnalyteService } from './analyte.service';
 import { analyteExampleInputs } from './examples.constant';
+import {environment} from "../../environments/environment";
 
 @Injectable()
 export abstract class AnalyteQueryBase implements OnInit {
@@ -25,10 +25,9 @@ export abstract class AnalyteQueryBase implements OnInit {
 
     constructor(
         public http: HttpClient,
-        public configService: ConfigService,
         public analyteService: AnalyteService
     ) {
-        this.apiBaseUrl = configService.configData.apiBaseUrl;
+      this.apiBaseUrl = environment.apiBaseUrl;
     }
 
     ngOnInit(): void {

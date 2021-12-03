@@ -4,7 +4,6 @@ import { AnalyteQueryBase } from '../analyte/analyte-query.abstract';
 import { AnalyteMatch } from '../analyte/analyte.model';
 import { HttpClient } from '@angular/common/http';
 import { LoadingService } from '../loading/loading.service';
-import { ConfigService } from '../config/config.service';
 import { AnalyteService } from '../analyte/analyte.service';
 import { map } from 'rxjs/operators';
 import { PageEvent } from '@angular/material/paginator';
@@ -12,6 +11,7 @@ import { Sort } from '@angular/material/sort';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ChemicalAnalysisConstantColumns, ChemicalAnalysisDynamicColumns } from './chemical-analysis-columns.constant';
 import { availableChemicalProperties, columnsToChemprops } from './availabe-chemical-properties.constant';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'ramp-chemical-analysis',
@@ -62,15 +62,13 @@ export class ChemicalAnalysisComponent extends AnalyteQueryBase  implements OnIn
   constructor(
     public http: HttpClient,
     private loadingService: LoadingService,
-    public configService: ConfigService,
     public analyteService: AnalyteService
   ) {
     super(
       http,
-      configService,
       analyteService
     );
-    this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiBaseUrl = environment.apiBaseUrl;
   }
 
   ngOnInit(): void {

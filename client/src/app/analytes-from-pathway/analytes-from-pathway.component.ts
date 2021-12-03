@@ -5,13 +5,13 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { map } from 'rxjs/operators';
-import { ConfigService } from '../config/config.service';
 import { LoadingService } from '../loading/loading.service';
 import { Analyte } from './analyte.model';
 import { Pathway } from '../pathway-enrichment-analysis/pathway.model';
 import { PathwayMatch } from './pathway-match.model';
 import { pathwayExampleInputs } from './pathways-examples.constant';
 import { PathwayMatchesColumns, PathwayColumns, AnalyteColumns } from './pathway-columns.constant';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'ramp-analytes-from-pathway',
@@ -64,10 +64,9 @@ export class AnalytesFromPathwayComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private loadingService: LoadingService,
-    private configService: ConfigService
+    private loadingService: LoadingService
   ) {
-    this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiBaseUrl = environment.apiBaseUrl;
   }
 
   ngOnInit(): void {

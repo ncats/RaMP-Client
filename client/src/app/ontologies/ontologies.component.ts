@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { ConfigService } from '../config/config.service';
 import { LoadingService } from '../loading/loading.service';
 import { OntologyColumns } from './ontology-columns.constant';
 import { Ontology } from './ontology.model';
@@ -12,6 +11,7 @@ import { COMMA, SEMICOLON } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Subscription } from 'rxjs';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'ramp-ontologies',
@@ -57,10 +57,9 @@ export class OntologiesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private http: HttpClient,
-    private loadingService: LoadingService,
-    private configService: ConfigService
+    private loadingService: LoadingService
   ) {
-    this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiBaseUrl = environment.apiBaseUrl;
   }
 
   ngOnInit(): void {
