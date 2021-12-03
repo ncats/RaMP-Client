@@ -6,7 +6,7 @@ RUN R -e "install.packages(c('devtools', 'sqldf', 'config', 'R.cache'))"
 
 COPY plumber.R /usr/local/lib/R/site-library
 
-COPY install.R /usr/local/lib/R/site-library
+COPY install.R install.R
 
 RUN Rscript install.R
 
