@@ -219,8 +219,7 @@
           "builder": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/ramp-client-e2e/cypress.json",
-            "devServerTarget": "ramp-client:serve:development",
-            "tsConfig": "apps/ramp-client-e2e/tsconfig.json"
+            "devServerTarget": "ramp-client:serve:development"
           },
           "configurations": {
             "production": {

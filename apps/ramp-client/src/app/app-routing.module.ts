@@ -1,22 +1,23 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AboutComponent } from './about/about.component';
-import { AnalytesFromPathwayComponent } from './analytes-from-pathway/analytes-from-pathway.component';
-import { ChemicalAnalysisComponent } from './chemical-analysis/chemical-analysis.component';
-import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
-import { OntologiesComponent } from './ontologies/ontologies.component';
-import { PathwayEnrichmentAnalysisComponent } from './pathway-enrichment-analysis/pathway-enrichment-analysis.component';
-import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
 
 const routes: Routes = [
-  {
+/*  {
     path: '/',
     loadChildren: () =>
       import('@ramp/features/ramp/ramp-home').then(
         (m) => m.FeaturesRampRampHomeModule
       ),
-  },
+  },*/
   {
+    path: '',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/ramp-about').then(
+        (m) => m.FeaturesRampRampAboutModule
+      ),
+  },{
     path: 'about',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
@@ -24,8 +25,8 @@ const routes: Routes = [
       import('@ramp/features/ramp/ramp-about').then(
         (m) => m.FeaturesRampRampAboutModule
       ),
-  },
-  {
+  } //,
+/*  {
     path: 'pathway-enrichment-analysis',
     component: PathwayEnrichmentAnalysisComponent,
     data: {
@@ -84,7 +85,7 @@ const routes: Routes = [
       order: 7,
       isMainNav: true,
     },
-  },
+  },*/
 ];
 
 @NgModule({

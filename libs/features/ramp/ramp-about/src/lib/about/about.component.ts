@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
-import { RampFacade } from '@ramp/stores/ramp-store';
+import {loadSourceVersions, RampFacade} from '@ramp/stores/ramp-store';
 
 export interface SourceVersion {
   rampDbVersion: string;
@@ -61,6 +61,7 @@ export class AboutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.rampFacade.dispatch(loadSourceVersions());
     this.rampFacade.sourceVersions$.subscribe((versions) =>
       console.log(versions)
     );
@@ -145,9 +146,11 @@ export class AboutComponent implements OnInit {
     this.http.get<any>(url).subscribe((response) => {
       const ret = { compounds: [], genes: [] };
       // @ts-ignore
-      //todo: fix the ts-ignore
+
       Object.keys(response).map(
         (key) =>
+          //todo: fix the ts-ignore
+          // @ts-ignore
           (ret[key] = response[key].map((val, i) => {
             val.id = i;
             if (typeof val.sets === 'string') {

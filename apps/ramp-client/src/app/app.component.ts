@@ -11,9 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ActivationEnd, ResolveEnd, Router } from '@angular/router';
-import { MainNavItem } from './main-nav.model';
 import { Subscription } from 'rxjs';
-import { GoogleAnalyticsService } from './google-analytics/google-analytics.service';
 
 @Component({
   selector: 'ramp-root',
@@ -26,15 +24,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   hasBackdrop = false;
   @ViewChild('sideNav', { read: MatSidenav, static: false })
   sideNav!: MatSidenav;
-  navItems: Array<MainNavItem> = [];
   activeNavItemId = '';
   private routerSubscription!: Subscription;
 
   constructor(
     public iconRegistry: MatIconRegistry,
     public sanitizer: DomSanitizer,
-    private router: Router,
-    private gaService: GoogleAnalyticsService
+    private router: Router
   ) {
     iconRegistry.addSvgIcon(
       'menu',

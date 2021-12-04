@@ -13,7 +13,7 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": "../..",
+    "baseUrl": ".",
     "paths": {
       "@ramp/features/ramp/ramp-about": [
         "libs/features/ramp/ramp-about/src/index.ts"

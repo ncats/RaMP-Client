@@ -225,10 +225,11 @@ export class UpsetComponent implements OnInit {
       .data((combination) => combination.combinations)
       .join('circle')
       .classed('member', (d) => d.member)
-      // @ts-ignore
-      //todo: fix the ts-ignore
+
       .attr(
         'cy',
+        // @ts-ignore
+        //todo: fix the ts-ignore
         (d) => yCombinationScale(d.setId) + yCombinationScale.bandwidth() / 2
       )
       .attr('r', (d) => yCombinationScale.bandwidth() / 4);
@@ -241,17 +242,17 @@ export class UpsetComponent implements OnInit {
       .attr('class', 'connector')
       .attr(
         'y1',
-        // @ts-ignore
-        //todo: fix the ts-ignore
         (d) =>
+          // @ts-ignore
+          //todo: fix the ts-ignore
           yCombinationScale(this.allSetIds[d.connectorIndices[0]]) +
           yCombinationScale.bandwidth() / 2
       )
       .attr(
         'y2',
-        // @ts-ignore
-        //todo: fix the ts-ignore
         (d) =>
+          // @ts-ignore
+          //todo: fix the ts-ignore
           yCombinationScale(this.allSetIds[d.connectorIndices[1]]) +
           yCombinationScale.bandwidth() / 2
       );
@@ -271,10 +272,10 @@ export class UpsetComponent implements OnInit {
       .attr('text-anchor', 'end')
       .attr('font-size', '.8em')
       .attr('x', leftColWidth - this.margin.left)
-      // @ts-ignore
-      //todo: fix the ts-ignore
       .attr(
         'y',
+        // @ts-ignore
+        //todo: fix the ts-ignore
         (d) => yCombinationScale(d) + yCombinationScale.bandwidth() / 2
       )
       .attr('dy', '0.35em')
@@ -354,7 +355,11 @@ export class UpsetComponent implements OnInit {
       //todo: fix the ts-ignore
       .attr('y', (d) =>
         d.size > 0
+          // @ts-ignore
+          //todo: fix the ts-ignore
           ? intersectionSizeScale(d.size) + this.margin.top
+          // @ts-ignore
+          //todo: fix the ts-ignore
           : intersectionSizeScale(1) + this.margin.top
       )
       .text((d: { size: number }) => d3.format(',d')(Number(d.size)));
