@@ -73,7 +73,8 @@ pipeline {
                 cleanWs()
                 configFileProvider([
                     configFile(fileId: 'ramp-api-config.yml', targetLocation: 'config.yml'),
-                    configFile(fileId: 'ramp-api-docker-compose.yml', targetLocation: 'docker-compose.yml')
+                    configFile(fileId: 'ramp-api-docker-compose.yml', targetLocation: 'docker-compose.yml'),
+                    configFile(fileId: 'runRampServer.R', targetLocation: 'runRamp.R')
                 ]) {
                     withEnv([
                             "IMAGE_NAME=rampdb-api",
