@@ -74,7 +74,7 @@ pipeline {
                 configFileProvider([
                     configFile(fileId: 'ramp-api-config.yml', targetLocation: 'config.yml'),
                     configFile(fileId: 'ramp-api-docker-compose.yml', targetLocation: 'docker-compose.yml'),
-                    configFile(fileId: 'runRampServer.R', targetLocation: 'server/runRamp.R')
+                    configFile(fileId: 'runRampServer.R', targetLocation: 'runRamp.R')
 
                 ]) {
                     withEnv([
@@ -83,7 +83,7 @@ pipeline {
                         ]) {
                         withAWS(credentials:'aws-jenkins-build') {
                             sh '''
-                            chmod 755 config.yml
+                            chmod 755 config.yml runRamp.R
                             export DOCKER_LOGIN="`aws ecr get-login --no-include-email --region us-east-1`"
                             $DOCKER_LOGIN
                             '''
