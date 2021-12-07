@@ -181,30 +181,16 @@ function() {
     return(rbind(met,gene))
 }
 
+#####
 #* Return pathways from source database
 #* @param identifier
 #* @serializer unboxedJSON
 #* @get /api/source/pathways
 function(identifier) {
     identifiers <- c(identifier)
-    identifiers <- sapply(identifiers, shQuote)
+    #identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
-
-    con <- RaMP::connectToRaMP()
-
-    query <- paste0(
-        "select ",
-            "p.pathwayRampId, ",
-            "p.sourceId as pathwaysourceId, ",
-            "p.type as pathwaysource, ",
-            "p.pathwayCategory, ",
-            "p.pathwayName ",
-        "from pathway as p ",
-        "where p.sourceId in (", identifiers, ") ",
-        "or p.pathwayName in (", identifiers, ") "
-    )
-    pathways <- DBI::dbGetQuery(con, query)
-    DBI::dbDisconnect(con)
+    pathways <- getPathwayFromAnalyte(identifiers)
     return(pathways)
 }
 
