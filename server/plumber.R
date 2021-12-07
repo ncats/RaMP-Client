@@ -3,6 +3,16 @@ library(sqldf)
 library(config)
 library(R.cache)
 
+# Set up the connection to the mySQL db:
+config <- config::get()
+host <- config$db_host_v2
+dbname <- config$db_dbname_v2
+username <- config$db_username_v2
+conpass <- config$db_password_v2
+pkg.globals <- RaMP::setConnectionToRaMP(dbname=dbname,username=username,conpass=conpass,host = host)
+
+
+
 #* @filter cors
 cors <- function(req, res) {
     res$setHeader("Access-Control-Allow-Origin", "*")
