@@ -1,7 +1,7 @@
 import { Injectable, PLATFORM_ID, Inject, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { ConfigService } from '../config/config.service';
 import { GAPageView, GAEvent, GAException } from './google-analytics.model';
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +13,12 @@ export class GoogleAnalyticsService {
   private gtag: any;
 
   constructor(
-    public configService: ConfigService,
     // tslint:disable-next-line:ban-types
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     if (isPlatformBrowser(this.platformId)
-      && configService.configData
-      && configService.configData.googleAnalyticsId) {
-      this.googleAnanlyticsId = configService.configData.googleAnalyticsId;
+      && environment.googleAnalyticsId) {
+      this.googleAnanlyticsId = environment.googleAnalyticsId;
       this.init();
     }
   }

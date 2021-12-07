@@ -5,13 +5,13 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { map } from 'rxjs/operators';
-import { ConfigService } from '../config/config.service';
 import { LoadingService } from '../loading/loading.service';
 import { pathwayColumns } from '../pathway-enrichment-analysis/analysis-colums.constant';
 import { AnalyteMatch } from '../analyte/analyte.model';
 import { Pathway } from '../pathway-enrichment-analysis/pathway.model';
 import { AnalyteService } from '../analyte/analyte.service';
 import { AnalyteQueryBase } from '../analyte/analyte-query.abstract';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'ramp-pathways-from-analytes',
@@ -54,15 +54,13 @@ export class PathwaysFromAnalytesComponent extends AnalyteQueryBase implements O
   constructor(
     public http: HttpClient,
     private loadingService: LoadingService,
-    public configService: ConfigService,
     public analyteService: AnalyteService
   ) {
     super(
       http,
-      configService,
       analyteService
     );
-    this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiBaseUrl = environment.apiBaseUrl;
   }
 
   ngOnInit(): void {

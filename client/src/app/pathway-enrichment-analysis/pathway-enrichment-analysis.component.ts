@@ -20,9 +20,9 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { AnalyteMatch } from '../analyte/analyte.model';
 import { MatDialog } from '@angular/material/dialog';
 import { TableDialogComponent } from '../table-dialog/table-dialog.component';
-import { ConfigService } from '../config/config.service';
 import { AnalyteService } from '../analyte/analyte.service';
 import { AnalyteQueryBase } from '../analyte/analyte-query.abstract';
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'ramp-pathway-enrichment-analysis',
@@ -94,15 +94,13 @@ export class PathwayEnrichmentAnalysisComponent extends AnalyteQueryBase impleme
     public http: HttpClient,
     private loadingService: LoadingService,
     public dialog: MatDialog,
-    public configService: ConfigService,
     public analyteService: AnalyteService
   ) {
     super(
       http,
-      configService,
       analyteService
     );
-    this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiBaseUrl = environment.apiBaseUrl;
   }
 
   ngOnInit(): void {

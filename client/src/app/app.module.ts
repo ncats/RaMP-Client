@@ -30,8 +30,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TableDialogComponent } from './table-dialog/table-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ConfigService } from './config/config.service';
-import { configServiceFactory } from './config/config.factory';
 import { OntologiesComponent } from './ontologies/ontologies.component';
 import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
 import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
@@ -97,13 +95,6 @@ import {FlexLayoutModule} from "@angular/flex-layout";
     FlexLayoutModule
   ],
   providers: [
-    ConfigService,
-    {
-        provide: APP_INITIALIZER,
-        useFactory: configServiceFactory,
-        deps: [ConfigService],
-        multi: true
-    }
   ],
   bootstrap: [AppComponent]
 })
