@@ -1,6 +1,110 @@
 {
   "version": 1,
   "projects": {
+    "features-ramp-analytes-from-pathways": {
+      "projectType": "library",
+      "root": "libs/features/ramp/analytes-from-pathways",
+      "sourceRoot": "libs/features/ramp/analytes-from-pathways/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/analytes-from-pathways"],
+          "options": {
+            "jestConfig": "libs/features/ramp/analytes-from-pathways/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/analytes-from-pathways/src/**/*.ts",
+              "libs/features/ramp/analytes-from-pathways/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "features-ramp-common-reaction-analytes": {
+      "projectType": "library",
+      "root": "libs/features/ramp/common-reaction-analytes",
+      "sourceRoot": "libs/features/ramp/common-reaction-analytes/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/common-reaction-analytes"],
+          "options": {
+            "jestConfig": "libs/features/ramp/common-reaction-analytes/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/common-reaction-analytes/src/**/*.ts",
+              "libs/features/ramp/common-reaction-analytes/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "features-ramp-ontologies": {
+      "projectType": "library",
+      "root": "libs/features/ramp/ontologies",
+      "sourceRoot": "libs/features/ramp/ontologies/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/ontologies"],
+          "options": {
+            "jestConfig": "libs/features/ramp/ontologies/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/ontologies/src/**/*.ts",
+              "libs/features/ramp/ontologies/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "features-ramp-pathways-from-analytes": {
+      "projectType": "library",
+      "root": "libs/features/ramp/pathways-from-analytes",
+      "sourceRoot": "libs/features/ramp/pathways-from-analytes/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/pathways-from-analytes"],
+          "options": {
+            "jestConfig": "libs/features/ramp/pathways-from-analytes/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/pathways-from-analytes/src/**/*.ts",
+              "libs/features/ramp/pathways-from-analytes/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "features-ramp-ramp-about": {
       "projectType": "library",
       "root": "libs/features/ramp/ramp-about",
@@ -290,6 +394,32 @@
       },
       "tags": []
     },
+    "shared-ui-error-dialog": {
+      "projectType": "library",
+      "root": "libs/shared/ui/error-dialog",
+      "sourceRoot": "libs/shared/ui/error-dialog/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/error-dialog"],
+          "options": {
+            "jestConfig": "libs/shared/ui/error-dialog/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/error-dialog/src/**/*.ts",
+              "libs/shared/ui/error-dialog/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "shared-ui-header-template": {
       "projectType": "library",
       "root": "libs/shared/ui/header-template",
@@ -313,6 +443,58 @@
             "lintFilePatterns": [
               "libs/shared/ui/header-template/src/**/*.ts",
               "libs/shared/ui/header-template/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-loading-spinner": {
+      "projectType": "library",
+      "root": "libs/shared/ui/loading-spinner",
+      "sourceRoot": "libs/shared/ui/loading-spinner/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/loading-spinner"],
+          "options": {
+            "jestConfig": "libs/shared/ui/loading-spinner/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/loading-spinner/src/**/*.ts",
+              "libs/shared/ui/loading-spinner/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-ncats-datatable": {
+      "projectType": "library",
+      "root": "libs/shared/ui/ncats-datatable",
+      "sourceRoot": "libs/shared/ui/ncats-datatable/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/ncats-datatable"],
+          "options": {
+            "jestConfig": "libs/shared/ui/ncats-datatable/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/ncats-datatable/src/**/*.ts",
+              "libs/shared/ui/ncats-datatable/src/**/*.html"
             ]
           }
         }

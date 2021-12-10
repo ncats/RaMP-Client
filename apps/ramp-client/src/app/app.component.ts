@@ -1,17 +1,16 @@
 import {
-  AfterViewInit,
   Component,
-  HostListener,
-  OnDestroy,
   OnInit,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material/icon';
+import {MatDialog} from "@angular/material/dialog";
 import { MatSidenav } from '@angular/material/sidenav';
-import { ActivationEnd, ResolveEnd, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {LinkTemplateProperty} from "@ramp/shared/ui/header-template";
+import {RampFacade} from "@ramp/stores/ramp-store";
+import {
+  ErrorDialogComponent
+} from "../../../../libs/shared/ui/error-dialog/src/lib/error-dialog/error-dialog.component";
 
 @Component({
   selector: 'ramp-root',
@@ -19,77 +18,83 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
-  title = 'ramp-client';
-  hasBackdrop = false;
+export class AppComponent implements OnInit {
   @ViewChild('sideNav', { read: MatSidenav, static: false })
+
+  title = 'ramp-client';
   sideNav!: MatSidenav;
-  activeNavItemId = '';
-  private routerSubscription!: Subscription;
+  loading = true;
+  links: LinkTemplateProperty[] = [
+    {
+      link: "Queries",
+      children: [
+        {
+          link: "analytes-from-pathways",
+          label: "Analytes from Pathways"
+        },
+        {
+          link: "pathways-from-analytes",
+          label: "Pathways from Analytes"
+        },
+        {
+          link: "common-reaction-analytes",
+          label: "Common Reaction Analytes"
+        }
+      ]
+    },
+    {
+      link: "Analysis",
+      children: [
+        {
+          link: "pathway-enrichment-analysis",
+          label: "Pathway Enrichment Analysis"
+        },
+        {
+          link: "chemical-analysis",
+          label: "Chemical Analysis"
+        }
+      ]
+    },
+    {
+      link: "Ontologies",
+      children: [
+        {
+          link: "ontologies",
+          label: "Pathway Enrichment Analysis"
+        },
+        {
+          link: "chemical-analysis",
+          label: "Chemical Analysis"
+        }
+      ]
+    },
+    {
+      link: "about",
+      label: "About"
+    }
+  ]
 
   constructor(
-    public iconRegistry: MatIconRegistry,
-    public sanitizer: DomSanitizer,
-    private router: Router
+    public dialog: MatDialog,
+    private rampFacade: RampFacade
   ) {
-    iconRegistry.addSvgIcon(
-      'menu',
-      sanitizer.bypassSecurityTrustResourceUrl('/assets/icons/menu-24px.svg')
-    );
+
   }
 
   ngOnInit() {
     console.log('app');
-    // this.navItems = this.router.config
-    //   .filter(item => item.data != null && item.data.isMainNav).map(item => {
-    //     return {
-    //       id: item.data.id,
-    //       path: `/${item.data.path || item.path}`,
-    //       display: item.data.display,
-    //       order: item.data.order
-    //     };
-    //   })
-    //   .sort((a, b) => a.order - b.order);
 
-    /*
-    this.routerSubscription = this.router.events.subscribe(event => {
-      if (event instanceof ActivationEnd) {
-        this.activeNavItemId = event.snapshot.data && event.snapshot.data.id || '';
+    this.rampFacade.error$.subscribe(error=> {
+      if(error) {
+        console.log(error);
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            error: 'panda',
+          },
+        });
       }
-      if (event instanceof ResolveEnd) {
-        //todo fix error
-        // @ts-ignore
-        this.gaService.sendPageView(event.state.root.firstChild.data.display, event.state.url);
-      }
-    });
-*/
-  }
+    })
 
-  ngAfterViewInit() {
-    // if (window.innerWidth < 1200) {
-    //   this.hasBackdrop = true;
-    //   this.sideNav.mode = 'over';
-    //   this.sideNav.close();
-    // } else {
-    //   this.hasBackdrop = false;
-    //   this.sideNav.mode = 'side';
-    //   this.sideNav.open();
-    // }
-  }
-
-  ngOnDestroy() {
-    if (this.routerSubscription != null) {
-      this.routerSubscription.unsubscribe();
-    }
-  }
-
-  // openSideNav(): void {
-  //   this.sideNav.mode = 'over';
-  //   this.sideNav.open();
-  // }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.ngAfterViewInit();
+    this.rampFacade.loaded$.subscribe(res=> this.loading = !res);
   }
 }

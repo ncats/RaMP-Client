@@ -1,11 +1,12 @@
 import { createAction, props } from '@ngrx/store';
+import {SourceVersion} from "@ramp/models/ramp-models";
 import { RampEntity } from './ramp.models';
 
-export const init = createAction('[Ramp Page] Init');
+export const initAbout = createAction('[Ramp About Page] Init');
 
 export const loadRampSuccess = createAction(
   '[Ramp/API] Load Ramp Success',
-  props<{ ramp: RampEntity[] }>()
+  props<{ data: any }>()
 );
 
 export const loadRampFailure = createAction(
@@ -19,7 +20,7 @@ export const loadSourceVersions = createAction(
 
 export const loadSourceVersionsSuccess = createAction(
   '[Ramp/API] Load SourceVersions Success',
-  props<{ versions: any }>()
+  props<{ versions: SourceVersion[] }>()
 );
 
 export const loadSourceVersionsFailure = createAction(
@@ -52,3 +53,35 @@ export const loadAnalyteIntersectsFailure = createAction(
   '[Ramp/API] Load AnalyteIntersects Failure',
   props<{ error: any }>()
 );
+
+
+export const fetchMetabolitesFromOntology = createAction(
+  '[Ramp/API] fetchMetabolitesFromOntology',
+  props<{analytes: string[]}>()
+);
+
+export const fetchMetabolitesFromOntologySuccess = createAction(
+  '[Ramp/API] fetchMetabolitesFromOntology Success',
+  props<{ rampStore: RampEntity[] }>()
+);
+
+export const fetchMetaboliteFromOntologyFailure = createAction(
+  '[Ramp/API] Fetch Metabolite From Ontology Failure',
+  props<{ error: any }>()
+);
+
+export const fetchOntologiesFromMetabolites = createAction(
+  '[Ramp/API] Fetch OntologiesFromMetabolites',
+  props<{analytes: string[]}>()
+);
+
+export const fetchOntologiesFromMetabolitesSuccess = createAction(
+  '[Ramp/API] Fetch OntologiesFromMetabolites Success',
+  props<{ ontologies: any[] }>()
+);
+
+export const fetchOntologiesFromMetabolitesFailure = createAction(
+  '[Ramp/API] Fetch OntologiesFromMetabolites Failure',
+  props<{ error: any }>()
+);
+

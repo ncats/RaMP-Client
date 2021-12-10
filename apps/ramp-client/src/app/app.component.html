@@ -1,5 +1,6 @@
-<ramp-header></ramp-header>
+<ramp-header [links]="links"></ramp-header>
 <div class="main-content">
+  <ramp-loading [isLoading]="loading" ></ramp-loading>
   <router-outlet></router-outlet>
 </div>
 <!--

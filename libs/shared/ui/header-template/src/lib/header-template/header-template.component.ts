@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { slideInOutAnimation } from './header-animations';
 import { ActivatedRoute, Router } from '@angular/router';
 
-export class LinkTemplateProperty {
+export interface LinkTemplateProperty {
   link?: string;
   label?: string;
   children?: LinkTemplateProperty[];

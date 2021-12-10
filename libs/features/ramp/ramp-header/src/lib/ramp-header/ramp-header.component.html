@@ -1,9 +1,8 @@
-<ncats-frontend-library-header-template class="ramp-header">
-  <div class="left-options">
+<ncats-frontend-library-header-template class="ramp-header" [links]="links">
+  <div class="left-options" >
     <a
-      href="http://www.ncats.nih.gov"
-      title="National Center for Advancing Translational Sciences | Homepage"
-      target="_blank"
+      href="/"
+      title="RaMP home page"
     >
       <img
         src="./assets/images/RaMPLogoNCATS.png"
@@ -12,62 +11,6 @@
         id="logo"
       />
     </a>
-    <mat-menu #home="matMenu">
-      <button
-        mat-menu-item
-        [routerLink]="['/home']"
-        [queryParams]="{ scrollTo: 'briefDescription' }"
-      >
-        Brief Description
-      </button>
-      <button
-        mat-menu-item
-        [routerLink]="['/home']"
-        [queryParams]="{ scrollTo: 'summaryStatistics' }"
-      >
-        Summary Statistics
-      </button>
-      <button
-        mat-menu-item
-        [routerLink]="['/home']"
-        [queryParams]="{ scrollTo: 'citation' }"
-      >
-        Citation
-      </button>
-      <button
-        mat-menu-item
-        [routerLink]="['/home']"
-        [queryParams]="{ scrollTo: 'contact' }"
-      >
-        Contact
-      </button>
-    </mat-menu>
-    <div class="nav-item">
-      <button mat-button [matMenuTriggerFor]="query">Query</button>
-      <mat-menu #query="matMenu">
-        <button mat-menu-item [routerLink]="['/analytes-from-pathways']">
-          Analytes from pathways
-        </button>
-        <button mat-menu-item [routerLink]="['/pathways-from-analytes']">
-          Pathways from analytes
-        </button>
-        <button mat-menu-item [routerLink]="['/common-reaction-analytes']">
-          Common reaction analytes
-        </button>
-        <button mat-menu-item [routerLink]="['/ontologies']">Ontologies</button>
-      </mat-menu>
-    </div>
-    <div class="nav-item">
-      <button mat-button [matMenuTriggerFor]="analyses">Analyses</button>
-      <mat-menu #analyses="matMenu">
-        <button mat-menu-item [routerLink]="['/pathway-enrichment-analysis']">
-          Pathway enrichment analysis
-        </button>
-        <button mat-menu-item [routerLink]="['/chemical-analysis']">
-          Chemical analysis
-        </button>
-      </mat-menu>
-    </div>
   </div>
   <div class="right-options" fxLayoutAlign="space-around center"></div>
 </ncats-frontend-library-header-template>

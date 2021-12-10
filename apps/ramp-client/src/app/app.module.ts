@@ -3,6 +3,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import {EffectsModule} from "@ngrx/effects";
 import {StoreModule} from "@ngrx/store";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
+import {SharedUiLoadingSpinnerModule} from "@ramp/shared/ui/loading-spinner";
 import {SharedVisualizationsUpsetChartModule} from "@ramp/shared/visualizations/upset-chart";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +33,7 @@ export function set_url(rampService: RampService) {
     ReactiveFormsModule,
     HttpClientModule,
     SharedVisualizationsUpsetChartModule,
+    SharedUiLoadingSpinnerModule,
     UiCustomMaterialModule,
     FeaturesRampRampHeaderModule,
     StoresRampStoreModule,

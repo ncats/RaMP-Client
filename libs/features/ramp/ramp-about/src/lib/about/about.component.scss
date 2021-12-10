@@ -1,3 +1,11 @@
+@use '@angular/material' as mat;
+@import "ncats-theme";
+
+a {
+ color: mat.get-color-from-palette($app-accent);
+  font-weight: bold;
+}
+
 .about-content {
   display: flex;
   height: 100vh;

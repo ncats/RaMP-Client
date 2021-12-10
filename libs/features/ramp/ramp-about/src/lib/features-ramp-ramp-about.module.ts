@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {SharedUiNcatsDatatableModule} from "@ramp/shared/ui/ncats-datatable";
 import { AboutComponent } from './about/about.component';
 import { UiCustomMaterialModule } from '@ramp/shared/ui/custom-material';
 import { SharedVisualizationsUpsetChartModule } from '@ramp/shared/visualizations/upset-chart';
@@ -17,6 +18,7 @@ const ROUTES: Routes = [
     RouterModule.forChild(ROUTES),
     UiCustomMaterialModule,
     SharedVisualizationsUpsetChartModule,
+    SharedUiNcatsDatatableModule
   ],
   declarations: [AboutComponent],
 })

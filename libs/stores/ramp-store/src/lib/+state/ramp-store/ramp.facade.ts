@@ -15,6 +15,8 @@ export class RampFacade {
   allRampStore$ = this.store.pipe(select(RampSelectors.getAllRamp));
   selectedRampStore$ = this.store.pipe(select(RampSelectors.getSelected));
   sourceVersions$ = this.store.pipe(select(RampSelectors.getSourceVersions));
+  error$ = this.store.pipe(select(RampSelectors.getRampError));
+  ontologies$ = this.store.pipe(select(RampSelectors.getOntologies));
 
   constructor(private readonly store: Store) {}
 
@@ -22,8 +24,8 @@ export class RampFacade {
    * Use the initialization action to perform one
    * or more tasks in your Effects.
    */
-  init() {
-    this.store.dispatch(RampActions.init());
+  initAbout() {
+    this.store.dispatch(RampActions.initAbout());
   }
 
   // Generic dispatch

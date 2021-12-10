@@ -5,7 +5,7 @@ import {
   Component,
   EventEmitter,
   Injector,
-  Input,
+  Input, IterableDiffer, IterableDiffers,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -62,7 +62,7 @@ import { DataProperty } from './models/data-property';
  * Generic table Component that iterates over a list of options to display fields
  */
 export class NcatsDatatableComponent
-  implements OnInit, AfterViewInit, OnChanges, OnDestroy
+  implements OnInit, AfterViewInit, OnDestroy
 {
   /**
    * Behaviour subject to allow extending class to unsubscribe on destroy
@@ -81,6 +81,7 @@ export class NcatsDatatableComponent
    */
   @Input()
   set data(value: any) {
+    console.log(value);
     this._data.next(value);
   }
 
@@ -235,6 +236,7 @@ export class NcatsDatatableComponent
 
   selection = new SelectionModel<any>(true, []);
 
+  iterableDiffer: IterableDiffer<[]>;
   /**
    * Paginator object from Angular Material
    *
@@ -246,8 +248,11 @@ export class NcatsDatatableComponent
   /**
    * injector for custom data
    */
-  constructor(private ref: ChangeDetectorRef, private _injector: Injector) {}
-
+  constructor(private ref: ChangeDetectorRef,
+              private _injector: Injector ,
+  private iterableDiffers: IterableDiffers) {
+  this.iterableDiffer = iterableDiffers.find([]).create();
+}
   /**
    * Init: get the columns to be displayed.
    * Table data is tracked by the data getter and setter
@@ -259,16 +264,19 @@ export class NcatsDatatableComponent
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((res) => {
         console.log(res);
-        if (this.useInternalPaginator) {
-          this.dataSource = new MatTableDataSource<any>(res);
-          this.pageData = new PageData({ total: res.length });
-        } else {
-          this.dataSource.data = res;
+        if(res) {
+          if (this.useInternalPaginator) {
+            this.dataSource = new MatTableDataSource<DataProperty>(res.map((val: any) => new DataProperty((val))));
+            this.pageData = new PageData({total: res.length});
+          } else {
+            this.dataSource.data = res;
+          }
+          if (this.internalSort) {
+           // this.dataSource.sort = this._sort;
+          }
+          console.log(this);
+          this.ref.detectChanges();
         }
-        if (this.internalSort) {
-          this.dataSource.sort = this._sort;
-        }
-        this.ref.detectChanges();
       });
 
     this._fieldsConfig
@@ -283,7 +291,11 @@ export class NcatsDatatableComponent
     console.log(this);
   }
 
-  ngOnChanges(change: SimpleChanges) {}
+  ngDoCheck() {
+    if (this.iterableDiffer.diff(this.data)) {
+      this.data = this.data;
+    }
+  }
 
   /**
    * set the sort and paginators
@@ -315,6 +327,7 @@ export class NcatsDatatableComponent
    */
   changeSort(sort: Sort): void {
     this.sortChange.emit(sort);
+    this.ref.detectChanges();
   }
 
   /**
@@ -486,7 +499,7 @@ export class NcatsDatatableComponent
    * clean up on leaving component
    */
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(null);
     this.ngUnsubscribe.complete();
   }
 }

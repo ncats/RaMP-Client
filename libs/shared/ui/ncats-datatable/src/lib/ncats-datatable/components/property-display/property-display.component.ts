@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DataProperty } from '@ncats-frontend-library/models/core/core-models';
+import { DataProperty } from '../../models/data-property';
 
 /**
  * component to display a property, primarily in a table

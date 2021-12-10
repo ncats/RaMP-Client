@@ -14,10 +14,20 @@ const routes: Routes = [
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
-      import('@ramp/features/ramp/ramp-about').then(
-        (m) => m.FeaturesRampRampAboutModule
+      import('@ramp/features/ramp/ramp-home').then(
+        (m) => m.FeaturesRampRampHomeModule
       ),
-  },{
+  },
+  {
+    path: 'home',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/ramp-home').then(
+        (m) => m.FeaturesRampRampHomeModule
+      ),
+  },
+  {
     path: 'about',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
@@ -25,7 +35,17 @@ const routes: Routes = [
       import('@ramp/features/ramp/ramp-about').then(
         (m) => m.FeaturesRampRampAboutModule
       ),
-  } //,
+  },
+  {
+    path: 'ontologies',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/ontologies').then(
+        (m) => m.FeaturesRampOntologiesModule
+      ),
+  }
+  //,
 /*  {
     path: 'pathway-enrichment-analysis',
     component: PathwayEnrichmentAnalysisComponent,

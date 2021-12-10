@@ -1,41 +1,23 @@
+import {ScrollDispatcher} from '@angular/cdk/overlay';
+import {HttpClient} from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
-  QueryList,
+  QueryList, SimpleChanges,
   ViewChildren,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
-import {loadSourceVersions, RampFacade} from '@ramp/stores/ramp-store';
-
-export interface SourceVersion {
-  rampDbVersion: string;
-  dbModDate: string;
-  status: string;
-  dataSourceId: string;
-  dataSourceName: string;
-  dataSourceUrl: string;
-  dataSourceVersion: string;
-}
-
-export interface EntityCount {
-  entity: string;
-  counts: { [sourceName: string]: number };
-}
-
-export interface SourceCount {
-  entity: string;
-  entitySourceId: string;
-  entitySourceName: string;
-  entityCount: number;
-}
+import {EntityCount, SourceVersion} from "@ramp/models/ramp-models";
+import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
+import {initAbout, RampFacade} from '@ramp/stores/ramp-store';
+import {tap} from "rxjs";
 
 @Component({
   selector: 'ramp-about',
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss'],
+  styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
   @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
@@ -50,9 +32,46 @@ export class AboutComponent implements OnInit {
   compoundsData: any;
   apiBaseUrl = 'https://ramp-api-alpha.ncats.io/api/';
   sourceVersions!: Array<SourceVersion>;
-  entityCounts!: Array<EntityCount>;
-  entityCountsColumns: Array<string> = [''];
-
+  entityCounts!: EntityCount[];
+  entityCountsColumns: DataProperty[] = [
+    new DataProperty({
+      label: "category",
+      field: "category",
+      sortable: true,
+      sorted: 'asc'
+    }),
+     new DataProperty({
+      label: "ChEBI",
+      field: "chebi",
+       sortable: true
+    }),
+     new DataProperty({
+      label: "HMDB",
+      field: "hmdb",
+       sortable: true
+     }),
+     new DataProperty({
+      label: "KEGG",
+      field: "kegg",
+       sortable: true
+     }),
+     new DataProperty({
+      label: "LIPIDMAPS",
+      field: "lipidmaps",
+       sortable: true
+     }),
+     new DataProperty({
+      label: "Reactome",
+      field: "reactome",
+       sortable: true
+     }),
+     new DataProperty({
+      label: "WikiPathways",
+      field: "wiki",
+       sortable: true
+     })
+  ];
+ // entityCountsColumns = []
   constructor(
     private http: HttpClient,
     private changeDetector: ChangeDetectorRef,
@@ -61,14 +80,38 @@ export class AboutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.rampFacade.dispatch(loadSourceVersions());
-    this.rampFacade.sourceVersions$.subscribe((versions) =>
-      console.log(versions)
-    );
-    // this.loadingService.setLoadingState(true);
-    this.getVersionInfo();
-    this.setEntityCounts();
-    this.getAnalytesSourceIntersects();
+    this.rampFacade.dispatch(initAbout());
+    this.rampFacade.allRampStore$.pipe(
+      tap(data => {
+        if(data.sourceVersions) {
+          this.sourceVersions = data.sourceVersions;
+        }
+        if(data.entityCounts) {
+          this.entityCounts = data.entityCounts.map((count: { [s: string]: unknown; } | ArrayLike<unknown>) => {
+            const newObj: {[key: string]: any} = {};
+            Object.entries(count).map((value: any, index: any) => {
+              newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+            });
+            return newObj;
+          });
+        }
+        if(data.analyteIntersects) {
+          this.genesData = data.analyteIntersects.genes;
+          this.compoundsData = data.analyteIntersects.compounds;
+        }
+
+      }
+    )
+    ).subscribe()
+
+    this.rampFacade.sourceVersions$.pipe(
+      tap(versions => {
+      if (versions?.length) {
+        this.sourceVersions = versions;
+      }
+      }
+    )
+    ).subscribe()
 
     this.scrollDispatcher.scrolled().subscribe((data) => {
       if (data) {
@@ -90,79 +133,38 @@ export class AboutComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit(): void {}
-
-  getVersionInfo(): void {
-    const url = `${this.apiBaseUrl}source_versions`;
-    this.http.get<Array<SourceVersion>>(url).subscribe((response) => {
-      this.sourceVersions = response;
-    });
-  }
-
-  setEntityCounts(): void {
-    const url = `${this.apiBaseUrl}entity_counts`;
-    this.http.get<Array<SourceCount>>(url).subscribe((response) => {
-      if (!response || !response.length) {
-        response = [];
-      }
-      this.entityCounts = this.processEntityCounts(response);
-    });
-  }
-
-  private processEntityCounts(
-    sourceCounts: Array<SourceCount>
-  ): Array<EntityCount> {
-    const group = new Map();
-    sourceCounts.forEach((sourceCount) => {
-      const key = sourceCount.entity;
-      const collection = group.get(key);
-      if (!collection) {
-        const countDict = {};
-        // @ts-ignore
-        //todo: fix the ts-ignore
-        countDict[sourceCount.entitySourceName] = sourceCount.entityCount;
-        group.set(key, countDict);
-      } else {
-        collection[sourceCount.entitySourceName] = sourceCount.entityCount;
-      }
-      if (
-        this.entityCountsColumns.indexOf(sourceCount.entitySourceName) === -1
-      ) {
-        this.entityCountsColumns.push(sourceCount.entitySourceName);
-      }
-    });
-    const entityCounts = Array.from(group, (element) => {
-      return {
-        entity: element[0],
-        counts: element[1],
-      };
-    });
-    return entityCounts;
-  }
-
-  getAnalytesSourceIntersects(): void {
-    const url = `${this.apiBaseUrl}analyte_intersects`;
-
-    this.http.get<any>(url).subscribe((response) => {
-      const ret = { compounds: [], genes: [] };
-      // @ts-ignore
-
-      Object.keys(response).map(
-        (key) =>
-          //todo: fix the ts-ignore
-          // @ts-ignore
-          (ret[key] = response[key].map((val, i) => {
-            val.id = i;
-            if (typeof val.sets === 'string') {
-              val.sets = [val.sets];
+  sortEntityTable(event: any) {
+    console.log(event);
+    this.entityCounts.sort((a,b) => {
+      if(!a[event.active] && (event.direction === "asc" || event.direction === "")) return -1;
+      if(!a[event.active] && (event.direction === "desc" || event.direction === "")) return 1;
+      else if (!b[event.active]&& (event.direction === "asc" || event.direction === "")) return 1;
+      else if (!b[event.active]&& (event.direction === "desc" || event.direction === "")) return -1;
+      else {
+        switch (typeof a[event.active].value) {
+          case 'string': {
+            if (event.direction === 'asc') {
+              return a[event.active]?.value.localeCompare(b[event.active]?.value);
+            } else {
+              return b[event.active]?.value.localeCompare(a[event.active]?.value);
             }
-            return val;
-          }))
-      );
-      this.compoundsData = ret.compounds;
-      this.genesData = ret.genes;
-      //  this.loadingService.setLoadingState(false);
-    });
+          }
+          case 'number': {
+            if (event.direction === 'asc') {
+              return a[event.active]?.value - b[event.active]?.value;
+            } else {
+              return b[event.active]?.value - a[event.active]?.value;
+            }
+          }
+        }
+      }
+    })
+    console.log(this.entityCounts);
+  this.changeDetector.markForCheck();
+  }
+
+  ngOnChanges(change: SimpleChanges) {
+    console.log(change);
   }
 
   /**
@@ -170,7 +172,6 @@ export class AboutComponent implements OnInit {
    * @param el
    */
   public scroll(el: any): void {
-    console.log(el);
     //  el.scrollIntoView(true);
     el.scrollIntoView({
       behavior: 'smooth',

@@ -15,6 +15,18 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@ramp/features/ramp/analytes-from-pathways": [
+        "libs/features/ramp/analytes-from-pathways/src/index.ts"
+      ],
+      "@ramp/features/ramp/common-reaction-analytes": [
+        "libs/features/ramp/common-reaction-analytes/src/index.ts"
+      ],
+      "@ramp/features/ramp/ontologies": [
+        "libs/features/ramp/ontologies/src/index.ts"
+      ],
+      "@ramp/features/ramp/pathways-from-analytes": [
+        "libs/features/ramp/pathways-from-analytes/src/index.ts"
+      ],
       "@ramp/features/ramp/ramp-about": [
         "libs/features/ramp/ramp-about/src/index.ts"
       ],
@@ -34,8 +46,17 @@
       "@ramp/shared/ui/custom-material": [
         "libs/shared/ui/custom-material/src/index.ts"
       ],
+      "@ramp/shared/ui/error-dialog": [
+        "libs/shared/ui/error-dialog/src/index.ts"
+      ],
       "@ramp/shared/ui/header-template": [
         "libs/shared/ui/header-template/src/index.ts"
+      ],
+      "@ramp/shared/ui/loading-spinner": [
+        "libs/shared/ui/loading-spinner/src/index.ts"
+      ],
+      "@ramp/shared/ui/ncats-datatable": [
+        "libs/shared/ui/ncats-datatable/src/index.ts"
       ],
       "@ramp/shared/visualizations/upset-chart": [
         "libs/shared/visualizations/upset-chart/src/index.ts"
