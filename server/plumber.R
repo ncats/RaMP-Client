@@ -4,12 +4,12 @@ library(config)
 library(R.cache)
 
 # Set up the connection to the mySQL db:
-config <- config::get()
-host <- config$db_host_v2
-dbname <- config$db_dbname_v2
-username <- config$db_username_v2
-conpass <- config$db_password_v2
-pkg.globals <- RaMP::setConnectionToRaMP(dbname=dbname,username=username,conpass=conpass,host = host)
+#config <- config::get()
+#host <- config$db_host_v2
+#dbname <- config$db_dbname_v2
+#username <- config$db_username_v2
+#conpass <- config$db_password_v2
+#pkg.globals <- RaMP::setConnectionToRaMP(dbname=dbname,username=username,conpass=conpass,host = host)
 
 
 
@@ -204,6 +204,7 @@ function(identifier) {
     return(pathways)
 }
 
+
 #* Return analytes from source database
 #* @param identifier
 #* @param type
@@ -285,7 +286,7 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
 }
 
 #####
-#* Return ontologies from list of metabolites
+#* Query: Return ontologies from list of metabolites
 #* @param metabolite
 #* @serializer unboxedJSON
 #* @get /api/ontologies
@@ -323,24 +324,18 @@ function(metabolite="", type="biological") {
     } 
 }
 
-#* Return ontologies from list of metabolites
+#####
+#* Return types of ontologies present in RaMP-DB
 #* @param contains
 #* @serializer unboxedJSON
 #* @get /api/ontology-summaries
 function(contains="") {
-    con <- RaMP::connectToRaMP()
-
-    query <- paste0(
-        "select commonName as Ontology, biofluidORcellular ",
-        "from ontology ",
-        "where commonName LIKE '%", contains, "%' ",
-        "order by commonName ASC"
+    ontologies <- getOntologies()
+    ontologies <- list(
+	num_ontology_types = length(unique(ontologies$HMDBOntologyType)),
+	uniq_ontology_types = unique(ontologies$HMDBOntologyType),
+	data = ontologies
     )
-
-    ontologies <- DBI::dbGetQuery(con, query)
-
-    DBI::dbDisconnect(con)
-
     return(ontologies)
 }
 
@@ -391,14 +386,17 @@ function(ontology="") {
     return(analytes_df)
 }
 
+##########
 #' Return analytes from given list of pathways
-#' @param analyte
+#' @param pathway
+#' @param analyte_type
 #' @get /api/analytes
-function(pathway="") {
-    pathways <- c(pathway)
-    print(pathways)
+function(pathway="", analyte_type="both") {
+    pathway <- c(pathway)
+    analyte <- analyte_type
+    print(pathway)
     analytes_df <- tryCatch({
-        analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathways)
+        analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
     },
     error = function(cond) {
         print(cond)
@@ -407,6 +405,7 @@ function(pathway="") {
     return(analytes_df)
 }
 
+#####
 #' Return pathways from given list of analytes
 #' @param analyte
 #' @get /api/pathways
@@ -433,6 +432,7 @@ function(analyte="") {
     return(unique(pathways_df))
 }
 
+#####
 #' Return combined Fisher's test results
 #' from given list of analytes query results
 #' @parser json
@@ -445,13 +445,14 @@ function(req) {
     return(fishers_results_df)
 }
 
+#####
 #' Return filtered Fisher's test results
 #' from given list of Fisher's test results
 #' @param p_holmadj_cutoff
 #' @param p_fdradj_cutoff
 #' @parser json
 #' @post /api/filter-fisher-test-results
-function(req, p_holmadj_cutoff=0.05, p_fdradj_cutoff=NULL) {
+function(req, p_holmadj_cutoff=0.2, p_fdradj_cutoff=0.2) {
     fishers_results <- req$body
     fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
     filtered_results <- RaMP::FilterFishersResults(
@@ -462,6 +463,7 @@ function(req, p_holmadj_cutoff=0.05, p_fdradj_cutoff=NULL) {
     return(filtered_results)
 }
 
+#####
 #' Return filtered Fisher's test results
 #' from given list of Fisher's test results
 #' @param perc_analyte_overlap
@@ -492,6 +494,7 @@ function(
     return(clustering_results)
 }
 
+#####
 #' Return filtered Fisher's test results
 #' from given list of Fisher's test results
 #' @param analyte_source_id
@@ -522,70 +525,14 @@ function(
 
     fishresults <- clustering_results$fishresults
 
-    ids_no_cluster <- fishresults[
-        fishresults$cluster_assignment != "Did not cluster", "pathwayRampId"
-    ]
-    pathway_matrix <- clustering_results$pathway_matrix[
-        ids_no_cluster, ids_no_cluster
-    ]
-
-    cluster_coordinates <- c()
-
-    if (!is.null(pathway_matrix)) {
-        distance_matrix <- dist(1 - pathway_matrix)
-
-        fit <- cmdscale(distance_matrix, eig = TRUE, k = 2)
-
-        cluster_coordinates <- data.frame(fit$points)
-        cluster_coordinates <- cbind(
-            pathwayRampId = rownames(cluster_coordinates),
-            cluster_coordinates
-        )
-        rownames(cluster_coordinates) <- NULL
-
-        names(cluster_coordinates)[2] <- "x"
-        names(cluster_coordinates)[3] <- "y"
-
-        options(sqldf.driver = "SQLite")
-        cluster_coordinates <- sqldf(
-            "select
-                cluster_coordinates.pathwayRampId,
-                cluster_coordinates.x,
-                cluster_coordinates.y,
-                fishresults.cluster_assignment,
-                fishresults.pathwayName
-            from cluster_coordinates
-            left join fishresults on
-                cluster_coordinates.pathwayRampId = fishresults.pathwayRampId"
-        )
-    }
-
-    analyte_ids <- sapply(analytes, shQuote)
-    analyte_ids <- paste(analyte_ids, collapse = ",")
-
-    query <- paste0(
-        "select s.sourceId, commonName, GROUP_CONCAT(p.sourceId) as pathways ",
-        "from source as s ",
-        "left join analyte as a on s.rampId = a.rampId ",
-        "left join analytehaspathway as ap on a.rampId = ap.rampId ",
-        "left join pathway as p on ap.pathwayRampId = p.pathwayRampId ",
-        "where s.sourceId in (", analyte_ids, ") ",
-        "group by s.sourceId, s.commonName"
-    )
-
-    con <- RaMP::connectToRaMP()
-    cids <- DBI::dbGetQuery(con, query)
-    DBI::dbDisconnect(con)
-
     response <- list(
-        fishresults = clustering_results$fishresults,
-        clusterCoordinates = cluster_coordinates,
-        analytes = cids
+        fishresults = clustering_results$fishresults
     )
 
     return(response)
 }
 
+####
 #' Return analytes involved in same reaction as given list of analytes
 #' @param analyte
 #' @get /api/common-reaction-analytes
@@ -600,27 +547,31 @@ function(analyte="") {
     error = function(cond) {
         return(data.frame(stringsAsFactors = FALSE))
     })
-    analytes_df_names <- tryCatch({
-        analytes_df <- RaMP::rampFastCata(
-            analytes = analytes,
-            NameOrIds = "names"
-        )
-    },
-        error = function(cond) {
-            return(data.frame(stringsAsFactors = FALSE))
-        }
-    )
-    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
-    return(unique(analytes_df))
+
+# Removing Capacity to search by name for now - EM 12/13/2021
+#    analytes_df_names <- tryCatch({
+#        analytes_df <- RaMP::rampFastCata(
+#            analytes = analytes,
+#            NameOrIds = "names"
+#        )
+#    },
+#        error = function(cond) {
+#            return(data.frame(stringsAsFactors = FALSE))
+#        }
+#    )
+#    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
+    return(unique(analytes_df_ids))
 }
 
+#####
 #' Return chemical properties of given metabolites
 #' @param metabolite
 #' @param property
 #' @get /api/metabolites/chemical-properties
-function(metabolite="", property=NULL) {
+function(metabolite="", property="all") {
     metabolites <- c(metabolite)
-    properties <- NULL
+    #properties <- NULL
+    properties <- property
     if (!is.null(property)) {
         properties <- c(property)
     }
@@ -636,3 +587,34 @@ function(metabolite="", property=NULL) {
     })
     return(chemical_properties_df)
 }
+
+
+
+######
+#' Return available chemical properties in RaMP-DB
+
+
+
+
+#####
+#' Return available high level chemical class types (from ClassyFire)
+#' @param classtype
+#' get /api/metabolites/chemical-class-type
+function() {
+	classtypes <- tryCatch({
+		getMetabClassTypes()
+	},
+	error = function(cond) {
+		return(data.frame(stringsAsFactors = FALSE))
+	})
+	return(classtypes)
+}
+	
+	
+
+
+
+
+
+
+

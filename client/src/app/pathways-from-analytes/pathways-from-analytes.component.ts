@@ -74,6 +74,7 @@ export class PathwaysFromAnalytesComponent extends AnalyteQueryBase implements O
     //this.loadingService.setLoadingState(true);
     const analytes = (this.analytesInput ? this.analytesInput.toString().split(/\r\n|\r|\n/g) : []).filter(analyte => analyte !== '');
     this.analyteService.findAnalytes(analytes).subscribe((response: Array<AnalyteMatch>) => {
+	console.log(response);
         this.analyteMatches = this.setSelectedAnalyteMatches(response);
         this.loadingService.setLoadingState(false);
         this.selectedIndex = 1;
@@ -109,6 +110,7 @@ export class PathwaysFromAnalytesComponent extends AnalyteQueryBase implements O
     this.http.get<any>(url, options)
       .pipe(
         map(response => {
+	  console.log(response);
           return response;
         })
       )
