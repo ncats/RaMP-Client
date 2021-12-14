@@ -1,0 +1,8 @@
+ {
+  "ontologies" : {
+    "title": "ontologies",
+    "function": "ontologies_df <- RaMP::getOntoFromMeta(analytes = ###REPLACE###)",
+    "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
+    "description": "Enter a new line separated list of metabolite ID's prepended by ID source (e.g. <strong>kegg</strong>:C00412)."
+  }
+}

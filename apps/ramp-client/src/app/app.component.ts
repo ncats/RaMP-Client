@@ -1,22 +1,24 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
-import { MatSidenav } from '@angular/material/sidenav';
+import {MatSidenav} from '@angular/material/sidenav';
+import {ErrorDialogComponent} from "@ramp/shared/ui/error-dialog";
 import {LinkTemplateProperty} from "@ramp/shared/ui/header-template";
 import {RampFacade} from "@ramp/stores/ramp-store";
-import {
-  ErrorDialogComponent
-} from "../../../../libs/shared/ui/error-dialog/src/lib/error-dialog/error-dialog.component";
+
 
 @Component({
   selector: 'ramp-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
   @ViewChild('sideNav', { read: MatSidenav, static: false })
@@ -76,6 +78,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
+    private changeRef: ChangeDetectorRef,
     private rampFacade: RampFacade
   ) {
 
@@ -89,12 +92,17 @@ export class AppComponent implements OnInit {
         console.log(error);
         this.dialog.open(ErrorDialogComponent, {
           data: {
-            error: 'panda',
+            error: error,
           },
         });
       }
     })
 
-    this.rampFacade.loaded$.subscribe(res=> this.loading = !res);
+    this.rampFacade.loading$.subscribe(res=> {
+      console.log(res);
+      this.loading = res;
+      this.changeRef.markForCheck();
+
+    });
   }
 }

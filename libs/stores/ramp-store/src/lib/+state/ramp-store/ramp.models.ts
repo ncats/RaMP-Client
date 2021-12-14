@@ -1,4 +1,4 @@
-import {SourceVersion} from "@ramp/models/ramp-models";
+import {Ontology, SourceVersion} from "@ramp/models/ramp-models";
 
 /**
  * Interface for the 'RampStore' data
@@ -9,4 +9,5 @@ export interface RampEntity {
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
   analyteIntersects?: {compounds: [], genes: []};
+  ontology: Ontology[];
 }

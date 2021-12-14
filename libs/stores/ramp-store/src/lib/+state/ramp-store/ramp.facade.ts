@@ -11,7 +11,7 @@ export class RampFacade {
    * Combine pieces of state using createSelector,
    * and expose them as observables through the facade.
    */
-  loaded$ = this.store.pipe(select(RampSelectors.getRampLoaded));
+  loading$ = this.store.pipe(select(RampSelectors.getRampLoaded));
   allRampStore$ = this.store.pipe(select(RampSelectors.getAllRamp));
   selectedRampStore$ = this.store.pipe(select(RampSelectors.getSelected));
   sourceVersions$ = this.store.pipe(select(RampSelectors.getSourceVersions));

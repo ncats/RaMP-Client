@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import  rFunctions from '../assets/data/rFunctions.json';
 
 const routes: Routes = [
 /*  {
@@ -44,6 +45,9 @@ const routes: Routes = [
       import('@ramp/features/ramp/ontologies').then(
         (m) => m.FeaturesRampOntologiesModule
       ),
+    data: {
+     ...rFunctions.ontologies
+    }
   }
   //,
 /*  {

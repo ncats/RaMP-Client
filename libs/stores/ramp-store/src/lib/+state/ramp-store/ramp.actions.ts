@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import {SourceVersion} from "@ramp/models/ramp-models";
+import {Ontology, SourceVersion} from "@ramp/models/ramp-models";
 import { RampEntity } from './ramp.models';
 
 export const initAbout = createAction('[Ramp About Page] Init');
@@ -77,7 +77,7 @@ export const fetchOntologiesFromMetabolites = createAction(
 
 export const fetchOntologiesFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch OntologiesFromMetabolites Success',
-  props<{ ontologies: any[] }>()
+  props<{ ontologies: Ontology[] }>()
 );
 
 export const fetchOntologiesFromMetabolitesFailure = createAction(

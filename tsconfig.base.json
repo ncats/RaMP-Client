@@ -37,6 +37,9 @@
         "libs/features/ramp/ramp-home/src/index.ts"
       ],
       "@ramp/models/ramp-models": ["libs/models/ramp-models/src/index.ts"],
+      "@ramp/shared/ncats/data-download": [
+        "libs/shared/ncats/data-download/src/index.ts"
+      ],
       "@ramp/shared/ncats/ncats-footer": [
         "libs/shared/ncats/ncats-footer/src/index.ts"
       ],
@@ -45,6 +48,9 @@
       ],
       "@ramp/shared/ui/custom-material": [
         "libs/shared/ui/custom-material/src/index.ts"
+      ],
+      "@ramp/shared/ui/description-panel": [
+        "libs/shared/ui/description-panel/src/index.ts"
       ],
       "@ramp/shared/ui/error-dialog": [
         "libs/shared/ui/error-dialog/src/index.ts"

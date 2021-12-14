@@ -4,6 +4,11 @@ ramp-ontology-search {
     width: 100%;
   }
   .content-panel {
-   // margin-top: 5vh;
+    margin-top: 2vh;
+  }
+
+  .code-block {
+   // word-break: break-all;
+    white-space: break-spaces;
   }
 }

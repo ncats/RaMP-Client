@@ -10,7 +10,7 @@ const { selectAll, selectEntities } = rampAdapter.getSelectors();
 
 export const getRampLoaded = createSelector(
   getRampState,
-  (state: State) => state.loaded
+  (state: State) => state.loading
 );
 
 export const getRampError = createSelector(

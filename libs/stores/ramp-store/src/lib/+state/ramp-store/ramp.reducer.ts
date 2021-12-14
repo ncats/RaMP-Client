@@ -1,6 +1,6 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
-import {SourceVersion} from "@ramp/models/ramp-models";
+import {Ontology, SourceVersion} from "@ramp/models/ramp-models";
 
 import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
@@ -9,12 +9,12 @@ export const RAMP_STORE_FEATURE_KEY = 'rampStore';
 
 export interface State extends EntityState<RampEntity> {
   selectedId?: string | number; // which RampStore record has been selected
-  loaded: boolean; // has the RampStore list been loaded
+  loading: boolean; // has the RampStore list been loaded
   error?: string | null; // last known error (if any)
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
   analyteIntersects?: {compounds: [], genes: []};
-  ontologies?: any[];
+  ontologies?: Ontology[];
 }
 
 export interface RampPartialState {
@@ -26,20 +26,24 @@ export const rampAdapter: EntityAdapter<RampEntity> =
 
 export const initialState: State = rampAdapter.getInitialState({
   // set initial required properties
-  loaded: false,
+  loading: false,
 });
 
 const rampReducer = createReducer(
   initialState,
-  on(RampActions.initAbout, (state) => ({
+  on(
+    RampActions.initAbout,
+    RampActions.fetchOntologiesFromMetabolites,
+    (state) => ({
     ...state,
-    loaded: false,
+      loading: true,
     error: null,
   })),
+
   on(RampActions.loadRampSuccess, (state, { data }) =>
       ({
       ...state,
-      loaded: true,
+        loading: false,
       sourceVersions: data.sourceVersions,
       entityCounts: data.entityCounts,
       analyteIntersects: data.analyteIntersects
@@ -47,10 +51,10 @@ const rampReducer = createReducer(
   ),
 
   on(RampActions.loadSourceVersionsSuccess, (state, { versions }) =>
-    ({...state, loaded: true, sourceVersions: versions})),
+    ({...state, loading: false, sourceVersions: versions})),
 
 on(RampActions.fetchOntologiesFromMetabolitesSuccess, (state, { ontologies }) =>
-    ({...state, loaded: true, ontologies: ontologies})),
+    ({...state, loading: false,  ontologies: ontologies})),
 
   on(
     RampActions.loadRampFailure,
@@ -58,6 +62,7 @@ on(RampActions.fetchOntologiesFromMetabolitesSuccess, (state, { ontologies }) =>
     RampActions.fetchOntologiesFromMetabolitesFailure,
     (state, { error }) => ({
       ...state,
+      loading: false,
       error,
     })
   )

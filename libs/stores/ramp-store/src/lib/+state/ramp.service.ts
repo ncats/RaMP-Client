@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {EntityCount, SourceCount, SourceVersion} from "@ramp/models/ramp-models";
+import {EntityCount, Ontology, SourceCount, SourceVersion} from "@ramp/models/ramp-models";
 import {HttpClient, HttpParamsOptions} from '@angular/common/http';
 import {forkJoin, Observable, of} from "rxjs";
 import { catchError, map } from 'rxjs/operators';
@@ -81,17 +81,15 @@ export class RampService {
   fetchOntologiesFromMetabolites(analytes: string[]) {
     console.log(analytes);
     const options = {
-      params: {
         metabolite: analytes
-      }
     };
 
     return this.http
-      .get<string[]>(`${this.url}ontologies`,  options) // ,{responseType: 'text'})
+      .post<string[]>(`${this.url}ontologies`,  options) // ,{responseType: 'text'})
       .pipe(
-        map((response: any[]) => {
+        map((response: any) => {
           console.log(response)
-          return response
+          return response.data.map((ont: any) => new Ontology(ont))
         }),
         catchError(this.handleError('fetchSourceVersions', []))
       );

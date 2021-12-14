@@ -42,7 +42,7 @@ export class DataProperty {
    * if sorted, then what direction?
    * todo merge with sortable
    */
-  sorted?: 'asc' | 'desc' | null;
+  sorted?: 'asc' | 'desc';
 
   /**
    * internal link

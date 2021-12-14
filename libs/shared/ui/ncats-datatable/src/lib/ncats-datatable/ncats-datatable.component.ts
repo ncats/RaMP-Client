@@ -25,7 +25,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatRow, MatTableDataSource } from '@angular/material/table';
+import {MatRow, MatTable, MatTableDataSource} from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -33,6 +33,11 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs/operators';
 import { PageData } from './models/page-data';
 import { DataProperty } from './models/data-property';
+
+
+const _sortingDataAccessor = (item: {[key: string]:DataProperty}, property:string) => {
+ return item[property] ? item[property].value : 0;
+};
 
 /**
  * component to show flexible data consisting of multiple data types, custom components
@@ -64,6 +69,12 @@ import { DataProperty } from './models/data-property';
 export class NcatsDatatableComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+
+  /**
+   * Table object
+   */
+  @ViewChild(MatTable) dataTable!: MatTable<any>;
+
   /**
    * Behaviour subject to allow extending class to unsubscribe on destroy
    * @type {Subject<any>}
@@ -236,7 +247,6 @@ export class NcatsDatatableComponent
 
   selection = new SelectionModel<any>(true, []);
 
-  iterableDiffer: IterableDiffer<[]>;
   /**
    * Paginator object from Angular Material
    *
@@ -249,9 +259,7 @@ export class NcatsDatatableComponent
    * injector for custom data
    */
   constructor(private ref: ChangeDetectorRef,
-              private _injector: Injector ,
-  private iterableDiffers: IterableDiffers) {
-  this.iterableDiffer = iterableDiffers.find([]).create();
+              private _injector: Injector) {
 }
   /**
    * Init: get the columns to be displayed.
@@ -263,18 +271,23 @@ export class NcatsDatatableComponent
       // Unsubscribe once term has value
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((res) => {
-        console.log(res);
         if(res) {
           if (this.useInternalPaginator) {
             this.dataSource = new MatTableDataSource<DataProperty>(res.map((val: any) => new DataProperty((val))));
             this.pageData = new PageData({total: res.length});
           } else {
             this.dataSource.data = res;
+            this.ref.detectChanges();
           }
           if (this.internalSort) {
-           // this.dataSource.sort = this._sort;
+           this.dataSource.sortingDataAccessor = _sortingDataAccessor;
+            this.dataSource.sort = this._sort;
+            this._sort.sortChange.subscribe(res => {
+              if (this.dataSource.paginator) {
+                this.dataSource.paginator.firstPage()
+              }
+            })
           }
-          console.log(this);
           this.ref.detectChanges();
         }
       });
@@ -288,13 +301,6 @@ export class NcatsDatatableComponent
         this.ref.detectChanges();
         this.rowSelectionChange.emit(this.selection);
       });
-    console.log(this);
-  }
-
-  ngDoCheck() {
-    if (this.iterableDiffer.diff(this.data)) {
-      this.data = this.data;
-    }
   }
 
   /**
@@ -302,13 +308,23 @@ export class NcatsDatatableComponent
    * since the total is not know, it needs to be manually set based on the page data passes in
    */
   ngAfterViewInit() {
-    /*    if (this.fieldsConfig) {
-          const defaultSort = this.fieldsConfig.filter(field => field.sorted);
-          if (defaultSort.length > 0) {
-            this.data.sort.active = defaultSort[0].name;
-            this.data.sort.direction = defaultSort[0].sorted;
-          }
-        }*/
+        /*if (this.fieldsConfig) {
+          console.log(this.fieldsConfig);
+          const defaultSort: DataProperty[] = this.fieldsConfig.filter(field => field.sorted);
+          console.log(defaultSort);
+          if (defaultSort.length > 0 && this.data) {
+            console.log(defaultSort[0])
+            this._sort.sort({
+              id:defaultSort[0].field,
+              start: defaultSort[0].sorted ?defaultSort[0].sorted : 'asc',
+              disableClear: true
+            })
+            this.dataTable.renderRows();*/
+      //      this.dataSource.
+         //   this.dataSource.sortactive = defaultSort[0].field;
+         //   this.data.sort.direction = defaultSort[0].sorted;
+    //      }
+      //  }
   }
 
   /**
@@ -328,6 +344,7 @@ export class NcatsDatatableComponent
   changeSort(sort: Sort): void {
     this.sortChange.emit(sort);
     this.ref.detectChanges();
+    this.dataTable.renderRows();
   }
 
   /**

@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {RampFacade} from "@ramp/stores/ramp-store";
 
 @Component({
   selector: 'ramp-loading',
@@ -9,11 +8,7 @@ import {RampFacade} from "@ramp/stores/ramp-store";
 export class LoadingComponent implements OnInit{
 @Input()  isLoading = true;
 
-constructor(
-  private rampFacade: RampFacade
-){}
+constructor(){}
 
-  ngOnInit() {
-  this.rampFacade.loaded$.subscribe(res => this.isLoading = res);
-  }
+  ngOnInit() { }
 }

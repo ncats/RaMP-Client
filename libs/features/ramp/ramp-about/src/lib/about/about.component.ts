@@ -35,7 +35,7 @@ export class AboutComponent implements OnInit {
   entityCounts!: EntityCount[];
   entityCountsColumns: DataProperty[] = [
     new DataProperty({
-      label: "category",
+      label: "Category",
       field: "category",
       sortable: true,
       sorted: 'asc'
@@ -71,9 +71,8 @@ export class AboutComponent implements OnInit {
        sortable: true
      })
   ];
- // entityCountsColumns = []
+
   constructor(
-    private http: HttpClient,
     private changeDetector: ChangeDetectorRef,
     private scrollDispatcher: ScrollDispatcher,
     private rampFacade: RampFacade
@@ -86,7 +85,7 @@ export class AboutComponent implements OnInit {
         if(data.sourceVersions) {
           this.sourceVersions = data.sourceVersions;
         }
-        if(data.entityCounts) {
+        if(data.entityCounts && data.entityCounts.length) {
           this.entityCounts = data.entityCounts.map((count: { [s: string]: unknown; } | ArrayLike<unknown>) => {
             const newObj: {[key: string]: any} = {};
             Object.entries(count).map((value: any, index: any) => {
@@ -131,40 +130,6 @@ export class AboutComponent implements OnInit {
         }
       }
     });
-  }
-
-  sortEntityTable(event: any) {
-    console.log(event);
-    this.entityCounts.sort((a,b) => {
-      if(!a[event.active] && (event.direction === "asc" || event.direction === "")) return -1;
-      if(!a[event.active] && (event.direction === "desc" || event.direction === "")) return 1;
-      else if (!b[event.active]&& (event.direction === "asc" || event.direction === "")) return 1;
-      else if (!b[event.active]&& (event.direction === "desc" || event.direction === "")) return -1;
-      else {
-        switch (typeof a[event.active].value) {
-          case 'string': {
-            if (event.direction === 'asc') {
-              return a[event.active]?.value.localeCompare(b[event.active]?.value);
-            } else {
-              return b[event.active]?.value.localeCompare(a[event.active]?.value);
-            }
-          }
-          case 'number': {
-            if (event.direction === 'asc') {
-              return a[event.active]?.value - b[event.active]?.value;
-            } else {
-              return b[event.active]?.value - a[event.active]?.value;
-            }
-          }
-        }
-      }
-    })
-    console.log(this.entityCounts);
-  this.changeDetector.markForCheck();
-  }
-
-  ngOnChanges(change: SimpleChanges) {
-    console.log(change);
   }
 
   /**

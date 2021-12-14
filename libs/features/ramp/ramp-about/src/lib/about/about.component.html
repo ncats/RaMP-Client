@@ -229,8 +229,8 @@
         <div class="section-content">
           <ncats-frontend-library-ncats-datatable
             [fieldsConfig]="entityCountsColumns"
-            [data]= "this.entityCounts"
-            (sortChange)="sortEntityTable($event)"
+            [data]= "entityCounts"
+            [internalSort] = true
           ></ncats-frontend-library-ncats-datatable>
         </div>
 <!--
