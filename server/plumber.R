@@ -28,48 +28,30 @@ cors <- function(req, res) {
   }
 }
 
-
+######
 #* Return source version information
 #* @serializer unboxedJSON
 #* @get /api/source_versions
 function() {
-    con <- RaMP::connectToRaMP()
+    version_info <- RaMP::getCurrentRaMPSourceDBVersions()
 
-    query <- paste0(
-        "select ",
-            "ramp_db_version as rampDbVersion, ",
-            "db_mod_date as dbModDate, ",
-            "status, ",
-            "data_source_id as dataSourceId, ",
-            "data_source_name as dataSourceName, ",
-            "data_source_url as dataSourceUrl, ",
-            "data_source_version as dataSourceVersion ",
-        "from version_info where status = 'current'"
-    )
-
-    version_info <- DBI::dbGetQuery(con, query)
-    DBI::dbDisconnect(con)
-    return(version_info)
+    return(list(
+	data = version_info,
+	function_call="RaMP::getCurrentRaMPSourceDBVersions()"
+    ))
 }
 
+####
 #* Return counts on entities and their associations
 #* @serializer unboxedJSON
 #* @get /api/entity_counts
 function() {
-    con <- RaMP::connectToRaMP()
+    entity_counts <- RaMP::getEntityCountsFromSourceDBs()
 
-    query <- paste0(
-        "select ",
-            "status_category as entity, ",
-            "entity_source_id as entitySourceId, ",
-            "entity_source_name as entitySourceName, ",
-            "entity_count as entityCount ",
-        "from entity_status_info"
-    )
-
-    entity_counts <- DBI::dbGetQuery(con, query)
-    DBI::dbDisconnect(con)
-    return(entity_counts)
+    return(list(
+        data = entity_counts,
+        function_call="RaMP::getEntityCountsFromSourceDBs()"
+    ))
 }
 
 get_count_query <- function(
@@ -185,10 +167,13 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/id-types
 function() {
-   met <- getPrefixesFromAnalytes("metabolite")
-   gene <- getPrefixesFromAnalytes("gene")
+   met <- RaMP::getPrefixesFromAnalytes("metabolite")
+   gene <- RaMP::getPrefixesFromAnalytes("gene")
 
-    return(rbind(met,gene))
+    return(list(
+        data = rbind(met,gene),
+        function_call='RaMP::getPrefixesFromAnalytes("metabolite"); RaMP::getPrefixesFromAnalytes("gene")'
+	)) 
 }
 
 #####
@@ -200,8 +185,16 @@ function(identifier) {
     identifiers <- c(identifier)
     #identifiers <- sapply(identifiers, shQuote)
     identifiers <- paste(identifiers, collapse = ",")
-    pathways <- getPathwayFromAnalyte(identifiers)
-    return(pathways)
+    pathways <- RaMP::getPathwayFromAnalyte(identifiers)
+
+    # Need to reformat for output function_call:
+    identifiers <- sapply(identifier, shQuote)
+    identifiers <- paste(identifiers, collapse = ",")
+
+    return(list(
+	data = pathways,
+	function_call = paste0("RaMP::getPathwayFromAnalyte(", identifiers, "))")
+    ))
 }
 
 #* Return pathways from source database
