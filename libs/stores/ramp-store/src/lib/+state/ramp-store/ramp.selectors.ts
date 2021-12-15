@@ -60,3 +60,13 @@ export const getOntologies = createSelector(
   getRampState,
   (state: State) => state.ontologies
 );
+
+export const getAnalytes = createSelector(
+  getRampState,
+  (state: State) => state.analytes
+);
+
+export const getPathways = createSelector(
+  getRampState,
+  (state: State) => state.pathways
+);

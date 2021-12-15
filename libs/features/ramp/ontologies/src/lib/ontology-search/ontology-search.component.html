@@ -9,7 +9,7 @@
 <div fxLayout="row" fxLayoutAlign="space-around start">
   <div fxFlex="30">
     <mat-form-field class="full-width" appearance="outline" color="accent">
-      <mat-label>Metabolites</mat-label>
+      <mat-label>{{input | titlecase}}</mat-label>
       <textarea
         matInput
         [rows]="10"
@@ -36,7 +36,7 @@
       </div>
       <ncats-frontend-library-ncats-datatable
         [fieldsConfig]="ontologyColumns"
-       [data]="ontologyAsDataProperty"
+       [data]="dataAsDataProperty"
        [asDataSource] = true
        [internalSort] = true
        [useInternalPaginator] = true

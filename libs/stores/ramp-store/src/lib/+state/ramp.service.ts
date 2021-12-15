@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {EntityCount, Ontology, SourceCount, SourceVersion} from "@ramp/models/ramp-models";
+import {Analyte, EntityCount, Ontology, Pathway, SourceCount, SourceVersion} from "@ramp/models/ramp-models";
 import {HttpClient, HttpParamsOptions} from '@angular/common/http';
 import {forkJoin, Observable, of} from "rxjs";
 import { catchError, map } from 'rxjs/operators';
@@ -79,19 +79,50 @@ export class RampService {
   }
 
   fetchOntologiesFromMetabolites(analytes: string[]) {
-    console.log(analytes);
     const options = {
         metabolite: analytes
     };
-
     return this.http
       .post<string[]>(`${this.url}ontologies`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
           console.log(response)
-          return response.data.map((ont: any) => new Ontology(ont))
+          return response.data.map((obj: any) => new Ontology(obj))
         }),
-        catchError(this.handleError('fetchSourceVersions', []))
+        catchError(this.handleError('ontologies', []))
+      );
+  }
+
+  fetchAnalytesFromPathways(pathways: string[]) {
+    console.log("analytes rom pathways");
+    const options = {
+        pathway: pathways
+    };
+    console.log(pathways);
+    return this.http
+      .post<string[]>(`${this.url}analytes-from-pathways`,  options) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          console.log(response)
+          return response.data.map((obj: any) => new Analyte(obj))
+        }),
+        catchError(this.handleError('analytes-from-pathways', []))
+      );
+  }
+
+  fetchPathwaysFromAnalytes(analytes: string[]) {
+    const options = {
+        analyte: analytes
+    };
+    console.log(analytes);
+    return this.http
+      .post<string[]>(`${this.url}pathways-from-analytes`,  options) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          console.log(response)
+          return response.data.map((obj: any) => new Pathway(obj))
+        }),
+        catchError(this.handleError('pathways from analytes', []))
       );
   }
 

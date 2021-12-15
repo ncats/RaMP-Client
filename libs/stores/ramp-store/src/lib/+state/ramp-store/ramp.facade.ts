@@ -17,6 +17,8 @@ export class RampFacade {
   sourceVersions$ = this.store.pipe(select(RampSelectors.getSourceVersions));
   error$ = this.store.pipe(select(RampSelectors.getRampError));
   ontologies$ = this.store.pipe(select(RampSelectors.getOntologies));
+  analytes$ = this.store.pipe(select(RampSelectors.getAnalytes));
+  pathways$ = this.store.pipe(select(RampSelectors.getPathways));
 
   constructor(private readonly store: Store) {}
 

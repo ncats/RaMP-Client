@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import {Ontology, SourceVersion} from "@ramp/models/ramp-models";
+import {Analyte, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
 import { RampEntity } from './ramp.models';
 
 export const initAbout = createAction('[Ramp About Page] Init');
@@ -82,6 +82,36 @@ export const fetchOntologiesFromMetabolitesSuccess = createAction(
 
 export const fetchOntologiesFromMetabolitesFailure = createAction(
   '[Ramp/API] Fetch OntologiesFromMetabolites Failure',
+  props<{ error: any }>()
+);
+
+export const fetchAnalytesFromPathways = createAction(
+  '[Ramp/API] Fetch fetchAnalytesFromPathways',
+  props<{pathways: string[]}>()
+);
+
+export const fetchAnalytesFromPathwaysSuccess = createAction(
+  '[Ramp/API] Fetch fetchAnalytesFromPathways Success',
+  props<{ analytes: Analyte[]}>()
+);
+
+export const fetchAnalytesFromPathwaysFailure = createAction(
+  '[Ramp/API] Fetch fetchAnalytesFromPathways Failure',
+  props<{ error: any }>()
+);
+
+export const fetchPathwaysFromAnalytes = createAction(
+  '[Ramp/API] Fetch fetchPathwaysFromAnalytes',
+  props<{analytes: string[]}>()
+);
+
+export const fetchPathwaysFromAnalytesSuccess = createAction(
+  '[Ramp/API] Fetch fetchPathwaysFromAnalytes Success',
+  props<{ pathways: Pathway[]}>()
+);
+
+export const fetchPathwaysFromAnalytesFailure = createAction(
+  '[Ramp/API] Fetch fetchPathwaysFromAnalytes Failure',
   props<{ error: any }>()
 );
 

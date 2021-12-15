@@ -57,6 +57,34 @@ export class RampEffects {
     )
   )
 
+  fetchAnalytesFromPathways = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchAnalytesFromPathways),
+      mergeMap((action) =>
+        this.rampService.fetchAnalytesFromPathways(action.pathways)
+          .pipe(
+            map((ret: any[]) => RampActions.fetchAnalytesFromPathwaysSuccess({ analytes: ret }),
+              catchError((error:ErrorEvent) => of(RampActions.fetchAnalytesFromPathwaysFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
+fetchPathwaysFromAnalytes = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchPathwaysFromAnalytes),
+      mergeMap((action) =>
+        this.rampService.fetchPathwaysFromAnalytes(action.analytes)
+          .pipe(
+            map((ret: any[]) => RampActions.fetchPathwaysFromAnalytesSuccess({ pathways: ret }),
+              catchError((error:ErrorEvent) => of(RampActions.fetchPathwaysFromAnalytesFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
   constructor(
     private readonly actions$: Actions,
     private rampService: RampService

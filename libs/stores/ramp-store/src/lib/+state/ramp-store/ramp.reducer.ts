@@ -1,6 +1,6 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
-import {Ontology, SourceVersion} from "@ramp/models/ramp-models";
+import {Analyte, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
 
 import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
@@ -15,6 +15,8 @@ export interface State extends EntityState<RampEntity> {
   entityCounts?: any;
   analyteIntersects?: {compounds: [], genes: []};
   ontologies?: Ontology[];
+  analytes?: Analyte[];
+  pathways?: Pathway[];
 }
 
 export interface RampPartialState {
@@ -34,6 +36,8 @@ const rampReducer = createReducer(
   on(
     RampActions.initAbout,
     RampActions.fetchOntologiesFromMetabolites,
+    RampActions.fetchAnalytesFromPathways,
+    RampActions.fetchPathwaysFromAnalytes,
     (state) => ({
     ...state,
       loading: true,
@@ -55,6 +59,12 @@ const rampReducer = createReducer(
 
 on(RampActions.fetchOntologiesFromMetabolitesSuccess, (state, { ontologies }) =>
     ({...state, loading: false,  ontologies: ontologies})),
+
+on(RampActions.fetchAnalytesFromPathwaysSuccess, (state, { analytes }) =>
+    ({...state, loading: false,  analytes: analytes})),
+
+on(RampActions.fetchPathwaysFromAnalytesSuccess, (state, { pathways }) =>
+    ({...state, loading: false,  pathways: pathways})),
 
   on(
     RampActions.loadRampFailure,
