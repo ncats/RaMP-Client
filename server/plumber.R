@@ -293,7 +293,7 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
 function(metabolite="", type="biological") {
     metabolites_ids <- c(metabolite)
     num_submitted_ids <- length(metabolites_ids)
-#    metabolites_ids <- sapply(metabolites_ids, shQuote)
+    #metabolites_ids <- sapply(metabolites_ids, shQuote)
     metabolites_ids <- paste(metabolites_ids, collapse = ",")
 #print(metabolites_ids)
 
@@ -303,13 +303,18 @@ function(metabolite="", type="biological") {
 		ontologies_df <- NULL
 	}
 
+      # Reformat metabolites_ids for function call output:
+	metabolites_ids <- sapply(metabolite, shQuote)
+        metabolites_ids <- paste(metabolites_ids, collapse = ",")
+
       if(is.null(ontologies_df)) {
         return(
             list(
 		temp=metabolites_ids,
                 num_submitted_ids = num_submitted_ids,
                 numFoundIds = 0,
-                data = vector()
+                data = vector(),
+		function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
             )
         )
       } else {
@@ -318,72 +323,63 @@ function(metabolite="", type="biological") {
     		temp=metabolites_ids,
                 num_submitted_ids = num_submitted_ids,
                 numFoundIds = length(unique(ontologies_df$sourceId)),
-                data = ontologies_df
+                data = ontologies_df,
+		function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
             )
         )
     } 
 }
 
 #####
-#* Return types of ontologies present in RaMP-DB
-#* @param contains
+#* Return all types of ontologies present in RaMP-DB
 #* @serializer unboxedJSON
-#* @get /api/ontology-summaries
+#* @get /api/ontology-types
 function(contains="") {
     ontologies <- getOntologies()
     ontologies <- list(
 	num_ontology_types = length(unique(ontologies$HMDBOntologyType)),
 	uniq_ontology_types = unique(ontologies$HMDBOntologyType),
-	data = ontologies
+	data = ontologies,
+	function_call = "ontologies <- getOntologies()"
     )
     return(ontologies)
 }
 
 
 #* Return metabolites from ontology
-#* @param analyte
+#* @param ontology 
 #* @serializer unboxedJSON
-#* @get /api/metabolites
+#* @get /api/get-metabolites-from-ontologies
 function(ontology="") {
     ontologies_names <- c(ontology)
     num_submitted_names <- length(ontologies_names)
-    ontologies_names <- sapply(ontologies_names, shQuote)
+#    ontologies_names <- sapply(ontologies_names, shQuote)
     ontologies_names <- paste(ontologies_names, collapse = ",")
 
-    con <- RaMP::connectToRaMP()
+    ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
 
-    query <- paste0(
-        "select o.commonName ",
-        "from ontology as o ",
-        "where o.commonName in (", ontologies_names, ") "
-    )
-
-    ontologies <- DBI::dbGetQuery(con, query)
-
-    DBI::dbDisconnect(con)
-
-    if (nrow(ontologies) > 0) {
-
-        metabolites_df <- RaMP::getMetaFromOnto(ontology = ontologies)
-
-        return(
-            list(
-                num_submitted_ids = num_submitted_names,
-                numFoundIds = nrow(ontologies),
-                data = metabolites_df
-            )
-        )
-    } else {
+    if (is.null(nrow(ontologies))) {
         return(
             list(
                 num_submitted_ids = num_submitted_names,
                 numFoundIds = 0,
-                data = vector()
+                data = vector(),
+                function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+                        ontologies_names, "))")
             )
         )
-    }
-
-    return(analytes_df)
+    }else {
+        return(
+            list(
+                num_submitted_ids = num_submitted_names,
+                numFoundIds = nrow(ontologies),
+                data = ontologies,
+		function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+			ontologies_names, "))")		
+            )
+        )
+    } 
+    #return(analytes_df)
 }
 
 ##########
