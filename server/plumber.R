@@ -204,6 +204,17 @@ function(identifier) {
     return(pathways)
 }
 
+#* Return pathways from source database
+#* @param identifier
+#* @post /api/pathways
+function(identifier) {
+    identifiers <- c(identifier)
+    #identifiers <- sapply(identifiers, shQuote)
+    identifiers <- paste(identifiers, collapse = ",")
+    pathways <- getPathwayFromAnalyte(identifiers)
+    return(pathways)
+}
+
 
 #* Return analytes from source database
 #* @param identifier
@@ -284,6 +295,21 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
     DBI::dbDisconnect(con)
     return(analytes)
 }
+
+#####TIM POST
+#* Return ontologies from list of metabolites
+#* @param metabolite
+#* @post /api/ontologies
+function(metabolite="", type="biological") {
+    metabolites_ids <- c(metabolite)
+    ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
+    return(
+      list(
+        data = ontologies_df
+      )
+    )
+}
+
 
 #####
 #* Query: Return ontologies from list of metabolites
@@ -401,6 +427,30 @@ function(pathway="", analyte_type="both") {
     return(analytes_df)
 }
 
+##########TIM POST
+#' Return analytes from given list of pathways
+#' @param pathway
+#' @param analyte_type
+#' @post /api/analytes-from-pathways
+function(pathway="", analyte_type="both") {
+    print(pathway)
+    pathway <- c(pathway)
+    analyte <- analyte_type
+    print(pathway)
+    analytes_df <- tryCatch({
+        analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+    },
+    error = function(cond) {
+        print(cond)
+        return(data.frame(stringsAsFactors = FALSE))
+    })
+    return(
+      list(
+      data = analytes_df
+    )
+      )
+}
+
 #####
 #' Return pathways from given list of analytes
 #' @param analyte
@@ -426,6 +476,37 @@ function(analyte="") {
     })
     pathways_df <- rbind(pathways_df_ids, pathways_df_names)
     return(unique(pathways_df))
+}
+
+##### TIM POST
+#' Return pathways from given list of analytes
+#' @param analyte
+#' @post /api/pathways-from-analytes
+function(analyte="") {
+    analytes <- c(analyte)
+    pathways_df_ids <- tryCatch({
+        pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
+            NameOrIds = "ids"
+        )
+    },
+    error = function(cond) {
+        return(data.frame(stringsAsFactors = FALSE))
+    })
+    pathways_df_names <- tryCatch({
+        pathways_df <- RaMP::getPathwayFromAnalyte(
+            analytes = analytes,
+            NameOrIds = "names"
+        )
+    },
+    error = function(cond) {
+        return(data.frame(stringsAsFactors = FALSE))
+    })
+    pathways_df <- rbind(pathways_df_ids, pathways_df_names)
+    return(
+      list(
+        data = unique(pathways_df)
+      )
+    )
 }
 
 #####
