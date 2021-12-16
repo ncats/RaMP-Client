@@ -14,7 +14,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = "rampdb-client"
-        PACKAGE_DIR = "client"
+        PACKAGE_DIR = "apps/ramp-client"
         DOCKER_REPO_NAME = "684150170045.dkr.ecr.us-east-1.amazonaws.com/rampdb-client"
     }
     stages {
