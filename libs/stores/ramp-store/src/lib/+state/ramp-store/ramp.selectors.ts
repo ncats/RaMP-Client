@@ -51,9 +51,13 @@ export const getEntityCounts = createSelector(
   (state: State) => state.entityCounts
 );
 
-export const getAnalyteIntersects = createSelector(
+export const getMetaboliteIntersects = createSelector(
   getRampState,
-  (state: State) => state.analyteIntersects
+  (state: State) => state.metaboliteIntersects
+);
+export const getGeneIntersects = createSelector(
+  getRampState,
+  (state: State) => state.geneIntersects
 );
 
 export const getOntologies = createSelector(

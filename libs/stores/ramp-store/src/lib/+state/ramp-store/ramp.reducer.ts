@@ -13,7 +13,8 @@ export interface State extends EntityState<RampEntity> {
   error?: string | null; // last known error (if any)
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
-  analyteIntersects?: {compounds: [], genes: []};
+  metaboliteIntersects?:[];
+  geneIntersects?:[];
   ontologies?: Ontology[];
   analytes?: Analyte[];
   pathways?: Pathway[];
@@ -59,7 +60,8 @@ const rampReducer = createReducer(
         loading: false,
       sourceVersions: data.sourceVersions,
       entityCounts: data.entityCounts,
-      analyteIntersects: data.analyteIntersects
+      metaboliteIntersects: data.metaboliteIntersects,
+      geneIntersects: data.geneIntersects
     })
   ),
 

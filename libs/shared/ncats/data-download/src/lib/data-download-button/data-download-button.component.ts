@@ -19,18 +19,6 @@ export class DataDownloadButtonComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  /*  downloadData() {
-      if (this.data) {
-      //  const csv = this.convertToCSV();
-     //   console.log(csv);
-     //   const csvBlob = new Blob([csv], {type: 'text/plain;charset=utf-8'});
-  //  zip.generateAsync({type: 'blob'}).then((content) => {
-        // saveAs(content, 'pharos data download.zip');
-  //});
-      }
-    }*/
-  private browser: any;
-
   downloadData(): void {
     const lines: string[] = [[...Object.keys(this.data[0])].join(',')];
     this.data.forEach((data: any) => lines.push([...(Object.values(data))].join(',')));

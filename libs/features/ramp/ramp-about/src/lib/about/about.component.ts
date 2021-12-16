@@ -36,7 +36,7 @@ export class AboutComponent implements OnInit {
   entityCountsColumns: DataProperty[] = [
     new DataProperty({
       label: "Category",
-      field: "category",
+      field: "status_category",
       sortable: true,
       sorted: 'asc'
     }),
@@ -94,11 +94,12 @@ export class AboutComponent implements OnInit {
             return newObj;
           });
         }
-        if(data.analyteIntersects) {
-          this.genesData = data.analyteIntersects.genes;
-          this.compoundsData = data.analyteIntersects.compounds;
+        if(data.geneIntersects) {
+          this.genesData = data.geneIntersects;
         }
-
+        if(data.metaboliteIntersects){
+          this.compoundsData = data.metaboliteIntersects;
+        }
       }
     )
     ).subscribe()

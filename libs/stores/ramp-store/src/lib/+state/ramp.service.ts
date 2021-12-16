@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Analyte, EntityCount, Ontology, Pathway, SourceCount, SourceVersion} from "@ramp/models/ramp-models";
-import {HttpClient, HttpParamsOptions} from '@angular/common/http';
+import {Analyte, EntityCount, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
+import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 @Injectable({
@@ -15,43 +15,46 @@ export class RampService {
     return forkJoin({
       sourceVersions: this.fetchSourceVersions(),
       entityCounts: this.fetchEntityCounts(),
-      analyteIntersects: this.fetchAnalyteIntersects()
+      metaboliteIntersects: this.fetchMetaboliteIntersects(),
+      geneIntersects: this.fetchGeneIntersects()
     });
   }
 
   fetchSourceVersions(): Observable<SourceVersion[]> {
     return this.http
-      .get<SourceVersion[]>(`${this.url}source_versions`) // ,{responseType: 'text'})
+      .get<{data: SourceVersion[]}>(`${this.url}source_versions`) // ,{responseType: 'text'})
       .pipe(
-        map((response: SourceVersion[]) => response),
+        map((response) => response.data),
         catchError(this.handleError('fetchSourceVersions', []))
       );
   }
 
   fetchEntityCounts() {
     return this.http
-      .get<SourceCount[]>(`${this.url}entity_counts`) // ,{responseType: 'text'})
+      .get<{data: any[]}>(`${this.url}entity_counts`) // ,{responseType: 'text'})
       .pipe(
-        map((response) => {
-          const group: Map<string, EntityCount> = new Map<string, EntityCount>();
-          response.forEach((sourceCount: SourceCount) => {
-            const key = sourceCount.entity;
-            const collection: EntityCount | undefined = group.get(key);
-            if (!collection) {
-              const countDict: EntityCount = {category: key};
-              countDict[sourceCount.entitySourceId] = sourceCount.entityCount;
-              group.set(key, countDict);
-            } else {
-              collection[sourceCount.entitySourceId] = sourceCount.entityCount;
-              group.set(key, collection);
-            }
-          });
-          return Array.from(group.values());
-        }),
+        map((response) => response.data.map(obj => new EntityCount(obj))),
         catchError(this.handleError('fetchEntityCounts', []))
       );
   }
 
+  fetchMetaboliteIntersects(){
+    return this.fetchAnalyteIntersects('mets');
+  }
+
+  fetchGeneIntersects(){
+    return this.fetchAnalyteIntersects('genes');
+  }
+
+  fetchAnalyteIntersects(param: string) {
+    return this.http
+      .get<{data: any[]}>(`${this.url}analyte_intersects?analytetype=${param}`) // ,{responseType: 'text'})
+      .pipe(
+        map((response) => response.data),
+        catchError(this.handleError('fetchAnalyteIntersects', []))
+      );
+  }
+/*
   fetchAnalyteIntersects() {
     return this.http
       .get(`${this.url}analyte_intersects`) // ,{responseType: 'text'})
@@ -75,6 +78,7 @@ export class RampService {
         catchError(this.handleError('fetchAnalyteIntersects', []))
       );
   }
+*/
 
   fetchOntologiesFromMetabolites(analytes: string[]) {
     const options = {

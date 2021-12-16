@@ -89,17 +89,17 @@
           <ul class="ramp-list">
             <li *ngFor="let version of sourceVersions">
               <a
-                href="{{ version.dataSourceUrl }}"
+                href="{{ version.data_source_url }}"
                 target="_blank"
                 rel="noreferrer"
                 attr.aria-label="Hyperlink to the {{
-                  version.dataSourceName
+                  version.data_source_name
                 }} website. Link opens in a new tab."
               >
-                {{ version.dataSourceName }}</a
+                {{ version.data_source_name }}</a
               >
               &nbsp;
-              <span>{{ version.dataSourceVersion }}</span>
+              <span>{{ version.data_source_version }}</span>
             </li>
           </ul>
           <p>
@@ -233,45 +233,6 @@
             [internalSort] = true
           ></ncats-frontend-library-ncats-datatable>
         </div>
-<!--
-        <div class="section-content">
-          <table>
-            <thead>
-            <tr>
-              <th
-                *ngFor="let column of entityCountsColumns; index as index"
-                [innerHTML]="column.replace('/ /g', '<br>')"
-              >
-                <div></div>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let entityCount of entityCounts">
-              <td class="main-table">{{ entityCount.entity }}</td>
-              <td
-                *ngFor="
-                    let column of entityCountsColumns.slice(1);
-                    index as index
-                  "
-              >
-                {{ entityCount.counts[column] }}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <br/>
-          <p>
-            The harmonization of metabolites across all the data sources is a
-            semi-automated process that is supplemented by manual curation. The
-            semi-automated process relies on ID links provided from each
-            resource and applies heuristics to ensure accuracy of connections.
-            Inconsistencies captured are manually checked and corrected, and
-            corrected links are stored for reuse in future RaMP updates. This
-            process is further described in our manuscript.
-          </p>
-        </div>
--->
       </div>
     </div>
     <div
@@ -296,7 +257,7 @@
             each resource.
           </p>
           <div fxLayout="row wrap" fxLayoutAlign="space-around center">
-            <div fxFlex.gt-md="48" fxFlex.lt-md="95">
+            <div fxFlex.gt-md="63" fxFlex.lt-md="95">
               <ramp-upset
                 [title]="'Metabolite Overlap'"
                 [data]="compoundsData"
@@ -305,7 +266,7 @@
               >
               </ramp-upset>
             </div>
-            <div fxFlex.gt-md="48" fxFlex.lt-md="95">
+            <div fxFlex.gt-md="30" fxFlex.lt-md="95">
               <ramp-upset
                 [title]="'Gene Overlap'"
                 [data]="genesData"
