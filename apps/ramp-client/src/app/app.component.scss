@@ -1,0 +1,19 @@
+@use '@angular/material' as mat;
+@import "ncats-theme";
+
+.main-content {
+  padding-top: 64px;
+}
+
+.toolbar-template {
+  background-color: mat.get-color-from-palette($app-accent);
+  color: #ffffff;
+}
+
+.toolbar-template button {
+  color: #ffffff;
+}
+
+.toolbar-template a {
+  color: #ffffff;
+}

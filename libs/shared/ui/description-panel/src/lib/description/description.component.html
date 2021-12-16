@@ -1,0 +1,8 @@
+<mat-card class="helper-card">
+  <div class="description" [innerHTML]="description"></div>
+  <div>
+    <br>
+    <div *ngIf="function">The following R function was called:</div>
+    <pre class="code-block">{{function}}</pre>
+  </div>
+</mat-card>
