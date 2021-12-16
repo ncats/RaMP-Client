@@ -1,0 +1,635 @@
+{
+  "version": 1,
+  "projects": {
+    "features-ramp-analytes-from-pathways": {
+      "projectType": "library",
+      "root": "libs/features/ramp/analytes-from-pathways",
+      "sourceRoot": "libs/features/ramp/analytes-from-pathways/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/analytes-from-pathways"],
+          "options": {
+            "jestConfig": "libs/features/ramp/analytes-from-pathways/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/analytes-from-pathways/src/**/*.ts",
+              "libs/features/ramp/analytes-from-pathways/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": ["lib:analytes-from-pathways"]
+    },
+    "features-ramp-common-reaction-analytes": {
+      "projectType": "library",
+      "root": "libs/features/ramp/common-reaction-analytes",
+      "sourceRoot": "libs/features/ramp/common-reaction-analytes/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/common-reaction-analytes"],
+          "options": {
+            "jestConfig": "libs/features/ramp/common-reaction-analytes/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/common-reaction-analytes/src/**/*.ts",
+              "libs/features/ramp/common-reaction-analytes/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": ["libs:common-reaction-analytes"]
+    },
+    "features-ramp-ontologies": {
+      "projectType": "library",
+      "root": "libs/features/ramp/ontologies",
+      "sourceRoot": "libs/features/ramp/ontologies/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/ontologies"],
+          "options": {
+            "jestConfig": "libs/features/ramp/ontologies/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/ontologies/src/**/*.ts",
+              "libs/features/ramp/ontologies/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": ["libs:ontologies"]
+    },
+    "features-ramp-pathways-from-analytes": {
+      "projectType": "library",
+      "root": "libs/features/ramp/pathways-from-analytes",
+      "sourceRoot": "libs/features/ramp/pathways-from-analytes/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/pathways-from-analytes"],
+          "options": {
+            "jestConfig": "libs/features/ramp/pathways-from-analytes/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/pathways-from-analytes/src/**/*.ts",
+              "libs/features/ramp/pathways-from-analytes/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": ["libs:pathways-from-analytes"]
+    },
+    "features-ramp-ramp-about": {
+      "projectType": "library",
+      "root": "libs/features/ramp/ramp-about",
+      "sourceRoot": "libs/features/ramp/ramp-about/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/ramp-about"],
+          "options": {
+            "jestConfig": "libs/features/ramp/ramp-about/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/ramp-about/src/**/*.ts",
+              "libs/features/ramp/ramp-about/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "features-ramp-ramp-header": {
+      "projectType": "library",
+      "root": "libs/features/ramp/ramp-header",
+      "sourceRoot": "libs/features/ramp/ramp-header/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/ramp-header"],
+          "options": {
+            "jestConfig": "libs/features/ramp/ramp-header/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/ramp-header/src/**/*.ts",
+              "libs/features/ramp/ramp-header/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "features-ramp-ramp-home": {
+      "projectType": "library",
+      "root": "libs/features/ramp/ramp-home",
+      "sourceRoot": "libs/features/ramp/ramp-home/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/ramp-home"],
+          "options": {
+            "jestConfig": "libs/features/ramp/ramp-home/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/ramp-home/src/**/*.ts",
+              "libs/features/ramp/ramp-home/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "models-ramp-models": {
+      "projectType": "library",
+      "root": "libs/models/ramp-models",
+      "sourceRoot": "libs/models/ramp-models/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/models/ramp-models"],
+          "options": {
+            "jestConfig": "libs/models/ramp-models/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/models/ramp-models/src/**/*.ts",
+              "libs/models/ramp-models/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "ramp-client": {
+      "projectType": "application",
+      "root": "apps/ramp-client",
+      "sourceRoot": "apps/ramp-client/src",
+      "prefix": "ramp-client",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/ramp-client",
+            "index": "apps/ramp-client/src/index.html",
+            "main": "apps/ramp-client/src/main.ts",
+            "polyfills": "apps/ramp-client/src/polyfills.ts",
+            "tsConfig": "apps/ramp-client/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/ramp-client/src/favicon.ico",
+              "apps/ramp-client/src/assets",
+              {
+                "input": "libs/features/ramp/ramp-about/src/assets",
+                "glob": "**/*",
+                "output": "assets/ramp-about"
+              }
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["libs/styles/src/styles/"]
+            },
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "apps/ramp-client/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "104kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/ramp-client/src/environments/environment.ts",
+                  "with": "apps/ramp-client/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "ramp-client:build:production"
+            },
+            "development": {
+              "browserTarget": "ramp-client:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ramp-client:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/ramp-client/src/**/*.ts",
+              "apps/ramp-client/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/ramp-client"],
+          "options": {
+            "jestConfig": "apps/ramp-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": ["app:ramp-client"]
+    },
+    "ramp-client-e2e": {
+      "root": "apps/ramp-client-e2e",
+      "sourceRoot": "apps/ramp-client-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/ramp-client-e2e/cypress.json",
+            "devServerTarget": "ramp-client:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ramp-client:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/ramp-client-e2e/**/*.{js,ts}"]
+          }
+        }
+      },
+      "tags": [],
+      "implicitDependencies": ["ramp-client"]
+    },
+    "shared-ncats-data-download": {
+      "projectType": "library",
+      "root": "libs/shared/ncats/data-download",
+      "sourceRoot": "libs/shared/ncats/data-download/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ncats/data-download"],
+          "options": {
+            "jestConfig": "libs/shared/ncats/data-download/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ncats/data-download/src/**/*.ts",
+              "libs/shared/ncats/data-download/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ncats-ncats-footer": {
+      "projectType": "library",
+      "root": "libs/shared/ncats/ncats-footer",
+      "sourceRoot": "libs/shared/ncats/ncats-footer/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ncats/ncats-footer"],
+          "options": {
+            "jestConfig": "libs/shared/ncats/ncats-footer/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ncats/ncats-footer/src/**/*.ts",
+              "libs/shared/ncats/ncats-footer/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ncats-ncats-header": {
+      "projectType": "library",
+      "root": "libs/shared/ncats/ncats-header",
+      "sourceRoot": "libs/shared/ncats/ncats-header/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ncats/ncats-header"],
+          "options": {
+            "jestConfig": "libs/shared/ncats/ncats-header/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ncats/ncats-header/src/**/*.ts",
+              "libs/shared/ncats/ncats-header/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ramp-query-page": {
+      "projectType": "library",
+      "root": "libs/shared/ramp/query-page",
+      "sourceRoot": "libs/shared/ramp/query-page/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ramp/query-page"],
+          "options": {
+            "jestConfig": "libs/shared/ramp/query-page/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ramp/query-page/src/**/*.ts",
+              "libs/shared/ramp/query-page/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-description-panel": {
+      "projectType": "library",
+      "root": "libs/shared/ui/description-panel",
+      "sourceRoot": "libs/shared/ui/description-panel/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/description-panel"],
+          "options": {
+            "jestConfig": "libs/shared/ui/description-panel/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/description-panel/src/**/*.ts",
+              "libs/shared/ui/description-panel/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-error-dialog": {
+      "projectType": "library",
+      "root": "libs/shared/ui/error-dialog",
+      "sourceRoot": "libs/shared/ui/error-dialog/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/error-dialog"],
+          "options": {
+            "jestConfig": "libs/shared/ui/error-dialog/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/error-dialog/src/**/*.ts",
+              "libs/shared/ui/error-dialog/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-header-template": {
+      "projectType": "library",
+      "root": "libs/shared/ui/header-template",
+      "sourceRoot": "libs/shared/ui/header-template/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/header-template"],
+          "options": {
+            "jestConfig": "libs/shared/ui/header-template/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/styles/"]
+          },
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/header-template/src/**/*.ts",
+              "libs/shared/ui/header-template/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-loading-spinner": {
+      "projectType": "library",
+      "root": "libs/shared/ui/loading-spinner",
+      "sourceRoot": "libs/shared/ui/loading-spinner/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/loading-spinner"],
+          "options": {
+            "jestConfig": "libs/shared/ui/loading-spinner/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/loading-spinner/src/**/*.ts",
+              "libs/shared/ui/loading-spinner/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-ncats-datatable": {
+      "projectType": "library",
+      "root": "libs/shared/ui/ncats-datatable",
+      "sourceRoot": "libs/shared/ui/ncats-datatable/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/ncats-datatable"],
+          "options": {
+            "jestConfig": "libs/shared/ui/ncats-datatable/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/ncats-datatable/src/**/*.ts",
+              "libs/shared/ui/ncats-datatable/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-visualizations-upset-chart": {
+      "projectType": "library",
+      "root": "libs/shared/visualizations/upset-chart",
+      "sourceRoot": "libs/shared/visualizations/upset-chart/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/visualizations/upset-chart"],
+          "options": {
+            "jestConfig": "libs/shared/visualizations/upset-chart/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/visualizations/upset-chart/src/**/*.ts",
+              "libs/shared/visualizations/upset-chart/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "stores-ramp-store": {
+      "projectType": "library",
+      "root": "libs/stores/ramp-store",
+      "sourceRoot": "libs/stores/ramp-store/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/stores/ramp-store"],
+          "options": {
+            "jestConfig": "libs/stores/ramp-store/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/stores/ramp-store/src/**/*.ts",
+              "libs/stores/ramp-store/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    }
+  }
+}

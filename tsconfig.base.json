@@ -1,0 +1,74 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ramp/features/ramp/analytes-from-pathways": [
+        "libs/features/ramp/analytes-from-pathways/src/index.ts"
+      ],
+      "@ramp/features/ramp/common-reaction-analytes": [
+        "libs/features/ramp/common-reaction-analytes/src/index.ts"
+      ],
+      "@ramp/features/ramp/ontologies": [
+        "libs/features/ramp/ontologies/src/index.ts"
+      ],
+      "@ramp/features/ramp/pathways-from-analytes": [
+        "libs/features/ramp/pathways-from-analytes/src/index.ts"
+      ],
+      "@ramp/features/ramp/ramp-about": [
+        "libs/features/ramp/ramp-about/src/index.ts"
+      ],
+      "@ramp/features/ramp/ramp-header": [
+        "libs/features/ramp/ramp-header/src/index.ts"
+      ],
+      "@ramp/features/ramp/ramp-home": [
+        "libs/features/ramp/ramp-home/src/index.ts"
+      ],
+      "@ramp/models/ramp-models": ["libs/models/ramp-models/src/index.ts"],
+      "@ramp/shared/ncats/data-download": [
+        "libs/shared/ncats/data-download/src/index.ts"
+      ],
+      "@ramp/shared/ncats/ncats-footer": [
+        "libs/shared/ncats/ncats-footer/src/index.ts"
+      ],
+      "@ramp/shared/ncats/ncats-header": [
+        "libs/shared/ncats/ncats-header/src/index.ts"
+      ],
+      "@ramp/shared/ramp/query-page": [
+        "libs/shared/ramp/query-page/src/index.ts"
+      ],
+      "@ramp/shared/ui/description-panel": [
+        "libs/shared/ui/description-panel/src/index.ts"
+      ],
+      "@ramp/shared/ui/error-dialog": [
+        "libs/shared/ui/error-dialog/src/index.ts"
+      ],
+      "@ramp/shared/ui/header-template": [
+        "libs/shared/ui/header-template/src/index.ts"
+      ],
+      "@ramp/shared/ui/loading-spinner": [
+        "libs/shared/ui/loading-spinner/src/index.ts"
+      ],
+      "@ramp/shared/ui/ncats-datatable": [
+        "libs/shared/ui/ncats-datatable/src/index.ts"
+      ],
+      "@ramp/shared/visualizations/upset-chart": [
+        "libs/shared/visualizations/upset-chart/src/index.ts"
+      ],
+      "@ramp/stores/ramp-store": ["libs/stores/ramp-store/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
