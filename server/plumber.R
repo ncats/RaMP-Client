@@ -145,21 +145,39 @@ get_data_source_intercepts <- function() {
   })
 }
 
+
 #* Return analyte source intersects
 #* @serializer unboxedJSON
-#* @get /api/analyte_intersects
+#* @get /api/analyte_intersects_cache
 function() {
-    key <- list(2.0, 3.0)
-    cached_intercepts <- loadCache(key)
+  key <- list(2.0, 3.0)
+  cached_intercepts <- loadCache(key)
 
-    if (is.null(cached_intercepts)) {
-        response <- get_data_source_intercepts()
-        saveCache(response, key = key)
-    } else (
-        response <- cached_intercepts
-    )
+  if (is.null(cached_intercepts)) {
+    response <- get_data_source_intercepts()
+    saveCache(response, key = key)
+  } else (
+    response <- cached_intercepts
+  )
+  return(response)
+}
 
-    return(response)
+#* Return analyte source intersects
+#* @param analytetype specifies type of analyte intersects to return, 'met' or 'gene'
+#* @serializer unboxedJSON
+#* @get /api/analyte_intersects
+function(analytetype) {
+  response = ""
+  if(!missing(analytetype)) {
+    if(analytetype == 'mets') {
+      response = RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json')
+    } else {
+      response = RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json')
+    }
+    # have to convert from JSON to avoid double serializing JSON
+    response = jsonlite::fromJSON(response)
+  }
+  return(response)
 }
 
 ####
@@ -173,7 +191,7 @@ function() {
     return(list(
         data = rbind(met,gene),
         function_call='RaMP::getPrefixesFromAnalytes("metabolite"); RaMP::getPrefixesFromAnalytes("gene")'
-	)) 
+	))
 }
 
 #####
@@ -346,7 +364,7 @@ function(metabolite="", type="biological") {
 		function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
             )
         )
-    } 
+    }
 }
 
 #####
@@ -366,7 +384,7 @@ function(contains="") {
 
 
 #* Return metabolites from ontology
-#* @param ontology 
+#* @param ontology
 #* @serializer unboxedJSON
 #* @get /api/get-metabolites-from-ontologies
 function(ontology="") {
@@ -394,10 +412,10 @@ function(ontology="") {
                 numFoundIds = nrow(ontologies),
                 data = ontologies,
 		function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-			ontologies_names, "))")		
+			ontologies_names, "))")
             )
         )
-    } 
+    }
     #return(analytes_df)
 }
 
@@ -679,8 +697,8 @@ function() {
 	})
 	return(classtypes)
 }
-	
-	
+
+
 
 
 
