@@ -1,17 +1,15 @@
-import { Injectable } from '@angular/core';
-import { createEffect, Actions, ofType } from '@ngrx/effects';
-import { fetch } from '@nrwl/angular';
+import {Injectable} from '@angular/core';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {SourceVersion} from "@ramp/models/ramp-models";
+import {RampService} from '@ramp/stores/ramp-store';
 import {mergeMap, of} from "rxjs";
 import {catchError, map} from "rxjs/operators";
-import {loadRampSuccess} from "./ramp.actions";
 
 import * as RampActions from './ramp.actions';
-import * as RampStoreFeature from './ramp.reducer';
-import { RampService } from '@ramp/stores/ramp-store';
 
 @Injectable()
 export class RampEffects {
+
   initAbout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.initAbout),
@@ -19,8 +17,7 @@ export class RampEffects {
         this.rampService.loadAboutData()
           .pipe(
             map((ret) => {
-              console.log(ret);
-              return RampActions.loadRampSuccess({ data: ret })
+              return RampActions.loadRampAboutSuccess({ data: ret })
               },
               catchError((error:ErrorEvent) => of(RampActions.loadSourceVersionsFailure({error})))
             )

@@ -33,6 +33,15 @@ export const initialState: State = rampAdapter.getInitialState({
 
 const rampReducer = createReducer(
   initialState,
+  on(RampActions.init, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(RampActions.loadRampSuccess, (state, { rampStore }) =>
+    rampAdapter.setAll(rampStore, { ...state, loading: false })
+  ),
+
   on(
     RampActions.initAbout,
     RampActions.fetchOntologiesFromMetabolites,
@@ -44,7 +53,7 @@ const rampReducer = createReducer(
     error: null,
   })),
 
-  on(RampActions.loadRampSuccess, (state, { data }) =>
+  on(RampActions.loadRampAboutSuccess, (state, { data }) =>
       ({
       ...state,
         loading: false,
@@ -68,6 +77,7 @@ on(RampActions.fetchPathwaysFromAnalytesSuccess, (state, { pathways }) =>
 
   on(
     RampActions.loadRampFailure,
+    RampActions.loadRampAboutFailure,
     RampActions.loadSourceVersionsFailure,
     RampActions.fetchOntologiesFromMetabolitesFailure,
     (state, { error }) => ({

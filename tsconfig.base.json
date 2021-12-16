@@ -46,8 +46,8 @@
       "@ramp/shared/ncats/ncats-header": [
         "libs/shared/ncats/ncats-header/src/index.ts"
       ],
-      "@ramp/shared/ui/custom-material": [
-        "libs/shared/ui/custom-material/src/index.ts"
+      "@ramp/shared/ramp/query-page": [
+        "libs/shared/ramp/query-page/src/index.ts"
       ],
       "@ramp/shared/ui/description-panel": [
         "libs/shared/ui/description-panel/src/index.ts"

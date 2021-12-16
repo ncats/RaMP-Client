@@ -7,7 +7,13 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import { DataDownloadButtonComponent } from './data-download-button/data-download-button.component';
 
 @NgModule({
-  imports: [CommonModule, MatButtonModule, MatTooltipModule, FlexLayoutModule, MatIconModule],
+  imports: [CommonModule,
+    MatButtonModule,
+    MatTooltipModule,
+    FlexLayoutModule,
+    MatIconModule
+  ]
+  ,
   declarations: [
     DataDownloadButtonComponent
   ],

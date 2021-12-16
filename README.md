@@ -4,7 +4,6 @@ This are the web client and API for the RaMP DB R package. You can find details 
 
 ## Technology Stack
 
-- [Nx](https://nx.dev)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Angular](https://angular.io/)
 - [Angular CLI](https://github.com/angular/angular-cli)
@@ -24,7 +23,7 @@ To run this application localy or on a server, you'll need to have the following
 
 There are two application to run, the client and the API. They communicate with each other via the HTTPS protocol and send data back and forth in JSON format.
 
-Please follow [these instructions](apps/ramp-client/CLIENT_INSTRUCTIONS.md) to run the client application and [these instructions](ramp/apps/ramp-server/SERVER_INSTRUCTIONS.MD) to run the API.
+Please follow [these instructions](client/CLIENT_INSTRUCTIONS.md) to run the client application and [these instructions](server/SERVER_INSTRUCTIONS.MD) to run the API.
 
 ## API
 

@@ -1,7 +1,13 @@
 import { UpsetData } from './upset-data';
 
+const UPSETTESTDATA = {
+  sets:["REACTOME","HMDB"],
+  size:61,
+  id: 666
+}
+
 describe('UpsetData', () => {
   it('should create an instance', () => {
-    expect(new UpsetData()).toBeTruthy();
+    expect(new UpsetData(UPSETTESTDATA)).toBeTruthy();
   });
 });

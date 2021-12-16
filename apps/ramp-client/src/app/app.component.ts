@@ -3,11 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
-import {MatSidenav} from '@angular/material/sidenav';
 import {ErrorDialogComponent} from "@ramp/shared/ui/error-dialog";
 import {LinkTemplateProperty} from "@ramp/shared/ui/header-template";
 import {RampFacade} from "@ramp/stores/ramp-store";
@@ -21,10 +19,8 @@ import {RampFacade} from "@ramp/stores/ramp-store";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  @ViewChild('sideNav', { read: MatSidenav, static: false })
 
   title = 'ramp-client';
-  sideNav!: MatSidenav;
   loading = true;
   links: LinkTemplateProperty[] = [
     {
@@ -85,8 +81,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('app');
-
     this.rampFacade.error$.subscribe(error=> {
       if(error) {
         console.log(error);
@@ -99,7 +93,6 @@ export class AppComponent implements OnInit {
     })
 
     this.rampFacade.loading$.subscribe(res=> {
-      console.log(res);
       this.loading = res;
       this.changeRef.markForCheck();
 

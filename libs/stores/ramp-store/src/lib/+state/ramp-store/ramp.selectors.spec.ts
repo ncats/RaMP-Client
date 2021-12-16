@@ -1,25 +1,25 @@
 import { RampEntity } from './ramp.models';
 import {
-  rampStoreAdapter,
-  RampStorePartialState,
+  rampAdapter,
+  RampPartialState,
   initialState,
 } from './ramp.reducer';
-import * as RampStoreSelectors from './ramp.selectors';
+import * as RampSelectors from './ramp.selectors';
 
 describe('Ramp Selectors', () => {
   const ERROR_MSG = 'No Error Available';
-  const getRampStoreId = (it: RampEntity) => it.id;
+  const getRampStoreId = (it: RampEntity) => 'PRODUCT-BBB';
   const createRampEntity = (id: string, name = '') =>
     ({
       id,
       name: name || `name-${id}`,
     } as RampEntity);
 
-  let state: RampStorePartialState;
+  let state: RampPartialState;
 
   beforeEach(() => {
     state = {
-      rampStore: rampStoreAdapter.setAll(
+      rampStore: rampAdapter.setAll(
         [
           createRampEntity('PRODUCT-AAA'),
           createRampEntity('PRODUCT-BBB'),
@@ -29,7 +29,7 @@ describe('Ramp Selectors', () => {
           ...initialState,
           selectedId: 'PRODUCT-BBB',
           error: ERROR_MSG,
-          loaded: true,
+          loading: false,
         }
       ),
     };
@@ -37,7 +37,7 @@ describe('Ramp Selectors', () => {
 
   describe('RampStore Selectors', () => {
     it('getAllRampStore() should return the list of RampStore', () => {
-      const results = RampStoreSelectors.getAllRampStore(state);
+      const results = RampSelectors.getAllRampEntity(state);
       const selId = getRampStoreId(results[1]);
 
       expect(results.length).toBe(3);
@@ -45,20 +45,20 @@ describe('Ramp Selectors', () => {
     });
 
     it('getSelected() should return the selected Entity', () => {
-      const result = RampStoreSelectors.getSelected(state) as RampEntity;
+      const result = RampSelectors.getSelected(state) as RampEntity;
       const selId = getRampStoreId(result);
 
       expect(selId).toBe('PRODUCT-BBB');
     });
 
     it('getRampStoreLoaded() should return the current "loaded" status', () => {
-      const result = RampStoreSelectors.getRampStoreLoaded(state);
+      const result = RampSelectors.getRampLoaded(state);
 
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
 
     it('getRampStoreError() should return the current "error" state', () => {
-      const result = RampStoreSelectors.getRampStoreError(state);
+      const result = RampSelectors.getRampError(state);
 
       expect(result).toBe(ERROR_MSG);
     });

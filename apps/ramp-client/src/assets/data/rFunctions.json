@@ -1,8 +1,23 @@
  {
   "ontologies" : {
     "title": "ontologies",
-    "function": "ontologies_df <- RaMP::getOntoFromMeta(analytes = ###REPLACE###)",
+    "input": "metabolites",
+    "function": "ontologies_df <- RaMP::getOntoFromMeta(analytes = \"###REPLACE###\")",
     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
-    "description": "Enter a new line separated list of metabolite ID's prepended by ID source (e.g. <strong>kegg</strong>:C00412)."
+    "description": "Enter a list of metabolite ID's prepended by ID source (e.g. <strong>kegg</strong>:C00412)."
+  },
+   "analytes-from-pathways" : {
+    "title": "Analytes From Pathways",
+     "input": "pathways",
+     "function": "analytes <- RaMP::getAnalyteFromPathway(pathway=\"###REPLACE###\")",
+    "examples": "De Novo Triacylglycerol Biosynthesis, sphingolipid metabolism",
+    "description": "Analytes (genes, proteins, metabolites) can be retrieve by pathway. Enter a list of exact pathway names."
+  },
+   "pathways-from-analytes" : {
+    "title": "Pathways From Analytes",
+     "input": "analytes",
+     "function": "analytes <- RaMP::getPathwayFromAnalyte(pathway=\"###REPLACE###\")",
+    "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
+    "description": "write new description"
   }
 }

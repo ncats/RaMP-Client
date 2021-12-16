@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Analyte, Pathway} from "@ramp/models/ramp-models";
 import {QueryPageComponent} from "@ramp/shared/ramp/query-page";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchAnalytesFromPathways, fetchPathwaysFromAnalytes, RampFacade} from "@ramp/stores/ramp-store";
+import {fetchAnalytesFromPathways, RampFacade} from "@ramp/stores/ramp-store";
 
 @Component({
   selector: 'ramp-analytes-from-pathways',
@@ -61,7 +61,6 @@ export class AnalytesFromPathwaysComponent extends QueryPageComponent implements
 
     this.rampFacade.analytes$.subscribe((res: Analyte[] | undefined) => {
       if (res && res.length) {
-        console.log(res);
         this.analyteRaw = res;
        this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
         this.dataAsDataProperty = res.map((analyte: Analyte) => {

@@ -1,7 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatToolbarModule} from "@angular/material/toolbar";
 
 import { HeaderTemplateComponent } from './header-template.component';
-import { CustomMaterialModule } from '@ncats-frontend-library/shared/custom-material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -14,7 +19,12 @@ describe('HeaderTemplateComponent', () => {
       imports: [
         RouterTestingModule,
         BrowserAnimationsModule,
-        CustomMaterialModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatMenuModule,
+        MatButtonModule,
+        FlexLayoutModule,
+        MatIconModule
       ],
       declarations: [HeaderTemplateComponent],
     }).compileComponents();

@@ -18,9 +18,10 @@ export const getRampError = createSelector(
   (state: State) => state.error
 );
 
-export const getAllRamp = createSelector(getRampState, (state: State) => state
-
+export const getAllRampEntity = createSelector(getRampState, (state: State) => selectAll(state)
 );
+
+export const getAllRamp = createSelector(getRampState, (state: State) => state);
 
 export const getRampEntities = createSelector(getRampState, (state: State) =>
   selectEntities(state)
@@ -41,7 +42,6 @@ export const getSelected = createSelector(
 export const getSourceVersions = createSelector(
   getRampState,
   (state: State) => {
-    console.log(state);
    return state.sourceVersions
   }
 );

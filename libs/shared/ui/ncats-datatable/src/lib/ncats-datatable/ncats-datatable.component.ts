@@ -92,7 +92,6 @@ export class NcatsDatatableComponent
    */
   @Input()
   set data(value: any) {
-    console.log(value);
     this._data.next(value);
   }
 
@@ -352,7 +351,6 @@ export class NcatsDatatableComponent
    * @param $event
    */
   changePage($event: PageEvent): void {
-    console.log($event);
     this.pageChange.emit($event);
   }
 

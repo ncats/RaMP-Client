@@ -9,7 +9,7 @@ export interface RampEntity {
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
   analyteIntersects?: {compounds: [], genes: []};
-  ontology: Ontology[];
-  analytes: Analyte[];
-  pathways: Pathway[];
+  ontology?: Ontology[];
+  analytes?: Analyte[];
+  pathways?: Pathway[];
 }

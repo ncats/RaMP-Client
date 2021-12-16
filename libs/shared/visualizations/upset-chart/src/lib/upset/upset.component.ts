@@ -12,11 +12,14 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { map, takeUntil } from 'rxjs/operators';
-import * as d3 from 'd3';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import {select} from "d3-selection";
+import { axisLeft, AxisScale } from "d3-axis";
+import { scaleBand, ScaleBand, scaleLinear, ScaleLinear, scaleLog } from "d3-scale";
+import {  format } from 'd3-format';
+import { extent, max } from 'd3-array';
 import { UpsetData } from '../upset-data';
-import { ScaleBand } from 'd3';
 
 @Component({
   selector: 'ramp-upset',
@@ -95,7 +98,7 @@ export class UpsetComponent implements OnInit {
 
             // Determine which sets (circles in the combination matrix) should be connected with a line
             if (combination.sets.length > 1) {
-              combination.connectorIndices = d3.extent(combination.sets, (d) =>
+              combination.connectorIndices = extent(combination.sets, (d) =>
                 this.allSetIds.indexOf(d)
               );
             } else {
@@ -116,7 +119,7 @@ export class UpsetComponent implements OnInit {
   }
 
   redrawChart(): void {
-    d3.select(this.upsetPlotElement.nativeElement).selectAll('*').remove();
+    select(this.upsetPlotElement.nativeElement).selectAll('*').remove();
     this.drawContainer();
   }
 
@@ -138,48 +141,48 @@ export class UpsetComponent implements OnInit {
     const bottomRowHeight = this.height - topRowHeight - innerMargin;
 
     // Initialize scales
-    const xScale: ScaleBand<string> = d3
-      .scaleBand()
+    const xScale: ScaleBand<string> =
+      scaleBand()
       .domain(this.data.map((d) => d.id))
       .range([0, rightColWidth])
       .paddingInner(0.2);
 
-    const yCombinationScale: ScaleBand<string> = d3
-      .scaleBand()
+    const yCombinationScale: ScaleBand<string> =
+      scaleBand()
       .domain(this.allSetIds)
       .range([0, bottomRowHeight])
       .paddingInner(0.2);
 
     let yAxis;
     let intersectionSizeScale:
-      | d3.AxisScale<number>
-      | (number[] & d3.ScaleLinear<number, number, never>);
+      | AxisScale<number>
+      | (number[] & ScaleLinear<number, number>);
 
     if (this.scale === 'log') {
-      intersectionSizeScale = d3
-        .scaleLog()
+      intersectionSizeScale =
+        scaleLog()
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-      yAxis = d3
-        .axisLeft(intersectionSizeScale)
+      yAxis =
+        axisLeft(intersectionSizeScale)
         .scale(intersectionSizeScale)
         .tickFormat((d, i) => {
-          return (i % 5 === 0 && d3.format(',d')(Number(d))) || '';
+          return (i % 5 === 0 && format(',d')(Number(d))) || '';
         })
         .tickSize(5);
     } else {
-      intersectionSizeScale = d3
-        .scaleLinear()
+      intersectionSizeScale =
+        scaleLinear()
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-      yAxis = d3.axisLeft(intersectionSizeScale).tickSize(5);
+      yAxis = axisLeft(intersectionSizeScale).tickSize(5);
     }
 
     // Prepare the overall layout
-    const svg = d3
-      .select(element)
+    const svg =
+      select(element)
       .append('svg:svg')
       .attr('width', this.width)
       .attr('height', this.height);
@@ -288,11 +291,11 @@ export class UpsetComponent implements OnInit {
     // const intersectionSizeAxis = d3.axisLeft(intersectionSizeScale).ticks(3);
 
     //todo: this ignores the previous Yaxis assignment
-    const intersectionSizeAxis = d3
-      .axisLeft(intersectionSizeScale)
+    const intersectionSizeAxis =
+      axisLeft(intersectionSizeScale)
       .scale(intersectionSizeScale)
       .tickFormat((d, i) => {
-        return (i % 5 === 0 && d3.format(',d')(Number(d))) || '';
+        return (i % 5 === 0 && format(',d')(Number(d))) || '';
       })
       .tickSize(5);
 
@@ -332,12 +335,12 @@ export class UpsetComponent implements OnInit {
         //  d3.select("#tooltip").style("opacity", 1).html(d.values.join("<br/>"));
       })
       .on('mousemove', (event) => {
-        d3.select('#tooltip')
+        select('#tooltip')
           .style('left', event.pageX + tooltipMargin + 'px')
           .style('top', event.pageY + tooltipMargin + 'px');
       })
       .on('mouseout', () => {
-        d3.select('#tooltip').style('opacity', 0);
+        select('#tooltip').style('opacity', 0);
       });
     intersectionSizeChart
       .append('svg:g')
@@ -362,14 +365,14 @@ export class UpsetComponent implements OnInit {
           //todo: fix the ts-ignore
           : intersectionSizeScale(1) + this.margin.top
       )
-      .text((d: { size: number }) => d3.format(',d')(Number(d.size)));
+      .text((d: { size: number }) => format(',d')(Number(d.size)));
   }
 
   private _getMax(): number {
-    let max: number | undefined = d3.max(this.data, (d) => d.size);
-    if (!max) {
-      max = 0;
+    let maxN: number | undefined = max(this.data, (d) => d.size);
+    if (!maxN) {
+      maxN = 0;
     }
-    return max;
+    return maxN;
   }
 }

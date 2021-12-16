@@ -8,19 +8,20 @@ describe('RampStore Reducer', () => {
   const createRampEntity = (id: string, name = ''): RampEntity => ({
     id,
     name: name || `name-${id}`,
+
   });
 
   describe('valid RampStore actions', () => {
-    it('loadRampStoreSuccess should return the list of known RampStore', () => {
+    it('loadRampSuccess should return the list of known RampStore', () => {
       const rampStore = [
         createRampEntity('PRODUCT-AAA'),
         createRampEntity('PRODUCT-zzz'),
       ];
-      const action = RampActions.loadRampStoreSuccess({ rampStore });
+      const action = RampActions.loadRampSuccess({ rampStore });
 
       const result: State = reducer(initialState, action);
 
-      expect(result.loaded).toBe(true);
+      expect(result.loading).toBe(false);
       expect(result.ids.length).toBe(2);
     });
   });

@@ -15,7 +15,7 @@ export class PathwaysFromAnalytesComponent extends QueryPageComponent implements
   pathwayRaw!: Pathway[];
   pathwayColumns: DataProperty[] = [
     new DataProperty({
-      label: "Common Name",
+      label: "Analyte Name",
       field: "commonName",
       sortable: true
     }),

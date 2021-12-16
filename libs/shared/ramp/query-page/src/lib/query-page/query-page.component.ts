@@ -26,7 +26,6 @@ export class QueryPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-      console.log(this);
       this.title = this.route.snapshot.data.title;
       this.description = this.sanitizer.bypassSecurityTrustHtml(this.route.snapshot.data.description);
       this.examples = this.route.snapshot.data.examples;

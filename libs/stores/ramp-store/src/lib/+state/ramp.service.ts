@@ -33,7 +33,6 @@ export class RampService {
       .get<SourceCount[]>(`${this.url}entity_counts`) // ,{responseType: 'text'})
       .pipe(
         map((response) => {
-          console.log(response);
           const group: Map<string, EntityCount> = new Map<string, EntityCount>();
           response.forEach((sourceCount: SourceCount) => {
             const key = sourceCount.entity;
@@ -59,7 +58,6 @@ export class RampService {
       .pipe(
         map((response) => {
           const ret = { compounds: [], genes: [] };
-          console.log(response);
           Object.keys(response).map(
             (key: string) =>
               //todo: fix the ts-ignore
@@ -86,7 +84,6 @@ export class RampService {
       .post<string[]>(`${this.url}ontologies`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          console.log(response)
           return response.data.map((obj: any) => new Ontology(obj))
         }),
         catchError(this.handleError('ontologies', []))
@@ -94,16 +91,13 @@ export class RampService {
   }
 
   fetchAnalytesFromPathways(pathways: string[]) {
-    console.log("analytes rom pathways");
     const options = {
         pathway: pathways
     };
-    console.log(pathways);
     return this.http
       .post<string[]>(`${this.url}analytes-from-pathways`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          console.log(response)
           return response.data.map((obj: any) => new Analyte(obj))
         }),
         catchError(this.handleError('analytes-from-pathways', []))
@@ -114,12 +108,10 @@ export class RampService {
     const options = {
         analyte: analytes
     };
-    console.log(analytes);
     return this.http
       .post<string[]>(`${this.url}pathways-from-analytes`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          console.log(response)
           return response.data.map((obj: any) => new Pathway(obj))
         }),
         catchError(this.handleError('pathways from analytes', []))
@@ -146,7 +138,6 @@ export class RampService {
   }
 
   _setUrl(url: string): void {
-    console.log(url);
     this.url = url;
   }
 }

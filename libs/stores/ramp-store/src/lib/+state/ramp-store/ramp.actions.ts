@@ -2,15 +2,26 @@ import { createAction, props } from '@ngrx/store';
 import {Analyte, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
 import { RampEntity } from './ramp.models';
 
+export const init = createAction('[Ramp] Init');
 export const initAbout = createAction('[Ramp About Page] Init');
 
 export const loadRampSuccess = createAction(
   '[Ramp/API] Load Ramp Success',
-  props<{ data: any }>()
+  props<{ rampStore: RampEntity[] }>()
 );
 
 export const loadRampFailure = createAction(
   '[Ramp/API] Load Ramp Failure',
+  props<{ error: any }>()
+);
+
+export const loadRampAboutSuccess = createAction(
+  '[Ramp/API] Load Ramp About Success',
+  props<{ data: any }>()
+);
+
+export const loadRampAboutFailure = createAction(
+  '[Ramp/API] Load Ramp About Failure',
   props<{ error: any }>()
 );
 

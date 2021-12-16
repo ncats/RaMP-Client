@@ -7,7 +7,6 @@ export class Analyte {
   pathwayType!: string;
 
   constructor(obj: any) {
-    console.log(obj);
     Object.assign(this, obj);
   }
 }

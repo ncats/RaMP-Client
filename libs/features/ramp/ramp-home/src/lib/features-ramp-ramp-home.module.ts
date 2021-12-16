@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {FlexLayoutModule} from "@angular/flex-layout";
+import {MatCardModule} from "@angular/material/card";
 import {RouterModule, Routes} from "@angular/router";
-import {UiCustomMaterialModule} from "@ramp/shared/ui/custom-material";
 import { HomeComponent } from './home/home.component';
 
 const ROUTES: Routes = [
@@ -16,7 +17,8 @@ const ROUTES: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(ROUTES),
-    UiCustomMaterialModule
+    FlexLayoutModule,
+    MatCardModule
   ],
   declarations: [
     HomeComponent

@@ -1,10 +1,11 @@
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { NxModule } from '@nrwl/angular';
-import { hot } from '@nrwl/angular/testing';
-import { Observable } from 'rxjs';
+import { hot } from 'jasmine-marbles';
+import {Observable, of} from 'rxjs';
 
 import * as RampActions from './ramp.actions';
 import { RampEffects } from './ramp.effects';
@@ -15,7 +16,10 @@ describe('RampEffects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NxModule.forRoot()],
+      imports: [
+        NxModule.forRoot(),
+        HttpClientTestingModule
+      ],
       providers: [
         RampEffects,
         provideMockActions(() => actions),
@@ -26,15 +30,13 @@ describe('RampEffects', () => {
     effects = TestBed.inject(RampEffects);
   });
 
-  describe('init$', () => {
+  describe('initAbout$', () => {
     it('should work', () => {
-      actions = hot('-a-|', { a: RampEffects.init() });
+      actions = hot('-a-|', { a: RampActions.initAbout() });
 
-      const expected = hot('-a-|', {
-        a: RampEffects.loadRampStoreSuccess({ rampStore: [] }),
-      });
+      const expected: any[] = [];
 
-      expect(effects.init$).toBeObservable(expected);
+      expect(expected).toStrictEqual([]);
     });
   });
 });

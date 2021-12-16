@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatButtonModule} from "@angular/material/button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
 import {RouterModule, Routes} from "@angular/router";
 import {SharedNcatsDataDownloadModule} from "@ramp/shared/ncats/data-download";
-import {UiCustomMaterialModule} from "@ramp/shared/ui/custom-material";
 import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
 import {SharedUiNcatsDatatableModule} from "@ramp/shared/ui/ncats-datatable";
 import { OntologySearchComponent } from './ontology-search/ontology-search.component';
@@ -18,10 +21,13 @@ const ROUTES: Routes = [
 @NgModule({
   imports: [
     CommonModule,
-    UiCustomMaterialModule,
     RouterModule.forChild(ROUTES),
     ReactiveFormsModule,
     FormsModule,
+    FlexLayoutModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
     SharedUiNcatsDatatableModule,
     SharedNcatsDataDownloadModule,
     SharedUiDescriptionPanelModule

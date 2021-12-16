@@ -12,6 +12,7 @@ export class RampFacade {
    * and expose them as observables through the facade.
    */
   loading$ = this.store.pipe(select(RampSelectors.getRampLoaded));
+  allRampEntity$ = this.store.pipe(select(RampSelectors.getAllRampEntity));
   allRampStore$ = this.store.pipe(select(RampSelectors.getAllRamp));
   selectedRampStore$ = this.store.pipe(select(RampSelectors.getSelected));
   sourceVersions$ = this.store.pipe(select(RampSelectors.getSourceVersions));
@@ -26,6 +27,9 @@ export class RampFacade {
    * Use the initialization action to perform one
    * or more tasks in your Effects.
    */
+  init() {
+    this.store.dispatch(RampActions.init());
+  }
   initAbout() {
     this.store.dispatch(RampActions.initAbout());
   }

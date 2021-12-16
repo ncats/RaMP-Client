@@ -3,13 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import  rFunctions from '../assets/data/rFunctions.json';
 
 const routes: Routes = [
-/*  {
-    path: '/',
-    loadChildren: () =>
-      import('@ramp/features/ramp/ramp-home').then(
-        (m) => m.FeaturesRampRampHomeModule
-      ),
-  },*/
   {
     path: '',
     pathMatch: 'full',
@@ -47,6 +40,30 @@ const routes: Routes = [
       ),
     data: {
      ...rFunctions.ontologies
+    }
+  },
+  {
+    path: 'analytes-from-pathways',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/analytes-from-pathways').then(
+        (m) => m.FeaturesRampAnalytesFromPathwaysModule
+      ),
+    data: {
+     ...rFunctions["analytes-from-pathways"]
+    }
+  },
+  {
+    path: 'pathways-from-analytes',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/pathways-from-analytes').then(
+        (m) => m.FeaturesRampPathwaysFromAnalytesModule
+      ),
+    data: {
+     ...rFunctions["pathways-from-analytes"]
     }
   }
   //,
