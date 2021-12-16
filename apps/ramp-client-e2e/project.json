@@ -1,0 +1,29 @@
+{
+  "root": "apps/ramp-client-e2e",
+  "sourceRoot": "apps/ramp-client-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/ramp-client-e2e/cypress.json",
+        "devServerTarget": "ramp-client:serve:development",
+        "tsConfig": "apps/ramp-client-e2e/tsconfig.json"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ramp-client:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ramp-client-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ramp-client"]
+}
