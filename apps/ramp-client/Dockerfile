@@ -13,6 +13,7 @@ RUN apk update && apk upgrade && \
     echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc && \
     npm i --quiet --cache=./npm-cache && \
     npm i -g @angular/cli && \
+    cd apps/ramp-client && \
     ng build && \
   rm -f .npmrc
 FROM labshare/docker-base-web
