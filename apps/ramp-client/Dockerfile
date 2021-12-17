@@ -1,6 +1,13 @@
 FROM node:16-alpine as buildContainer
-WORKDIR /app
-COPY . /app
+# Set the source folder
+ARG SOURCE_FOLDER="./"
+ARG BUILD_VERSION
+ARG NPM_TOKEN
+# Create app directory
+WORKDIR /var/www/app
+# Bundle app source
+COPY ${SOURCE_FOLDER} .
+
 RUN npm install -g npm@7.24.0
 RUN npm install
 
