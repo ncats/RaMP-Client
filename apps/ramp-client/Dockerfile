@@ -9,6 +9,8 @@ WORKDIR /var/www/app
 COPY ${SOURCE_FOLDER} .
 
 RUN npm install -g npm@7.24.0
+RUN pwd
+RUN ls -a
 RUN npm install
 
 # max-old-space is needed to avoid any compilation issues because of missing memory
