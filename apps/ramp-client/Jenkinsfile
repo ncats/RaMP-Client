@@ -49,7 +49,7 @@ pipeline {
                     ]) {
                         checkout scm
                       sh 'git config --global url."git@github.com:".insteadOf "https://github.com/"'
-                      sh 'npm install -g npm@7.24.0'
+                      sh 'npm install npm@7.24.0'
                             sh 'npm i'
                             sh 'npm install -g @angular/cli'
                             sh 'NODE_OPTIONS=--max_old_space_size=4096 ng build ramp-client --prod'
