@@ -11,7 +11,7 @@ RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh && \
     npm config set unsafe-perm true && \
     echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc && \
-    cd apps/ramp-client && \
+    ls -a && \
     npm i --quiet --cache=./npm-cache && \
     npm i -g @angular/cli && \
     pwd && \
