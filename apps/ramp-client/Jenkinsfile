@@ -1,6 +1,7 @@
 pipeline {
     options {
         timestamps()
+        skipDefaultCheckout()
     }
     agent {
         node { label 'build && aws && linux'}
@@ -13,7 +14,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = "rampdb-client"
-        PACKAGE_DIR = "apps/ramp-client"
+        PACKAGE_DIR = "ramp-client"
         DOCKER_REPO_NAME = "684150170045.dkr.ecr.us-east-1.amazonaws.com/rampdb-client"
     }
     stages {
@@ -43,31 +44,21 @@ pipeline {
             }
             steps {
                 sshagent (credentials: ['871f96b5-9d34-449d-b6c3-3a04bbd4c0e4']) {
-                   nodejs(configId: 'kw-npmrc', nodeJSInstallationName: 'Node.js 16.10') {
+                  nodejs(configId: 'kw-npmrc', nodeJSInstallationName: 'Node.js 16.10') {
                     withEnv([
                         "IMAGE_NAME=rampdb-client",
                         "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
                         checkout scm
-                      sh 'git config --global url."git@github.com:".insteadOf "https://github.com/"'
-                      sh 'npm install npm@7.24.0'
-                            sh 'npm i'
-                            sh 'npm install -g @angular/cli'
-                            sh 'NODE_OPTIONS=--max_old_space_size=4096 ng build ramp-client --prod'
-                            sh 'chmod 644 ./dist/apps/ramp-client/*'
-
+                        sh 'git config --global url."git@github.com:".insteadOf "https://github.com/"'
+                        sh 'npm install npm@7.24.0'
+                        sh 'npm i'
+                        sh 'npm install -g @angular/cli'
+                        sh 'NODE_OPTIONS=--max_old_space_size=4096 ng build ramp-client --prod'
+                        sh 'chmod 644 ./dist/apps/ramp-client/*'
                         dir(env.PACKAGE_DIR) {
                             script {
-                             def image = docker.build(
-                                    "${env.IMAGE_NAME}:${env.BUILD_VERSION}",
-                                    "--no-cache --build-arg SOURCE_FOLDER=./dist/apps/ramp-client ."
-                                )
-                                docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
-                                    image.push("${env.BUILD_VERSION}")
-                                }
-                                image = docker.build(
-                                    "ncats/rambdb-client:${env.BUILD_VERSION}",
-                                    "--no-cache --build-arg SOURCE_FOLDER=./dist/apps/ramp-client ."
+                                def image = docker.build("${env.IMAGE_NAME}", "--no-cache ."
                                 )
                                 docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
                                 docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
@@ -77,7 +68,6 @@ pipeline {
                     }
                 }
             }
-          }
         }
         stage('Deploy Application') {
             agent {
