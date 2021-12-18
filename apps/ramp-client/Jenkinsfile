@@ -69,6 +69,7 @@ pipeline {
                 }
             }
         }
+        }
         stage('Deploy Application') {
             agent {
                 node { label 'rampdb-ci-ec2-02'}

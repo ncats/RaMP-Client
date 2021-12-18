@@ -1,0 +1,58 @@
+<div class ="content-panel">
+  <div fxLayout="row" fxLayoutAlign="space-around start">
+    <div fxFlex="95">
+      <h1 class="page-title">
+        {{title | titlecase}}
+      </h1>
+    </div>
+  </div>
+<!--  <div fxLayout="row" fxLayoutAlign="space-around start">
+    <div fxFlex="30">
+      <mat-form-field class="full-width" appearance="outline" color="accent">
+        <mat-label>{{input | titlecase}}</mat-label>
+      <input
+        matInput
+        [formControl]="typeaheadCtrl"
+      >
+      </mat-form-field>
+      </div>
+    </div>-->
+
+      <div fxLayout="row" fxLayoutAlign="space-around start">
+    <div fxFlex="30">
+      <mat-form-field class="full-width" appearance="outline" color="accent">
+        <mat-label>{{input | titlecase}}</mat-label>
+        <textarea
+          matInput
+          [rows]="10"
+          [formControl]="inputFormCtrl"
+          placeholder= {{examples}} cdkTextareaAutosize></textarea>
+      </mat-form-field>
+    </div>
+    <div fxFlex="60" >
+      <ramp-description [function]="function" [description]="description"></ramp-description>
+      <div>
+        <button mat-flat-button color="accent" (click)="fetchMetabolites()" class="bottom-align">
+          Search
+        </button>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="metaboliteRaw">
+    <div fxFlex="80">
+      <div fxLayout="row" fxLayoutAlign="end start">
+        <div fxFlex="22">
+          {{matches}} of {{queryCount}} identifiers found.
+          <ramp-data-download-button [source]="'ontology'" [data] = metaboliteRaw></ramp-data-download-button>
+        </div>
+      </div>
+      <ncats-frontend-library-ncats-datatable
+        [fieldsConfig]="metaboliteColumns"
+        [data]="dataAsDataProperty"
+        [asDataSource] = true
+        [internalSort] = true
+        [useInternalPaginator] = true
+      ></ncats-frontend-library-ncats-datatable>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,10 @@ ARG BUILD_VERSION
 ARG NPM_TOKEN
 # Create app directory
 WORKDIR /var/www/app
+
+# Get all the code needed to run the app
+COPY --from=buildContainer /app/dist/ramp-client /app/dist/ramp-client
+
 # Bundle app source
 COPY ${SOURCE_FOLDER} .
 RUN apk update && apk upgrade && \
