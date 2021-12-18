@@ -20,6 +20,7 @@
         </a>
         <a
           mat-list-item
+          *ngIf="entityCounts"
           class="list-button"
           (click)="scroll(dataSources)"
           [ngClass]="{ active: isActive('dataSources') }"
@@ -27,6 +28,7 @@
         </a>
         <a
           mat-list-item
+          *ngIf="compoundsData?.length || genesData?.length"
           class="list-button"
           (click)="scroll(summaryStatistics)"
           [ngClass]="{ active: isActive('summaryStatistics') }"
@@ -83,8 +85,8 @@
             RaMP (Relational database of Metabolomic Pathways) is a
             multi-sourced integrated database with comprehensive pathway,
             chemical, and ontology annoations for genes, proteins, and
-            metabolites. Information within RaMP is harmonized from the
-            following data sources:
+            metabolites. <span *ngIf="sourceVersions?.length">Information within RaMP is harmonized from the
+            following data sources:</span>
           </p>
           <ul class="ramp-list">
             <li *ngFor="let version of sourceVersions">
@@ -218,8 +220,8 @@
         </div>
       </div>
     </div>
-    <div fxLayout="row" id="dataSources" #dataSources #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
+    <div fxLayout="row" id="dataSources" #dataSources #scrollSection >
+      <div fxFlex="75" fxFlex.lt-md="100" *ngIf="entityCounts">
         <div
           class="section-header"
           [ngClass]="{ active: isActive('dataSources') }"
@@ -242,7 +244,7 @@
       #summaryStatistics
       #scrollSection
     >
-      <div fxFlex="75" fxFlex.lt-md="100">
+      <div fxFlex="75" fxFlex.lt-md="100" *ngIf="compoundsData?.length || genesData?.length">
         <div
           class="section-header"
           [ngClass]="{ active: isActive('summaryStatistics') }"
@@ -262,7 +264,7 @@
                 [title]="'Metabolite Overlap'"
                 [data]="compoundsData"
                 scale="log"
-                *ngIf="compoundsData"
+                *ngIf="compoundsData && compoundsData.length > 0"
               >
               </ramp-upset>
             </div>
@@ -271,7 +273,7 @@
                 [title]="'Gene Overlap'"
                 [data]="genesData"
                 scale="log"
-                *ngIf="genesData"
+                *ngIf="genesData && genesData.length > 0"
               >
               </ramp-upset>
             </div>

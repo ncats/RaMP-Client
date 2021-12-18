@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import {Analyte, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
+import {Analyte, Metabolite, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
 import { RampEntity } from './ramp.models';
 
 export const init = createAction('[Ramp] Init');
@@ -66,18 +66,18 @@ export const loadAnalyteIntersectsFailure = createAction(
 );
 
 
-export const fetchMetabolitesFromOntology = createAction(
-  '[Ramp/API] fetchMetabolitesFromOntology',
-  props<{analytes: string[]}>()
+export const fetchMetabolitesFromOntologies = createAction(
+  '[Ramp/API] fetchMetabolitesFromOntologies',
+  props<{ontologies: string[]}>()
 );
 
-export const fetchMetabolitesFromOntologySuccess = createAction(
-  '[Ramp/API] fetchMetabolitesFromOntology Success',
-  props<{ rampStore: RampEntity[] }>()
+export const fetchMetabolitesFromOntologiesSuccess = createAction(
+  '[Ramp/API] fetchMetabolitesFromOntologies Success',
+  props<{ metabolites: Metabolite[] }>()
 );
 
-export const fetchMetaboliteFromOntologyFailure = createAction(
-  '[Ramp/API] Fetch Metabolite From Ontology Failure',
+export const fetchMetaboliteFromOntologiesFailure = createAction(
+  '[Ramp/API] Fetch Metabolite From Ontologies Failure',
   props<{ error: any }>()
 );
 
@@ -123,6 +123,36 @@ export const fetchPathwaysFromAnalytesSuccess = createAction(
 
 export const fetchPathwaysFromAnalytesFailure = createAction(
   '[Ramp/API] Fetch fetchPathwaysFromAnalytes Failure',
+  props<{ error: any }>()
+);
+
+export const fetchOntologyTypeahead = createAction(
+  '[Ramp/API] Fetch fetchOntologyTypeahead',
+  props<{term: string}>()
+);
+
+export const fetchOntologyTypeaheadSuccess = createAction(
+  '[Ramp/API] Fetch fetchOntologyTypeahead Success',
+  props<{ ontologies: any[]}>()
+);
+
+export const fetchOntologyTypeaheadFailure = createAction(
+  '[Ramp/API] Fetch fetchOntologyTypeahead Failure',
+  props<{ error: any }>()
+);
+
+export const fetchCommonReactionAnalytes = createAction(
+  '[Ramp/API] Fetch fetchCommonReactionAnalytes',
+  props<{analytes: string[]}>()
+);
+
+export const fetchCommonReactionAnalytesSuccess = createAction(
+  '[Ramp/API] Fetch fetchCommonReactionAnalytes Success',
+  props<{ reactions: any[]}>()
+);
+
+export const fetchCommonReactionAnalytesFailure = createAction(
+  '[Ramp/API] Fetch fetchCommonReactionAnalytes Failure',
   props<{ error: any }>()
 );
 

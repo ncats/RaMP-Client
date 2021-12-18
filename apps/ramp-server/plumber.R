@@ -18,6 +18,7 @@ cors <- function(req, res) {
   }
 }
 
+######## USED IN RAMP UI #############
 ######
 #* Return source version information
 #* @serializer unboxedJSON
@@ -43,6 +44,340 @@ function() {
     function_call="RaMP::getEntityCountsFromSourceDBs()"
   ))
 }
+
+### TIM FORMATTED
+#* Return analyte source intersects
+#* @param analytetype specifies type of analyte intersects to return, 'met' or 'gene'
+#* @get /api/analyte_intersects
+function(analytetype) {
+  response <- ""
+  if(!missing(analytetype)) {
+    if(analytetype == 'mets') {
+      response <- RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json')
+      function_call <- "RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json')"
+    } else {
+      response <- RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json')
+      function_call <- "RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json')"
+    }
+    # have to convert from JSON to avoid double serializing JSON
+    response <- jsonlite::fromJSON(response)
+  }
+  return(list(
+    data = response,
+    function_call= function_call
+  ))
+}
+
+#####TIM POST
+#* Return ontologies from list of metabolites
+#* @param metabolite
+#* @post /api/ontologies-from-metabolites
+function(metabolite="", type="biological") {
+  metabolites_ids <- c(metabolite)
+  ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
+  return(
+    list(
+      data = ontologies_df
+    )
+  )
+}
+
+#####
+#* Query: Return ontologies from list of metabolites
+#* @param metabolite
+#* @serializer unboxedJSON
+#* @get /api/ontologies-from-metabolites
+function(metabolite="", type="biological") {
+  metabolites_ids <- c(metabolite)
+  num_submitted_ids <- length(metabolites_ids)
+  #metabolites_ids <- sapply(metabolites_ids, shQuote)
+  metabolites_ids <- paste(metabolites_ids, collapse = ",")
+  #print(metabolites_ids)
+
+  if (type == "biological") {
+    ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
+  } else { # EM: this is a place holder although we could consider implementing only one type, or subsetting to the 7 different types (e.g. source, subcellular, etc)
+    ontologies_df <- NULL
+  }
+
+  # Reformat metabolites_ids for function call output:
+  metabolites_ids <- sapply(metabolite, shQuote)
+  metabolites_ids <- paste(metabolites_ids, collapse = ",")
+
+  if(is.null(ontologies_df)) {
+    return(
+      list(
+        temp=metabolites_ids,
+        num_submitted_ids = num_submitted_ids,
+        numFoundIds = 0,
+        data = vector(),
+        function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
+      )
+    )
+  } else {
+    return(
+      list(
+        temp=metabolites_ids,
+        num_submitted_ids = num_submitted_ids,
+        numFoundIds = length(unique(ontologies_df$sourceId)),
+        data = ontologies_df,
+        function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
+      )
+    )
+  }
+}
+
+#* Return metabolites from ontology
+#* @param ontology
+#* @serializer unboxedJSON
+#* @get /api/metabolites-from-ontologies
+function(ontology="") {
+  print(ontology)
+  ontologies_names <- c(ontology)
+  print(ontologies_names)
+  num_submitted_names <- length(ontologies_names)
+  #    ontologies_names <- sapply(ontologies_names, shQuote)
+  ontologies_names <- paste(ontologies_names, collapse = ",")
+
+  ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
+print(ontologies)
+  if (is.null(nrow(ontologies))) {
+    return(
+      list(
+        num_submitted_ids = num_submitted_names,
+        numFoundIds = 0,
+        data = vector(),
+        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+                               ontologies_names, "))")
+      )
+    )
+  }else {
+    return(
+      list(
+        num_submitted_ids = num_submitted_names,
+        numFoundIds = nrow(ontologies),
+        data = ontologies,
+        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+                               ontologies_names, "))")
+      )
+    )
+  }
+  #return(analytes_df)
+}
+
+####TIM POST
+#* Return metabolites from ontology
+#* @param ontology
+#* @post /api/metabolites-from-ontologies
+function(ontology="") {
+  print(ontology)
+  ontologies_names <- c(ontology)
+  print(ontologies_names)
+  num_submitted_names <- length(ontologies_names)
+  #    ontologies_names <- sapply(ontologies_names, shQuote)
+  ontologies_names <- paste(ontologies_names, collapse = ",")
+
+  ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
+
+  if (is.null(nrow(ontologies))) {
+    return(
+      list(
+        num_submitted_ids = num_submitted_names,
+        numFoundIds = 0,
+        data = vector(),
+        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+                               ontologies_names, "))")
+      )
+    )
+  }else {
+    return(
+      list(
+        num_submitted_ids = num_submitted_names,
+        numFoundIds = nrow(ontologies),
+        data = ontologies,
+        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+                               ontologies_names, "))")
+      )
+    )
+  }
+  #return(analytes_df)
+}
+
+##########
+#' Return analytes from given list of pathways
+#' @param pathway
+#' @param analyte_type
+#' @get /api/analytes-from-pathways
+function(pathway="", analyte_type="both") {
+  pathway <- c(pathway)
+  analyte <- analyte_type
+  print(pathway)
+  analytes_df <- tryCatch({
+    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+  },
+    error = function(cond) {
+      print(cond)
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  return(analytes_df)
+}
+
+##########TIM POST
+#' Return analytes from given list of pathways
+#' @param pathway
+#' @param analyte_type
+#' @post /api/analytes-from-pathways
+function(pathway="", analyte_type="both") {
+  print(pathway)
+  pathway <- c(pathway)
+  analyte <- analyte_type
+  print(pathway)
+  analytes_df <- tryCatch({
+    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+  },
+    error = function(cond) {
+      print(cond)
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  return(
+    list(
+      data = analytes_df
+    )
+  )
+}
+
+#####
+#' Return pathways from given list of analytes
+#' @param analyte
+#' @get /api/pathways-from-analytes
+function(analyte="") {
+  analytes <- c(analyte)
+  pathways_df_ids <- tryCatch({
+    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
+                                               NameOrIds = "ids"
+    )
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  pathways_df_names <- tryCatch({
+    pathways_df <- RaMP::getPathwayFromAnalyte(
+      analytes = analytes,
+      NameOrIds = "names"
+    )
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  pathways_df <- rbind(pathways_df_ids, pathways_df_names)
+  return(unique(pathways_df))
+}
+
+##### TIM POST
+#' Return pathways from given list of analytes
+#' @param analyte
+#' @post /api/pathways-from-analytes
+function(analyte="") {
+  analytes <- c(analyte)
+  pathways_df_ids <- tryCatch({
+    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
+                                               NameOrIds = "ids"
+    )
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  pathways_df_names <- tryCatch({
+    pathways_df <- RaMP::getPathwayFromAnalyte(
+      analytes = analytes,
+      NameOrIds = "names"
+    )
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  pathways_df <- rbind(pathways_df_ids, pathways_df_names)
+  return(
+    list(
+      data = unique(pathways_df)
+    )
+  )
+}
+
+
+####
+#' Return analytes involved in same reaction as given list of analytes
+#' @param analyte
+#' @get /api/common-reaction-analytes
+function(analyte="") {
+  analytes <- c(analyte)
+  analytes_df_ids <- tryCatch({
+    analytes_df <- RaMP::rampFastCata(
+      analytes = analytes,
+      NameOrIds = "ids"
+    )
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+
+  # Removing Capacity to search by name for now - EM 12/13/2021
+  #    analytes_df_names <- tryCatch({
+  #        analytes_df <- RaMP::rampFastCata(
+  #            analytes = analytes,
+  #            NameOrIds = "names"
+  #        )
+  #    },
+  #        error = function(cond) {
+  #            return(data.frame(stringsAsFactors = FALSE))
+  #        }
+  #    )
+  #    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
+  return(unique(analytes_df_ids))
+}
+
+####
+#' Return analytes involved in same reaction as given list of analytes
+#' @param analyte
+#' @post /api/common-reaction-analytes
+function(analyte="") {
+  analytes <- c(analyte)
+  analytes_names <- paste(analytes, collapse = ",")
+  analytes_df_ids <- tryCatch({
+    analytes_df <- RaMP::rampFastCata(
+      analytes = analytes,
+      NameOrIds = "ids"
+    )
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+
+  # Removing Capacity to search by name for now - EM 12/13/2021
+  #    analytes_df_names <- tryCatch({
+  #        analytes_df <- RaMP::rampFastCata(
+  #            analytes = analytes,
+  #            NameOrIds = "names"
+  #        )
+  #    },
+  #        error = function(cond) {
+  #            return(data.frame(stringsAsFactors = FALSE))
+  #        }
+  #    )
+  #    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
+  return(
+    list(
+      data = unique(analytes_df_ids),
+      function_call = paste0("RaMP::rampFastCata(", analytes_names ,"))")
+    )
+  )
+}
+
+
+
+
+
+########## NOT USED ########
 
 get_count_query <- function(
   data_source,
@@ -150,29 +485,6 @@ function() {
     response <- cached_intercepts
   )
   return(response)
-}
-
-### TIM FORMATTED
-#* Return analyte source intersects
-#* @param analytetype specifies type of analyte intersects to return, 'met' or 'gene'
-#* @get /api/analyte_intersects
-function(analytetype) {
-  response <- ""
-  if(!missing(analytetype)) {
-    if(analytetype == 'mets') {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json')
-      function_call <- "RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json')"
-    } else {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json')
-      function_call <- "RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json')"
-    }
-    # have to convert from JSON to avoid double serializing JSON
-    response <- jsonlite::fromJSON(response)
-  }
-  return(list(
-    data = response,
-    function_call= function_call
-  ))
 }
 
 ####
@@ -302,72 +614,16 @@ function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
   return(analytes)
 }
 
-#####TIM POST
-#* Return ontologies from list of metabolites
-#* @param metabolite
-#* @post /api/ontologies
-function(metabolite="", type="biological") {
-  metabolites_ids <- c(metabolite)
-  ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
-  return(
-    list(
-      data = ontologies_df
-    )
-  )
-}
-
-
-#####
-#* Query: Return ontologies from list of metabolites
-#* @param metabolite
-#* @serializer unboxedJSON
-#* @get /api/ontologies
-function(metabolite="", type="biological") {
-  metabolites_ids <- c(metabolite)
-  num_submitted_ids <- length(metabolites_ids)
-  #metabolites_ids <- sapply(metabolites_ids, shQuote)
-  metabolites_ids <- paste(metabolites_ids, collapse = ",")
-  #print(metabolites_ids)
-
-  if (type == "biological") {
-    ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
-  } else { # EM: this is a place holder although we could consider implementing only one type, or subsetting to the 7 different types (e.g. source, subcellular, etc)
-    ontologies_df <- NULL
-  }
-
-  # Reformat metabolites_ids for function call output:
-  metabolites_ids <- sapply(metabolite, shQuote)
-  metabolites_ids <- paste(metabolites_ids, collapse = ",")
-
-  if(is.null(ontologies_df)) {
-    return(
-      list(
-        temp=metabolites_ids,
-        num_submitted_ids = num_submitted_ids,
-        numFoundIds = 0,
-        data = vector(),
-        function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
-      )
-    )
-  } else {
-    return(
-      list(
-        temp=metabolites_ids,
-        num_submitted_ids = num_submitted_ids,
-        numFoundIds = length(unique(ontologies_df$sourceId)),
-        data = ontologies_df,
-        function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
-      )
-    )
-  }
-}
 
 #####
 #* Return all types of ontologies present in RaMP-DB
+#' @param term
 #* @serializer unboxedJSON
 #* @get /api/ontology-types
-function(contains="") {
-  ontologies <- getOntologies()
+function(term="") {
+print(term);
+  ontologies <- RaMP::getOntologies()
+  print(ontologies)
   ontologies <- list(
     num_ontology_types = length(unique(ontologies$HMDBOntologyType)),
     uniq_ontology_types = unique(ontologies$HMDBOntologyType),
@@ -378,142 +634,8 @@ function(contains="") {
 }
 
 
-#* Return metabolites from ontology
-#* @param ontology
-#* @serializer unboxedJSON
-#* @get /api/get-metabolites-from-ontologies
-function(ontology="") {
-  ontologies_names <- c(ontology)
-  num_submitted_names <- length(ontologies_names)
-  #    ontologies_names <- sapply(ontologies_names, shQuote)
-  ontologies_names <- paste(ontologies_names, collapse = ",")
 
-  ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
 
-  if (is.null(nrow(ontologies))) {
-    return(
-      list(
-        num_submitted_ids = num_submitted_names,
-        numFoundIds = 0,
-        data = vector(),
-        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                               ontologies_names, "))")
-      )
-    )
-  }else {
-    return(
-      list(
-        num_submitted_ids = num_submitted_names,
-        numFoundIds = nrow(ontologies),
-        data = ontologies,
-        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                               ontologies_names, "))")
-      )
-    )
-  }
-  #return(analytes_df)
-}
-
-##########
-#' Return analytes from given list of pathways
-#' @param pathway
-#' @param analyte_type
-#' @get /api/analytes
-function(pathway="", analyte_type="both") {
-  pathway <- c(pathway)
-  analyte <- analyte_type
-  print(pathway)
-  analytes_df <- tryCatch({
-    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  return(analytes_df)
-}
-
-##########TIM POST
-#' Return analytes from given list of pathways
-#' @param pathway
-#' @param analyte_type
-#' @post /api/analytes-from-pathways
-function(pathway="", analyte_type="both") {
-  print(pathway)
-  pathway <- c(pathway)
-  analyte <- analyte_type
-  print(pathway)
-  analytes_df <- tryCatch({
-    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  return(
-    list(
-      data = analytes_df
-    )
-  )
-}
-
-#####
-#' Return pathways from given list of analytes
-#' @param analyte
-#' @get /api/pathways
-function(analyte="") {
-  analytes <- c(analyte)
-  pathways_df_ids <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
-                                               NameOrIds = "ids"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  pathways_df_names <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(
-      analytes = analytes,
-      NameOrIds = "names"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  pathways_df <- rbind(pathways_df_ids, pathways_df_names)
-  return(unique(pathways_df))
-}
-
-##### TIM POST
-#' Return pathways from given list of analytes
-#' @param analyte
-#' @post /api/pathways-from-analytes
-function(analyte="") {
-  analytes <- c(analyte)
-  pathways_df_ids <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
-                                               NameOrIds = "ids"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  pathways_df_names <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(
-      analytes = analytes,
-      NameOrIds = "names"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  pathways_df <- rbind(pathways_df_ids, pathways_df_names)
-  return(
-    list(
-      data = unique(pathways_df)
-    )
-  )
-}
 
 #####
 #' Return combined Fisher's test results
@@ -613,37 +735,6 @@ function(
   )
 
   return(response)
-}
-
-####
-#' Return analytes involved in same reaction as given list of analytes
-#' @param analyte
-#' @get /api/common-reaction-analytes
-function(analyte="") {
-  analytes <- c(analyte)
-  analytes_df_ids <- tryCatch({
-    analytes_df <- RaMP::rampFastCata(
-      analytes = analytes,
-      NameOrIds = "ids"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-
-  # Removing Capacity to search by name for now - EM 12/13/2021
-  #    analytes_df_names <- tryCatch({
-  #        analytes_df <- RaMP::rampFastCata(
-  #            analytes = analytes,
-  #            NameOrIds = "names"
-  #        )
-  #    },
-  #        error = function(cond) {
-  #            return(data.frame(stringsAsFactors = FALSE))
-  #        }
-  #    )
-  #    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
-  return(unique(analytes_df_ids))
 }
 
 #####

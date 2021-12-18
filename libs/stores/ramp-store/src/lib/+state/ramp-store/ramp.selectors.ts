@@ -65,6 +65,11 @@ export const getOntologies = createSelector(
   (state: State) => state.ontologies
 );
 
+export const getOntologiesTypeahead = createSelector(
+  getRampState,
+  (state: State) => state.ontologiesTypeahead
+);
+
 export const getAnalytes = createSelector(
   getRampState,
   (state: State) => state.analytes
@@ -73,4 +78,14 @@ export const getAnalytes = createSelector(
 export const getPathways = createSelector(
   getRampState,
   (state: State) => state.pathways
+);
+
+export const getMetabolites = createSelector(
+  getRampState,
+  (state: State) => state.metabolites
+);
+
+export const getCommonReactions = createSelector(
+  getRampState,
+  (state: State) => state.reactions
 );

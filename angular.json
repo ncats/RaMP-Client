@@ -53,17 +53,19 @@
       },
       "tags": ["libs:common-reaction-analytes"]
     },
-    "features-ramp-ontologies": {
+    "features-ramp-metabolites-from-ontologies": {
       "projectType": "library",
-      "root": "libs/features/ramp/ontologies",
-      "sourceRoot": "libs/features/ramp/ontologies/src",
+      "root": "libs/features/ramp/metabolites-from-ontologies",
+      "sourceRoot": "libs/features/ramp/metabolites-from-ontologies/src",
       "prefix": "ramp",
       "architect": {
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/features/ramp/ontologies"],
+          "outputs": [
+            "coverage/libs/features/ramp/metabolites-from-ontologies"
+          ],
           "options": {
-            "jestConfig": "libs/features/ramp/ontologies/jest.config.js",
+            "jestConfig": "libs/features/ramp/metabolites-from-ontologies/jest.config.js",
             "passWithNoTests": true
           }
         },
@@ -71,8 +73,34 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": [
-              "libs/features/ramp/ontologies/src/**/*.ts",
-              "libs/features/ramp/ontologies/src/**/*.html"
+              "libs/features/ramp/metabolites-from-ontologies/src/**/*.ts",
+              "libs/features/ramp/metabolites-from-ontologies/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "features-ramp-ontologies": {
+      "projectType": "library",
+      "root": "libs/features/ramp/ontologies-from-metabolites",
+      "sourceRoot": "libs/features/ramp/ontologies-from-metabolites/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/ontologies-from-metabolites"],
+          "options": {
+            "jestConfig": "libs/features/ramp/ontologies-from-metabolites/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/ontologies-from-metabolites/src/**/*.ts",
+              "libs/features/ramp/ontologies-from-metabolites/src/**/*.html"
             ]
           }
         }

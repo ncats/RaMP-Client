@@ -1,6 +1,6 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
-import {Analyte, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
+import {Analyte, Metabolite, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
 
 import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
@@ -18,6 +18,9 @@ export interface State extends EntityState<RampEntity> {
   ontologies?: Ontology[];
   analytes?: Analyte[];
   pathways?: Pathway[];
+  metabolites?: Metabolite[];
+  ontologiesTypeahead?: any[];
+  reactions?: any[];
 }
 
 export interface RampPartialState {
@@ -48,6 +51,8 @@ const rampReducer = createReducer(
     RampActions.fetchOntologiesFromMetabolites,
     RampActions.fetchAnalytesFromPathways,
     RampActions.fetchPathwaysFromAnalytes,
+    RampActions.fetchMetabolitesFromOntologies,
+    RampActions.fetchCommonReactionAnalytes,
     (state) => ({
     ...state,
       loading: true,
@@ -77,11 +82,23 @@ on(RampActions.fetchAnalytesFromPathwaysSuccess, (state, { analytes }) =>
 on(RampActions.fetchPathwaysFromAnalytesSuccess, (state, { pathways }) =>
     ({...state, loading: false,  pathways: pathways})),
 
+  on(RampActions.fetchMetabolitesFromOntologiesSuccess, (state, { metabolites }) =>
+    ({...state, loading: false,  metabolites: metabolites})),
+
+  on(RampActions.fetchOntologyTypeaheadSuccess, (state, { ontologies }) =>
+    ({...state, loading: false,  ontologiesTypeahead: ontologies})),
+
+ on(RampActions.fetchCommonReactionAnalytesSuccess, (state, { reactions }) =>
+    ({...state, loading: false,  reactions: reactions})),
+
   on(
     RampActions.loadRampFailure,
     RampActions.loadRampAboutFailure,
     RampActions.loadSourceVersionsFailure,
     RampActions.fetchOntologiesFromMetabolitesFailure,
+    RampActions.fetchMetaboliteFromOntologiesFailure,
+    RampActions.fetchOntologyTypeaheadFailure,
+    RampActions.fetchCommonReactionAnalytesFailure,
     (state, { error }) => ({
       ...state,
       loading: false,

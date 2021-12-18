@@ -23,11 +23,11 @@ export class OntologySearchComponent extends QueryPageComponent implements OnIni
 
   ontologyRaw!: Ontology[];
   ontologyColumns: DataProperty[] = [
-    new DataProperty({
+/*    new DataProperty({
       label: "ID Type",
       field: "idType",
       sortable: true
-    }),
+    }),*/
     new DataProperty({
       label: "Metabolites",
       field: "metabolites",

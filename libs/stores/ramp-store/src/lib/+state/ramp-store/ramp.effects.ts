@@ -54,6 +54,34 @@ export class RampEffects {
     )
   )
 
+fetchMetabolitesFromOntologies = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchMetabolitesFromOntologies),
+      mergeMap((action) =>
+        this.rampService.fetchMetabolitesFromOntologies(action.ontologies)
+          .pipe(
+            map((ret: any[]) => RampActions.fetchMetabolitesFromOntologiesSuccess({ metabolites: ret }),
+              catchError((error:ErrorEvent) => of(RampActions.fetchMetaboliteFromOntologiesFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
+  ontologiesTypeahead = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchOntologyTypeahead),
+      mergeMap((action) =>
+        this.rampService.fetchOntologies(action.term)
+          .pipe(
+            map((ret: any[]) => RampActions.fetchOntologyTypeaheadSuccess({ ontologies: ret }),
+              catchError((error:ErrorEvent) => of(RampActions.fetchOntologyTypeaheadFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
   fetchAnalytesFromPathways = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchAnalytesFromPathways),
@@ -81,6 +109,21 @@ fetchPathwaysFromAnalytes = createEffect(() =>
       )
     )
   )
+
+  fetchCommonReactionAnalytes = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchCommonReactionAnalytes),
+      mergeMap((action) =>
+        this.rampService.fetchCommonReactionAnalytes(action.analytes)
+          .pipe(
+            map((ret: any[]) => RampActions.fetchCommonReactionAnalytesSuccess({ reactions: ret }),
+              catchError((error:ErrorEvent) => of(RampActions.fetchCommonReactionAnalytesFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
 
   constructor(
     private readonly actions$: Actions,

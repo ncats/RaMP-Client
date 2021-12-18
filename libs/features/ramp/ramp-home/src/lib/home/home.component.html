@@ -6,7 +6,7 @@
       </div>
       <div fxLayout="row" fxLayoutAlign="space-around start">
       <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/analytes-from-pathways'">Analytes <br> from <br> Pathways</mat-card>
-      <mat-card class = "ramp-tile" fxFlex=20>Pathways <br> from <br> Analytes</mat-card>
+      <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/pathways-from-analytes'">Pathways <br> from <br> Analytes</mat-card>
       <mat-card class = "ramp-tile" fxFlex=20>Common <br> Reaction <br> Analytes</mat-card>
         </div>
       </div>
@@ -30,8 +30,8 @@
         <h2>Ontologies</h2>
       </div>
       <div fxLayout="row" fxLayoutAlign="space-around start">
-        <mat-card class = "ramp-tile" fxFlex=20>Analytes <br> from <br> Pathways</mat-card>
-        <mat-card class = "ramp-tile" fxFlex=20>Pathways <br> from <br> Analytes</mat-card>
+        <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/ontologies-from-metabolites'">Ontologies <br> from <br> Metabolites</mat-card>
+        <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/metabolites-from-ontologies'">Metabolites <br> from <br> Ontologies</mat-card>
         </div>
       </div>
   </div>

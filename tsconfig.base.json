@@ -21,8 +21,11 @@
       "@ramp/features/ramp/common-reaction-analytes": [
         "libs/features/ramp/common-reaction-analytes/src/index.ts"
       ],
-      "@ramp/features/ramp/ontologies": [
-        "libs/features/ramp/ontologies/src/index.ts"
+      "@ramp/features/ramp/metabolites-from-ontologies": [
+        "libs/features/ramp/metabolites-from-ontologies/src/index.ts"
+      ],
+      "@ramp/features/ramp/ontologies-from-metabolites": [
+        "libs/features/ramp/ontologies-from-metabolites/src/index.ts"
       ],
       "@ramp/features/ramp/pathways-from-analytes": [
         "libs/features/ramp/pathways-from-analytes/src/index.ts"

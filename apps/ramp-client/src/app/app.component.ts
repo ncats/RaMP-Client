@@ -57,12 +57,12 @@ export class AppComponent implements OnInit {
       link: "Ontologies",
       children: [
         {
-          link: "ontologies",
-          label: "Pathway Enrichment Analysis"
+          link: "ontologies-from-metabolites",
+          label: "Ontologies from Metabolites"
         },
         {
-          link: "chemical-analysis",
-          label: "Chemical Analysis"
+          link: "metabolites-from-ontologies",
+          label: "Metabolites from Ontologies"
         }
       ]
     },

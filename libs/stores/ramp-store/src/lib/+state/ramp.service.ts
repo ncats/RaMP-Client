@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Analyte, EntityCount, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
-import {HttpClient} from '@angular/common/http';
+import {Analyte, EntityCount, Ontology, Pathway, Reaction, SourceVersion} from "@ramp/models/ramp-models";
+import {HttpClient, HttpParamsOptions} from '@angular/common/http';
 import {forkJoin, Observable, of} from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 @Injectable({
@@ -54,43 +54,50 @@ export class RampService {
         catchError(this.handleError('fetchAnalyteIntersects', []))
       );
   }
-/*
-  fetchAnalyteIntersects() {
-    return this.http
-      .get(`${this.url}analyte_intersects`) // ,{responseType: 'text'})
-      .pipe(
-        map((response) => {
-          const ret = { compounds: [], genes: [] };
-          Object.keys(response).map(
-            (key: string) =>
-              //todo: fix the ts-ignore
-              // @ts-ignore
-              (ret[key] = response[key].map((val, i) => {
-                val.id = i;
-                if (typeof val.sets === 'string') {
-                  val.sets = [val.sets];
-                }
-                return val;
-              }))
-          );
-          return response;
-        }),
-        catchError(this.handleError('fetchAnalyteIntersects', []))
-      );
-  }
-*/
 
   fetchOntologiesFromMetabolites(analytes: string[]) {
     const options = {
         metabolite: analytes
     };
     return this.http
-      .post<string[]>(`${this.url}ontologies`,  options) // ,{responseType: 'text'})
+      .post<string[]>(`${this.url}ontologies-from-metabolites`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
           return response.data.map((obj: any) => new Ontology(obj))
         }),
         catchError(this.handleError('ontologies', []))
+      );
+  }
+
+  fetchMetabolitesFromOntologies(ontologies: string[]) {
+    const options = {
+      ontology: ontologies
+    };
+    return this.http
+      .post<string[]>(`${this.url}metabolites-from-ontologies`,  options) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          return response.data.map((obj: any) => new Ontology(obj))
+        }),
+        catchError(this.handleError('ontologies', []))
+      );
+  }
+
+  fetchOntologies(term: string) {
+    console.log(term);
+    const options = {
+      params: {
+        term: term
+      }
+    };
+    return this.http
+      .get<string[]>(`${this.url}ontology-types`,  options) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          console.log(response);
+          return response.data //.map((obj: any) => new Pathway(obj))
+        }),
+        catchError(this.handleError('pathways from analytes', []))
       );
   }
 
@@ -121,6 +128,22 @@ export class RampService {
         catchError(this.handleError('pathways from analytes', []))
       );
   }
+
+fetchCommonReactionAnalytes(analytes: string[]) {
+    const options = {
+        analyte: analytes
+    };
+    return this.http
+      .post<string[]>(`${this.url}common-reaction-analytes`,  options) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          console.log(response)
+          return response.data.map((obj: any) => new Reaction(obj))
+        }),
+        catchError(this.handleError('common reaction analytes', []))
+      );
+  }
+
 
   /**
    * Handle Http operation that failed.

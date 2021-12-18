@@ -1,12 +1,11 @@
 import {ScrollDispatcher} from '@angular/cdk/overlay';
-import {HttpClient} from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   OnInit,
-  QueryList, SimpleChanges,
+  QueryList,
   ViewChildren,
 } from '@angular/core';
 import {EntityCount, SourceVersion} from "@ramp/models/ramp-models";
@@ -17,7 +16,8 @@ import {tap} from "rxjs";
 @Component({
   selector: 'ramp-about',
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss']
+  styleUrls: ['./about.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutComponent implements OnInit {
   @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
@@ -28,8 +28,8 @@ export class AboutComponent implements OnInit {
    */
   activeElement = 'about';
 
-  genesData: any;
-  compoundsData: any;
+  genesData!: any[];
+  compoundsData!: any[];
   apiBaseUrl = 'https://ramp-api-alpha.ncats.io/api/';
   sourceVersions!: Array<SourceVersion>;
   entityCounts!: EntityCount[];
@@ -84,31 +84,26 @@ export class AboutComponent implements OnInit {
       tap(data => {
         if(data.sourceVersions) {
           this.sourceVersions = data.sourceVersions;
+          this.changeDetector.markForCheck();
         }
-        if(data.entityCounts && data.entityCounts.length) {
+        if(data.entityCounts) {
           this.entityCounts = data.entityCounts.map((count: { [s: string]: unknown; } | ArrayLike<unknown>) => {
-            const newObj: {[key: string]: any} = {};
-            Object.entries(count).map((value: any, index: any) => {
+            const newObj: {[key: string]: DataProperty} = {};
+            Object.entries(count).map((value: any) => {
               newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
             });
             return newObj;
           });
+          this.changeDetector.markForCheck();
         }
         if(data.geneIntersects) {
           this.genesData = data.geneIntersects;
+          this.changeDetector.markForCheck();
         }
         if(data.metaboliteIntersects){
           this.compoundsData = data.metaboliteIntersects;
+          this.changeDetector.markForCheck();
         }
-      }
-    )
-    ).subscribe()
-
-    this.rampFacade.sourceVersions$.pipe(
-      tap(versions => {
-      if (versions?.length) {
-        this.sourceVersions = versions;
-      }
       }
     )
     ).subscribe()

@@ -31,15 +31,27 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'ontologies',
+    path: 'ontologies-from-metabolites',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
-      import('@ramp/features/ramp/ontologies').then(
+      import('@ramp/features/ramp/ontologies-from-metabolites').then(
         (m) => m.FeaturesRampOntologiesModule
       ),
     data: {
      ...rFunctions.ontologies
+    }
+  },
+  {
+    path: 'metabolites-from-ontologies',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/metabolites-from-ontologies').then(
+        (m) => m.FeaturesRampMetabolitesFromOntologiesModule
+      ),
+    data: {
+     ...rFunctions["metabolites-from-ontologies"]
     }
   },
   {
@@ -64,6 +76,18 @@ const routes: Routes = [
       ),
     data: {
      ...rFunctions["pathways-from-analytes"]
+    }
+  },
+  {
+    path: 'common-reaction-analytes',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/common-reaction-analytes').then(
+        (m) => m.FeaturesRampCommonReactionAnalytesModule
+      ),
+    data: {
+     ...rFunctions["common-reaction-analytes"]
     }
   }
   //,
