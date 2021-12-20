@@ -140,7 +140,6 @@ function(ontology="") {
   ontologies_names <- paste(ontologies_names, collapse = ",")
 
   ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
-print(ontologies)
   if (is.null(nrow(ontologies))) {
     return(
       list(
@@ -170,12 +169,9 @@ print(ontologies)
 #* @param ontology
 #* @post /api/metabolites-from-ontologies
 function(ontology="") {
-  print(ontology)
-  ontologies_names <- c(ontology)
-  print(ontologies_names)
-  num_submitted_names <- length(ontologies_names)
-  #    ontologies_names <- sapply(ontologies_names, shQuote)
-  ontologies_names <- paste(ontologies_names, collapse = ",")
+  ontology = gsub(" ", "", ontology)
+  ontologies_names <- ontology
+  num_submitted_names <- length(unlist(strsplit(ontology,",")))
 
   ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
 
@@ -379,113 +375,6 @@ function(analyte="") {
 
 ########## NOT USED ########
 
-get_count_query <- function(
-  data_source,
-  analyte_type
-) {
-  data_source_string <- sapply(data_source, shQuote)
-  data_source_string <- paste(data_source_string, collapse = ",")
-
-  conditions <- ""
-
-  for (d_source in data_source) {
-    base_condition <- paste0(
-      "and EXISTS (",
-      "select s.rampId ",
-      "from source as s ",
-      "where a.rampId = s.rampId ",
-      "and s.dataSource like '%", d_source, "') "
-    )
-
-    conditions <- paste0(conditions, base_condition)
-  }
-  query <- paste0(
-    "select ",
-    data_source_string, " as sources, ",
-    "count(a.rampId) as count ",
-    "from analyte as a ",
-    "where a.type = '", analyte_type, "' ",
-    "and ", length(data_source), " = (",
-    "select count(distinct dataSource) ",
-    "from (",
-    "select ",
-    "s.rampId, ",
-    "case when s.dataSource like '%kegg' then 'kegg' ",
-    "else s.dataSource ",
-    "end as dataSource ",
-    "from source as s ",
-    ") dsc ",
-    "where a.rampId = dsc.rampId ",
-    ") ",
-    conditions
-  )
-  return(query)
-}
-
-get_data_source_intercepts <- function() {
-  con <- RaMP::connectToRaMP()
-
-  tryCatch({
-    analyte_types <- c("compound", "gene")
-    data_sources <- c("reactome", "hmdb", "wiki", "kegg")
-
-
-    response <- list()
-
-    for (analyte_type in analyte_types) {
-
-      intersects <- list()
-
-      data_sources_range <- 1:length(data_sources)
-
-      index <- 1
-      for (range_item in data_sources_range) {
-        combination <- combn(data_sources, range_item)
-        for (i in 1:ncol(combination)) {
-          data_source <- combination[, i]
-          query <- get_count_query(data_source, analyte_type)
-          query_result <- DBI::dbGetQuery(con, query)
-          count <- 0
-          if (nrow(query_result) > 0) {
-            count <- query_result$count
-          }
-          intersects[[index]] <- list(
-            sets = c(toupper(data_source)), size = count
-          )
-          index <- index + 1
-        }
-      }
-      key <- paste0(analyte_type, "s")
-      response[key] <- list(intersects)
-    }
-    return(response)
-  },
-    error = function(error) {
-      print("error")
-      print(error)
-      return("")
-    },
-    finally = {
-      DBI::dbDisconnect(con)
-    })
-}
-
-
-#* Return analyte source intersects
-#* @serializer unboxedJSON
-#* @get /api/analyte_intersects_cache
-function() {
-  key <- list(2.0, 3.0)
-  cached_intercepts <- loadCache(key)
-
-  if (is.null(cached_intercepts)) {
-    response <- get_data_source_intercepts()
-    saveCache(response, key = key)
-  } else (
-    response <- cached_intercepts
-  )
-  return(response)
-}
 
 ####
 #* Return analyte ID types
