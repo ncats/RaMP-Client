@@ -1,5 +1,14 @@
 import { createAction, props } from '@ngrx/store';
-import {Analyte, Metabolite, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
+import {
+  Analyte,
+  Classes,
+  Metabolite,
+  Ontology,
+  Pathway,
+  Properties,
+  Reaction,
+  SourceVersion
+} from "@ramp/models/ramp-models";
 import { RampEntity } from './ramp.models';
 
 export const init = createAction('[Ramp] Init');
@@ -148,11 +157,69 @@ export const fetchCommonReactionAnalytes = createAction(
 
 export const fetchCommonReactionAnalytesSuccess = createAction(
   '[Ramp/API] Fetch fetchCommonReactionAnalytes Success',
-  props<{ reactions: any[]}>()
+  props<{ reactions: Reaction[]}>()
 );
 
 export const fetchCommonReactionAnalytesFailure = createAction(
   '[Ramp/API] Fetch fetchCommonReactionAnalytes Failure',
+  props<{ error: any }>()
+);
+
+export const fetchClassesFromMetabolites = createAction(
+  '[Ramp/API] Fetch fetchClassesFromMetabolites',
+  props<{metabolites: string[]}>()
+);
+
+export const fetchClassesFromMetabolitesSuccess = createAction(
+  '[Ramp/API] Fetch fetchClassesFromMetabolites Success',
+  props<{ classes: Classes[]}>()
+);
+
+export const fetchClassesFromMetabolitesFailure = createAction(
+  '[Ramp/API] Fetch fetchClassesFromMetabolites Failure',
+  props<{ error: any }>()
+);
+
+export const fetchPropertiesFromMetabolites = createAction(
+  '[Ramp/API] Fetch fetchPropertiesFromMetabolites',
+  props<{metabolites: string[]}>()
+);
+
+export const fetchPropertiesFromMetabolitesSuccess = createAction(
+  '[Ramp/API] Fetch fetchPropertiesFromMetabolites Success',
+  props<{ properties: Properties[]}>()
+);
+
+export const fetchPropertiesFromMetabolitesFailure = createAction(
+  '[Ramp/API] Fetch fetchPropertiesFromMetabolites Failure',
+  props<{ error: any }>()
+);
+export const fetchEnrichmentFromAnalytes = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromAnalytes',
+  props<{analytes: string[]}>()
+);
+
+export const fetchEnrichmentFromAnalytesSuccess = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromAnalytes Success',
+  props<{ chemicalEnrichments: any}>()
+);
+
+export const fetchEnrichmentFromAnalytesFailure = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromAnalytes Failure',
+  props<{ error: any }>()
+);
+export const fetchEnrichmentFromPathways = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromPathways',
+  props<{pathways: string[]}>()
+);
+
+export const fetchEnrichmentFromPathwaysSuccess = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromPathways Success',
+  props<{ pathwayEnrichments: any}>()
+);
+
+export const fetchEnrichmentFromPathwaysFailure = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromPathways Failure',
   props<{ error: any }>()
 );
 

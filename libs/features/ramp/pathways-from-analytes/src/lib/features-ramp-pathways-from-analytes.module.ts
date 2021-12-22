@@ -7,6 +7,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {RouterModule, Routes} from "@angular/router";
 import {SharedNcatsDataDownloadModule} from "@ramp/shared/ncats/data-download";
+import {SharedRampQueryPageModule} from "@ramp/shared/ramp/query-page";
 import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
 import {SharedUiNcatsDatatableModule} from "@ramp/shared/ui/ncats-datatable";
 import { PathwaysFromAnalytesComponent } from './pathways-from-analytes/pathways-from-analytes.component';
@@ -22,15 +23,7 @@ const ROUTES: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(ROUTES),
-    ReactiveFormsModule,
-    FormsModule,
-    SharedUiNcatsDatatableModule,
-    SharedNcatsDataDownloadModule,
-    SharedUiDescriptionPanelModule,
-    FlexLayoutModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule
+    SharedRampQueryPageModule
   ],
   declarations: [
     PathwaysFromAnalytesComponent

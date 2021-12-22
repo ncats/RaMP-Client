@@ -124,6 +124,75 @@ fetchPathwaysFromAnalytes = createEffect(() =>
     )
   )
 
+  fetchClassesFromMetabolites = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchClassesFromMetabolites),
+      mergeMap((action) =>
+        this.rampService.fetchChemicalClass(action.metabolites)
+          .pipe(
+            map((ret: any) => {
+                console.log(ret);
+                return RampActions.fetchClassesFromMetabolitesSuccess({ classes: ret })
+              },
+              catchError((error:ErrorEvent) => of(RampActions.fetchClassesFromMetabolitesFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
+
+  fetchPropertiesFromMetabolites = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchPropertiesFromMetabolites),
+      mergeMap((action) =>
+        this.rampService.fetchChemicalProperties(action.metabolites)
+          .pipe(
+            map((ret: any) => {
+             return RampActions.fetchPropertiesFromMetabolitesSuccess({ properties: ret })
+              },
+              catchError((error:ErrorEvent) => of(RampActions.fetchPropertiesFromMetabolitesFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
+fetchChemicalAnalysis = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchEnrichmentFromAnalytes),
+      mergeMap((action) =>
+        this.rampService.fetchEnrichmentFromAnalytes(action.analytes)
+          .pipe(
+            map((ret: any) => {
+              console.log(ret);
+             return RampActions.fetchEnrichmentFromAnalytesSuccess({ chemicalEnrichments: ret })
+              },
+              catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromAnalytesFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
+fetchPathwayAnalysis = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchEnrichmentFromPathways),
+      mergeMap((action) =>
+        this.rampService.fetchEnrichmentFromPathways(action.pathways)
+          .pipe(
+            map((ret: any) => {
+              console.log(ret);
+             return RampActions.fetchEnrichmentFromPathwaysSuccess({ pathwayEnrichments: ret })
+              },
+              catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromPathwaysFailure({error})))
+            )
+          )
+      )
+    )
+  )
+
+
 
   constructor(
     private readonly actions$: Actions,

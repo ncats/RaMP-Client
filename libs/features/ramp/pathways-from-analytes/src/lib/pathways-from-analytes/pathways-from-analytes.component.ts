@@ -11,7 +11,7 @@ import {fetchPathwaysFromAnalytes, RampFacade} from "@ramp/stores/ramp-store";
   templateUrl: './pathways-from-analytes.component.html',
   styleUrls: ['./pathways-from-analytes.component.scss']
 })
-export class PathwaysFromAnalytesComponent extends QueryPageComponent implements OnInit {
+export class PathwaysFromAnalytesComponent implements OnInit {
   pathwayRaw!: Pathway[];
   pathwayColumns: DataProperty[] = [
     new DataProperty({
@@ -35,19 +35,17 @@ export class PathwaysFromAnalytesComponent extends QueryPageComponent implements
       sortable: true
     }),
   ]
+  matches = 0;
+  dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
-    route: ActivatedRoute,
-    sanitizer: DomSanitizer,
     private ref: ChangeDetectorRef,
     private rampFacade: RampFacade
 ) {
-    super(route, sanitizer);
   }
 
 
   ngOnInit(): void {
-    super.ngOnInit();
 
     this.rampFacade.pathways$.subscribe((res: Pathway[] | undefined) => {
       if (res && res.length) {
@@ -65,8 +63,7 @@ export class PathwaysFromAnalytesComponent extends QueryPageComponent implements
     })
   }
 
-  fetchPathways(): void {
-    this.parseInput();
-    this.rampFacade.dispatch(fetchPathwaysFromAnalytes({analytes: this.retArr}))
+  fetchPathways(event: string[]): void {
+    this.rampFacade.dispatch(fetchPathwaysFromAnalytes({analytes: event}))
   }
 }

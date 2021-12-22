@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import  rFunctions from '../assets/data/rFunctions.json';
+import {environment} from "../environments/environment";
 
 const routes: Routes = [
   {
@@ -89,68 +90,56 @@ const routes: Routes = [
     data: {
      ...rFunctions["common-reaction-analytes"]
     }
+  },
+  {
+    path: 'classes-from-metabolites',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/classes-from-metabolites').then(
+        (m) => m.FeaturesRampClassesFromMetabolitesModule
+      ),
+    data: {
+     ...rFunctions["classes-from-metabolites"]
+    }
+  },
+  {
+    path: 'properties-from-metabolites',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/properties-from-metabolites').then(
+        (m) => m.FeaturesRampPropertiesFromMetabolitesModule
+      ),
+    data: {
+     ...rFunctions["properties-from-metabolites"],
+      renderUrl: environment.rendererUrl
+    }
+  },
+  {
+    path: 'chemical-enrichment',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/chemical-enrichment').then(
+        (m) => m.FeaturesRampChemicalEnrichmentModule
+      ),
+    data: {
+     ...rFunctions["chemical-enrichment"]
+    }
+  },
+  {
+    path: 'pathway-enrichment',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/pathway-enrichment').then(
+        (m) => m.FeaturesRampPathwayEnrichmentModule
+      ),
+    data: {
+     ...rFunctions["pathway-enrichment"]
+    }
   }
-  //,
-/*  {
-    path: 'pathway-enrichment-analysis',
-    component: PathwayEnrichmentAnalysisComponent,
-    data: {
-      id: 'pea',
-      display: 'Pathway enrichment analysis',
-      order: 2,
-      isMainNav: true,
-    },
-  },
-  {
-    path: 'analytes-from-pathways',
-    component: AnalytesFromPathwayComponent,
-    data: {
-      id: 'afp',
-      display: 'Analytes from pathways',
-      order: 3,
-      isMainNav: true,
-    },
-  },
-  {
-    path: 'pathways-from-analytes',
-    component: PathwaysFromAnalytesComponent,
-    data: {
-      id: 'pfa',
-      display: 'Pathways from analytes',
-      order: 4,
-      isMainNav: true,
-    },
-  },
-  {
-    path: 'common-reaction-analytes',
-    component: CommonReactionAnalytesComponent,
-    data: {
-      id: 'cra',
-      display: 'Common reaction analytes',
-      order: 5,
-      isMainNav: true,
-    },
-  },
-  {
-    path: 'ontologies',
-    component: OntologiesComponent,
-    data: {
-      id: 'ontologies',
-      display: 'Ontologies',
-      order: 6,
-      isMainNav: true,
-    },
-  },
-  {
-    path: 'chemical-analysis',
-    component: ChemicalAnalysisComponent,
-    data: {
-      id: 'chemicalAnalysis',
-      display: 'Chemical Analysis',
-      order: 7,
-      isMainNav: true,
-    },
-  },*/
 ];
 
 @NgModule({

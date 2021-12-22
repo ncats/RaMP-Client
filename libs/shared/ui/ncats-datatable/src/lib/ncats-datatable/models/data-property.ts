@@ -85,6 +85,7 @@ export class DataProperty {
    * @param data
    */
   constructor(data?: any) {
+
     Object.assign(this, data);
     if (!this.field) {
       this.field = data.label;

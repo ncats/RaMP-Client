@@ -41,15 +41,27 @@ export class AppComponent implements OnInit {
       ]
     },
     {
+      link: "Chemical Properties",
+      children: [
+        {
+          link: "classes-from-metabolites",
+          label: "Chemical Classes from Metabolites"
+        },
+        {
+          link: "properties-from-metabolites",
+          label: "Chemical Properties from Metabolites"
+        }
+      ]
+    },{
       link: "Analysis",
       children: [
         {
-          link: "pathway-enrichment-analysis",
+          link: "pathway-enrichment",
           label: "Pathway Enrichment Analysis"
         },
         {
-          link: "chemical-analysis",
-          label: "Chemical Analysis"
+          link: "chemical-enrichment",
+          label: "Chemical Enrichment Analysis"
         }
       ]
     },

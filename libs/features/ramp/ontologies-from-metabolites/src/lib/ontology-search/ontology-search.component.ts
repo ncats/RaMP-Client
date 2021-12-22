@@ -19,7 +19,7 @@ import {fetchOntologiesFromMetabolites, RampFacade} from "@ramp/stores/ramp-stor
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OntologySearchComponent extends QueryPageComponent implements OnInit {
+export class OntologySearchComponent implements OnInit {
 
   ontologyRaw!: Ontology[];
   ontologyColumns: DataProperty[] = [
@@ -49,20 +49,17 @@ export class OntologySearchComponent extends QueryPageComponent implements OnIni
       sortable: true
     }),
   ]
+  matches = 0;
+  dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
-     route: ActivatedRoute,
-     sanitizer: DomSanitizer,
      private ref: ChangeDetectorRef,
      private rampFacade: RampFacade
   ) {
-    super(route, sanitizer);
   }
 
 
   ngOnInit(): void {
-    super.ngOnInit();
-
     this.rampFacade.ontologies$.subscribe((res: Ontology[] | undefined) => {
       if (res && res.length) {
         this.ontologyRaw = res;
@@ -79,8 +76,7 @@ export class OntologySearchComponent extends QueryPageComponent implements OnIni
     })
   }
 
-  fetchOntologies(): void {
-    this.parseInput();
-    this.rampFacade.dispatch(fetchOntologiesFromMetabolites({analytes: this.retArr}))
+  fetchOntologies(event: string[]): void {
+    this.rampFacade.dispatch(fetchOntologiesFromMetabolites({analytes: event}))
   }
 }

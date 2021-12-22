@@ -11,7 +11,7 @@ import {fetchCommonReactionAnalytes, RampFacade} from "@ramp/stores/ramp-store";
   templateUrl: './common-reaction-analytes.component.html',
   styleUrls: ['./common-reaction-analytes.component.scss']
 })
-export class CommonReactionAnalytesComponent extends QueryPageComponent implements OnInit {
+export class CommonReactionAnalytesComponent implements OnInit {
   reactionRaw!: Reaction[];
   reactionColumns: DataProperty[] = [
     new DataProperty({
@@ -29,20 +29,17 @@ export class CommonReactionAnalytesComponent extends QueryPageComponent implemen
       field: "inputCatalyzedBySourceIdsString",
     })
   ]
+  matches = 0;
+  dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
-    route: ActivatedRoute,
-    sanitizer: DomSanitizer,
     private ref: ChangeDetectorRef,
     private rampFacade: RampFacade
   ) {
-    super(route, sanitizer);
   }
 
 
   ngOnInit(): void {
-    super.ngOnInit();
-
     this.rampFacade.reactions$.subscribe((res: Reaction[] | undefined) => {
       if (res && res.length) {
         this.reactionRaw = res;
@@ -59,8 +56,7 @@ export class CommonReactionAnalytesComponent extends QueryPageComponent implemen
     })
   }
 
-  fetchReactions(): void {
-    this.parseInput();
-    this.rampFacade.dispatch(fetchCommonReactionAnalytes({analytes: this.retArr}))
+  fetchReactions(event: string[]): void {
+    this.rampFacade.dispatch(fetchCommonReactionAnalytes({analytes: event}))
   }
 }

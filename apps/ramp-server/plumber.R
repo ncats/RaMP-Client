@@ -82,7 +82,7 @@ function(metabolite="", type="biological") {
   )
 }
 
-#####
+#####***** TODO: THIS DOESN'T RETURN DATA
 #* Query: Return ontologies from list of metabolites
 #* @param metabolite
 #* @serializer unboxedJSON
@@ -131,6 +131,7 @@ function(metabolite="", type="biological") {
 #* @param ontology
 #* @serializer unboxedJSON
 #* @get /api/metabolites-from-ontologies
+#* @post /api/metabolites-from-ontologies
 function(ontology="") {
   print(ontology)
   ontologies_names <- c(ontology)
@@ -165,70 +166,13 @@ print(ontologies)
   #return(analytes_df)
 }
 
-####TIM POST
-#* Return metabolites from ontology
-#* @param ontology
-#* @post /api/metabolites-from-ontologies
-function(ontology="") {
-  print(ontology)
-  ontologies_names <- c(ontology)
-  print(ontologies_names)
-  num_submitted_names <- length(ontologies_names)
-  #    ontologies_names <- sapply(ontologies_names, shQuote)
-  ontologies_names <- paste(ontologies_names, collapse = ",")
-
-  ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
-
-  if (is.null(nrow(ontologies))) {
-    return(
-      list(
-        num_submitted_ids = num_submitted_names,
-        numFoundIds = 0,
-        data = vector(),
-        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                               ontologies_names, "))")
-      )
-    )
-  }else {
-    return(
-      list(
-        num_submitted_ids = num_submitted_names,
-        numFoundIds = nrow(ontologies),
-        data = ontologies,
-        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                               ontologies_names, "))")
-      )
-    )
-  }
-  #return(analytes_df)
-}
-
 ##########
 #' Return analytes from given list of pathways
 #' @param pathway
 #' @param analyte_type
 #' @get /api/analytes-from-pathways
-function(pathway="", analyte_type="both") {
-  pathway <- c(pathway)
-  analyte <- analyte_type
-  print(pathway)
-  analytes_df <- tryCatch({
-    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  return(analytes_df)
-}
-
-##########TIM POST
-#' Return analytes from given list of pathways
-#' @param pathway
-#' @param analyte_type
 #' @post /api/analytes-from-pathways
 function(pathway="", analyte_type="both") {
-  print(pathway)
   pathway <- c(pathway)
   analyte <- analyte_type
   print(pathway)
@@ -250,32 +194,6 @@ function(pathway="", analyte_type="both") {
 #' Return pathways from given list of analytes
 #' @param analyte
 #' @get /api/pathways-from-analytes
-function(analyte="") {
-  analytes <- c(analyte)
-  pathways_df_ids <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
-                                               NameOrIds = "ids"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  pathways_df_names <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(
-      analytes = analytes,
-      NameOrIds = "names"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  pathways_df <- rbind(pathways_df_ids, pathways_df_names)
-  return(unique(pathways_df))
-}
-
-##### TIM POST
-#' Return pathways from given list of analytes
-#' @param analyte
 #' @post /api/pathways-from-analytes
 function(analyte="") {
   analytes <- c(analyte)
@@ -304,41 +222,10 @@ function(analyte="") {
   )
 }
 
-
 ####
 #' Return analytes involved in same reaction as given list of analytes
 #' @param analyte
 #' @get /api/common-reaction-analytes
-function(analyte="") {
-  analytes <- c(analyte)
-  analytes_df_ids <- tryCatch({
-    analytes_df <- RaMP::rampFastCata(
-      analytes = analytes,
-      NameOrIds = "ids"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-
-  # Removing Capacity to search by name for now - EM 12/13/2021
-  #    analytes_df_names <- tryCatch({
-  #        analytes_df <- RaMP::rampFastCata(
-  #            analytes = analytes,
-  #            NameOrIds = "names"
-  #        )
-  #    },
-  #        error = function(cond) {
-  #            return(data.frame(stringsAsFactors = FALSE))
-  #        }
-  #    )
-  #    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
-  return(unique(analytes_df_ids))
-}
-
-####
-#' Return analytes involved in same reaction as given list of analytes
-#' @param analyte
 #' @post /api/common-reaction-analytes
 function(analyte="") {
   analytes <- c(analyte)
@@ -372,10 +259,6 @@ function(analyte="") {
     )
   )
 }
-
-
-
-
 
 ########## NOT USED ########
 
@@ -501,7 +384,7 @@ function() {
   ))
 }
 
-#####
+##### DUPLICATE
 #* Return pathways from source database
 #* @param identifier
 #* @serializer unboxedJSON
@@ -633,10 +516,6 @@ print(term);
   return(ontologies)
 }
 
-
-
-
-
 #####
 #' Return combined Fisher's test results
 #' from given list of analytes query results
@@ -739,11 +618,11 @@ function(
 
 #####
 #' Return chemical properties of given metabolites
-#' @param metabolite
+#' @param metabolites
 #' @param property
-#' @get /api/metabolites/chemical-properties
-function(metabolite="", property="all") {
-  metabolites <- c(metabolite)
+#' @get /api/chemical-properties
+function(metabolites="", property="all") {
+  metabolites <- c(metabolites)
   #properties <- NULL
   properties <- property
   if (!is.null(property)) {
@@ -759,7 +638,69 @@ function(metabolite="", property="all") {
       print(cond)
       return(data.frame(stringsAsFactors = FALSE))
     })
-  return(chemical_properties_df)
+  mets <- paste(metabolites, collapse = ",")
+  return(
+    list(
+      data = chemical_properties_df$chem_props,
+      function_call = paste0("RaMP::getChemicalProperties(", mets ,"))")
+    )
+  )
+}
+
+#####TIM POST
+#' Return chemical properties of given metabolites
+#' @param metabolites
+#' @param property
+#' @post /api/chemical-properties
+function(metabolites="", property="all") {
+  metabolites <- c(metabolites)
+  #properties <- NULL
+  properties <- property
+  if (!is.null(property)) {
+    properties <- c(property)
+  }
+  chemical_properties_df <- tryCatch({
+    analytes_df <- RaMP::getChemicalProperties(
+      metabolites,
+      propertyList = properties
+    )
+  },
+    error = function(cond) {
+      print(cond)
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  mets <- paste(metabolites, collapse = ",")
+  return(
+    list(
+      data = chemical_properties_df$chem_props,
+      function_call = paste0("RaMP::getChemicalProperties(", mets ,"))")
+    )
+  )
+}
+
+#####TIM POST
+#' Return chemical properties of given metabolites
+#' @param metabolites
+#' @param property
+#' @post /api/chemical-classes
+function(metabolites="") {
+  mets <- c(metabolites)
+  chemical_class_df <- tryCatch({
+    classes_df <- RaMP::chemicalClassSurvey(
+      mets
+    )
+  },
+    error = function(cond) {
+      print(cond)
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  mets <- paste(mets, collapse = ",")
+  return(
+    list(
+    data = chemical_class_df$met_classes,
+    function_call = paste0("RaMP::chemicalClassSurvey(", mets ,"))")
+  )
+  )
 }
 
 
@@ -773,7 +714,7 @@ function(metabolite="", property="all") {
 #####
 #' Return available high level chemical class types (from ClassyFire)
 #' @param classtype
-#' get /api/metabolites/chemical-class-type
+#' @get /api/chemical-class-type
 function() {
   classtypes <- tryCatch({
     getMetabClassTypes()

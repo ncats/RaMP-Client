@@ -27,6 +27,58 @@
       },
       "tags": ["lib:analytes-from-pathways"]
     },
+    "features-ramp-chemical-enrichment": {
+      "projectType": "library",
+      "root": "libs/features/ramp/chemical-enrichment",
+      "sourceRoot": "libs/features/ramp/chemical-enrichment/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/chemical-enrichment"],
+          "options": {
+            "jestConfig": "libs/features/ramp/chemical-enrichment/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/chemical-enrichment/src/**/*.ts",
+              "libs/features/ramp/chemical-enrichment/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "features-ramp-classes-from-metabolites": {
+      "projectType": "library",
+      "root": "libs/features/ramp/classes-from-metabolites",
+      "sourceRoot": "libs/features/ramp/classes-from-metabolites/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/classes-from-metabolites"],
+          "options": {
+            "jestConfig": "libs/features/ramp/classes-from-metabolites/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/classes-from-metabolites/src/**/*.ts",
+              "libs/features/ramp/classes-from-metabolites/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "features-ramp-common-reaction-analytes": {
       "projectType": "library",
       "root": "libs/features/ramp/common-reaction-analytes",
@@ -89,7 +141,9 @@
       "architect": {
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/features/ramp/ontologies-from-metabolites"],
+          "outputs": [
+            "coverage/libs/features/ramp/ontologies-from-metabolites"
+          ],
           "options": {
             "jestConfig": "libs/features/ramp/ontologies-from-metabolites/jest.config.js",
             "passWithNoTests": true
@@ -106,6 +160,32 @@
         }
       },
       "tags": ["libs:ontologies"]
+    },
+    "features-ramp-pathway-enrichment": {
+      "projectType": "library",
+      "root": "libs/features/ramp/pathway-enrichment",
+      "sourceRoot": "libs/features/ramp/pathway-enrichment/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/features/ramp/pathway-enrichment"],
+          "options": {
+            "jestConfig": "libs/features/ramp/pathway-enrichment/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/pathway-enrichment/src/**/*.ts",
+              "libs/features/ramp/pathway-enrichment/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
     },
     "features-ramp-pathways-from-analytes": {
       "projectType": "library",
@@ -132,6 +212,34 @@
         }
       },
       "tags": ["libs:pathways-from-analytes"]
+    },
+    "features-ramp-properties-from-metabolites": {
+      "projectType": "library",
+      "root": "libs/features/ramp/properties-from-metabolites",
+      "sourceRoot": "libs/features/ramp/properties-from-metabolites/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/features/ramp/properties-from-metabolites"
+          ],
+          "options": {
+            "jestConfig": "libs/features/ramp/properties-from-metabolites/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/features/ramp/properties-from-metabolites/src/**/*.ts",
+              "libs/features/ramp/properties-from-metabolites/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
     },
     "features-ramp-ramp-about": {
       "projectType": "library",
@@ -601,6 +709,58 @@
             "lintFilePatterns": [
               "libs/shared/ui/ncats-datatable/src/**/*.ts",
               "libs/shared/ui/ncats-datatable/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-ncats-structure-viewer": {
+      "projectType": "library",
+      "root": "libs/shared/ui/ncats-structure-viewer",
+      "sourceRoot": "libs/shared/ui/ncats-structure-viewer/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/ncats-structure-viewer"],
+          "options": {
+            "jestConfig": "libs/shared/ui/ncats-structure-viewer/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/ncats-structure-viewer/src/**/*.ts",
+              "libs/shared/ui/ncats-structure-viewer/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-object-tree": {
+      "projectType": "library",
+      "root": "libs/shared/ui/object-tree",
+      "sourceRoot": "libs/shared/ui/object-tree/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/object-tree"],
+          "options": {
+            "jestConfig": "libs/shared/ui/object-tree/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/object-tree/src/**/*.ts",
+              "libs/shared/ui/object-tree/src/**/*.html"
             ]
           }
         }

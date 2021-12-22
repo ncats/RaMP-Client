@@ -33,5 +33,33 @@
      "function": "analytes <- RaMP::getPathwayFromAnalyte(pathway=\"###REPLACE###\")",
     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
     "description": "write new description"
+  },
+   "classes-from-metabolites" : {
+    "title": "Classes from Metabolites",
+     "input": "metabolites",
+     "function": "analytes <- RaMP::getPathwayFromAnalyte(pathway=\"###REPLACE###\")",
+    "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211",
+    "description": "write new description"
+  },
+   "properties-from-metabolites" : {
+    "title": "Properties from Metabolites",
+     "input": "metabolites",
+     "function": "analytes <- RaMP::getPathwayFromAnalyte(pathway=\"###REPLACE###\")",
+    "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211",
+    "description": "write new description"
+  },
+   "chemical-enrichment" : {
+    "title": "Chemical Enrichment",
+     "input": "metabolites",
+     "function": "analytes <- RaMP::chemicalClassEnrichment(pathway=\"###REPLACE###\")",
+    "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211",
+    "description": "write new description"
+  },
+   "pathway-enrichment" : {
+    "title": "Pathway Enrichment",
+     "input": "analytes",
+     "function": "analytes <- RaMP::runCombinedFisherTest(pathway=\"###REPLACE###\")",
+     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
+     "description": "write new description"
   }
 }

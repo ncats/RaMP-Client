@@ -1,4 +1,13 @@
-import {Analyte, Metabolite, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
+import {
+  Analyte,
+  Classes,
+  Metabolite,
+  Ontology,
+  Pathway,
+  Properties,
+  Reaction,
+  SourceVersion
+} from "@ramp/models/ramp-models";
 
 /**
  * Interface for the 'RampStore' data
@@ -15,5 +24,9 @@ export interface RampEntity {
   pathways?: Pathway[];
   metabolites?: Metabolite[];
   ontologiesTypeahead?: any[];
-  reactions?: any[];
+  reactions?: Reaction[];
+  classes?: Classes[];
+  properties?: Properties[];
+  chemicalEnrichments?: any;
+  pathwayEnrichments?: any;
 }

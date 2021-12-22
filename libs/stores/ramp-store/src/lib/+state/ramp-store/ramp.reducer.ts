@@ -1,6 +1,15 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
-import {Analyte, Metabolite, Ontology, Pathway, SourceVersion} from "@ramp/models/ramp-models";
+import {
+  Analyte,
+  Classes,
+  Metabolite,
+  Ontology,
+  Pathway,
+  Properties,
+  Reaction,
+  SourceVersion
+} from "@ramp/models/ramp-models";
 
 import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
@@ -20,7 +29,11 @@ export interface State extends EntityState<RampEntity> {
   pathways?: Pathway[];
   metabolites?: Metabolite[];
   ontologiesTypeahead?: any[];
-  reactions?: any[];
+  reactions?: Reaction[];
+  classes?: Classes[];
+  properties?: Properties[];
+  chemicalEnrichments?: any;
+  pathwayEnrichments?: any;
 }
 
 export interface RampPartialState {
@@ -53,6 +66,10 @@ const rampReducer = createReducer(
     RampActions.fetchPathwaysFromAnalytes,
     RampActions.fetchMetabolitesFromOntologies,
     RampActions.fetchCommonReactionAnalytes,
+    RampActions.fetchClassesFromMetabolites,
+    RampActions.fetchPropertiesFromMetabolites,
+    RampActions.fetchEnrichmentFromAnalytes,
+    RampActions.fetchEnrichmentFromPathways,
     (state) => ({
     ...state,
       loading: true,
@@ -91,6 +108,18 @@ on(RampActions.fetchPathwaysFromAnalytesSuccess, (state, { pathways }) =>
  on(RampActions.fetchCommonReactionAnalytesSuccess, (state, { reactions }) =>
     ({...state, loading: false,  reactions: reactions})),
 
+on(RampActions.fetchClassesFromMetabolitesSuccess, (state, { classes }) =>
+    ({...state, loading: false,  classes: classes})),
+
+on(RampActions.fetchPropertiesFromMetabolitesSuccess, (state, { properties }) =>
+    ({...state, loading: false,  properties: properties})),
+
+on(RampActions.fetchEnrichmentFromAnalytesSuccess, (state, { chemicalEnrichments }) =>
+    ({...state, loading: false,  chemicalEnrichments: chemicalEnrichments})),
+
+on(RampActions.fetchEnrichmentFromPathwaysSuccess, (state, { pathwayEnrichments }) =>
+    ({...state, loading: false,  pathwayEnrichments: pathwayEnrichments})),
+
   on(
     RampActions.loadRampFailure,
     RampActions.loadRampAboutFailure,
@@ -99,6 +128,8 @@ on(RampActions.fetchPathwaysFromAnalytesSuccess, (state, { pathways }) =>
     RampActions.fetchMetaboliteFromOntologiesFailure,
     RampActions.fetchOntologyTypeaheadFailure,
     RampActions.fetchCommonReactionAnalytesFailure,
+    RampActions.fetchClassesFromMetabolitesFailure,
+    RampActions.fetchPropertiesFromMetabolitesFailure,
     (state, { error }) => ({
       ...state,
       loading: false,

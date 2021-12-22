@@ -89,3 +89,23 @@ export const getCommonReactions = createSelector(
   getRampState,
   (state: State) => state.reactions
 );
+
+export const getClasses = createSelector(
+  getRampState,
+  (state: State) => state.classes
+);
+
+export const getProperties = createSelector(
+  getRampState,
+  (state: State) => state.properties
+);
+
+export const getChemicalEnrichment = createSelector(
+  getRampState,
+  (state: State) => state.chemicalEnrichments
+);
+
+export const getPathwayEnrichment = createSelector(
+  getRampState,
+  (state: State) => state.pathwayEnrichments
+);

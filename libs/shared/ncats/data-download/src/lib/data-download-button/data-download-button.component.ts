@@ -21,15 +21,15 @@ export class DataDownloadButtonComponent implements OnInit {
 
   downloadData(): void {
     const lines: string[] = [[...Object.keys(this.data[0])].join(',')];
-    this.data.forEach((data: any) => lines.push([...(Object.values(data))].join(',')));
+    this.data.forEach((data: any) => lines.push([...(Object.values(data))].join('\t')));
     const csv = lines.join('\n');
-    this.file = new Blob([csv], {type: 'text/csv'});
+    this.file = new Blob([csv], {type: 'text/tsv'});
     var link = this.dom.createElement("a");
     if (link.download !== undefined) { // feature detection
       // Browsers that support HTML5 download attribute
       var url = URL.createObjectURL(this.file);
       link.setAttribute("href", url);
-      link.setAttribute("download", `${this.source}-download.csv`);
+      link.setAttribute("download", `${this.source}-download.tsv`);
       link.style.visibility = 'hidden';
       this.dom.body.appendChild(link);
       link.click();

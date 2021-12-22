@@ -1,19 +1,25 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {ActivatedRoute} from "@angular/router";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 
 @Component({
-  template: '',
-})
+  selector: 'ramp-query-page',
+  templateUrl: './query-page.component.html',
+  styleUrls: ['./query-page.component.scss']})
 export class QueryPageComponent implements OnInit {
-  public inputFormCtrl: FormControl = new FormControl();
-  public dataAsDataProperty!: { [key: string]: DataProperty }[];
-  public matches = 0;
-  public queryCount = 0;
-  public retArr!: string[];
+  @Input() rawData: any;
+  @Input() dataColumns!: DataProperty[];
+  @Input() dataAsDataProperty!: { [key: string]: DataProperty }[];
+  @Input() matches = 0;
 
+  @Output() dataSearch: EventEmitter<string[]> = new EventEmitter<string[]>();
+
+  inputFormCtrl: FormControl = new FormControl();
+  public queryCount = 0;
+
+  public retArr!: string[];
   public function!: string;
   public input!: string;
   public examples!: string;
@@ -22,8 +28,10 @@ export class QueryPageComponent implements OnInit {
 
   constructor(
                private route: ActivatedRoute,
-               private sanitizer: DomSanitizer
+               private sanitizer: DomSanitizer,
+            //   private ref: ChangeDetectorRef,
   ) { }
+
 
   ngOnInit(): void {
       this.title = this.route.snapshot.data.title;
@@ -41,5 +49,10 @@ export class QueryPageComponent implements OnInit {
     }
     this.queryCount = this.retArr.length;
     this.function = this.route.snapshot.data.function.replace('###REPLACE###', this.retArr.join(', '));
+  }
+
+  fetchData() {
+    this.parseInput();
+    this.dataSearch.emit(this.retArr);
   }
 }

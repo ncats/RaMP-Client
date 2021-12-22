@@ -13,55 +13,43 @@ import {debounceTime, distinctUntilChanged, map} from "rxjs";
   templateUrl: './metabolites-from-ontologies.component.html',
   styleUrls: ['./metabolites-from-ontologies.component.scss']
 })
-export class MetabolitesFromOntologiesComponent  extends QueryPageComponent implements OnInit {
+export class MetabolitesFromOntologiesComponent implements OnInit {
   metaboliteRaw!: Metabolite[];
   metaboliteColumns: DataProperty[] = [
     new DataProperty({
-      label: "Pathway Name",
-      field: "pathwayName",
-      sortable: true
-    }),
-    /*    new DataProperty({
-          label: "Pathway Category",
-          field: "pathwayCategory",
-          sortable: true
-        }),*/
-    new DataProperty({
-      label: "Pathway Type",
-      field: "pathwayType",
+      label: "Ontology",
+      field: "ontology",
       sortable: true
     }),
     new DataProperty({
-      label: "metabolite Name",
-      field: "analyteName",
+      label: "Ontology Type",
+      field: "hmdbOntologyType",
       sortable: true
     }),
     new DataProperty({
-      label: "Source metabolite ID",
-      field: "sourceAnalyteIDs",
+      label: "Metabolite",
+      field: "metabolites",
       sortable: true
     }),
     new DataProperty({
-      label: "metabolite Class",
-      field: "geneOrCompound",
+      label: "Source ID",
+      field: "sourceId",
       sortable: true
-    }),
+    })
   ]
+  matches = 0;
+  dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   typeaheadCtrl: FormControl = new FormControl();
 
   constructor(
-    route: ActivatedRoute,
-    sanitizer: DomSanitizer,
     private ref: ChangeDetectorRef,
     private rampFacade: RampFacade
   ) {
-    super(route, sanitizer);
   }
 
 
   ngOnInit(): void {
-    super.ngOnInit();
     this.typeaheadCtrl.valueChanges
       .pipe(
         debounceTime(200),
@@ -78,7 +66,7 @@ export class MetabolitesFromOntologiesComponent  extends QueryPageComponent impl
     this.rampFacade.metabolites$.subscribe((res: Metabolite[] | undefined) => {
       if (res && res.length) {
         this.metaboliteRaw = res;
-        this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
+        this.matches = new Set([...res.map(obj => obj.ontology)]).size
         this.dataAsDataProperty = res.map((metabolite: Metabolite) => {
           const newObj: { [key: string]: DataProperty } = {};
           Object.entries(metabolite).map((value: any, index: any) => {
@@ -91,8 +79,7 @@ export class MetabolitesFromOntologiesComponent  extends QueryPageComponent impl
     })
   }
 
-  fetchMetabolites(): void {
-    this.parseInput();
-    this.rampFacade.dispatch(fetchMetabolitesFromOntologies({ontologies: this.retArr}))
+  fetchMetabolites(event: string[]): void {
+    this.rampFacade.dispatch(fetchMetabolitesFromOntologies({ontologies: event}))
   }
 }
