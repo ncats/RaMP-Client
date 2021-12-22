@@ -1,0 +1,270 @@
+import {SelectionModel} from "@angular/cdk/collections";
+import {NestedTreeControl} from "@angular/cdk/tree";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
+import {MatTree, MatTreeNestedDataSource} from "@angular/material/tree";
+import {BehaviorSubject} from "rxjs";
+
+/** Flat tree item node with expandable and level information */
+export class FlatNode  {
+  value!: string;
+  children!: any[];
+  level!: number;
+  expandable!: boolean;
+}
+
+export class NestedNode  {
+  value!: string;
+  children!: any[];
+}
+
+@Component({
+  selector: 'ncats-object-tree',
+  templateUrl: './object-tree.component.html',
+  styleUrls: ['./object-tree.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class ObjectTreeComponent implements OnInit {
+  @ViewChild(MatTree) objectTree!: MatTree<any>;
+
+  @Output() fieldSelectChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() nodeExpandChange: EventEmitter<any> = new EventEmitter<any>();
+
+
+  @Input() selectable = false;
+  @Input() showLinks = false;
+  @Input() dynamic = false;
+
+  @Input() expanded = true;
+
+  @Input() loading = false;
+
+
+  /**
+   * initialize a private variable _data, it's a BehaviorSubject
+   * @type {BehaviorSubject<any>}
+   * @private
+   */
+  protected _data = new BehaviorSubject<any>(null);
+
+  /**
+   * pushes changed data to {BehaviorSubject}
+   * @param value
+   */
+  @Input()
+  set data(value: any) {
+    // This is a hacky way to strip out extra values from a DataProperty object, if this is dynamically added to a table
+    if (value && value.value) {
+      this._data.next(value.value);
+    } else {
+      this._data.next(value);
+    }
+  }
+
+  /**
+   * returns value of {BehaviorSubject}
+   * @returns {any}
+   */
+  get data() {
+    return this._data.getValue();
+  }
+
+  /** The selection for checklist */
+  checklistSelection = new SelectionModel<FlatNode>(true);
+
+/*
+  private _transformer = (node: {[label: string]: any}, level: number) => {
+    const flatNode: any = new FlatNode();
+    Object.entries((node)).forEach((prop) => flatNode[prop[0]] = prop[1]);
+    // flatNode.value = node.value;
+    // flatNode.label = node.label;
+    if(!flatNode.expandable) {
+      flatNode.expandable = (!!node.children && node.children.length > 0) || (!!node.count && node.count > 0);
+    }
+    if (!flatNode.level) {
+      flatNode.level = level;
+    }
+    console.log(flatNode)
+    return flatNode;
+  };
+
+  treeControl = new FlatTreeControl<FlatNode>(
+    node => node.level, node => node.expandable);
+
+  treeFlattener = new MatTreeFlattener(
+    this._transformer, node => node.level, node => node.expandable, node => node.children);
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener, []);
+*/
+
+  treeControl = new NestedTreeControl<NestedNode>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<NestedNode>();
+
+  constructor(
+    private changeRef: ChangeDetectorRef) {
+}
+  ngOnInit() {
+    console.log(this);
+    this._data.subscribe( res => {
+      console.log(res);
+    if(res && res.length) {
+      console.log(res);
+      this.dataSource.data = res;
+      this.treeControl.dataNodes = res;
+      if( this.expanded) {
+        this.treeControl.expandAll();
+      }
+      this.changeRef.markForCheck();
+    }
+    })
+      /*
+          this._data.subscribe( res => {
+            if(res && res.length) {
+              this.dataSource.data = res;
+              this.treeControl.dataNodes = res;
+              if(this.expanded) {
+                console.log("Expand");
+                this.treeControl.expandAll();
+
+                //      this.objectTree.treeControl.expandAll();
+                this.changeRef.markForCheck();
+              } else {
+               /!* this.treeControl.expansionModel.selected.forEach(node => {
+                  const n = this.treeControl.dataNodes.find(d => d.value === node.value);
+                  if(n) {
+                    this.treeControl.expand(n);
+                  }
+              })*!/
+              }
+           //   this.dataSource.data = res;
+              // @ts-ignore
+              this.dataSource._flattenedData.subscribe(data => {
+                //  this.treeControl.dataNodes = res;
+                if (this.expanded) {
+                  console.log("Expand");
+                  this.treeControl.expandAll();
+
+                  //      this.objectTree.treeControl.expandAll();
+                  this.changeRef.markForCheck();
+                } else {
+                  this.treeControl.expansionModel.selected.forEach(node => {
+                    const n = this.treeControl.dataNodes.find(d => d.value === node.value);
+                    if (n) {
+                      this.treeControl.expand(n);
+                    }
+                  });
+                }
+                    });
+                }
+            this.treeControl.expand(this.treeControl.dataNodes[1]);
+            this.changeRef.markForCheck();
+          });
+      */
+  }
+
+
+  // hasChild = (_: number, _nodeData: FlatNode) => _nodeData.expandable;
+  hasChild = (_: number, node: NestedNode) => !!node.children && node.children.length > 0;
+
+/*
+  /!** Whether all the descendants of the node are selected. *!/
+  descendantsAllSelected(node: FlatNode): boolean {
+    const descendants = this.treeControl.getDescendants(node);
+    return descendants.every(child =>
+      this.checklistSelection.isSelected(child)
+    );
+  }
+
+  /!** Whether part of the descendants are selected *!/
+  descendantsPartiallySelected(node: FlatNode): boolean {
+    const descendants = this.treeControl.getDescendants(node);
+    const result = descendants.some(child => this.checklistSelection.isSelected(child));
+    return result && !this.descendantsAllSelected(node);
+  }
+*/
+
+/*  /!** Toggle the to-do item selection. Select/deselect all the descendants node *!/
+  todoItemSelectionToggle(node: FlatNode): void {
+    this.checklistSelection.toggle(node);
+    const descendants = this.treeControl.getDescendants(node);
+    this.checklistSelection.isSelected(node)
+      ? this.checklistSelection.select(...descendants)
+      : this.checklistSelection.deselect(...descendants);
+
+// Force update for the parent
+    descendants.every(child =>
+      this.checklistSelection.isSelected(child)
+    );
+    this.checkAllParentsSelection(node);
+  }
+
+  /!** Toggle a leaf to-do item selection. Check all the parents to see if they changed *!/
+  todoLeafItemSelectionToggle(node: FlatNode): void {
+    this.checklistSelection.toggle(node);
+    this.checkAllParentsSelection(node);
+  }
+
+  /!* Checks all the parents when a leaf node is selected/unselected *!/
+  checkAllParentsSelection(node: FlatNode): void {
+    let parent: FlatNode | null = this.getParentNode(node);
+    while (parent) {
+      this.checkRootNodeSelection(parent);
+      parent = this.getParentNode(parent);
+    }
+  }
+
+  /!** Check root node checked state and change it accordingly *!/
+  checkRootNodeSelection(node: FlatNode): void {
+    const nodeSelected = this.checklistSelection.isSelected(node);
+    const descendants = this.treeControl.getDescendants(node);
+    const descAllSelected = descendants.every(child =>
+      this.checklistSelection.isSelected(child)
+    );
+    if (nodeSelected && !descAllSelected) {
+      this.checklistSelection.deselect(node);
+    } else if (!nodeSelected && descAllSelected) {
+      this.checklistSelection.select(node);
+    }
+  }
+
+  /!* Get the parent node of a node *!/
+  getParentNode(node: FlatNode): FlatNode | null {
+    const currentLevel = node.level;
+
+    if (currentLevel < 1) {
+      return null;
+    }
+
+    const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+
+    for (let i = startIndex; i >= 0; i--) {
+      const currentNode = this.treeControl.dataNodes[i];
+
+      if (currentNode.level < currentLevel) {
+        return currentNode;
+      }
+    }
+    return null;
+  }*/
+
+  fetchData(node: any) {
+    if(this.dynamic  && !node.children) {
+      this.nodeExpandChange.emit(node);
+    }
+  }
+
+  fetchLeafData(node: any) {
+    if(this.dynamic && !node.children) {
+      this.nodeExpandChange.emit(node);
+    }
+  }
+}

@@ -1,0 +1,9 @@
+<div class="image-holder">
+  <div *ngIf= "url; else placeholder">
+    <img [src]=url [alt]="'Rendered image for ' + ligandName" class="ligand-image" [ngClass]="{roundCorners: rounded}">
+  </div>
+  <ng-template #placeholder>
+    <img [src] = "'assets/images/benzene.svg'"
+         alt = "no chemical structure image available" class="placeholder-thumb">
+  </ng-template>
+</div>

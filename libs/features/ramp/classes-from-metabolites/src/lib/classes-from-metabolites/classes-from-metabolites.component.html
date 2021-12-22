@@ -1,0 +1,14 @@
+
+<ncats-object-tree *ngIf="dataAsDataProperty"
+                   [data]="dataAsDataProperty[1]?.classyFireTree"
+></ncats-object-tree>
+
+<ramp-query-page
+  [dataColumns]="classesColumns"
+  [rawData]="classesRaw"
+  [dataAsDataProperty]="dataAsDataProperty"
+  [matches]="matches"
+  (dataSearch)="fetchClasses($event)">
+</ramp-query-page>
+
+
