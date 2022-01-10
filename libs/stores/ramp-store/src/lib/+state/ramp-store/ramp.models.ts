@@ -6,7 +6,8 @@ import {
   Pathway,
   Properties,
   Reaction,
-  SourceVersion
+  SourceVersion,
+  RampQuery
 } from "@ramp/models/ramp-models";
 
 /**
@@ -19,14 +20,43 @@ export interface RampEntity {
   entityCounts?: any;
   metaboliteIntersects?:[];
   geneIntersects?:[];
-  ontology?: Ontology[];
-  analytes?: Analyte[];
-  pathways?: Pathway[];
-  metabolites?: Metabolite[];
-  ontologiesTypeahead?: any[];
-  reactions?: Reaction[];
-  classes?: Classes[];
-  properties?: Properties[];
+  ontologiesList?: any[];
+
+  ontology?: {
+    data: Ontology[],
+    query: RampQuery
+  };
+
+  analytes?: {
+    data: Analyte[],
+    query: RampQuery
+  }
+
+  pathways?: {
+    data: Pathway[],
+    query: RampQuery
+  }
+
+  reactions?: {
+    data: Reaction[],
+    query: RampQuery
+  };
+
+  metClasses?: {
+    data: Classes[],
+    query: RampQuery
+  }
+
+  metabolites?: {
+    data: Metabolite[],
+    query: RampQuery
+  };
+
+  properties?: {
+    data: Properties[],
+    query: RampQuery
+  };
+
   chemicalEnrichments?: any;
   pathwayEnrichments?: any;
 }

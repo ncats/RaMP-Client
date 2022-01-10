@@ -65,9 +65,9 @@ export const getOntologies = createSelector(
   (state: State) => state.ontologies
 );
 
-export const getOntologiesTypeahead = createSelector(
+export const getontologiesList = createSelector(
   getRampState,
-  (state: State) => state.ontologiesTypeahead
+  (state: State) => state.ontologiesList
 );
 
 export const getAnalytes = createSelector(
@@ -92,8 +92,8 @@ export const getCommonReactions = createSelector(
 
 export const getClasses = createSelector(
   getRampState,
-  (state: State) => state.classes
-);
+  (state: State) => state.metClasses
+)
 
 export const getProperties = createSelector(
   getRampState,

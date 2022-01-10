@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {SourceVersion} from "@ramp/models/ramp-models";
+import {Analyte, Ontology, Pathway, Reaction, SourceVersion} from "@ramp/models/ramp-models";
 import {RampService} from '@ramp/stores/ramp-store';
 import {mergeMap, of} from "rxjs";
 import {catchError, map} from "rxjs/operators";
@@ -46,7 +46,16 @@ export class RampEffects {
       mergeMap((action) =>
         this.rampService.fetchOntologiesFromMetabolites(action.analytes)
           .pipe(
-            map((ret: any[]) => RampActions.fetchOntologiesFromMetabolitesSuccess({ ontologies: ret }),
+            map((ret: {ontologies: Ontology[], functionCall: string, numFoundIds: number}) =>
+                RampActions.fetchOntologiesFromMetabolitesSuccess(
+                  {
+                    data: ret.ontologies,
+                    query: {
+                      functionCall: ret.functionCall,
+                      numFoundIds: ret.numFoundIds
+                    }
+                  }
+                  ),
               catchError((error:ErrorEvent) => of(RampActions.fetchOntologiesFromMetabolitesFailure({error})))
             )
           )
@@ -60,7 +69,15 @@ fetchMetabolitesFromOntologies = createEffect(() =>
       mergeMap((action) =>
         this.rampService.fetchMetabolitesFromOntologies(action.ontologies)
           .pipe(
-            map((ret: any[]) => RampActions.fetchMetabolitesFromOntologiesSuccess({ metabolites: ret }),
+            map((ret: {metabolites: any[], functionCall: string, numFoundIds: number}) =>
+                RampActions.fetchMetabolitesFromOntologiesSuccess(
+                  {
+                    data: ret.metabolites,
+                    query: {
+                      functionCall: ret.functionCall,
+                      numFoundIds: ret.numFoundIds
+                    }
+                  }),
               catchError((error:ErrorEvent) => of(RampActions.fetchMetaboliteFromOntologiesFailure({error})))
             )
           )
@@ -68,14 +85,14 @@ fetchMetabolitesFromOntologies = createEffect(() =>
     )
   )
 
-  ontologiesTypeahead = createEffect(() =>
+  fetchOntologies = createEffect(() =>
     this.actions$.pipe(
-      ofType(RampActions.fetchOntologyTypeahead),
-      mergeMap((action) =>
-        this.rampService.fetchOntologies(action.term)
+      ofType(RampActions.fetchOntologies),
+      mergeMap(() =>
+        this.rampService.fetchOntologies()
           .pipe(
-            map((ret: any[]) => RampActions.fetchOntologyTypeaheadSuccess({ ontologies: ret }),
-              catchError((error:ErrorEvent) => of(RampActions.fetchOntologyTypeaheadFailure({error})))
+            map((ret: any[]) => RampActions.fetchOntologiesSuccess({ ontologies: ret }),
+              catchError((error:ErrorEvent) => of(RampActions.fetchOntologiesFailure({error})))
             )
           )
       )
@@ -88,9 +105,16 @@ fetchMetabolitesFromOntologies = createEffect(() =>
       mergeMap((action) =>
         this.rampService.fetchAnalytesFromPathways(action.pathways)
           .pipe(
-            map((ret: any[]) => RampActions.fetchAnalytesFromPathwaysSuccess({ analytes: ret }),
-              catchError((error:ErrorEvent) => of(RampActions.fetchAnalytesFromPathwaysFailure({error})))
-            )
+            map((ret: {analytes: Analyte[], functionCall: string, numFoundIds: number}) =>
+              RampActions.fetchAnalytesFromPathwaysSuccess({
+                data: ret.analytes,
+                  query: {
+                    functionCall: ret.functionCall,
+                    numFoundIds: ret.numFoundIds
+                  }
+                })
+            ),
+            catchError((error:ErrorEvent) => of(RampActions.fetchAnalytesFromPathwaysFailure({error})))
           )
       )
     )
@@ -102,9 +126,17 @@ fetchPathwaysFromAnalytes = createEffect(() =>
       mergeMap((action) =>
         this.rampService.fetchPathwaysFromAnalytes(action.analytes)
           .pipe(
-            map((ret: any[]) => RampActions.fetchPathwaysFromAnalytesSuccess({ pathways: ret }),
-              catchError((error:ErrorEvent) => of(RampActions.fetchPathwaysFromAnalytesFailure({error})))
-            )
+            map((ret: {pathways: Pathway[], functionCall: string, numFoundIds: number}) =>
+              RampActions.fetchPathwaysFromAnalytesSuccess(
+              {
+                data: ret.pathways,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds
+                }
+              })
+            ),
+            catchError((error:ErrorEvent) => of(RampActions.fetchPathwaysFromAnalytesFailure({error})))
           )
       )
     )
@@ -116,7 +148,16 @@ fetchPathwaysFromAnalytes = createEffect(() =>
       mergeMap((action) =>
         this.rampService.fetchCommonReactionAnalytes(action.analytes)
           .pipe(
-            map((ret: any[]) => RampActions.fetchCommonReactionAnalytesSuccess({ reactions: ret }),
+            map((ret: {reactions: Reaction[], functionCall: string, numFoundIds: number}) =>
+                RampActions.fetchCommonReactionAnalytesSuccess(
+                  {
+                    data: ret.reactions,
+                    query: {
+                      functionCall: ret.functionCall,
+                      numFoundIds: ret.numFoundIds
+                    }
+                  }
+                ),
               catchError((error:ErrorEvent) => of(RampActions.fetchCommonReactionAnalytesFailure({error})))
             )
           )
@@ -130,10 +171,16 @@ fetchPathwaysFromAnalytes = createEffect(() =>
       mergeMap((action) =>
         this.rampService.fetchChemicalClass(action.metabolites)
           .pipe(
-            map((ret: any) => {
-                console.log(ret);
-                return RampActions.fetchClassesFromMetabolitesSuccess({ classes: ret })
-              },
+            map((ret: {metClasses: any[], functionCall: string, numFoundIds: number}) =>
+                 RampActions.fetchClassesFromMetabolitesSuccess(
+                  {
+                data: ret.metClasses,
+                  query: {
+                functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds
+                   }
+                }
+                ),
               catchError((error:ErrorEvent) => of(RampActions.fetchClassesFromMetabolitesFailure({error})))
             )
           )
@@ -148,8 +195,13 @@ fetchPathwaysFromAnalytes = createEffect(() =>
       mergeMap((action) =>
         this.rampService.fetchChemicalProperties(action.metabolites)
           .pipe(
-            map((ret: any) => {
-             return RampActions.fetchPropertiesFromMetabolitesSuccess({ properties: ret })
+            map((ret: {properties: any[], functionCall: string, numFoundIds: number}) => {
+             return RampActions.fetchPropertiesFromMetabolitesSuccess({
+               data: ret.properties,
+               query: {
+                 functionCall: ret.functionCall,
+                 numFoundIds: ret.numFoundIds
+               }})
               },
               catchError((error:ErrorEvent) => of(RampActions.fetchPropertiesFromMetabolitesFailure({error})))
             )
@@ -179,7 +231,7 @@ fetchPathwayAnalysis = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchEnrichmentFromPathways),
       mergeMap((action) =>
-        this.rampService.fetchEnrichmentFromPathways(action.pathways)
+        this.rampService.fetchEnrichmentFromPathways(action.pathways, action.p_holmadj_cutoff, action.p_fdradj_cutoff)
           .pipe(
             map((ret: any) => {
               console.log(ret);

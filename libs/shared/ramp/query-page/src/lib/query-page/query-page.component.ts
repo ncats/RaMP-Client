@@ -2,6 +2,7 @@ import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from 
 import {FormControl} from "@angular/forms";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {ActivatedRoute} from "@angular/router";
+import {RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 
 @Component({
@@ -12,7 +13,11 @@ export class QueryPageComponent implements OnInit {
   @Input() rawData: any;
   @Input() dataColumns!: DataProperty[];
   @Input() dataAsDataProperty!: { [key: string]: DataProperty }[];
+
+  @Input() rampQuery!: RampQuery;
   @Input() matches = 0;
+
+
 
   @Output() dataSearch: EventEmitter<string[]> = new EventEmitter<string[]>();
 
@@ -39,6 +44,9 @@ export class QueryPageComponent implements OnInit {
       this.examples = this.route.snapshot.data.examples;
       this.input = this.route.snapshot.data.input;
       this.inputFormCtrl.setValue(this.examples);
+      if(!this.retArr) {
+        this.parseInput();
+      }
   }
 
   public parseInput() {
@@ -48,7 +56,7 @@ export class QueryPageComponent implements OnInit {
       this.retArr = this.inputFormCtrl.value.trim().split(/[\t\n,;]+/).map((val: string) => val.trim());
     }
     this.queryCount = this.retArr.length;
-    this.function = this.route.snapshot.data.function.replace('###REPLACE###', this.retArr.join(', '));
+  //  this.function = this.route.snapshot.data.function.replace('###REPLACE###', this.retArr.join(', '));
   }
 
   fetchData() {

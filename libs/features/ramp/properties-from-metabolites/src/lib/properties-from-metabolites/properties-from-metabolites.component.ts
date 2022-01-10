@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {Properties} from "@ramp/models/ramp-models";
+import {Properties, RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchPropertiesFromMetabolites, RampFacade} from "@ramp/stores/ramp-store";
 import {STRUCTURE_VIEWER_COMPONENT} from "../features-ramp-properties-from-metabolites.module";
@@ -55,7 +55,7 @@ export class PropertiesFromMetabolitesComponent implements OnInit {
       sortable: true
     }),
   ]
-  matches = 0;
+  query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
@@ -67,11 +67,10 @@ export class PropertiesFromMetabolitesComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.rampFacade.properties$.subscribe((res: Properties[] | undefined) => {
-      if (res && res.length) {
-        this.propertiesRaw = res;
-          this.matches = new Set([...res.map(obj => obj.chem_source_id)]).size
-        this.dataAsDataProperty = res.map((properties: Properties) => {
+    this.rampFacade.properties$.subscribe((res: {data: Properties[], query: RampQuery }| undefined) => {
+      if (res && res.data) {
+        this.propertiesRaw = res.data;
+        this.dataAsDataProperty = res.data.map((properties: Properties) => {
           const newObj: { [key: string]: DataProperty } = {};
           Object.entries(properties).map((value: any, index: any) => {
             newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
@@ -79,8 +78,11 @@ export class PropertiesFromMetabolitesComponent implements OnInit {
           newObj.imageUrl.url = `${this.route.snapshot.data.renderUrl}?structure=${encodeURIComponent(properties.iso_smiles)}&size=150`
           return newObj;
         })
-        this.ref.markForCheck()
       }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.ref.markForCheck()
     })
   }
 

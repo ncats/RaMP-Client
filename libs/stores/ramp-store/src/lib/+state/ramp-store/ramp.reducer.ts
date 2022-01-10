@@ -6,13 +6,13 @@ import {
   Metabolite,
   Ontology,
   Pathway,
-  Properties,
+  Properties, RampQuery,
   Reaction,
   SourceVersion
 } from "@ramp/models/ramp-models";
 
 import * as RampActions from './ramp.actions';
-import { RampEntity } from './ramp.models';
+import { RampEntity} from './ramp.models';
 
 export const RAMP_STORE_FEATURE_KEY = 'rampStore';
 
@@ -24,14 +24,40 @@ export interface State extends EntityState<RampEntity> {
   entityCounts?: any;
   metaboliteIntersects?:[];
   geneIntersects?:[];
-  ontologies?: Ontology[];
-  analytes?: Analyte[];
-  pathways?: Pathway[];
-  metabolites?: Metabolite[];
-  ontologiesTypeahead?: any[];
-  reactions?: Reaction[];
-  classes?: Classes[];
-  properties?: Properties[];
+  ontologies?: {
+    data: Ontology[],
+    query: RampQuery
+  };
+  analytes?: {
+    data: Analyte[],
+    query: RampQuery
+  };
+  pathways?: {
+    data: Pathway[],
+    query: RampQuery
+  };
+  reactions?: {
+    data: Reaction[],
+    query: RampQuery
+  };
+
+  metabolites?: {
+    data: Metabolite[],
+    query: RampQuery
+  };
+
+  ontologiesList?: any[];
+
+  metClasses?: {
+    data: Classes[],
+    query: RampQuery
+  };
+
+  properties?: {
+    data: Properties[],
+    query: RampQuery
+  };
+
   chemicalEnrichments?: any;
   pathwayEnrichments?: any;
 }
@@ -90,29 +116,29 @@ const rampReducer = createReducer(
   on(RampActions.loadSourceVersionsSuccess, (state, { versions }) =>
     ({...state, loading: false, sourceVersions: versions})),
 
-on(RampActions.fetchOntologiesFromMetabolitesSuccess, (state, { ontologies }) =>
-    ({...state, loading: false,  ontologies: ontologies})),
+on(RampActions.fetchOntologiesFromMetabolitesSuccess, (state, { data, query }) =>
+    ({...state, loading: false,  ontologies: { data, query }})),
 
-on(RampActions.fetchAnalytesFromPathwaysSuccess, (state, { analytes }) =>
-    ({...state, loading: false,  analytes: analytes})),
+on(RampActions.fetchAnalytesFromPathwaysSuccess, (state, { data, query }) =>
+    ({...state, loading: false,  analytes: { data, query }})),
 
-on(RampActions.fetchPathwaysFromAnalytesSuccess, (state, { pathways }) =>
-    ({...state, loading: false,  pathways: pathways})),
+on(RampActions.fetchPathwaysFromAnalytesSuccess, (state, { data, query }) =>
+    ({...state, loading: false,  pathways: { data, query }})),
 
-  on(RampActions.fetchMetabolitesFromOntologiesSuccess, (state, { metabolites }) =>
-    ({...state, loading: false,  metabolites: metabolites})),
+ on(RampActions.fetchCommonReactionAnalytesSuccess, (state, { data, query  }) =>
+    ({...state, loading: false,  reactions: { data, query }})),
 
-  on(RampActions.fetchOntologyTypeaheadSuccess, (state, { ontologies }) =>
-    ({...state, loading: false,  ontologiesTypeahead: ontologies})),
+  on(RampActions.fetchMetabolitesFromOntologiesSuccess, (state, { data, query }) =>
+    ({...state, loading: false,  metabolites: {data, query}})),
 
- on(RampActions.fetchCommonReactionAnalytesSuccess, (state, { reactions }) =>
-    ({...state, loading: false,  reactions: reactions})),
+  on(RampActions.fetchOntologiesSuccess, (state, { ontologies }) =>
+    ({...state, loading: false,  ontologiesList: ontologies})),
 
-on(RampActions.fetchClassesFromMetabolitesSuccess, (state, { classes }) =>
-    ({...state, loading: false,  classes: classes})),
+on(RampActions.fetchClassesFromMetabolitesSuccess, (state, { data, query }) =>
+    ({...state, loading: false,  metClasses: { data, query  }})),
 
-on(RampActions.fetchPropertiesFromMetabolitesSuccess, (state, { properties }) =>
-    ({...state, loading: false,  properties: properties})),
+on(RampActions.fetchPropertiesFromMetabolitesSuccess, (state, { data, query }) =>
+    ({...state, loading: false,  properties: { data, query }})),
 
 on(RampActions.fetchEnrichmentFromAnalytesSuccess, (state, { chemicalEnrichments }) =>
     ({...state, loading: false,  chemicalEnrichments: chemicalEnrichments})),
@@ -126,7 +152,7 @@ on(RampActions.fetchEnrichmentFromPathwaysSuccess, (state, { pathwayEnrichments 
     RampActions.loadSourceVersionsFailure,
     RampActions.fetchOntologiesFromMetabolitesFailure,
     RampActions.fetchMetaboliteFromOntologiesFailure,
-    RampActions.fetchOntologyTypeaheadFailure,
+    RampActions.fetchOntologiesFailure,
     RampActions.fetchCommonReactionAnalytesFailure,
     RampActions.fetchClassesFromMetabolitesFailure,
     RampActions.fetchPropertiesFromMetabolitesFailure,

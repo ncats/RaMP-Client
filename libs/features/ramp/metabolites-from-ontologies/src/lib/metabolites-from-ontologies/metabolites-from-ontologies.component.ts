@@ -2,10 +2,10 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ActivatedRoute} from "@angular/router";
-import {Metabolite} from "@ramp/models/ramp-models";
+import {Metabolite, RampQuery} from "@ramp/models/ramp-models";
 import {QueryPageComponent} from "@ramp/shared/ramp/query-page";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchMetabolitesFromOntologies, fetchOntologyTypeahead, RampFacade} from "@ramp/stores/ramp-store";
+import {fetchMetabolitesFromOntologies, fetchOntologies, RampFacade} from "@ramp/stores/ramp-store";
 import {debounceTime, distinctUntilChanged, map} from "rxjs";
 
 @Component({
@@ -37,7 +37,7 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
       sortable: true
     })
   ]
-  matches = 0;
+  query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   typeaheadCtrl: FormControl = new FormControl();
@@ -50,32 +50,35 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.typeaheadCtrl.valueChanges
+    this.rampFacade.dispatch(fetchOntologies());
+   /* this.typeaheadCtrl.valueChanges
       .pipe(
         debounceTime(200),
         distinctUntilChanged()
       )
-      .subscribe(term => this.rampFacade.dispatch(fetchOntologyTypeahead({term})));
-
-    this.rampFacade.ontologiesTypeahead$.pipe(
+      .subscribe(term => this.rampFacade.dispatch(fetchOntologies()));
+*/
+    this.rampFacade.ontologiesList$.pipe(
       map(res => {
         console.log(res);
         return res;
     })).subscribe();
 
-    this.rampFacade.metabolites$.subscribe((res: Metabolite[] | undefined) => {
-      if (res && res.length) {
-        this.metaboliteRaw = res;
-        this.matches = new Set([...res.map(obj => obj.ontology)]).size
-        this.dataAsDataProperty = res.map((metabolite: Metabolite) => {
+    this.rampFacade.metabolites$.subscribe((res: {data: Metabolite[], query: RampQuery }| undefined) => {
+      if (res && res.data) {
+        this.metaboliteRaw = res.data;
+        this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
           const newObj: { [key: string]: DataProperty } = {};
           Object.entries(metabolite).map((value: any, index: any) => {
             newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
           });
           return newObj;
         })
-        this.ref.markForCheck()
       }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.ref.markForCheck();
     })
   }
 

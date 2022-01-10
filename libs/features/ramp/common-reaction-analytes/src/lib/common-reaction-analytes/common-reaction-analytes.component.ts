@@ -1,8 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {DomSanitizer} from "@angular/platform-browser";
-import {ActivatedRoute} from "@angular/router";
-import {Reaction} from "@ramp/models/ramp-models";
-import {QueryPageComponent} from "@ramp/shared/ramp/query-page";
+import {RampQuery, Reaction} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchCommonReactionAnalytes, RampFacade} from "@ramp/stores/ramp-store";
 
@@ -29,7 +26,7 @@ export class CommonReactionAnalytesComponent implements OnInit {
       field: "inputCatalyzedBySourceIdsString",
     })
   ]
-  matches = 0;
+  query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
@@ -40,19 +37,22 @@ export class CommonReactionAnalytesComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.rampFacade.reactions$.subscribe((res: Reaction[] | undefined) => {
-      if (res && res.length) {
-        this.reactionRaw = res;
-        //  this.matches = new Set([...res.map(ont => ont.sourceId)]).size
-        this.dataAsDataProperty = res.map((reaction: Reaction) => {
+    this.rampFacade.reactions$.subscribe((res: {data: Reaction[], query: RampQuery} | undefined) => {
+      console.log(res);
+      if (res && res.data) {
+        this.reactionRaw = res.data;
+        this.dataAsDataProperty = res.data.map((reaction: Reaction) => {
           const newObj: { [key: string]: DataProperty } = {};
           Object.entries(reaction).map((value: any, index: any) => {
             newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
           });
           return newObj;
         })
-        this.ref.markForCheck()
       }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.ref.markForCheck()
     })
   }
 

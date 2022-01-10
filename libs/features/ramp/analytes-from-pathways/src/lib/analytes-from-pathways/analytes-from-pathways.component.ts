@@ -1,8 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {DomSanitizer} from "@angular/platform-browser";
-import {ActivatedRoute} from "@angular/router";
-import {Analyte, Pathway} from "@ramp/models/ramp-models";
-import {QueryPageComponent} from "@ramp/shared/ramp/query-page";
+import {Analyte, RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchAnalytesFromPathways, RampFacade} from "@ramp/stores/ramp-store";
 
@@ -45,7 +42,7 @@ export class AnalytesFromPathwaysComponent implements OnInit {
       sortable: true
     }),
   ]
-  matches = 0;
+  query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
@@ -56,20 +53,21 @@ export class AnalytesFromPathwaysComponent implements OnInit {
 
 
   ngOnInit(): void {
-   // super.ngOnInit();
-    this.rampFacade.analytes$.subscribe((res: Analyte[] | undefined) => {
-      if (res && res.length) {
-        this.analyteRaw = res;
-       this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
-        this.dataAsDataProperty = res.map((analyte: Analyte) => {
+    this.rampFacade.analytes$.subscribe((res: {data: Analyte[], query: RampQuery} | undefined) => {
+      if (res && res.data) {
+        this.analyteRaw = res.data;
+        this.dataAsDataProperty = res.data.map((analyte: Analyte) => {
           const newObj: { [key: string]: DataProperty } = {};
           Object.entries(analyte).map((value: any, index: any) => {
             newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
           });
           return newObj;
         })
-        this.ref.markForCheck()
       }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.ref.markForCheck();
     })
   }
 

@@ -10,3 +10,4 @@ export * from './lib/properties';
 export * from './lib/classes';
 export * from './lib/chemical-enrichment';
 export * from './lib/pathway-enrichment';
+export * from './lib/ramp-query';

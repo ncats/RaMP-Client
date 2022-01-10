@@ -53,8 +53,6 @@ export class Classes {
           ]
         }
       ]
-
-      console.log(this.classyFireTree);
     }
   }
 }

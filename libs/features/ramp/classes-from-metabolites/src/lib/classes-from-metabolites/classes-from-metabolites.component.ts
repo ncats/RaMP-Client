@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Classes} from "@ramp/models/ramp-models";
+import {Classes, RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchClassesFromMetabolites, RampFacade} from "@ramp/stores/ramp-store";
 import {TREE_VIEWER_COMPONENT} from "../features-ramp-classes-from-metabolites.module";
@@ -28,8 +28,7 @@ export class ClassesFromMetabolitesComponent implements OnInit {
       customComponent: TREE_VIEWER_COMPONENT
     })
   ]
-
-  matches = 0;
+  query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
@@ -40,12 +39,12 @@ export class ClassesFromMetabolitesComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.rampFacade.classes$.subscribe((res: Classes[] | undefined) => {
-      if (res && res.length) {
+    this.rampFacade.classes$.subscribe((res: {data: Classes[], query: RampQuery} | undefined) => {
+      console.log(res);
+      if (res && res.data) {
         //todo: download of this won't match R response
-        this.classesRaw = res;
-        this.matches = new Set([...res.map(obj => obj.sourceId)]).size
-        this.dataAsDataProperty = res.map((classes: Classes) => {
+        this.classesRaw = res.data;
+        this.dataAsDataProperty = res.data.map((classes: Classes) => {
           const newObj: { [key: string]: DataProperty } = {};
           Object.entries(classes).map((value: any, index: any) => {
             newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
@@ -53,8 +52,11 @@ export class ClassesFromMetabolitesComponent implements OnInit {
           return newObj;
         })
         console.log(this);
-        this.ref.markForCheck()
       }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.ref.markForCheck()
     })
   }
 

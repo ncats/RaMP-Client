@@ -20,11 +20,12 @@ const ROUTES: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(ROUTES),
-    SharedRampQueryPageModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(ROUTES),
+        SharedRampQueryPageModule,
+        MatButtonModule
+    ],
   declarations: [
     OntologySearchComponent
   ],

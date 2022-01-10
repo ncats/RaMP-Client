@@ -113,14 +113,11 @@ export class ObjectTreeComponent implements OnInit {
     private changeRef: ChangeDetectorRef) {
 }
   ngOnInit() {
-    console.log(this);
     this._data.subscribe( res => {
-      console.log(res);
     if(res && res.length) {
-      console.log(res);
       this.dataSource.data = res;
       this.treeControl.dataNodes = res;
-      if( this.expanded) {
+      if(this.expanded) {
         this.treeControl.expandAll();
       }
       this.changeRef.markForCheck();
