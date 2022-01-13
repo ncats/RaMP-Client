@@ -47,17 +47,18 @@ function() {
 
 ### TIM FORMATTED
 #* Return analyte source intersects
-#* @param analytetype specifies type of analyte intersects to return, 'met' or 'gene'
+#* @param analytetype specifies type of analyte intersects to return, 'mets' or 'gene'
+#* @param query_scope specifies 'global' or 'mapped-to-pathway'
 #* @get /api/analyte_intersects
-function(analytetype) {
+function(analytetype, query_scope) {
   response <- ""
   if(!missing(analytetype)) {
     if(analytetype == 'mets') {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json')
-      function_call <- "RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json')"
+      response <- RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json', scope=query_scope)
+      function_call <- paste0("RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json', scope='",query_scope,")")
     } else {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json')
-      function_call <- "RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json')"
+      response <- RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json', scope=query_scope)
+      function_call <- paste0("RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json', scope='",query_scope,")")
     }
     # have to convert from JSON to avoid double serializing JSON
     response <- jsonlite::fromJSON(response)
