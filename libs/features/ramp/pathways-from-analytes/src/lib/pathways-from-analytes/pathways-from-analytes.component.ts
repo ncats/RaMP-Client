@@ -1,7 +1,11 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Pathway, RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchPathwaysFromAnalytes, RampFacade} from "@ramp/stores/ramp-store";
+import {
+  fetchPathwaysFromAnalytes,
+  fetchPathwaysFromAnalytesFile,
+  RampFacade
+} from "@ramp/stores/ramp-store";
 
 @Component({
   selector: 'ramp-pathways-from-analytes',
@@ -9,7 +13,6 @@ import {fetchPathwaysFromAnalytes, RampFacade} from "@ramp/stores/ramp-store";
   styleUrls: ['./pathways-from-analytes.component.scss']
 })
 export class PathwaysFromAnalytesComponent implements OnInit {
-  pathwayRaw!: Pathway[];
   pathwayColumns: DataProperty[] = [
     new DataProperty({
       label: "Analyte Name",
@@ -35,6 +38,11 @@ export class PathwaysFromAnalytesComponent implements OnInit {
   query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
+  supportedIds!: {
+    metabolites: string[],
+    genes: string[]
+  } | undefined;
+
   constructor(
     private ref: ChangeDetectorRef,
     private rampFacade: RampFacade
@@ -43,27 +51,37 @@ export class PathwaysFromAnalytesComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.rampFacade.supportedIds$.subscribe(ids => {
+      this.supportedIds = ids
+      this.ref.markForCheck()
+    })
 
     this.rampFacade.pathways$.subscribe((res: {data: Pathway[], query: RampQuery} | undefined) => {
       if (res && res.data) {
-        this.pathwayRaw = res.data;
-      //  this.matches = new Set([...res.map(ont => ont.sourceId)]).size
-        this.dataAsDataProperty = res.data.map((pathway: Pathway) => {
-          const newObj: { [key: string]: DataProperty } = {};
-          Object.entries(pathway).map((value: any, index: any) => {
-            newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
-          });
-          return newObj;
-        })
-        this.ref.markForCheck()
+        this._mapData(res.data);
       }
       if (res && res.query) {
         this.query = res.query;
       }
+      this.ref.markForCheck();
     })
   }
 
   fetchPathways(event: string[]): void {
     this.rampFacade.dispatch(fetchPathwaysFromAnalytes({analytes: event}))
+  }
+
+  fetchPathwaysFile(event: string[]): void {
+    this.rampFacade.dispatch(fetchPathwaysFromAnalytesFile({analytes: event, format: 'tsv'}))
+  }
+
+  private _mapData(data: any): void {
+    this.dataAsDataProperty = data.map((analyte: Pathway) => {
+      const newObj: { [key: string]: DataProperty } = {};
+      Object.entries(analyte).map((value: any, index: any) => {
+        newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+      });
+      return newObj;
+    })
   }
 }

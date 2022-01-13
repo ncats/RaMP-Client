@@ -23,6 +23,7 @@
    "pathways-from-analytes" : {
     "title": "Pathways from Analytes",
      "input": "analytes",
+     "supportedIdTypes": "metabolites",
      "function": "analytes <- RaMP::getPathwayFromAnalyte(pathway=\"###REPLACE###\")",
     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
     "description": "write new description"

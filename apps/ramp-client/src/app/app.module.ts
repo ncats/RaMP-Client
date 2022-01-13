@@ -11,12 +11,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FeaturesRampRampHeaderModule } from '@ramp/features/ramp/ramp-header';
-import {RampFacade, RampService, StoresRampStoreModule} from '@ramp/stores/ramp-store';
+import {getSupportedIds, init, RampFacade, RampService, StoresRampStoreModule} from '@ramp/stores/ramp-store';
 import { environment } from '../environments/environment';
 
 export function set_url(rampService: RampService) {
   return () => {
     rampService._setUrl(environment.apiBaseUrl);
+  };
+}
+
+export function rampInit(rampFacade: RampFacade) {
+  return () => {
+    rampFacade.init();
   };
 }
 
@@ -54,6 +60,12 @@ export function set_url(rampService: RampService) {
       provide: APP_INITIALIZER,
       useFactory: set_url,
       deps: [RampService],
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: rampInit,
+      deps: [RampFacade],
       multi: true,
     },
   ],

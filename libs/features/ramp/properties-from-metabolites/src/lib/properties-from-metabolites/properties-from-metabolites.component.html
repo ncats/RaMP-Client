@@ -1,7 +1,7 @@
 <ramp-query-page
   [dataColumns]="propertiesColumns"
-  [rawData]="propertiesRaw"
   [dataAsDataProperty]="dataAsDataProperty"
   [rampQuery]="query"
+  (dataDownload)="fetchPropertiesFile($event)"
   (dataSearch)="fetchProperties($event)">
 </ramp-query-page>

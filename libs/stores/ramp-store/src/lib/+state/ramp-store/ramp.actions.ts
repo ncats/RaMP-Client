@@ -12,6 +12,19 @@ import {
 import { RampEntity} from './ramp.models';
 
 export const init = createAction('[Ramp] Init');
+
+export const initSuccess = createAction(
+  '[Ramp/API] init Success',
+  props<{
+    metabolites: string[],
+    genes: string[]
+  }>()
+);
+
+export const initFailure = createAction(
+  '[Ramp/API] init Failure',
+  props<{ error: any }>()
+);
 export const initAbout = createAction('[Ramp About Page] Init');
 
 export const loadRampSuccess = createAction(
@@ -116,6 +129,11 @@ export const fetchAnalytesFromPathways = createAction(
   props<{ pathways: string[] }>()
 );
 
+export const fetchAnalytesFromPathwaysFile = createAction(
+  '[Ramp/API] Fetch fetchAnalytesFromPathwaysFile',
+  props<{ pathways: string[], format: string }>()
+);
+
 export const fetchAnalytesFromPathwaysSuccess = createAction(
   '[Ramp/API] Fetch fetchAnalytesFromPathways Success',
   props<{
@@ -132,6 +150,11 @@ export const fetchAnalytesFromPathwaysFailure = createAction(
 export const fetchPathwaysFromAnalytes = createAction(
   '[Ramp/API] Fetch fetchPathwaysFromAnalytes',
   props<{analytes: string[]}>()
+);
+
+export const fetchPathwaysFromAnalytesFile = createAction(
+  '[Ramp/API] Fetch fetchPathwaysFromAnalytesFile',
+  props<{ analytes: string[], format: string }>()
 );
 
 export const fetchPathwaysFromAnalytesSuccess = createAction(
@@ -165,6 +188,11 @@ export const fetchCommonReactionAnalytes = createAction(
   props<{analytes: string[]}>()
 );
 
+export const fetchCommonReactionAnalytesFile = createAction(
+  '[Ramp/API] Fetch ffetchCommonReactionAnalytes',
+  props<{ analytes: string[], format: string }>()
+);
+
 export const fetchCommonReactionAnalytesSuccess = createAction(
   '[Ramp/API] Fetch fetchCommonReactionAnalytes Success',
   props<{
@@ -183,6 +211,11 @@ export const fetchClassesFromMetabolites = createAction(
   props<{metabolites: string[]}>()
 );
 
+export const fetchClassesFromMetabolitesFile = createAction(
+  '[Ramp/API] Fetch fetchClassesFromMetabolitesFile',
+  props<{metabolites: string[], format: string }>()
+);
+
 export const fetchClassesFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch fetchClassesFromMetabolites Success',
   props<{
@@ -199,6 +232,11 @@ export const fetchClassesFromMetabolitesFailure = createAction(
 export const fetchPropertiesFromMetabolites = createAction(
   '[Ramp/API] Fetch fetchPropertiesFromMetabolites',
   props<{metabolites: string[]}>()
+);
+
+export const fetchPropertiesFromMetabolitesFile = createAction(
+  '[Ramp/API] Fetch fetchPropertiesFromMetabolitesFile',
+  props<{metabolites: string[], format: string }>()
 );
 
 export const fetchPropertiesFromMetabolitesSuccess = createAction(

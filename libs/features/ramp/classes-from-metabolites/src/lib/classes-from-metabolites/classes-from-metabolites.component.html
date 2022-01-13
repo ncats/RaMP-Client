@@ -1,8 +1,8 @@
 <ramp-query-page
   [dataColumns]="classesColumns"
-  [rawData]="classesRaw"
   [dataAsDataProperty]="dataAsDataProperty"
   [rampQuery]="query"
+  (dataDownload)="fetchClassesFile($event)"
   (dataSearch)="fetchClasses($event)">
 </ramp-query-page>
 

@@ -4,6 +4,11 @@ library(config)
 library(R.cache)
 library(readr)
 
+serializers <- list(
+  "json" = serializer_json(),
+  "tsv" = serializer_tsv()
+)
+
 #* @filter cors
 cors <- function(req, res) {
   res$setHeader("Access-Control-Allow-Origin", "*")
@@ -30,6 +35,20 @@ function() {
   return(list(
     data = version_info,
     function_call="RaMP::getCurrentRaMPSourceDBVersions()"
+  ))
+}
+
+####
+#* Return analyte ID types
+#* @serializer unboxedJSON
+#* @get /api/id-types
+function() {
+  met <- RaMP::getPrefixesFromAnalytes("metabolite")
+  gene <- RaMP::getPrefixesFromAnalytes("gene")
+
+  return(list(
+    data = rbind(met,gene),
+    function_call='RaMP::getPrefixesFromAnalytes("metabolite"); RaMP::getPrefixesFromAnalytes("gene")'
   ))
 }
 
@@ -181,15 +200,15 @@ function(ontology="") {
 }
 
 ##########
-#' Return analytes from given list of pathways
+#' Return analytes from given list of pathways as either json or a tsv
 #' @param pathway
 #' @param analyte_type
+#' @param format one of "json" or "tsv"
 #' @get /api/analytes-from-pathways
 #' @post /api/analytes-from-pathways
-function(pathway="", analyte_type="both") {
+function(pathway="", analyte_type="both", format = "json", res) {
   pathway <- c(pathway)
   analyte <- analyte_type
-  pathways <- paste(pathway, collapse = ",")
   analytes_df <- tryCatch({
     analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
   },
@@ -197,57 +216,63 @@ function(pathway="", analyte_type="both") {
       print(cond)
       return(data.frame(stringsAsFactors = FALSE))
     })
+ pathways <- paste(pathway, collapse = ",")
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(as_attachment(analytes_df, "getAnalyteFromPathway.tsv"))
+  } else {
   return(
     list(
       data = analytes_df,
-      function_call = paste0("RaMP::getAnalyteFromPathway(", pathways ,")"),
+      function_call = paste0("RaMP::getAnalyteFromPathway(\"", pathways ,"\")"),
       numFoundIds = length(unique(analytes_df$pathwayName))
     )
   )
+  }
 }
 
 #####
-#todo this is no longer returning results
 #' Return pathways from given list of analytes
-#' @param analyte
+#' @param analytes
+#' @param format one of "json" or "tsv"
 #' @get /api/pathways-from-analytes
 #' @post /api/pathways-from-analytes
-function(analyte="") {
-  analytes <- c(analyte)
+function(analytes="", format = "json", res) {
+  analytes <- c(analytes)
+  print(analytes)
+  pathways_df <- tryCatch({
+    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+
   analytes <- paste(analytes, collapse = ",")
-  pathways_df_ids <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes,
-                                               NameOrIds = "ids"
+  res$serializer <- serializers[[format]]
+  print(analytes)
+  if(format == "tsv") {
+    return(
+      as_attachment(unique(pathways_df), "getPathwayFromAnalyte.tsv")
     )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  pathways_df_names <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(
-      analytes = analytes,
-      NameOrIds = "names"
-    )
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  print(pathways_df_ids)
-  pathways_df <- rbind(pathways_df_ids, pathways_df_names)
+  } else {
   return(
     list(
-      data = unique(pathways_df)
+      data = unique(pathways_df),
+      function_call = paste0("RaMP::getPathwayFromAnalyte(\"", analytes ,"\")"),
+      numFoundIds = length(unique(pathways_df$commonName))
     )
   )
+  }
 }
 
 ####
 # todo numfoundids returns too many
 #' Return analytes involved in same reaction as given list of analytes
 #' @param analyte
+#' @param format one of "json" or "tsv"
 #' @get /api/common-reaction-analytes
 #' @post /api/common-reaction-analytes
-function(analyte="") {
+function(analyte="", format = "json", res) {
   analytes <- c(analyte)
   analytes_names <- paste(analytes, collapse = ",")
   analytes_df_ids <- tryCatch({
@@ -272,6 +297,12 @@ function(analyte="") {
   #        }
   #    )
   #    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(
+      as_attachment(unique(analytes_df_ids), "rampFastCata.tsv")
+    )
+  } else {
   return(
     list(
       data = unique(analytes_df_ids),
@@ -279,14 +310,16 @@ function(analyte="") {
       numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
     )
   )
+  }
 }
 
 ######
 #' Return available chemical classes of given metabolites in RaMP-DB
 #' @param metabolites
+#' @param format one of "json" or "tsv"
 #' @get /api/chemical-classes
 #' @post /api/chemical-classes
-function(metabolites="") {
+function(metabolites="", format ="json", res) {
   mets <- c(metabolites)
   chemical_class_df <- tryCatch({
     classes_df <- RaMP::chemicalClassSurvey(
@@ -298,6 +331,12 @@ function(metabolites="") {
       return(data.frame(stringsAsFactors = FALSE))
     })
   mets <- paste(mets, collapse = ",")
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(
+      as_attachment(chemical_class_df$met_classes, "chemicalClassSurvey.tsv")
+    )
+  } else {
   return(
     list(
       data = chemical_class_df$met_classes,
@@ -305,15 +344,17 @@ function(metabolites="") {
       numFoundIds = length(unique(chemical_class_df$met_classes$sourceId))
     )
   )
+  }
 }
 
 #####
 #' Return chemical properties of given metabolites
 #' @param metabolites
 #' @param property
+#' @param format one of "json" or "tsv"
 #' @get /api/chemical-properties
 #' @post /api/chemical-properties
-function(metabolites="", property="all") {
+function(metabolites="", property="all", format = "json", res) {
   metabolites <- c(metabolites)
   #properties <- NULL
   properties <- property
@@ -331,6 +372,12 @@ function(metabolites="", property="all") {
       return(data.frame(stringsAsFactors = FALSE))
     })
   mets <- paste(metabolites, collapse = ",")
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(
+      as_attachment(chemical_properties_df$chem_props, "getChemicalProperties.tsv")
+    )
+  } else {
   return(
     list(
       data = chemical_properties_df$chem_props,
@@ -338,6 +385,7 @@ function(metabolites="", property="all") {
       numFoundIds = length(unique(chemical_properties_df$chem_props$chem_source_id))
     )
   )
+  }
 }
 
 #####
@@ -381,19 +429,7 @@ function(fishers_results, p_holmadj_cutoff=0.2, p_fdradj_cutoff=0.2) {
 ########## NOT USED ########
 
 
-####
-#* Return analyte ID types
-#* @serializer unboxedJSON
-#* @get /api/id-types
-function() {
-  met <- RaMP::getPrefixesFromAnalytes("metabolite")
-  gene <- RaMP::getPrefixesFromAnalytes("gene")
 
-  return(list(
-    data = rbind(met,gene),
-    function_call='RaMP::getPrefixesFromAnalytes("metabolite"); RaMP::getPrefixesFromAnalytes("gene")'
-  ))
-}
 
 ##### DUPLICATE
 #* Return pathways from source database

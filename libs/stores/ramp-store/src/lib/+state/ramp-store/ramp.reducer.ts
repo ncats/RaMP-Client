@@ -20,6 +20,10 @@ export interface State extends EntityState<RampEntity> {
   selectedId?: string | number; // which RampStore record has been selected
   loading: boolean; // has the RampStore list been loaded
   error?: string | null; // last known error (if any)
+  supportedIds?: {
+    metabolites: string[],
+    genes: string[]
+  }
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
   metaboliteIntersects?:[];
@@ -86,6 +90,7 @@ const rampReducer = createReducer(
   ),
 
   on(
+    RampActions.init,
     RampActions.initAbout,
     RampActions.fetchOntologiesFromMetabolites,
     RampActions.fetchAnalytesFromPathways,
@@ -113,7 +118,10 @@ const rampReducer = createReducer(
     })
   ),
 
-  on(RampActions.loadSourceVersionsSuccess, (state, { versions }) =>
+  on(RampActions.initSuccess, (state, { metabolites, genes }) =>
+    ({...state, loading: false, supportedIds: {metabolites: metabolites, genes: genes}})),
+
+ on(RampActions.loadSourceVersionsSuccess, (state, { versions }) =>
     ({...state, loading: false, sourceVersions: versions})),
 
 on(RampActions.fetchOntologiesFromMetabolitesSuccess, (state, { data, query }) =>
@@ -150,17 +158,21 @@ on(RampActions.fetchEnrichmentFromPathwaysSuccess, (state, { pathwayEnrichments 
     RampActions.loadRampFailure,
     RampActions.loadRampAboutFailure,
     RampActions.loadSourceVersionsFailure,
+    RampActions.fetchPathwaysFromAnalytesFailure,
     RampActions.fetchOntologiesFromMetabolitesFailure,
     RampActions.fetchMetaboliteFromOntologiesFailure,
     RampActions.fetchOntologiesFailure,
     RampActions.fetchCommonReactionAnalytesFailure,
     RampActions.fetchClassesFromMetabolitesFailure,
     RampActions.fetchPropertiesFromMetabolitesFailure,
-    (state, { error }) => ({
-      ...state,
-      loading: false,
-      error,
-    })
+    (state, { error }) => {
+      console.log(error);
+      return ({
+        ...state,
+        loading: false,
+        error,
+      })
+    }
   )
 );
 

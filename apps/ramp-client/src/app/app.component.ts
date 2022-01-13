@@ -96,11 +96,11 @@ export class AppComponent implements OnInit {
     this.rampFacade.error$.subscribe(error=> {
       if(error) {
         console.log(error);
-        this.dialog.open(ErrorDialogComponent, {
+       /* this.dialog.open(ErrorDialogComponent, {
           data: {
             error: error,
           },
-        });
+        });*/
       }
     })
 
@@ -109,5 +109,7 @@ export class AppComponent implements OnInit {
       this.changeRef.markForCheck();
 
     });
+
+  //  this.rampFacade.init();
   }
 }

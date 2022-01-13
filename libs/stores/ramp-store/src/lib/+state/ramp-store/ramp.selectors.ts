@@ -46,6 +46,11 @@ export const getSourceVersions = createSelector(
   }
 );
 
+export const getSupportedIds = createSelector(
+  getRampState,
+  (state: State) => state.supportedIds
+);
+
 export const getEntityCounts = createSelector(
   getRampState,
   (state: State) => state.entityCounts

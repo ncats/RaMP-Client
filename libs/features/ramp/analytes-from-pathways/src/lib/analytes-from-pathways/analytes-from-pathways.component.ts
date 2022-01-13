@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Analyte, RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchAnalytesFromPathways, RampFacade} from "@ramp/stores/ramp-store";
+import {fetchAnalytesFromPathways, fetchAnalytesFromPathwaysFile, RampFacade} from "@ramp/stores/ramp-store";
 
 @Component({
   selector: 'ramp-analytes-from-pathways',
@@ -9,7 +9,6 @@ import {fetchAnalytesFromPathways, RampFacade} from "@ramp/stores/ramp-store";
   styleUrls: ['./analytes-from-pathways.component.scss']
 })
 export class AnalytesFromPathwaysComponent implements OnInit {
-  analyteRaw!: Analyte[];
   analyteColumns: DataProperty[] = [
     new DataProperty({
       label: "Pathway Name",
@@ -48,21 +47,14 @@ export class AnalytesFromPathwaysComponent implements OnInit {
   constructor(
     private ref: ChangeDetectorRef,
     private rampFacade: RampFacade
-) {
+  ) {
   }
 
 
   ngOnInit(): void {
     this.rampFacade.analytes$.subscribe((res: {data: Analyte[], query: RampQuery} | undefined) => {
       if (res && res.data) {
-        this.analyteRaw = res.data;
-        this.dataAsDataProperty = res.data.map((analyte: Analyte) => {
-          const newObj: { [key: string]: DataProperty } = {};
-          Object.entries(analyte).map((value: any, index: any) => {
-            newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
-          });
-          return newObj;
-        })
+        this._mapData(res.data);
       }
       if (res && res.query) {
         this.query = res.query;
@@ -73,5 +65,19 @@ export class AnalytesFromPathwaysComponent implements OnInit {
 
   fetchAnalytes(event: string[]): void {
     this.rampFacade.dispatch(fetchAnalytesFromPathways({pathways: event}))
+  }
+
+  fetchAnalytesFile(event: string[]): void {
+    this.rampFacade.dispatch(fetchAnalytesFromPathwaysFile({pathways: event, format: 'tsv'}))
+  }
+
+  private _mapData(data: any): void {
+    this.dataAsDataProperty = data.map((analyte: Analyte) => {
+      const newObj: { [key: string]: DataProperty } = {};
+      Object.entries(analyte).map((value: any, index: any) => {
+        newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+      });
+      return newObj;
+    })
   }
 }

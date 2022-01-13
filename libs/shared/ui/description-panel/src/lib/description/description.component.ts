@@ -9,5 +9,6 @@ import {SafeHtml} from "@angular/platform-browser";
 })
 export class DescriptionComponent {
   @Input() function!: string | undefined;
+  @Input() supportedIds?: string[];
   @Input() description!: SafeHtml;
 }

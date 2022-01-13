@@ -1,7 +1,8 @@
 <ramp-query-page
   [dataColumns]="analyteColumns"
-  [rawData]="analyteRaw"
   [dataAsDataProperty]="dataAsDataProperty"
   [rampQuery]="query"
-  (dataSearch)="fetchAnalytes($event)">
+  (dataSearch)="fetchAnalytes($event)"
+  (dataDownload)="fetchAnalytesFile($event)"
+>
 </ramp-query-page>

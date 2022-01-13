@@ -15,6 +15,7 @@ export class RampFacade {
   allRampEntity$ = this.store.pipe(select(RampSelectors.getAllRampEntity));
   allRampStore$ = this.store.pipe(select(RampSelectors.getAllRamp));
   selectedRampStore$ = this.store.pipe(select(RampSelectors.getSelected));
+  supportedIds$ = this.store.pipe(select(RampSelectors.getSupportedIds));
   sourceVersions$ = this.store.pipe(select(RampSelectors.getSourceVersions));
   error$ = this.store.pipe(select(RampSelectors.getRampError));
   ontologies$ = this.store.pipe(select(RampSelectors.getOntologies));

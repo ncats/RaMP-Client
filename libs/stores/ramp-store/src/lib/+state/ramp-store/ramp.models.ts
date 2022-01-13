@@ -16,6 +16,10 @@ import {
 export interface RampEntity {
   id: string | number; // Primary ID
   name: string;
+  supportedIds?: {
+    metabolites: string[],
+    genes: string[]
+  }
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
   metaboliteIntersects?:[];
