@@ -115,3 +115,22 @@
     class="detail-row"
   ></tr>
 </table>
+<div
+  fxLayout="row"
+  fxLayout.xs="column"
+  fxLayoutAlign="end center"
+  class="body-row paginator-row"
+  *ngIf="showPaginator && pageData"
+>
+  <div fxFlex="55" fxFlexAlign="end">
+    <mat-paginator
+      [pageSizeOptions]="[10, 20, 50]"
+      [pageSize]="pageData.skip > 0 ? pageData.skip : 10"
+      [length]="pageData.total ? pageData.total : 10"
+      [showFirstLastButtons]="true"
+      (page)="changePage($event)"
+      [hidePageSize]="hidePageSize"
+    >
+    </mat-paginator>
+  </div>
+</div>

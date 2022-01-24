@@ -1,8 +1,8 @@
 
 <ramp-query-page
   [dataColumns]="ontologyColumns"
-  [rawData]="ontologyRaw"
   [dataAsDataProperty]="dataAsDataProperty"
   [rampQuery]="query"
+  (dataDownload)="fetchOntologiesFile($event)"
   (dataSearch)="fetchOntologies($event)">
 </ramp-query-page>

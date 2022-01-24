@@ -91,12 +91,17 @@ function(analytetype) {
 #####
 #* Return ontologies from list of metabolites
 #* @param metabolite
+#* @param format one of "json" or "tsv"
 #* @get /api/ontologies-from-metabolites
 #* @post /api/ontologies-from-metabolites
-function(metabolite="", type="biological") {
+function(metabolite="", type="biological", format = "json", res) {
   metabolites_ids <- c(metabolite)
   ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
   metabolites_ids <- paste(metabolites_ids, collapse = ",")
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(as_attachment(ontologies_df, "getOntoFromMeta.tsv"))
+  } else {
   return(
     list(
       data = ontologies_df,
@@ -104,6 +109,7 @@ function(metabolite="", type="biological") {
       numFoundIds = length(unique(ontologies_df$sourceId))
     )
   )
+  }
 }
 
 #####

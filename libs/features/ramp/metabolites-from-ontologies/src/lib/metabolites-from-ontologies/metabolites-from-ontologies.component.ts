@@ -41,6 +41,9 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   typeaheadCtrl: FormControl = new FormControl();
+  ontologies!: any[];
+
+//  columns = ['select', 'ontology', 'count'];
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -59,13 +62,25 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
       .subscribe(term => this.rampFacade.dispatch(fetchOntologies()));
 */
     this.rampFacade.ontologiesList$.pipe(
-      map(res => {
+      map((res: any) => {
         console.log(res);
-        return res;
+        if (res && res.data) {
+          this.ontologies = res.data.map((ont: { ontologyType: string; values: any[] }) =>{
+
+          console.log(ont);
+          return {
+            ontologyType: ont.ontologyType,
+            values: ont.values.map(val => val = {value: val.ontology})
+          }});
+          this.ref.markForCheck();
+        }
     })).subscribe();
 
     this.rampFacade.metabolites$.subscribe((res: {data: Metabolite[], query: RampQuery }| undefined) => {
       if (res && res.data) {
+        console.log(res.data)
+
+/*
         this.metaboliteRaw = res.data;
         this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
           const newObj: { [key: string]: DataProperty } = {};
@@ -73,11 +88,11 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
             newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
           });
           return newObj;
-        })
+        })*/
       }
-      if (res && res.query) {
+   /*   if (res && res.query) {
         this.query = res.query;
-      }
+      }*/
       this.ref.markForCheck();
     })
   }

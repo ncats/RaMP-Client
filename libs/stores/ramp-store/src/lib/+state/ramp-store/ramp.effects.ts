@@ -3,7 +3,7 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {Analyte, Ontology, Pathway, Reaction, SourceVersion} from "@ramp/models/ramp-models";
 import {
   fetchClassesFromMetabolitesFile,
-  fetchCommonReactionAnalytesFile,
+  fetchCommonReactionAnalytesFile, fetchOntologiesFromMetabolitesFile,
   fetchPathwaysFromAnalytesFile,
   RampService
 } from '@ramp/stores/ramp-store';
@@ -84,6 +84,15 @@ export class RampEffects {
     )
   )
 
+  fetchOntologiesFromMetabolitesFile = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchOntologiesFromMetabolitesFile),
+      tap((action) =>
+        this.rampService.fetchOntologiesFromMetabolitesFile(action.metabolite, action.format)
+      )
+    ), {dispatch: false}
+  )
+
 fetchMetabolitesFromOntologies = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchMetabolitesFromOntologies),
@@ -106,13 +115,14 @@ fetchMetabolitesFromOntologies = createEffect(() =>
     )
   )
 
+
   fetchOntologies = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchOntologies),
       mergeMap(() =>
         this.rampService.fetchOntologies()
           .pipe(
-            map((ret: any[]) => RampActions.fetchOntologiesSuccess({ ontologies: ret }),
+            map((ret:any) => RampActions.fetchOntologiesSuccess({ ontologies: ret }),
               catchError((error:ErrorEvent) => of(RampActions.fetchOntologiesFailure({error})))
             )
           )
@@ -257,7 +267,6 @@ fetchPathwaysFromAnalytes = createEffect(() =>
       )
     ), {dispatch: false}
   )
-
 
   fetchPropertiesFromMetabolites = createEffect(() =>
     this.actions$.pipe(

@@ -9,15 +9,15 @@ import {EffectsModule} from "@ngrx/effects";
 import {StoreModule} from "@ngrx/store";
 import {RampFacade, StoresRampStoreModule} from "@ramp/stores/ramp-store";
 
-import { OntologySearchComponent } from './ontology-search.component';
+import { OntologiesFromMetabolitesComponent } from './ontologies-from-metabolites.component';
 
-describe('OntologySearchComponent', () => {
-  let component: OntologySearchComponent;
-  let fixture: ComponentFixture<OntologySearchComponent>;
+describe('OntologiesFromMetabolitesComponent', () => {
+  let component: OntologiesFromMetabolitesComponent;
+  let fixture: ComponentFixture<OntologiesFromMetabolitesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OntologySearchComponent ],
+      declarations: [ OntologiesFromMetabolitesComponent ],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
@@ -61,7 +61,7 @@ describe('OntologySearchComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OntologySearchComponent);
+    fixture = TestBed.createComponent(OntologiesFromMetabolitesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

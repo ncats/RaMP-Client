@@ -323,6 +323,16 @@ fetchEnrichmentFromPathways2(analytes: string[]) {
       );
   }
 
+  fetchOntologiesFromMetabolitesFile(metabolite: string[], format: string) {
+    const params = {
+      metabolite: metabolite,
+      format: format
+    };
+    this.http
+      .post<string[]>(`${this.url}ontologies-from-metabolites`, params, HTTP_OPTIONS)
+      .subscribe((response: any) => this._downloadFile(response, "fetchOntologiesFromMetabolites"));
+  }
+
   fetchMetabolitesFromOntologies(ontologies: string[]): Observable<{metabolites: Metabolite[], functionCall: string, numFoundIds: number}> {
     const options = {
       ontology: ontologies.join(',')
@@ -345,12 +355,32 @@ fetchEnrichmentFromPathways2(analytes: string[]) {
       .get<string[]>(`${this.url}ontology-types`) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          console.log(response);
-          return response.data //.map((obj: any) => new Pathway(obj))
+          const ontoMap: Map<string, {ontologyType: string, values: Ontology[]}> = new Map<string, {ontologyType: string, values: Ontology[]}>();
+          response.uniq_ontology_types.forEach((onto:string) => ontoMap.set(onto, {ontologyType: onto, values: []}));
+          response.data.forEach((ontoType: any) => {
+            let cl = ontoMap.get(ontoType.HMDBOntologyType);
+            if (cl) {
+              cl.values.push(new Ontology(ontoType));
+            } else {
+              cl = {ontologyType: ontoType.HMDBOntologyType, values: [new Ontology(ontoType)]}
+            }
+            ontoMap.set(ontoType.HMDBOntologyType, cl);
+          })
+          console.log([...ontoMap.values()])
+          return {
+            data: [...ontoMap.values()]
+          }
+
+
         }),
-        catchError(this.handleError('pathways from analytes', []))
+      //  catchError(this.handleError('pathways from analytes', []))
       );
   }
+
+
+
+
+
 
   /**
    * Handle Http operation that failed.

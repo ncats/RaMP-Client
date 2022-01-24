@@ -111,6 +111,11 @@ export const fetchOntologiesFromMetabolites = createAction(
   props<{analytes: string[]}>()
 );
 
+export const fetchOntologiesFromMetabolitesFile = createAction(
+  '[Ramp/API] Fetch fetchOntologiesFromMetabolitesFile',
+  props<{metabolite: string[], format: string }>()
+);
+
 export const fetchOntologiesFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch OntologiesFromMetabolites Success',
   props<{
@@ -251,6 +256,7 @@ export const fetchPropertiesFromMetabolitesFailure = createAction(
   '[Ramp/API] Fetch fetchPropertiesFromMetabolites Failure',
   props<{ error: any }>()
 );
+
 export const fetchEnrichmentFromAnalytes = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromAnalytes',
   props<{analytes: string[]}>()

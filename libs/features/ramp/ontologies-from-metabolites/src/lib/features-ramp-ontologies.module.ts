@@ -10,12 +10,12 @@ import {SharedNcatsDataDownloadModule} from "@ramp/shared/ncats/data-download";
 import {SharedRampQueryPageModule} from "@ramp/shared/ramp/query-page";
 import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
 import {SharedUiNcatsDatatableModule} from "@ramp/shared/ui/ncats-datatable";
-import { OntologySearchComponent } from './ontology-search/ontology-search.component';
+import { OntologiesFromMetabolitesComponent } from './ontologies-from-metabolites/ontologies-from-metabolites.component';
 
 const ROUTES: Routes = [
   {
     path: '',
-    component: OntologySearchComponent,
+    component: OntologiesFromMetabolitesComponent,
   },
 ];
 
@@ -27,7 +27,7 @@ const ROUTES: Routes = [
         MatButtonModule
     ],
   declarations: [
-    OntologySearchComponent
+    OntologiesFromMetabolitesComponent
   ],
 })
 export class FeaturesRampOntologiesModule {}

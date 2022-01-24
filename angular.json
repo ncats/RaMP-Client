@@ -634,6 +634,32 @@
       },
       "tags": []
     },
+    "shared-ui-filter-panel": {
+      "projectType": "library",
+      "root": "libs/shared/ui/filter-panel",
+      "sourceRoot": "libs/shared/ui/filter-panel/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/filter-panel"],
+          "options": {
+            "jestConfig": "libs/shared/ui/filter-panel/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/filter-panel/src/**/*.ts",
+              "libs/shared/ui/filter-panel/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "shared-ui-header-template": {
       "projectType": "library",
       "root": "libs/shared/ui/header-template",

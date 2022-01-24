@@ -70,6 +70,9 @@
       "@ramp/shared/ui/error-dialog": [
         "libs/shared/ui/error-dialog/src/index.ts"
       ],
+      "@ramp/shared/ui/filter-panel": [
+        "libs/shared/ui/filter-panel/src/index.ts"
+      ],
       "@ramp/shared/ui/header-template": [
         "libs/shared/ui/header-template/src/index.ts"
       ],
