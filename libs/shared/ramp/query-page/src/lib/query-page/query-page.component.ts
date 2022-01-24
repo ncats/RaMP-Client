@@ -54,9 +54,7 @@ export class QueryPageComponent implements OnInit {
     }
 
     if(change.dataAsDataProperty && !change.dataAsDataProperty.firstChange) {
-      console.log(this);
      if(!this.dataAsDataProperty.length || this.dataAsDataProperty.length === 0) {
-       console.log("yo");
        this.noDataArr = true;
      }
     }

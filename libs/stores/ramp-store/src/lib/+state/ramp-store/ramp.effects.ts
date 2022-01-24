@@ -167,7 +167,6 @@ fetchPathwaysFromAnalytes = createEffect(() =>
         this.rampService.fetchPathwaysFromAnalytes(action.analytes)
           .pipe(
             map((ret: {pathways: Pathway[], functionCall: string, numFoundIds: number}) => {
-              console.log(ret);
               return RampActions.fetchPathwaysFromAnalytesSuccess(
                 {
                   data: ret.pathways,
@@ -296,7 +295,6 @@ fetchChemicalAnalysis = createEffect(() =>
         this.rampService.fetchEnrichmentFromAnalytes(action.analytes)
           .pipe(
             map((ret: any) => {
-              console.log(ret);
              return RampActions.fetchEnrichmentFromAnalytesSuccess({ chemicalEnrichments: ret })
               },
               catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromAnalytesFailure({error})))
@@ -313,7 +311,6 @@ fetchPathwayAnalysis = createEffect(() =>
         this.rampService.fetchEnrichmentFromPathways(action.pathways, action.p_holmadj_cutoff, action.p_fdradj_cutoff)
           .pipe(
             map((ret: any) => {
-              console.log(ret);
              return RampActions.fetchEnrichmentFromPathwaysSuccess({ pathwayEnrichments: ret })
               },
               catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromPathwaysFailure({error})))

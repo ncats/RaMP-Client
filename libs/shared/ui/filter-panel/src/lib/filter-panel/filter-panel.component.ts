@@ -50,9 +50,7 @@ export class FilterPanelComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this);
     this._data.subscribe(data => {
-      console.log(data);
       this.dataSource = new MatTableDataSource(data);
     //  this.dataSource.data = data
     });

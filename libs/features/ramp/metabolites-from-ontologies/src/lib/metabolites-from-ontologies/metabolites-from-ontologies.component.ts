@@ -63,12 +63,9 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
 */
     this.rampFacade.ontologiesList$.pipe(
       map((res: any) => {
-        console.log(res);
         if (res && res.data) {
           this.ontologies = res.data.map((ont: { ontologyType: string; values: any[] }) =>{
-
-          console.log(ont);
-          return {
+            return {
             ontologyType: ont.ontologyType,
             values: ont.values.map(val => val = {value: val.ontology})
           }});

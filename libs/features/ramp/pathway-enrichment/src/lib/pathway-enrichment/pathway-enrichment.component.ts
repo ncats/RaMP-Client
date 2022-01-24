@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {PathwayEnrichment} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
@@ -10,8 +10,8 @@ import {fetchEnrichmentFromPathways, RampFacade} from "@ramp/stores/ramp-store";
   styleUrls: ['./pathway-enrichment.component.scss']
 })
 export class PathwayEnrichmentComponent implements OnInit {
-  holmFormCtrl: FormControl = new FormControl(.2);
-  fdrFormCtrl: FormControl = new FormControl(.2);
+  @Input()holmFormCtrl: FormControl = new FormControl(.2);
+  @Input()fdrFormCtrl: FormControl = new FormControl(.2);
 
   enrichmentRaw!: PathwayEnrichment[];
   enrichmentColumns: DataProperty[] = [
@@ -69,7 +69,6 @@ export class PathwayEnrichmentComponent implements OnInit {
   ngOnInit(): void {
     this.rampFacade.pathwayEnrichment$.subscribe((res: PathwayEnrichment[] | undefined) => {
       if (res && res.length) {
-        console.log(res);
         this.enrichmentRaw = res;
         //  this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
         this.dataAsDataProperty = res.map((enrichment: PathwayEnrichment) => {

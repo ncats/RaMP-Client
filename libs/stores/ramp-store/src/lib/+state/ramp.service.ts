@@ -154,7 +154,6 @@ fetchCommonReactionAnalytes(analytes: string[]): Observable<{reactions: Reaction
       .post<string[]>(`${this.url}common-reaction-analytes`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          console.log(response)
           return {
             reactions: response.data.map((obj: any) => new Reaction(obj)),
             functionCall: response.function_call[0],
@@ -219,7 +218,6 @@ fetchChemicalClass(metabolites: string[]): Observable<{metClasses: Classes[], fu
       .post<string[]>(`${this.url}chemical-properties`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          console.log(response)
           return {
             properties: response.data.map((obj: any) => new Properties(obj)),
             functionCall: response.function_call[0],
@@ -247,7 +245,6 @@ fetchChemicalClass(metabolites: string[]): Observable<{metClasses: Classes[], fu
       .post<string[]>(`${this.url}chemical-properties`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          console.log(response)
           return response.data.map((obj: any) => new Properties(obj));
         }),
         catchError(this.handleError('chemical properties', []))
@@ -264,7 +261,6 @@ fetchChemicalClass(metabolites: string[]): Observable<{metClasses: Classes[], fu
              .post<string[]>(`${this.url}combined-fisher-test`,  {pathways: response.data})
          }),*/
          mergeMap((req: any) => {
-           console.log(req);
            return this.http
              .post<string[]>(`${this.url}filter-fisher-test-results`,  {
                fishers_results: req.data.fishresults,
@@ -280,7 +276,6 @@ fetchChemicalClass(metabolites: string[]): Observable<{metClasses: Classes[], fu
              })
          }),*/
          map((response: any) => {
-               console.log(response)
                return response.data.fishresults.map((obj: any) => new FisherResult(obj));
          })
        )
@@ -292,7 +287,6 @@ fetchEnrichmentFromPathways2(analytes: string[]) {
       return pathways
         .pipe(
          mergeMap(pathways => {
-           console.log(pathways);
            const options = {
              pathways: pathways
            };
@@ -300,7 +294,6 @@ fetchEnrichmentFromPathways2(analytes: string[]) {
              .post<string[]>(`${this.url}combined-fisher-test`,  options)
          }),
          map((response: any) => {
-               console.log(response)
                return response.data.fishresults.map((obj: any) => new FisherResult(obj));
          })
        )
@@ -366,7 +359,6 @@ fetchEnrichmentFromPathways2(analytes: string[]) {
             }
             ontoMap.set(ontoType.HMDBOntologyType, cl);
           })
-          console.log([...ontoMap.values()])
           return {
             data: [...ontoMap.values()]
           }
