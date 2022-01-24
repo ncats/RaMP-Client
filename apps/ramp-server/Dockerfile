@@ -8,6 +8,8 @@ COPY plumber.R /usr/local/lib/R/site-library
 
 COPY runRamp.R /usr/local/lib/R/site-library
 
+COPY db.R /usr/local/lib/R/site-library
+
 COPY install.R install.R
 
 RUN Rscript install.R
