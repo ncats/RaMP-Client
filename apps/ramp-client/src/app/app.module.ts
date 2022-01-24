@@ -11,7 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FeaturesRampRampHeaderModule } from '@ramp/features/ramp/ramp-header';
-import {getSupportedIds, init, RampFacade, RampService, StoresRampStoreModule} from '@ramp/stores/ramp-store';
+import { RampFacade, RampService, StoresRampStoreModule} from '@ramp/stores/ramp-store';
 import { environment } from '../environments/environment';
 
 export function set_url(rampService: RampService) {
