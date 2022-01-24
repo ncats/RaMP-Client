@@ -4,7 +4,7 @@ pipeline {
         skipDefaultCheckout()
     }
     agent {
-        node { label 'build && aws && linux'}
+        node { label 'internal-build.ncats'}
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -52,6 +52,9 @@ pipeline {
                         script {
                             def image = docker.build("${env.IMAGE_NAME}", "-f ${env.PACKAGE_DIR}/Dockerfile --no-cache .")
                             docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
+                                docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
+                            }
+                            docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
                                 docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
                             }
                         }
