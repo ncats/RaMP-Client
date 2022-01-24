@@ -44,27 +44,15 @@ pipeline {
             }
             steps {
                 sshagent (credentials: ['871f96b5-9d34-449d-b6c3-3a04bbd4c0e4']) {
-                    nodejs(configId: 'kw-npmrc', nodeJSInstallationName: 'Node.js 16.10') {
-                        withEnv([
-                            "IMAGE_NAME=rampdb-client",
-                            "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
-                        ]) {
-                            checkout scm
-                            dir(env.PACKAGE_DIR) {
-                                sh '''
-                                git config --global url."git@github.com:".insteadOf "https://github.com/"
-                                npm install npm@7.24.0
-                                npm i
-                                npm install -g @angular/cli
-                                NODE_OPTIONS=--max_old_space_size=4096 ng build ramp-client --prod
-                                chmod 644 ./dist/apps/ramp-client/*
-                                '''
-                                script {
-                                    def image = docker.build("${env.IMAGE_NAME}", "--no-cache ." 
-                                    docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
-                                        docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
-                                    }
-                                }
+                    withEnv([
+                        "IMAGE_NAME=rampdb-client",
+                        "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
+                    ]) {
+                        checkout scm
+                        script {
+                            def image = docker.build("${env.IMAGE_NAME}", "-f ${env.PACKAGE_DIR}/Dockerfile --no-cache ." 
+                            docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
+                                docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
                             }
                         }
                     }
