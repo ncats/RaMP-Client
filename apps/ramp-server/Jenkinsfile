@@ -4,7 +4,7 @@ pipeline {
         skipDefaultCheckout()
     }
     agent {
-        node { label 'build && aws && linux'}
+        node { label 'internal-build.ncats'}
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -14,7 +14,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = "rampdb-api"
-        PACKAGE_DIR = "server"
+        PACKAGE_DIR = "apps/ramp-server"
         DOCKER_REPO_NAME = "684150170045.dkr.ecr.us-east-1.amazonaws.com/rampdb-api"
     }
     stages {
@@ -49,15 +49,14 @@ pipeline {
                         "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
                         checkout scm
-                        configFileProvider([
-                            configFile(fileId: 'ramp-api-install.R', targetLocation: 'server/install.R')
-                        ]) {
                         dir(env.PACKAGE_DIR) {
                             script {
                                 def image = docker.build("${env.IMAGE_NAME}","--no-cache .")
                                 docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
                                     docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
-                                    }
+                                }
+                                docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
+                                    docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
                                 }
                             }
                         }
@@ -75,7 +74,6 @@ pipeline {
                     configFile(fileId: 'ramp-api-config.yml', targetLocation: 'config.yml'),
                     configFile(fileId: 'ramp-api-docker-compose.yml', targetLocation: 'docker-compose.yml'),
                     configFile(fileId: 'runRampServer.R', targetLocation: 'runRamp.R')
-
                 ]) {
                     withEnv([
                             "IMAGE_NAME=rampdb-api",
