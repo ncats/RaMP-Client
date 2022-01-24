@@ -1,9 +1,11 @@
 export class Ontology {
   HMDBOntologyType!: string;
-  idType!: string;
-  metabolites!: string;
-  ontology!: string;
-  sourceId!: string;
+  idType?: string;
+  metabolites?: string;
+  ontology?: string;
+  sourceId?: string;
+  commonName?: string;
+  rampOntologyId?: string;
 
   constructor(obj: any) {
     if(obj.HMDBOntologyType) {
@@ -20,6 +22,12 @@ export class Ontology {
     }
     if(obj.sourceId) {
       this.sourceId = obj.sourceId;
+    }
+    if(obj.commonName) {
+      this.ontology = obj.commonName;
+    }
+    if(obj.rampOntologyId) {
+      this.rampOntologyId = obj.rampOntologyId;
     }
   }
 }

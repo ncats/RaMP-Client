@@ -1,7 +1,8 @@
 <ramp-query-page
   [dataColumns]="pathwayColumns"
-  [rawData]="pathwayRaw"
   [dataAsDataProperty]="dataAsDataProperty"
-  [matches]="matches"
+  [rampQuery]="query"
+  [supportedIdTypes] = supportedIds
+  (dataDownload)="fetchPathwaysFile($event)"
   (dataSearch)="fetchPathways($event)">
 </ramp-query-page>

@@ -3,5 +3,12 @@
   [rawData]="enrichmentRaw"
   [dataAsDataProperty]="dataAsDataProperty"
   [matches]="matches"
-  (dataSearch)="fetchenrichment($event)">
+  (dataSearch)="fetchEnrichment($event)">
+  <div class ="additional-params">
+      <mat-label>p_holmadj_cutoff</mat-label>
+      <mat-slider min="0" max="1.0" step="0.1" value=".2" [formControl]="holmFormCtrl"></mat-slider>
+    <br>
+      <mat-label>p_fdradj_cutoff</mat-label>
+      <mat-slider min="0" max="1.0" step="0.1" value=".2" [formControl]="fdrFormCtrl"></mat-slider>
+  </div>
 </ramp-query-page>

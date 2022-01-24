@@ -1,12 +1,13 @@
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
 import {EffectsModule} from "@ngrx/effects";
 import {StoreModule} from "@ngrx/store";
+import {MatSliderModule} from '@angular/material/slider';
 import {RampFacade, StoresRampStoreModule} from "@ramp/stores/ramp-store";
 
 import { PathwayEnrichmentComponent } from './pathway-enrichment.component';
@@ -23,8 +24,8 @@ describe('PathwayEnrichmentComponent', () => {
         RouterTestingModule,
         StoresRampStoreModule,
         HttpClientTestingModule,
-        FormsModule,
         ReactiveFormsModule,
+        MatSliderModule,
         StoreModule.forRoot(
           {},
           {

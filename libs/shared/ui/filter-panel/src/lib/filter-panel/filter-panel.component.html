@@ -1,0 +1,43 @@
+<mat-card>
+  <mat-card-content>
+    <div >
+      <table mat-table #filterTable [dataSource]="dataSource">
+
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell class="filter-cell checkbox" *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null"
+                          [checked]="fieldSelection.hasValue() && isAllSelected()"
+                          [indeterminate]="fieldSelection.hasValue() && !isAllSelected()"
+                          [aria-label]="'select all'">
+              <span class="mat-title facet-title">{{label}}</span>
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? fieldSelection.toggle(row) : null"
+                          [checked]="fieldSelection.isSelected(row)"
+                          aria-label={{row.key}}>
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="value">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row" >{{row.value}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="count">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell class="filter-cell count" *matCellDef="let row">{{row?.count}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumns;"
+                 (click)="fieldSelection.toggle(row.key)">
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

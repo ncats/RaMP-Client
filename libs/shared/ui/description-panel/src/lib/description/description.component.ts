@@ -8,6 +8,7 @@ import {SafeHtml} from "@angular/platform-browser";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DescriptionComponent {
-  @Input() function!: string;
+  @Input() function!: string | undefined;
+  @Input() supportedIds?: string[];
   @Input() description!: SafeHtml;
 }

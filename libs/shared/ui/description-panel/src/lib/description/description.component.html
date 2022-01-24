@@ -1,5 +1,10 @@
 <mat-card class="helper-card">
   <div class="description" [innerHTML]="description"></div>
+  <br>
+  <div class="supportedIds" *ngIf="supportedIds">
+    The following id types are supported: <br>
+    <span>{{supportedIds}} </span>
+  </div>
   <div>
     <br>
     <div *ngIf="function">The following R function was called:</div>

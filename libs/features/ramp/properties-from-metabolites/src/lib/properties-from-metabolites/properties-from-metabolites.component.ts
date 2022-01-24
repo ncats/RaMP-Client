@@ -1,8 +1,12 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {Properties} from "@ramp/models/ramp-models";
+import {Properties, RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchPropertiesFromMetabolites, RampFacade} from "@ramp/stores/ramp-store";
+import {
+  fetchPropertiesFromMetabolites,
+  fetchPropertiesFromMetabolitesFile,
+  RampFacade
+} from "@ramp/stores/ramp-store";
 import {STRUCTURE_VIEWER_COMPONENT} from "../features-ramp-properties-from-metabolites.module";
 
 @Component({
@@ -11,7 +15,6 @@ import {STRUCTURE_VIEWER_COMPONENT} from "../features-ramp-properties-from-metab
   styleUrls: ['./properties-from-metabolites.component.scss']
 })
 export class PropertiesFromMetabolitesComponent implements OnInit {
-  propertiesRaw!: Properties[];
   propertiesColumns: DataProperty[] = [
     new DataProperty({
       label: "Source ID",
@@ -55,8 +58,12 @@ export class PropertiesFromMetabolitesComponent implements OnInit {
       sortable: true
     }),
   ]
-  matches = 0;
+  query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
+  supportedIds!: {
+    metabolites: string[],
+    genes: string[]
+  } | undefined;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -67,24 +74,37 @@ export class PropertiesFromMetabolitesComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.rampFacade.properties$.subscribe((res: Properties[] | undefined) => {
-      if (res && res.length) {
-        this.propertiesRaw = res;
-          this.matches = new Set([...res.map(obj => obj.chem_source_id)]).size
-        this.dataAsDataProperty = res.map((properties: Properties) => {
-          const newObj: { [key: string]: DataProperty } = {};
-          Object.entries(properties).map((value: any, index: any) => {
-            newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
-          });
-          newObj.imageUrl.url = `${this.route.snapshot.data.renderUrl}?structure=${encodeURIComponent(properties.iso_smiles)}&size=150`
-          return newObj;
-        })
-        this.ref.markForCheck()
+    this.rampFacade.supportedIds$.subscribe(ids => {
+      this.supportedIds = ids
+      this.ref.markForCheck()
+    })
+
+    this.rampFacade.properties$.subscribe((res: {data: Properties[], query: RampQuery }| undefined) => {
+      if (res && res.data) {
+        this._mapData(res.data);
       }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.ref.markForCheck();
     })
   }
 
   fetchProperties(event: string[]): void {
     this.rampFacade.dispatch(fetchPropertiesFromMetabolites({metabolites: event}))
+  }
+  fetchPropertiesFile(event: string[]): void {
+    this.rampFacade.dispatch(fetchPropertiesFromMetabolitesFile({metabolites: event, format: 'tsv'}))
+  }
+
+  private _mapData(data: any): void {
+    this.dataAsDataProperty = data.map((obj: Properties) => {
+      const newObj: { [key: string]: DataProperty } = {};
+      Object.entries(obj).map((value: any, index: any) => {
+        newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+      });
+      newObj.imageUrl.url = `${this.route.snapshot.data.renderUrl}?structure=${encodeURIComponent(obj.iso_smiles)}&size=150`
+      return newObj;
+    })
   }
 }

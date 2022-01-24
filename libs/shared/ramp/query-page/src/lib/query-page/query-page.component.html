@@ -7,7 +7,7 @@
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="30">
+    <div fxFlex="20">
       <mat-form-field class="full-width" appearance="outline" color="accent">
         <mat-label>{{input | titlecase}}</mat-label>
         <textarea
@@ -17,8 +17,11 @@
           placeholder= {{examples}} cdkTextareaAutosize></textarea>
       </mat-form-field>
     </div>
-    <div fxFlex="60" >
-      <ramp-description [function]="function" [description]="description"></ramp-description>
+    <div fxFlex="10">
+      <ng-content select=".additional-params"></ng-content>
+    </div>
+    <div fxFlex="55">
+      <ramp-description [function]="rampQuery?.functionCall" [supportedIds]="supportedIds" [description]="description"></ramp-description>
       <div>
         <button mat-flat-button color="accent" (click)="fetchData()" class="bottom-align">
           Search
@@ -26,11 +29,15 @@
       </div>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="rawData">
+  <ng-container *ngIf="dataAsDataProperty && dataAsDataProperty.length > 0; then dataTable; else noData">
+  </ng-container>
+  <ng-template #dataTable>
+  <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="dataAsDataProperty">
     <div fxFlex="90">
       <div fxLayout="row" fxLayoutAlign="end start">
         <div fxFlex="22">
-          {{matches}} of {{queryCount}} identifiers found.
+          {{rampQuery.numFoundIds}} of {{queryCount}} identifiers found.
+          <button mat-button (click)="downloadData()">Download</button>
           <ramp-data-download-button [source]="'ontology'" [data] = rawData></ramp-data-download-button>
         </div>
       </div>
@@ -43,4 +50,9 @@
       ></ncats-frontend-library-ncats-datatable>
     </div>
   </div>
+  </ng-template>
+
+  <ng-template #noData>
+    <h1 *ngIf="noDataArr"> no data found!</h1>
+  </ng-template>
 </div>

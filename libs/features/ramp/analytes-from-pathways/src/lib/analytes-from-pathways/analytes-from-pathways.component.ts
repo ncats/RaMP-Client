@@ -1,10 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {DomSanitizer} from "@angular/platform-browser";
-import {ActivatedRoute} from "@angular/router";
-import {Analyte, Pathway} from "@ramp/models/ramp-models";
-import {QueryPageComponent} from "@ramp/shared/ramp/query-page";
+import {Analyte, RampQuery} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchAnalytesFromPathways, RampFacade} from "@ramp/stores/ramp-store";
+import {fetchAnalytesFromPathways, fetchAnalytesFromPathwaysFile, RampFacade} from "@ramp/stores/ramp-store";
 
 @Component({
   selector: 'ramp-analytes-from-pathways',
@@ -12,7 +9,6 @@ import {fetchAnalytesFromPathways, RampFacade} from "@ramp/stores/ramp-store";
   styleUrls: ['./analytes-from-pathways.component.scss']
 })
 export class AnalytesFromPathwaysComponent implements OnInit {
-  analyteRaw!: Analyte[];
   analyteColumns: DataProperty[] = [
     new DataProperty({
       label: "Pathway Name",
@@ -45,35 +41,43 @@ export class AnalytesFromPathwaysComponent implements OnInit {
       sortable: true
     }),
   ]
-  matches = 0;
+  query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
     private ref: ChangeDetectorRef,
     private rampFacade: RampFacade
-) {
+  ) {
   }
 
 
   ngOnInit(): void {
-   // super.ngOnInit();
-    this.rampFacade.analytes$.subscribe((res: Analyte[] | undefined) => {
-      if (res && res.length) {
-        this.analyteRaw = res;
-       this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
-        this.dataAsDataProperty = res.map((analyte: Analyte) => {
-          const newObj: { [key: string]: DataProperty } = {};
-          Object.entries(analyte).map((value: any, index: any) => {
-            newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
-          });
-          return newObj;
-        })
-        this.ref.markForCheck()
+    this.rampFacade.analytes$.subscribe((res: {data: Analyte[], query: RampQuery} | undefined) => {
+      if (res && res.data) {
+        this._mapData(res.data);
       }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.ref.markForCheck();
     })
   }
 
   fetchAnalytes(event: string[]): void {
     this.rampFacade.dispatch(fetchAnalytesFromPathways({pathways: event}))
+  }
+
+  fetchAnalytesFile(event: string[]): void {
+    this.rampFacade.dispatch(fetchAnalytesFromPathwaysFile({pathways: event, format: 'tsv'}))
+  }
+
+  private _mapData(data: any): void {
+    this.dataAsDataProperty = data.map((analyte: Analyte) => {
+      const newObj: { [key: string]: DataProperty } = {};
+      Object.entries(analyte).map((value: any, index: any) => {
+        newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+      });
+      return newObj;
+    })
   }
 }

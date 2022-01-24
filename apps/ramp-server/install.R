@@ -1,5 +1,5 @@
 library(devtools)
-install_github("ncats/RAMP-DB@dev", force = TRUE, dependencies=TRUE)
+install_github("ncats/RAMP-DB", force = TRUE, dependencies=TRUE)
 library(RaMP)
 
 # Set up the connection to the mySQL db:

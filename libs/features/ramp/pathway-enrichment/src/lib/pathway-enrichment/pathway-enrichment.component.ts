@@ -1,4 +1,5 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {FormControl} from "@angular/forms";
 import {PathwayEnrichment} from "@ramp/models/ramp-models";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchEnrichmentFromPathways, RampFacade} from "@ramp/stores/ramp-store";
@@ -9,6 +10,9 @@ import {fetchEnrichmentFromPathways, RampFacade} from "@ramp/stores/ramp-store";
   styleUrls: ['./pathway-enrichment.component.scss']
 })
 export class PathwayEnrichmentComponent implements OnInit {
+  @Input()holmFormCtrl: FormControl = new FormControl(.2);
+  @Input()fdrFormCtrl: FormControl = new FormControl(.2);
+
   enrichmentRaw!: PathwayEnrichment[];
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
@@ -16,31 +20,41 @@ export class PathwayEnrichmentComponent implements OnInit {
       field: "pathwayName",
       sortable: true
     }),
-    /*    new DataProperty({
-          label: "Pathway Category",
-          field: "pathwayCategory",
-          sortable: true
-        }),*/
     new DataProperty({
-      label: "Pathway Type",
-      field: "pathwayType",
+      label: "Pathway Source",
+      field: "pathwaysource",
       sortable: true
     }),
     new DataProperty({
-      label: "enrichment Name",
-      field: "enrichmentName",
+      label: "Pathway Id",
+      field: "pathwaysourceId",
       sortable: true
     }),
     new DataProperty({
-      label: "Source enrichment ID",
-      field: "sourceenrichmentIDs",
+      label: "Pval Metabolite",
+      field: "pval_Metab",
       sortable: true
     }),
     new DataProperty({
-      label: "enrichment Class",
-      field: "geneOrCompound",
+      label: "Analytes",
+      field: "analytes",
       sortable: true
     }),
+    new DataProperty({
+      label: "Combined Pval",
+      field: "Pval_combined",
+      sortable: true
+    }),
+    new DataProperty({
+      label: "Combined FDR Pval",
+      field: "Pval_combined_FDR",
+      sortable: true
+    }),
+    new DataProperty({
+      label: "Combined Holm Pval",
+      field: "Pval_combined_Holm",
+      sortable: true
+    })
   ]
   matches = 0;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
@@ -69,7 +83,12 @@ export class PathwayEnrichmentComponent implements OnInit {
     })
   }
 
-  fetchenrichment(event: string[]): void {
-    this.rampFacade.dispatch(fetchEnrichmentFromPathways({pathways: event}))
+  fetchEnrichment(event: string[]): void {
+    const fdr = this.fdrFormCtrl.value
+    this.rampFacade.dispatch(fetchEnrichmentFromPathways({
+      pathways: event,
+      p_holmadj_cutoff: this.holmFormCtrl.value,
+      p_fdradj_cutoff: this.fdrFormCtrl.value
+    }))
   }
 }

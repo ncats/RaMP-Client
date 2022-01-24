@@ -1,4 +1,5 @@
-export class Properties {chem_source_id!: string;
+export class Properties {
+  chem_source_id!: string;
   iso_smiles!: string;
   inchi_key_prefix!: string;
   inchi_key!: string;

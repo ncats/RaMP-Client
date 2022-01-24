@@ -1,7 +1,8 @@
 <ramp-query-page
   [dataColumns]="reactionColumns"
-  [rawData]="reactionRaw"
   [dataAsDataProperty]="dataAsDataProperty"
-  [matches]="matches"
+  [supportedIdTypes] = supportedIds
+  [rampQuery]="query"
+  (dataDownload)="fetchReactionsFile($event)"
   (dataSearch)="fetchReactions($event)">
 </ramp-query-page>

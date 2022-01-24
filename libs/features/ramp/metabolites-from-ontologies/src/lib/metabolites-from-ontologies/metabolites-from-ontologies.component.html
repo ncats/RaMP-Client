@@ -1,8 +1,19 @@
+
+
+<div fxLayout="row" fxLayoutAlign="space-around start" wrap>
+  <div fxFlex="40" *ngFor="let ontology of ontologies">
+    <ramp-filter-panel *ngIf=ontology.ontologyType [label] = ontology.ontologyType [data]="ontology.values"></ramp-filter-panel>
+    </div>
+<!--
+    <mat-checkbox [aria-label]="value.ontology">{{value.ontology}}</mat-checkbox>
+-->
+</div>
+
 <ramp-query-page
   [dataColumns]="metaboliteColumns"
   [rawData]="metaboliteRaw"
   [dataAsDataProperty]="dataAsDataProperty"
-  [matches]="matches"
+  [rampQuery]="query"
   (dataSearch)="fetchMetabolites($event)">
 </ramp-query-page>
 

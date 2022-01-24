@@ -8,5 +8,6 @@ export class Analyte {
 
   constructor(obj: any) {
     Object.assign(this, obj);
+    this.sourceAnalyteIDs = this.sourceAnalyteIDs.split('; ').sort((a,b) => a.localeCompare(b)).join('; ');
   }
 }
