@@ -92,7 +92,7 @@ pipeline {
                             }
                             sh '''
                             sleep 30
-                            curl https://ramp-api-alpha.ncats.io/api/analyte_intersects
+                            curl https://ramp-api-alpha.ncats.io/api/analyte_intersects?analytetype=mets&query_scope=global
                             '''
                         }
                     }
