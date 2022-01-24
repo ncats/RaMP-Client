@@ -50,7 +50,7 @@ pipeline {
                     ]) {
                         checkout scm
                         script {
-                            def image = docker.build("${env.IMAGE_NAME}", "-f ${env.PACKAGE_DIR}/Dockerfile --no-cache ." 
+                            def image = docker.build("${env.IMAGE_NAME}", "-f ${env.PACKAGE_DIR}/Dockerfile --no-cache .")
                             docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
                                 docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
                             }
