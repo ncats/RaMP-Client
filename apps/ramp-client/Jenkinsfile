@@ -103,7 +103,7 @@ pipeline {
             steps {
                 sshagent (credentials: ['labsharesvc']) {
                     withEnv([
-                        "IMAGE_NAME=rampdb-client",
+                        "IMAGE_NAME=rampdb-client-prod",
                         "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
                         checkout scm
@@ -113,7 +113,7 @@ pipeline {
                             script {
                                 def image = docker.build("${env.IMAGE_NAME}", "-f ${env.PACKAGE_DIR}/Dockerfile --no-cache .")
                                 docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
-                                    docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}-prod")
+                                    docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
                                 }
                             }
                         }
