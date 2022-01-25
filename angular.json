@@ -401,27 +401,6 @@
               ],
               "outputHashing": "all"
             },
-            "ci": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "104kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "apps/ramp-client/src/environments/environment.ts",
-                  "with": "apps/ramp-client/src/environments/environment.ci.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -438,9 +417,6 @@
           "configurations": {
             "production": {
               "browserTarget": "ramp-client:build:production"
-            },
-            "ci": {
-              "browserTarget": "ramp-client:build:ci"
             },
             "development": {
               "browserTarget": "ramp-client:build:development"
