@@ -16,4 +16,8 @@ RUN apk update && apk upgrade && \
     NODE_OPTIONS=--max_old_space_size=4096 ng build ramp-client --prod
 
 FROM labshare/docker-base-web
+
+# Install NCATS required packages
+RUN apt-get update && apt-get install -y net-tools
+
 COPY --from=build /var/www/app/dist/apps/ramp-client/ /var/www/app
