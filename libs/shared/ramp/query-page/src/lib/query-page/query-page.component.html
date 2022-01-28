@@ -36,9 +36,11 @@
     <div fxFlex="90">
       <div fxLayout="row" fxLayoutAlign="end start">
         <div fxFlex="22">
-          {{rampQuery.numFoundIds}} of {{queryCount}} identifiers found.
-          <button mat-button (click)="downloadData()">Download</button>
-          <ramp-data-download-button [source]="'ontology'" [data] = rawData></ramp-data-download-button>
+          {{rampQuery?.numFoundIds}} of {{queryCount}} identifiers found.
+          <button mat-button class="tool-button list-download" (click)="downloadData()"
+                  matTooltip="Download Data" color="accent">
+            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+          </button>
         </div>
       </div>
       <ncats-frontend-library-ncats-datatable

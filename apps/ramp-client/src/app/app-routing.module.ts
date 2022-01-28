@@ -40,7 +40,7 @@ const routes: Routes = [
         (m) => m.FeaturesRampOntologiesModule
       ),
     data: {
-     ...rFunctions.ontologies
+     ...rFunctions["ontologies-from-analytes"]
     }
   },
   {
