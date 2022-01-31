@@ -39,9 +39,8 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
   ]
   query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
-
-  typeaheadCtrl: FormControl = new FormControl();
   ontologies!: any[];
+  selectedOntologies: any [] = [];
 
 //  columns = ['select', 'ontology', 'count'];
 
@@ -53,6 +52,7 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
 
 
   ngOnInit(): void {
+    console.log(this);
     this.rampFacade.dispatch(fetchOntologies());
    /* this.typeaheadCtrl.valueChanges
       .pipe(
@@ -67,7 +67,8 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
           this.ontologies = res.data.map((ont: { ontologyType: string; values: any[] }) =>{
             return {
             ontologyType: ont.ontologyType,
-            values: ont.values.map(val => val = {value: val.ontology})
+            values: ont.values.map(val => val = {value: val.ontology, source: ont.ontologyType})
+              .sort((a,b) => a.value.localeCompare(b.value))
           }});
           this.ref.markForCheck();
         }
@@ -92,6 +93,11 @@ export class MetabolitesFromOntologiesComponent implements OnInit {
       }*/
       this.ref.markForCheck();
     })
+  }
+
+  setValues(values: any[]) {
+      this.selectedOntologies = Array.from(new Set(this.selectedOntologies.concat(values)));
+      console.log(this.selectedOntologies);
   }
 
   fetchMetabolites(event: string[]): void {

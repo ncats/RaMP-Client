@@ -1,7 +1,10 @@
+import {ScrollingModule} from "@angular/cdk/scrolling";
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {ReactiveFormsModule} from "@angular/forms";
 import {MatCardModule} from "@angular/material/card";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatInputModule} from "@angular/material/input";
 import {MatTableModule} from "@angular/material/table";
 import { FilterPanelComponent } from './filter-panel/filter-panel.component';
 
@@ -10,7 +13,10 @@ import { FilterPanelComponent } from './filter-panel/filter-panel.component';
     CommonModule,
     MatCardModule,
     MatTableModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ScrollingModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   declarations: [
     FilterPanelComponent

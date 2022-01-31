@@ -1,8 +1,9 @@
 import {SelectionModel} from "@angular/cdk/collections";
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormControl} from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, debounceTime, distinctUntilChanged} from "rxjs";
 
 @Component({
   selector: 'ramp-filter-panel',
@@ -12,6 +13,11 @@ import {BehaviorSubject} from "rxjs";
 export class FilterPanelComponent implements OnInit {
   @Input() displayColumns = ['select', 'value', 'count'];
   @Input() label?: string;
+  @Output() selectionChange: EventEmitter<any> = new EventEmitter<any>();
+  filteredData!: any[];
+
+   filterFormCtrl: FormControl = new FormControl();
+
   /**
    * object field to display
    */
@@ -51,13 +57,31 @@ export class FilterPanelComponent implements OnInit {
 
   ngOnInit() {
     this._data.subscribe(data => {
-      this.dataSource = new MatTableDataSource(data);
+      console.log(data);
+   //   this.dataSource = new MatTableDataSource(data);
     //  this.dataSource.data = data
+      this.filteredData = data;
     });
 
     this.fieldSelection.changed.subscribe(change => {
-console.log(change.source.selected);
+        console.log(change.source.selected);
+        this.selectionChange.emit(this.fieldSelection.selected);
     });
+
+    this.filterFormCtrl.valueChanges
+      .pipe(
+     // debounceTime(200),
+      distinctUntilChanged()
+    )
+      .subscribe(term => {
+        console.log(term);
+        if(term && term.length > 0) {
+        this.filteredData = this.data.filter(obj => obj.value.toLowerCase().includes(term))
+        } else {
+          this.filteredData = this.data;
+        }
+      });
+
 
   }
 
@@ -73,6 +97,25 @@ console.log(change.source.selected);
     this.isAllSelected() ?
       this.fieldSelection.clear() :
       this.dataSource.data.forEach(row => this.fieldSelection.select(row.key));
+  }
+
+  /**
+   * detects scrolling of the options div
+   * @param event
+   */
+  scrollDetected(event: any) {
+    if (event.target.scrollHeight - event.target.offsetHeight - event.target.scrollTop <= 5) {
+      if (this.data.values.length < this.data.length) {
+        this.fetchAllFilterOptions();
+      }
+    }
+  }
+
+  /**
+   * fetches all the filter options for the component's facet
+   */
+  fetchAllFilterOptions() {
+
   }
 
 }

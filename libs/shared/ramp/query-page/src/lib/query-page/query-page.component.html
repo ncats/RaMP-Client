@@ -7,7 +7,12 @@
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="20">
+    <div fxFlex="95">
+      <ramp-description [function]="rampQuery?.functionCall" [supportedIds]="supportedIds" [description]="description"></ramp-description>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="center end">
+    <div fxFlex="40">
       <mat-form-field class="full-width" appearance="outline" color="accent">
         <mat-label>{{input | titlecase}}</mat-label>
         <textarea
@@ -17,12 +22,9 @@
           placeholder= {{examples}} cdkTextareaAutosize></textarea>
       </mat-form-field>
     </div>
-    <div fxFlex="10">
+    <div fxFlex="10" class = "button-holder">
       <ng-content select=".additional-params"></ng-content>
-    </div>
-    <div fxFlex="55">
-      <ramp-description [function]="rampQuery?.functionCall" [supportedIds]="supportedIds" [description]="description"></ramp-description>
-      <div>
+      <div fxFlexAlign="end">
         <button mat-flat-button color="accent" (click)="fetchData()" class="bottom-align">
           Search
         </button>
@@ -36,9 +38,11 @@
     <div fxFlex="90">
       <div fxLayout="row" fxLayoutAlign="end start">
         <div fxFlex="22">
-          {{rampQuery.numFoundIds}} of {{queryCount}} identifiers found.
-          <button mat-button (click)="downloadData()">Download</button>
-          <ramp-data-download-button [source]="'ontology'" [data] = rawData></ramp-data-download-button>
+          {{rampQuery?.numFoundIds}} of {{queryCount}} identifiers found.
+          <button mat-button class="tool-button list-download" (click)="downloadData()"
+                  matTooltip="Download Data" color="accent">
+            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+          </button>
         </div>
       </div>
       <ncats-frontend-library-ncats-datatable

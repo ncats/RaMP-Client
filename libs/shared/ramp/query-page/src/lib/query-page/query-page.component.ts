@@ -33,11 +33,13 @@ export class QueryPageComponent implements OnInit {
 
   constructor(
                private route: ActivatedRoute,
+
                private sanitizer: DomSanitizer
   ) { }
 
 
   ngOnInit(): void {
+    console.log("init");
       this.title = this.route.snapshot.data.title;
       this.description = this.sanitizer.bypassSecurityTrustHtml(this.route.snapshot.data.description);
       this.examples = this.route.snapshot.data.examples;
@@ -51,6 +53,7 @@ export class QueryPageComponent implements OnInit {
   ngOnChanges(change: {[n: string]: SimpleChange}) {
     if(change.supportedIdTypes && !change.supportedIdTypes.firstChange) {
       this.supportedIds = this.supportedIdTypes[this.route.snapshot.data.supportedIdTypes];
+      console.log(this);
     }
 
     if(change.dataAsDataProperty && !change.dataAsDataProperty.firstChange) {

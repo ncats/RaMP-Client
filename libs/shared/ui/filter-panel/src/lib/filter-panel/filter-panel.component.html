@@ -1,9 +1,31 @@
 <mat-card>
   <mat-card-content>
     <div >
-      <table mat-table #filterTable [dataSource]="dataSource">
+      <h2>{{label}}</h2>
+      <div>
+        <mat-form-field class="" appearance="standard">
+          <mat-label>Filter</mat-label>
+        <input matInput [placeholder]="'filter'" [formControl]=filterFormCtrl>
+        </mat-form-field>
+      </div>
+      <cdk-virtual-scroll-viewport itemSize="10" class="example-viewport">
+        <div *cdkVirtualFor="let item of filteredData" class="example-item">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? fieldSelection.toggle(item) : null"
+                        [checked]="fieldSelection.isSelected(item)"
+                        aria-label={{item.value}}>
+          </mat-checkbox>
+          {{item.value}}
+        </div>
+      </cdk-virtual-scroll-viewport>
 
-        <!-- Checkbox Column -->
+
+
+
+<!--
+      <table mat-table #filterTable [dataSource]="dataSource" (scroll)="scrollDetected($event)" class="filter-table">
+
+        &lt;!&ndash; Checkbox Column &ndash;&gt;
         <ng-container matColumnDef="select">
           <th mat-header-cell class="filter-cell checkbox" *matHeaderCellDef>
             <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -22,7 +44,7 @@
           </td>
         </ng-container>
 
-        <!-- Position Column -->
+        &lt;!&ndash; Position Column &ndash;&gt;
         <ng-container matColumnDef="value">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row" >{{row.value}}</td>
@@ -38,6 +60,7 @@
                  (click)="fieldSelection.toggle(row.key)">
         </tr>
       </table>
+-->
     </div>
   </mat-card-content>
 </mat-card>

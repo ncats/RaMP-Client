@@ -22,6 +22,7 @@ export class RampEffects {
         this.rampService.fetchSupportedIds()
           .pipe(
             map((ret) => {
+              console.log(ret);
               return RampActions.initSuccess({ ...ret })
               },
               catchError((error:ErrorEvent) => of(RampActions.initFailure({error})))

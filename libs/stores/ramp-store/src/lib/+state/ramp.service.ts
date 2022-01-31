@@ -276,6 +276,7 @@ fetchChemicalClass(metabolites: string[]): Observable<{metClasses: Classes[], fu
              })
          }),*/
          map((response: any) => {
+           console.log(response);
                return response.data.fishresults.map((obj: any) => new FisherResult(obj));
          })
        )
@@ -368,11 +369,6 @@ fetchEnrichmentFromPathways2(analytes: string[]) {
       //  catchError(this.handleError('pathways from analytes', []))
       );
   }
-
-
-
-
-
 
   /**
    * Handle Http operation that failed.
