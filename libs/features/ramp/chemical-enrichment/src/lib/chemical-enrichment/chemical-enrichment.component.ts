@@ -1,5 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ChemicalEnrichment} from "@ramp/models/ramp-models";
+import {ActivatedRoute} from "@angular/router";
+import {ChemicalEnrichment, RampQuery} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchEnrichmentFromAnalytes, RampFacade} from "@ramp/stores/ramp-store";
 
@@ -8,7 +10,7 @@ import {fetchEnrichmentFromAnalytes, RampFacade} from "@ramp/stores/ramp-store";
   templateUrl: './chemical-enrichment.component.html',
   styleUrls: ['./chemical-enrichment.component.scss']
 })
-export class ChemicalEnrichmentComponent implements OnInit {
+export class ChemicalEnrichmentComponent extends PageCoreComponent implements OnInit {
   enrichmentRaw!: ChemicalEnrichment[];
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
@@ -42,13 +44,17 @@ export class ChemicalEnrichmentComponent implements OnInit {
       sortable: true
     }),
   ]
+  query!: RampQuery;
+
   matches = 0;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade
+    private rampFacade: RampFacade,
+    protected route: ActivatedRoute
   ) {
+    super(route);
   }
 
 

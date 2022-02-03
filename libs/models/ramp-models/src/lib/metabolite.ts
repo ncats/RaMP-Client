@@ -1,21 +1,21 @@
 export class Metabolite {
-  hmdbOntologyType!: string;
+  ontologyCategory!: string;
   metabolites!: string;
   ontology!: string;
-  sourceId!: string;
+  metIds!: string;
 
   constructor(obj: any) {
-    if (obj.HMDBOntologyType) {
-      this.hmdbOntologyType = obj.HMDBOntologyType
+    if (obj.ontologyCategory) {
+      this.ontologyCategory = obj.ontologyCategory
     }
-    if (obj.Metabolites) {
-      this.metabolites = obj.Metabolites
+    if (obj.metNames) {
+      this.metabolites = obj.metNames
     }
-    if (obj.Ontology) {
-      this.ontology = obj.Ontology
+    if (obj.ontologyTerm) {
+      this.ontology = obj.ontologyTerm
     }
-    if (obj.sourceId) {
-      this.sourceId = obj.sourceId
+    if (obj.metIds) {
+      this.metIds = obj.metIds
     }
   }
 }

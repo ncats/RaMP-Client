@@ -1,5 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
 import {Classes, RampQuery} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchClassesFromMetabolites, fetchClassesFromMetabolitesFile, RampFacade} from "@ramp/stores/ramp-store";
 import {TREE_VIEWER_COMPONENT} from "../features-ramp-classes-from-metabolites.module";
@@ -9,7 +11,7 @@ import {TREE_VIEWER_COMPONENT} from "../features-ramp-classes-from-metabolites.m
   templateUrl: './classes-from-metabolites.component.html',
   styleUrls: ['./classes-from-metabolites.component.scss']
 })
-export class ClassesFromMetabolitesComponent implements OnInit {
+export class ClassesFromMetabolitesComponent extends PageCoreComponent implements OnInit {
   classesColumns: DataProperty[] = [
     //todo this isn't sortable
     new DataProperty({
@@ -29,23 +31,25 @@ export class ClassesFromMetabolitesComponent implements OnInit {
   ]
   query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
-  supportedIds!: {
+/*  supportedIds!: {
     metabolites: string[],
     genes: string[]
-  } | undefined;
+  } | undefined;*/
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade
+    private rampFacade: RampFacade,
+    protected route: ActivatedRoute
   ) {
+    super(route);
   }
 
 
   ngOnInit(): void {
-    this.rampFacade.supportedIds$.subscribe(ids => {
+/*    this.rampFacade.supportedIds$.subscribe(ids => {
       this.supportedIds = ids
       this.ref.markForCheck()
-    })
+    })*/
 
     this.rampFacade.classes$.subscribe((res: {data: Classes[], query: RampQuery} | undefined) => {
       if (res && res.data) {

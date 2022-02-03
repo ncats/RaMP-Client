@@ -1,5 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
 import {Pathway, RampQuery} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {
   fetchPathwaysFromAnalytes,
@@ -12,13 +14,8 @@ import {
   templateUrl: './pathways-from-analytes.component.html',
   styleUrls: ['./pathways-from-analytes.component.scss']
 })
-export class PathwaysFromAnalytesComponent implements OnInit {
+export class PathwaysFromAnalytesComponent extends PageCoreComponent implements OnInit {
   pathwayColumns: DataProperty[] = [
-    new DataProperty({
-      label: "Analyte Name",
-      field: "commonName",
-      sortable: true
-    }),
     new DataProperty({
       label: "Pathway",
       field: "pathwayName",
@@ -34,27 +31,30 @@ export class PathwaysFromAnalytesComponent implements OnInit {
       field: "pathwaysourceId",
       sortable: true
     }),
+    new DataProperty({
+      label: "Analyte Name",
+      field: "commonName",
+      sortable: true
+    })
   ]
   query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
-  supportedIds!: {
-    metabolites: string[],
-    genes: string[]
-  } | undefined;
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade
+    private rampFacade: RampFacade,
+    protected  route: ActivatedRoute
 ) {
+    super(route);
   }
 
 
   ngOnInit(): void {
-    this.rampFacade.supportedIds$.subscribe(ids => {
+/*    this.rampFacade.supportedIds$.subscribe(ids => {
       this.supportedIds = ids
       this.ref.markForCheck()
-    })
+    })*/
 
     this.rampFacade.pathways$.subscribe((res: {data: Pathway[], query: RampQuery} | undefined) => {
       if (res && res.data) {

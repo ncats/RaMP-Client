@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Properties, RampQuery} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {
   fetchPropertiesFromMetabolites,
@@ -14,7 +15,7 @@ import {STRUCTURE_VIEWER_COMPONENT} from "../features-ramp-properties-from-metab
   templateUrl: './properties-from-metabolites.component.html',
   styleUrls: ['./properties-from-metabolites.component.scss']
 })
-export class PropertiesFromMetabolitesComponent implements OnInit {
+export class PropertiesFromMetabolitesComponent extends PageCoreComponent implements OnInit {
   propertiesColumns: DataProperty[] = [
     new DataProperty({
       label: "Source ID",
@@ -60,24 +61,29 @@ export class PropertiesFromMetabolitesComponent implements OnInit {
   ]
   query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
+/*
   supportedIds!: {
     metabolites: string[],
     genes: string[]
   } | undefined;
+*/
 
   constructor(
     private ref: ChangeDetectorRef,
     private rampFacade: RampFacade,
-    private route: ActivatedRoute
+    protected route: ActivatedRoute
   ) {
+    super(route);
   }
 
 
   ngOnInit(): void {
+/*
     this.rampFacade.supportedIds$.subscribe(ids => {
       this.supportedIds = ids
       this.ref.markForCheck()
     })
+*/
 
     this.rampFacade.properties$.subscribe((res: {data: Properties[], query: RampQuery }| undefined) => {
       if (res && res.data) {

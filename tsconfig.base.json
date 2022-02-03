@@ -61,6 +61,9 @@
       "@ramp/shared/ncats/ncats-header": [
         "libs/shared/ncats/ncats-header/src/index.ts"
       ],
+      "@ramp/shared/ramp/page-core": [
+        "libs/shared/ramp/page-core/src/index.ts"
+      ],
       "@ramp/shared/ramp/query-page": [
         "libs/shared/ramp/query-page/src/index.ts"
       ],
@@ -76,6 +79,7 @@
       "@ramp/shared/ui/header-template": [
         "libs/shared/ui/header-template/src/index.ts"
       ],
+      "@ramp/shared/ui/highlight": ["libs/shared/ui/highlight/src/index.ts"],
       "@ramp/shared/ui/loading-spinner": [
         "libs/shared/ui/loading-spinner/src/index.ts"
       ],

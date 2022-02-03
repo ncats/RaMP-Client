@@ -556,6 +556,32 @@
       },
       "tags": []
     },
+    "shared-ramp-page-core": {
+      "projectType": "library",
+      "root": "libs/shared/ramp/page-core",
+      "sourceRoot": "libs/shared/ramp/page-core/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ramp/page-core"],
+          "options": {
+            "jestConfig": "libs/shared/ramp/page-core/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ramp/page-core/src/**/*.ts",
+              "libs/shared/ramp/page-core/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "shared-ramp-query-page": {
       "projectType": "library",
       "root": "libs/shared/ramp/query-page",
@@ -683,6 +709,32 @@
             "lintFilePatterns": [
               "libs/shared/ui/header-template/src/**/*.ts",
               "libs/shared/ui/header-template/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
+    "shared-ui-highlight": {
+      "projectType": "library",
+      "root": "libs/shared/ui/highlight",
+      "sourceRoot": "libs/shared/ui/highlight/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ui/highlight"],
+          "options": {
+            "jestConfig": "libs/shared/ui/highlight/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ui/highlight/src/**/*.ts",
+              "libs/shared/ui/highlight/src/**/*.html"
             ]
           }
         }

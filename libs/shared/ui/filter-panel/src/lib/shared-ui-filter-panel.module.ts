@@ -6,6 +6,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatInputModule} from "@angular/material/input";
 import {MatTableModule} from "@angular/material/table";
+import {SharedUiHighlightModule} from "@ramp/shared/ui/highlight";
 import { FilterPanelComponent } from './filter-panel/filter-panel.component';
 
 @NgModule({
@@ -16,7 +17,8 @@ import { FilterPanelComponent } from './filter-panel/filter-panel.component';
     MatCheckboxModule,
     ScrollingModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedUiHighlightModule
   ],
   declarations: [
     FilterPanelComponent

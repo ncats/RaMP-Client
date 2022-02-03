@@ -16,6 +16,7 @@ export class QueryPageComponent implements OnInit {
   @Input() supportedIdTypes!: any;
   @Input() rampQuery!: RampQuery;
   @Input() matches = 0;
+  @Input() showInput = true;
 
   @Output() dataSearch: EventEmitter<string[]> = new EventEmitter<string[]>();
   @Output() dataDownload: EventEmitter<string[]> = new EventEmitter<string[]>();
@@ -28,20 +29,18 @@ export class QueryPageComponent implements OnInit {
   public input!: string;
   public examples!: string;
   public title!: string;
-  public description!: SafeHtml;
+  public description!: string;
   noDataArr = false;
 
   constructor(
                private route: ActivatedRoute,
-
-               private sanitizer: DomSanitizer
   ) { }
 
 
   ngOnInit(): void {
     console.log("init");
       this.title = this.route.snapshot.data.title;
-      this.description = this.sanitizer.bypassSecurityTrustHtml(this.route.snapshot.data.description);
+      this.description = this.route.snapshot.data.description;
       this.examples = this.route.snapshot.data.examples;
       this.input = this.route.snapshot.data.input;
       this.inputFormCtrl.setValue(this.examples);

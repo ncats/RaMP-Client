@@ -5,7 +5,9 @@ import {
   OnInit,
   ViewEncapsulation
 } from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
 import {Ontology, RampQuery} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {
   fetchOntologiesFromMetabolites,
@@ -20,7 +22,7 @@ import {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OntologiesFromMetabolitesComponent implements OnInit {
+export class OntologiesFromMetabolitesComponent extends PageCoreComponent implements OnInit {
   ontologyColumns: DataProperty[] = [
 /*    new DataProperty({
       label: "ID Type",
@@ -50,23 +52,27 @@ export class OntologiesFromMetabolitesComponent implements OnInit {
   ]
   query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
-  supportedIds!: {
+/*  supportedIds!: {
     metabolites: string[],
     genes: string[]
-  } | undefined;
+  } | undefined;*/
 
   constructor(
      private ref: ChangeDetectorRef,
-     private rampFacade: RampFacade
+     private rampFacade: RampFacade,
+     protected route: ActivatedRoute
   ) {
+    super(route);
   }
 
 
   ngOnInit(): void {
+/*
     this.rampFacade.supportedIds$.subscribe(ids => {
       this.supportedIds = ids
       this.ref.markForCheck()
     })
+*/
 
     this.rampFacade.ontologies$.subscribe((res: {data: Ontology[], query: RampQuery} | undefined) => {
       if (res && res.data) {
