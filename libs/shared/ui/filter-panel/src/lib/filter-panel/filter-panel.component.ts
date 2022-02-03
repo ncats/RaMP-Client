@@ -13,6 +13,7 @@ import {BehaviorSubject, debounceTime, distinctUntilChanged} from "rxjs";
 export class FilterPanelComponent implements OnInit {
   @Input() displayColumns = ['select', 'value', 'count'];
   @Input() label?: string;
+  @Input() globalFilter?: string;
   @Output() selectionChange: EventEmitter<any> = new EventEmitter<any>();
   filteredData!: any[];
 
@@ -57,15 +58,14 @@ export class FilterPanelComponent implements OnInit {
 
   ngOnInit() {
     this._data.subscribe(data => {
-      console.log(data);
    //   this.dataSource = new MatTableDataSource(data);
     //  this.dataSource.data = data
       this.filteredData = data;
     });
 
     this.fieldSelection.changed.subscribe(change => {
-        console.log(change.source.selected);
-        this.selectionChange.emit(this.fieldSelection.selected);
+        console.log(change);
+        this.selectionChange.emit(change);
     });
 
     this.filterFormCtrl.valueChanges

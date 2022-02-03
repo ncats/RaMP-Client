@@ -14,8 +14,8 @@ export class EntityCount {
     if(obj.HMDB){
       this.hmdb = obj.HMDB;
   }
-    if(obj['Lipid Maps']){
-      this.lipidmaps = obj['Lipid Maps'];
+    if(obj.LIPIDMAPS){
+      this.lipidmaps = obj.LIPIDMAPS;
   }
     if(obj.Reactome){
       this.reactome = obj.Reactome

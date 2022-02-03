@@ -1,13 +1,33 @@
-
-
+<div class="content-panel">
+<div fxLayout="row" fxLayoutAlign="space-around start">
+  <div fxFlex="95">
+    <h1 class="page-title">
+      {{title | titlecase}}
+    </h1>
+  </div>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-around start">
+  <div fxFlex="95">
+    <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
+  </div>
+</div>
+  <div fxLayout="row" fxLayoutAlign="space-around start">
+  <div fxFlex="95">
+    <mat-form-field class="full-width" appearance="standard">
+      <input matInput placeholder="Search all Ontologies" [formControl] = allOntoFilterCtrl>
+    </mat-form-field>
+  </div>
+</div>
 <div class="grid-list">
   <div *ngFor="let ontology of ontologies">
     <ramp-filter-panel *ngIf=ontology.ontologyType
                        [label] = ontology.ontologyType
                        [data]="ontology.values"
+                       [globalFilter]="globalFilter"
                        (selectionChange)="setValues($event)">
     </ramp-filter-panel>
     </div>
+</div>
 </div>
 
 
@@ -17,6 +37,7 @@
   [rawData]="metaboliteRaw"
   [dataAsDataProperty]="dataAsDataProperty"
   [rampQuery]="query"
+  [showInput] = false
   (dataSearch)="fetchMetabolites($event)">
 </ramp-query-page>
 

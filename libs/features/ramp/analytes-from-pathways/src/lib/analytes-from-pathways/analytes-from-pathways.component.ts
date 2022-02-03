@@ -1,5 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
 import {Analyte, RampQuery} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchAnalytesFromPathways, fetchAnalytesFromPathwaysFile, RampFacade} from "@ramp/stores/ramp-store";
 
@@ -8,7 +10,7 @@ import {fetchAnalytesFromPathways, fetchAnalytesFromPathwaysFile, RampFacade} fr
   templateUrl: './analytes-from-pathways.component.html',
   styleUrls: ['./analytes-from-pathways.component.scss']
 })
-export class AnalytesFromPathwaysComponent implements OnInit {
+export class AnalytesFromPathwaysComponent extends PageCoreComponent implements OnInit {
   analyteColumns: DataProperty[] = [
     new DataProperty({
       label: "Pathway Name",
@@ -46,8 +48,10 @@ export class AnalytesFromPathwaysComponent implements OnInit {
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade
+    private rampFacade: RampFacade,
+    protected route: ActivatedRoute
   ) {
+    super(route);
   }
 
 

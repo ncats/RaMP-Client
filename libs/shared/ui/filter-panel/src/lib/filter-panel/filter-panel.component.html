@@ -3,19 +3,20 @@
     <div >
       <h2>{{label}}</h2>
       <div>
-        <mat-form-field class="" appearance="standard">
+        <mat-form-field class="full-width" appearance="standard">
           <mat-label>Filter</mat-label>
         <input matInput [placeholder]="'filter'" [formControl]=filterFormCtrl>
         </mat-form-field>
       </div>
-      <cdk-virtual-scroll-viewport itemSize="10" class="example-viewport">
-        <div *cdkVirtualFor="let item of filteredData" class="example-item">
+      <cdk-virtual-scroll-viewport itemSize="10" class="viewport">
+        <div *cdkVirtualFor="let item of filteredData" class="filter-item" (click)="fieldSelection.toggle(item)">
           <mat-checkbox (click)="$event.stopPropagation()"
                         (change)="$event ? fieldSelection.toggle(item) : null"
                         [checked]="fieldSelection.isSelected(item)"
                         aria-label={{item.value}}>
           </mat-checkbox>
-          {{item.value}}
+         <span [innerHTML]="item.value  | highlight : globalFilter ? globalFilter : filterFormCtrl.value"></span>
+          <span class="count">{{item.count}}</span>
         </div>
       </cdk-virtual-scroll-viewport>
 

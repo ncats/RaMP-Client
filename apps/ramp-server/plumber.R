@@ -67,17 +67,17 @@ function() {
 
 ###
 #* Return analyte source intersects
-#* @param analytetype specifies type of analyte intersects to return, 'mets' or 'gene'
+#* @param analytetype specifies type of analyte intersects to return, 'metabolites' or 'genes'
 #* @param query_scope specifies 'global' or 'mapped-to-pathway'
 #* @get /api/analyte_intersects
 function(analytetype, query_scope) {
   response <- ""
   if(!missing(analytetype)) {
-    if(analytetype == 'mets') {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json', scope=query_scope)
+    if(analytetype == 'metabolites') {
+      response <- RaMP::getRaMPAnalyteIntersections(analyteType=analytetype, format='json', scope=query_scope)
       function_call <- paste0("RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json', scope='",query_scope,")")
     } else {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json', scope=query_scope)
+      response <- RaMP::getRaMPAnalyteIntersections(analyteType=analytetype, format='json', scope=query_scope)
       function_call <- paste0("RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json', scope='",query_scope,")")
     }
     # have to convert from JSON to avoid double serializing JSON

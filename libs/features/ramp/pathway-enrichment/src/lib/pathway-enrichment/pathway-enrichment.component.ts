@@ -1,6 +1,8 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {FormControl} from "@angular/forms";
-import {PathwayEnrichment} from "@ramp/models/ramp-models";
+import {ActivatedRoute} from "@angular/router";
+import {PathwayEnrichment, RampQuery} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchEnrichmentFromPathways, RampFacade} from "@ramp/stores/ramp-store";
 
@@ -9,9 +11,10 @@ import {fetchEnrichmentFromPathways, RampFacade} from "@ramp/stores/ramp-store";
   templateUrl: './pathway-enrichment.component.html',
   styleUrls: ['./pathway-enrichment.component.scss']
 })
-export class PathwayEnrichmentComponent implements OnInit {
-  @Input()holmFormCtrl: FormControl = new FormControl(.2);
-  @Input()fdrFormCtrl: FormControl = new FormControl(.2);
+export class PathwayEnrichmentComponent extends PageCoreComponent implements OnInit {
+  @Input()holmFormCtrl: FormControl = new FormControl(.10);
+  @Input()fdrFormCtrl: FormControl = new FormControl(.10);
+  query!: RampQuery;
 
   enrichmentRaw!: PathwayEnrichment[];
   enrichmentColumns: DataProperty[] = [
@@ -61,8 +64,10 @@ export class PathwayEnrichmentComponent implements OnInit {
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade
+    private rampFacade: RampFacade,
+    protected route: ActivatedRoute
   ) {
+    super(route);
   }
 
 
@@ -81,6 +86,9 @@ export class PathwayEnrichmentComponent implements OnInit {
         this.ref.markForCheck()
       }
     })
+
+    this.holmFormCtrl.valueChanges.subscribe(change=> this.holmFormCtrl.setValue(change, {onlySelf: true, emitEvent: false}))
+    this.fdrFormCtrl.valueChanges.subscribe(change=> this.fdrFormCtrl.setValue(change, {onlySelf: true, emitEvent: false}))
   }
 
   fetchEnrichment(event: string[]): void {

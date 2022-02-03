@@ -1,7 +1,10 @@
 import {InjectionToken, NgModule} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {FlexLayoutModule} from "@angular/flex-layout";
 import {RouterModule, Routes} from "@angular/router";
+import {SharedRampPageCoreModule} from "@ramp/shared/ramp/page-core";
 import {SharedRampQueryPageModule} from "@ramp/shared/ramp/query-page";
+import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
 import {SharedUiNcatsStructureViewerModule, StructureViewerComponent} from "@ramp/shared/ui/ncats-structure-viewer";
 
 import { PropertiesFromMetabolitesComponent } from './properties-from-metabolites/properties-from-metabolites.component';
@@ -21,7 +24,10 @@ const ROUTES: Routes = [
     CommonModule,
     RouterModule.forChild(ROUTES),
     SharedRampQueryPageModule,
-    SharedUiNcatsStructureViewerModule
+    SharedRampPageCoreModule,
+    SharedUiNcatsStructureViewerModule,
+    SharedUiDescriptionPanelModule,
+    FlexLayoutModule
   ],
   declarations: [
     PropertiesFromMetabolitesComponent

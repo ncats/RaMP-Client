@@ -2,29 +2,27 @@
   min-width: 100%;
 }
 
-.example-viewport {
+.viewport {
   height: 30vh;
   width: 100%;
 }
 
-.example-item {
+.filter-item {
+    display: grid;
   height: 50px;
+    grid-auto-rows: max-content;
+  grid-template-columns: 0.2fr 2.1fr 0.7fr;
+  grid-template-areas:
+    "checkbox label count";
 }
-
-.filter-cell.count {
-  padding-right: 0;
-  max-width: 10vw;
-  justify-content: flex-end;
-}
-
-.filter-cell.checkbox {
-  padding-left: 0;
-  max-width: 1vw;
-  min-width: 20px;
-}
-
-.val-column {
-  min-width: 60%;
-  text-align: start;
+.count {
+  grid-area: count;
+  text-align: end;
   padding-right: 1vw;
 }
+
+.checkbox { grid-area: checkbox; }
+.label { grid-area: label; }
+
+
+

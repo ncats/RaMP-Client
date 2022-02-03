@@ -1,18 +1,6 @@
 <div class ="content-panel">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
-      <h1 class="page-title">
-        {{title | titlecase}}
-      </h1>
-    </div>
-  </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
-      <ramp-description [function]="rampQuery?.functionCall" [supportedIds]="supportedIds" [description]="description"></ramp-description>
-    </div>
-  </div>
   <div fxLayout="row" fxLayoutAlign="center end">
-    <div fxFlex="40">
+    <div fxFlex="40" *ngIf="showInput">
       <mat-form-field class="full-width" appearance="outline" color="accent">
         <mat-label>{{input | titlecase}}</mat-label>
         <textarea

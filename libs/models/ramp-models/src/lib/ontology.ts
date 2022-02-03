@@ -6,6 +6,7 @@ export class Ontology {
   sourceId?: string;
   commonName?: string;
   rampOntologyId?: string;
+  count!: number;
 
   constructor(obj: any) {
     if(obj.HMDBOntologyType) {
@@ -28,6 +29,10 @@ export class Ontology {
     }
     if(obj.rampOntologyId) {
       this.rampOntologyId = obj.rampOntologyId;
+    }
+
+    if(obj.metCount) {
+      this.count = obj.metCount;
     }
   }
 }

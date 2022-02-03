@@ -75,7 +75,7 @@ export class RampService {
   }
 
   fetchMetaboliteIntersects(){
-    return this.fetchAnalyteIntersects('mets');
+    return this.fetchAnalyteIntersects('metabolites');
   }
 
   fetchGeneIntersects(){
@@ -84,7 +84,7 @@ export class RampService {
 
   fetchAnalyteIntersects(param: string) {
     return this.http
-      .get<{data: any[]}>(`${this.url}analyte_intersects?analytetype=${param}`) // ,{responseType: 'text'})
+      .get<{data: any[]}>(`${this.url}analyte_intersects?analytetype=${param}&query_scope=mapped-to-pathway`) // ,{responseType: 'text'})
       .pipe(
         map((response) => response.data),
         catchError(this.handleError('fetchAnalyteIntersects', []))

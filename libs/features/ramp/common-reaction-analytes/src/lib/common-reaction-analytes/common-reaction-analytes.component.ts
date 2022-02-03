@@ -1,5 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
 import {RampQuery, Reaction} from "@ramp/models/ramp-models";
+import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 import {fetchCommonReactionAnalytes, fetchCommonReactionAnalytesFile, RampFacade} from "@ramp/stores/ramp-store";
 
@@ -8,7 +10,7 @@ import {fetchCommonReactionAnalytes, fetchCommonReactionAnalytesFile, RampFacade
   templateUrl: './common-reaction-analytes.component.html',
   styleUrls: ['./common-reaction-analytes.component.scss']
 })
-export class CommonReactionAnalytesComponent implements OnInit {
+export class CommonReactionAnalytesComponent extends PageCoreComponent implements OnInit {
   reactionColumns: DataProperty[] = [
     new DataProperty({
       label: "Analyte",
@@ -28,23 +30,25 @@ export class CommonReactionAnalytesComponent implements OnInit {
   query!: RampQuery;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
 
-  supportedIds!: {
+/*  supportedIds!: {
     metabolites: string[],
     genes: string[]
-  } | undefined;
+  } | undefined;*/
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade
+    private rampFacade: RampFacade,
+    protected route: ActivatedRoute
   ) {
+    super(route);
   }
 
 
   ngOnInit(): void {
-    this.rampFacade.supportedIds$.subscribe(ids => {
+/*    this.rampFacade.supportedIds$.subscribe(ids => {
       this.supportedIds = ids
       this.ref.markForCheck()
-    })
+    })*/
 
     this.rampFacade.reactions$.subscribe((res: {data: Reaction[], query: RampQuery} | undefined) => {
       if (res && res.data) {
