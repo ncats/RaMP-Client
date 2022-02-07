@@ -291,14 +291,14 @@ fetchPathwaysFromAnalytes = createEffect(() =>
 
 fetchChemicalAnalysis = createEffect(() =>
     this.actions$.pipe(
-      ofType(RampActions.fetchEnrichmentFromAnalytes),
+      ofType(RampActions.fetchEnrichmentFromMetabolites),
       mergeMap((action) =>
-        this.rampService.fetchEnrichmentFromAnalytes(action.analytes)
+        this.rampService.fetchEnrichmentFromMetabolites(action.metabolites)
           .pipe(
             map((ret: any) => {
-             return RampActions.fetchEnrichmentFromAnalytesSuccess({ chemicalEnrichments: ret })
+             return RampActions.fetchEnrichmentFromMetabolitesSuccess({ chemicalEnrichments: ret })
               },
-              catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromAnalytesFailure({error})))
+              catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromMetabolitesFailure({error})))
             )
           )
       )

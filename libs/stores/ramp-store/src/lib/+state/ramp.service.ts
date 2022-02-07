@@ -237,19 +237,21 @@ fetchChemicalClass(metabolites: string[]): Observable<{metClasses: Classes[], fu
       .subscribe((response: any) => this._downloadFile(response, "fetchChemicalProperties"));
   }
 
-  fetchEnrichmentFromAnalytes(analytes: string[]) {
+  fetchEnrichmentFromMetabolites(metabolites: string[]) {
     const options = {
-        analytes: analytes
+      metabolites: metabolites
     };
     return this.http
-      .post<string[]>(`${this.url}chemical-properties`,  options) // ,{responseType: 'text'})
+      .post<string[]>(`${this.url}chemical-enrichment`,  options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
-          return response.data.map((obj: any) => new Properties(obj));
+          console.log(response);
+          return response.data //.map((obj: any) => new Properties(obj));
         }),
-        catchError(this.handleError('chemical properties', []))
+        catchError(this.handleError('chemical enrichment', []))
       );
   }
+
   fetchEnrichmentFromPathways(analytes: string[], p_holmadj_cutoff: number, p_fdradj_cutoff: number) {
     return this.http
      // .post<string[]>(`${this.url}pathways-from-analytes`,  {analyte: analytes})

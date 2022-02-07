@@ -556,6 +556,32 @@
       },
       "tags": []
     },
+    "shared-ramp-input-row": {
+      "projectType": "library",
+      "root": "libs/shared/ramp/input-row",
+      "sourceRoot": "libs/shared/ramp/input-row/src",
+      "prefix": "ramp",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared/ramp/input-row"],
+          "options": {
+            "jestConfig": "libs/shared/ramp/input-row/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/ramp/input-row/src/**/*.ts",
+              "libs/shared/ramp/input-row/src/**/*.html"
+            ]
+          }
+        }
+      },
+      "tags": []
+    },
     "shared-ramp-page-core": {
       "projectType": "library",
       "root": "libs/shared/ramp/page-core",

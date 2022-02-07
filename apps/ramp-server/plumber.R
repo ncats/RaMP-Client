@@ -98,7 +98,7 @@ function(analytetype, query_scope) {
 function(metabolite="", type="biological", format = "json", res) {
   metabolites_ids <- c(metabolite)
   ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
-  metabolites_ids <- paste(metabolites_ids, collapse = ",")
+  metabolites_ids <- paste(metabolites_ids, collapse = ", ")
   res$serializer <- serializers[[format]]
   if(format == "tsv") {
     return(as_attachment(ontologies_df, "getOntoFromMeta.tsv"))
@@ -135,7 +135,7 @@ function(metabolite="", type="biological") {
   metabolites_ids <- c(metabolite)
   num_submitted_ids <- length(metabolites_ids)
   #metabolites_ids <- sapply(metabolites_ids, shQuote)
-  metabolites_ids <- paste(metabolites_ids, collapse = ",")
+  metabolites_ids <- paste(metabolites_ids, collapse = ", ")
   #print(metabolites_ids)
 
   if (type == "biological") {
@@ -146,7 +146,7 @@ function(metabolite="", type="biological") {
 
   # Reformat metabolites_ids for function call output:
   metabolites_ids <- sapply(metabolite, shQuote)
-  metabolites_ids <- paste(metabolites_ids, collapse = ",")
+  metabolites_ids <- paste(metabolites_ids, collapse = ", ")
 
   if(is.null(ontologies_df)) {
     return(
@@ -181,7 +181,7 @@ function(ontology="") {
   print(ontologies_names)
   num_submitted_names <- length(ontologies_names)
   #    ontologies_names <- sapply(ontologies_names, shQuote)
-  ontologies_names <- paste(ontologies_names, collapse = ",")
+  ontologies_names <- paste(ontologies_names, collapse = ", ")
 
   ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
   if (is.null(nrow(ontologies))) {
@@ -223,7 +223,7 @@ function(pathway="", analyte_type="both", format = "json", res) {
       print(cond)
       return(data.frame(stringsAsFactors = FALSE))
     })
- pathways <- paste(pathway, collapse = ",")
+ pathways <- paste(pathway, collapse = ", ")
   res$serializer <- serializers[[format]]
   if(format == "tsv") {
     return(as_attachment(analytes_df, "getAnalyteFromPathway.tsv"))
@@ -254,7 +254,7 @@ function(analytes="", format = "json", res) {
       return(data.frame(stringsAsFactors = FALSE))
     })
 
-  analytes <- paste(analytes, collapse = ",")
+  analytes <- paste(analytes, collapse = ", ")
   res$serializer <- serializers[[format]]
   print(analytes)
   if(format == "tsv") {
@@ -281,7 +281,7 @@ function(analytes="", format = "json", res) {
 #' @post /api/common-reaction-analytes
 function(analyte="", format = "json", res) {
   analytes <- c(analyte)
-  analytes_names <- paste(analytes, collapse = ",")
+  analytes_names <- paste(analytes, collapse = ", ")
   analytes_df_ids <- tryCatch({
     analytes_df <- RaMP::rampFastCata(
       analytes = analytes,
@@ -337,7 +337,7 @@ function(metabolites="", format ="json", res) {
       print(cond)
       return(data.frame(stringsAsFactors = FALSE))
     })
-  mets <- paste(mets, collapse = ",")
+  mets <- paste(mets, collapse = ", ")
   res$serializer <- serializers[[format]]
   if(format == "tsv") {
     return(
@@ -378,7 +378,7 @@ function(metabolites="", property="all", format = "json", res) {
       print(cond)
       return(data.frame(stringsAsFactors = FALSE))
     })
-  mets <- paste(metabolites, collapse = ",")
+  mets <- paste(metabolites, collapse = ", ")
   res$serializer <- serializers[[format]]
   if(format == "tsv") {
     return(
@@ -404,7 +404,7 @@ function(pathways) {
   fishers_results_df <- RaMP::runCombinedFisherTest(
     pathways
   )
-  pathways <- paste(pathways, collapse = ",")
+  pathways <- paste(pathways, collapse = ", ")
   return(list(
     data = fishers_results_df,
     function_call = paste0("RaMP::runCombinedFisherTest(", pathways, "))")
@@ -425,11 +425,45 @@ function(fishers_results, p_holmadj_cutoff=0.2, p_fdradj_cutoff=0.2) {
     p_holmadj_cutoff = p_holmadj_cutoff,
     p_fdradj_cutoff = p_fdradj_cutoff
   )
-  fishers_results <- paste(fishers_results, collapse = ",")
+  fishers_results <- paste(fishers_results, collapse = ", ")
   return(list(
     data = filtered_results,
     function_call = paste0("RaMP::FilterFishersResults(", fishers_results, "))")
   ))
+}
+
+#####
+#' Perform chemical enrichment on given metabolites
+#' @param metabolites
+#' @param format one of "json" or "tsv"
+#' @get /api/chemical-enrichment
+#' @post /api/chemical-enrichment
+function(metabolites="", format = "json", res) {
+  metabolites <- c(metabolites)
+  chemical_enrichment_df <- tryCatch({
+    enrichment_df <- RaMP::chemicalClassEnrichment(
+      mets = metabolites,
+    )
+  },
+    error = function(cond) {
+      print(cond)
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  mets <- paste(metabolites, collapse = ", ")
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(
+      as_attachment(chemical_enrichment_df, "chemicalClassEnrichment.tsv")
+    )
+  } else {
+    return(
+      list(
+        data = chemical_enrichment_df
+       # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
+        #numFoundIds = length(unique(chemical_enrichment_df$chem_props$chem_source_id))
+      )
+    )
+  }
 }
 
 
@@ -446,12 +480,12 @@ function(fishers_results, p_holmadj_cutoff=0.2, p_fdradj_cutoff=0.2) {
 function(identifier) {
   identifiers <- c(identifier)
   #identifiers <- sapply(identifiers, shQuote)
-  identifiers <- paste(identifiers, collapse = ",")
+  identifiers <- paste(identifiers, collapse = ", ")
   pathways <- RaMP::getPathwayFromAnalyte(identifiers)
 
   # Need to reformat for output function_call:
   identifiers <- sapply(identifier, shQuote)
-  identifiers <- paste(identifiers, collapse = ",")
+  identifiers <- paste(identifiers, collapse = ", ")
 
   return(list(
     data = pathways,
@@ -465,7 +499,7 @@ function(identifier) {
 function(identifier) {
   identifiers <- c(identifier)
   #identifiers <- sapply(identifiers, shQuote)
-  identifiers <- paste(identifiers, collapse = ",")
+  identifiers <- paste(identifiers, collapse = ", ")
   pathways <- getPathwayFromAnalyte(identifiers)
   return(pathways)
 }
@@ -481,7 +515,7 @@ function(identifier) {
 function(identifier, type=NULL, find_synonym=FALSE, names_or_ids=NULL) {
   identifiers <- c(identifier)
   identifiers <- sapply(identifiers, shQuote)
-  identifiers <- paste(identifiers, collapse = ",")
+  identifiers <- paste(identifiers, collapse = ", ")
 
   con <- RaMP::connectToRaMP()
 
@@ -581,7 +615,7 @@ function(analytes) {
   fishers_results_df <- RaMP::runCombinedFisherTest(
     analytes = analytes
   )
-  identifiers <- paste(analytes, collapse = ",")
+  identifiers <- paste(analytes, collapse = ", ")
   print(identifiers)
   return(list(
     data = fishers_results_df,

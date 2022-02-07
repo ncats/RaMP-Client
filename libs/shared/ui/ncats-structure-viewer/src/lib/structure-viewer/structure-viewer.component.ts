@@ -63,6 +63,7 @@ export class StructureViewerComponent implements OnInit {
    * set as smiles
    */
   ngOnInit() {
+    console.log(this);
     // now we can subscribe to it
     this._data
       // listen to data as long as term is undefined or null

@@ -22,20 +22,20 @@ export class PropertiesFromMetabolitesComponent extends PageCoreComponent implem
       field: "chem_source_id",
       sortable: true
     }),
-    new DataProperty({
+/*    new DataProperty({
       label: "Common Name",
       field: "common_name",
       sortable: true
-    }),
+    }),*/
     new DataProperty({
-      label: "Structure",
+      label: "Metabolite",
       field: "imageUrl",
       customComponent: STRUCTURE_VIEWER_COMPONENT
     }),
-    new DataProperty({
+/*    new DataProperty({
       label: "Smiles",
       field: "iso_smiles"
-    }),
+    }),*/
     new DataProperty({
       label: "InCHI",
       field: "inchi"
@@ -110,6 +110,7 @@ export class PropertiesFromMetabolitesComponent extends PageCoreComponent implem
         newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
       });
       newObj.imageUrl.url = `${this.route.snapshot.data.renderUrl}?structure=${encodeURIComponent(obj.iso_smiles)}&size=150`
+      newObj.imageUrl.label = newObj.common_name.value;
       return newObj;
     })
   }

@@ -11,12 +11,16 @@
       <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
     </div>
   </div>
-<ramp-query-page
-  [dataColumns]="reactionColumns"
-  [dataAsDataProperty]="dataAsDataProperty"
-  [supportedIdTypes] = supportedIds
-  [rampQuery]="query"
-  (dataDownload)="fetchReactionsFile($event)"
-  (dataSearch)="fetchReactions($event)">
-</ramp-query-page>
+
+  <ramp-input-row
+    [input]="input"
+    [examples]="examples"
+    (dataSearch)="fetchReactions($event)"
+    (dataDownload)="fetchReactionsFile($event)">
+  </ramp-input-row>
+
+  <ramp-query-page
+    [dataColumns]="reactionColumns"
+    [dataAsDataProperty]="dataAsDataProperty">
+  </ramp-query-page>
 </div>

@@ -11,11 +11,16 @@
       <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
     </div>
   </div>
+  <ramp-input-row
+    [input]="input"
+    [examples]="examples"
+    (dataSearch)="fetchEnrichment($event)"
+    (dataDownload)="fetchEnrichment($event)">
+  </ramp-input-row>
+
 <ramp-query-page
   [dataColumns]="enrichmentColumns"
-  [rawData]="enrichmentRaw"
   [dataAsDataProperty]="dataAsDataProperty"
-  [matches]="matches"
-  (dataSearch)="fetchenrichment($event)">
+  [matches]="matches">
 </ramp-query-page>
 </div>

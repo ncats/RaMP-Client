@@ -4,7 +4,7 @@
     "input": "analytes",
     "function": "ontologies_df <- RaMP::getOntoFromMeta(analytes = \"###REPLACE###\")",
     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
-    "description": "Enter a list of metabolite ID's prepended by ID source (e.g. <strong>kegg</strong>:C00412)."
+    "description": "Enter a list of metabolite IDs prepended by ID source (e.g. <strong>kegg</strong>:C00412)."
   },
   "metabolites-from-ontologies" : {
     "title": "Retrieve Analytes from Ontologies",
@@ -36,18 +36,18 @@
     "description": "Retrieve Analytes Involved in the Same Reaction.  Enter an analyte ID."
   },
    "classes-from-metabolites" : {
-    "title": "Classes from Metabolites",
+    "title": "Retrieve Chemical Classes from Input Metabolites",
      "input": "metabolites",
      "function": "analytes <- RaMP::getPathwayFromAnalyte(pathway=\"###REPLACE###\")",
     "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211",
     "description": "write new description"
   },
    "properties-from-metabolites" : {
-    "title": "Retrieve Chemical Classes from Input Metabolites",
+    "title": "Retrieve Chemical Properties from Input Metabolites",
      "input": "metabolites",
      "function": "analytes <- RaMP::chemicalClassSurvey(mets=\"###REPLACE###\")",
     "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211",
-    "description": "Retrieve Chemical Classes from Input Metabolites.  Input metabolite IDs"
+    "description": "Retrieve Chemical properties from Input Metabolites.  Input metabolite IDs"
   },
    "chemical-enrichment" : {
     "title": "Perform Chemical Enrichment",

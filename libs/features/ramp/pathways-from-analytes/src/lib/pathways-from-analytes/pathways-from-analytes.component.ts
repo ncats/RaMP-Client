@@ -23,12 +23,12 @@ export class PathwaysFromAnalytesComponent extends PageCoreComponent implements 
     }),
     new DataProperty({
       label: "Pathway Source",
-      field: "pathwaysource",
+      field: "pathwaySource",
       sortable: true
     }),
     new DataProperty({
       label: "Pathway Source ID",
-      field: "pathwaysourceId",
+      field: "pathwayId",
       sortable: true
     }),
     new DataProperty({
