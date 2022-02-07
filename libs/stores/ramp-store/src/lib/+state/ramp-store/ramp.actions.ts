@@ -257,18 +257,18 @@ export const fetchPropertiesFromMetabolitesFailure = createAction(
   props<{ error: any }>()
 );
 
-export const fetchEnrichmentFromAnalytes = createAction(
-  '[Ramp/API] Fetch fetchEnrichmentFromAnalytes',
-  props<{analytes: string[]}>()
+export const fetchEnrichmentFromMetabolites = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromMetabolites',
+  props<{metabolites: string[]}>()
 );
 
-export const fetchEnrichmentFromAnalytesSuccess = createAction(
-  '[Ramp/API] Fetch fetchEnrichmentFromAnalytes Success',
+export const fetchEnrichmentFromMetabolitesSuccess = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromMetabolites Success',
   props<{ chemicalEnrichments: any}>()
 );
 
-export const fetchEnrichmentFromAnalytesFailure = createAction(
-  '[Ramp/API] Fetch fetchEnrichmentFromAnalytes Failure',
+export const fetchEnrichmentFromMetabolitesFailure = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromMetabolites Failure',
   props<{ error: any }>()
 );
 export const fetchEnrichmentFromPathways = createAction(

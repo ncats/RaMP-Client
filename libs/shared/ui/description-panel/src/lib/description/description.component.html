@@ -6,5 +6,5 @@
   </div>
   <div>
     <div *ngIf="function">The following R function was called:</div>
-    <pre class="code-block">{{function}}</pre>
+    <pre class="code-block">{{function?.replace('/\\,/g', ', ')}}</pre>
   </div>

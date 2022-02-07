@@ -99,7 +99,7 @@ const rampReducer = createReducer(
     RampActions.fetchCommonReactionAnalytes,
     RampActions.fetchClassesFromMetabolites,
     RampActions.fetchPropertiesFromMetabolites,
-    RampActions.fetchEnrichmentFromAnalytes,
+    RampActions.fetchEnrichmentFromMetabolites,
     RampActions.fetchEnrichmentFromPathways,
     (state) => ({
     ...state,
@@ -148,7 +148,7 @@ on(RampActions.fetchClassesFromMetabolitesSuccess, (state, { data, query }) =>
 on(RampActions.fetchPropertiesFromMetabolitesSuccess, (state, { data, query }) =>
     ({...state, loading: false,  properties: { data, query }})),
 
-on(RampActions.fetchEnrichmentFromAnalytesSuccess, (state, { chemicalEnrichments }) =>
+on(RampActions.fetchEnrichmentFromMetabolitesSuccess, (state, { chemicalEnrichments }) =>
     ({...state, loading: false,  chemicalEnrichments: chemicalEnrichments})),
 
 on(RampActions.fetchEnrichmentFromPathwaysSuccess, (state, { pathwayEnrichments }) =>

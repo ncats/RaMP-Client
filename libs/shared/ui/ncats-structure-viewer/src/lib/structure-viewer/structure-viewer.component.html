@@ -1,6 +1,8 @@
 <div class="image-holder">
   <div *ngIf= "url; else placeholder">
+    <h3>{{data?.label}}</h3>
     <img [src]=url [alt]="'Rendered image for ' + ligandName" class="ligand-image" [ngClass]="{roundCorners: rounded}">
+    <p>{{data?.value}}</p>
   </div>
   <ng-template #placeholder>
     <img [src] = "'assets/images/benzene.svg'"

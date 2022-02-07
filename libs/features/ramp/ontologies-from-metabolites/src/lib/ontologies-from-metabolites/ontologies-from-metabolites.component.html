@@ -11,11 +11,17 @@
       <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
     </div>
   </div>
-<ramp-query-page
-  [dataColumns]="ontologyColumns"
-  [dataAsDataProperty]="dataAsDataProperty"
-  [rampQuery]="query"
-  (dataDownload)="fetchOntologiesFile($event)"
-  (dataSearch)="fetchOntologies($event)">
-</ramp-query-page>
+
+  <ramp-input-row
+    [input]="input"
+    [examples]="examples"
+    (dataSearch)="fetchOntologies($event)"
+    (dataDownload)="fetchOntologiesFile($event)">
+  </ramp-input-row>
+
+  <ramp-query-page
+    [dataColumns]="ontologyColumns"
+    [dataAsDataProperty]="dataAsDataProperty">
+  </ramp-query-page>
+
 </div>

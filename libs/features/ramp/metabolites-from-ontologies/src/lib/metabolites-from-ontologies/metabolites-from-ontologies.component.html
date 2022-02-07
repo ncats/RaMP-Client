@@ -30,25 +30,15 @@
 </div>
 </div>
 
-
+<ramp-input-row
+  [showInput] = false
+  [input]="input"
+  [examples]="examples"
+  (dataSearch)="fetchMetabolites($event)"
+  (dataDownload)="fetchMetabolites($event)">
+</ramp-input-row>
 
 <ramp-query-page
   [dataColumns]="metaboliteColumns"
-  [rawData]="metaboliteRaw"
-  [dataAsDataProperty]="dataAsDataProperty"
-  [rampQuery]="query"
-  [showInput] = false
-  (dataSearch)="fetchMetabolites($event)">
+  [dataAsDataProperty]="dataAsDataProperty">
 </ramp-query-page>
-
-<!--  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="30">
-      <mat-form-field class="full-width" appearance="outline" color="accent">
-        <mat-label>{{input | titlecase}}</mat-label>
-      <input
-        matInput
-        [formControl]="typeaheadCtrl"
-      >
-      </mat-form-field>
-      </div>
-    </div>-->

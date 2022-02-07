@@ -3,7 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {ChemicalEnrichment, RampQuery} from "@ramp/models/ramp-models";
 import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchEnrichmentFromAnalytes, RampFacade} from "@ramp/stores/ramp-store";
+import {fetchEnrichmentFromMetabolites, RampFacade} from "@ramp/stores/ramp-store";
 
 @Component({
   selector: 'ramp-chemical-enrichment',
@@ -75,7 +75,7 @@ export class ChemicalEnrichmentComponent extends PageCoreComponent implements On
     })
   }
 
-  fetchenrichment(event: string[]): void {
-    this.rampFacade.dispatch(fetchEnrichmentFromAnalytes({analytes: event}))
+  fetchEnrichment(event: string[]): void {
+    this.rampFacade.dispatch(fetchEnrichmentFromMetabolites({metabolites: event}))
   }
 }

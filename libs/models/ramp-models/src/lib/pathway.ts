@@ -1,7 +1,7 @@
 export class Pathway {
   pathwayName!: string;
-  pathwaysource!: string;
-  pathwaysourceId!: string;
+  pathwaySource!: string;
+  pathwayId!: string;
   pathwayType!: string;
   analyteName!: string;
 

@@ -6,6 +6,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatSliderModule} from "@angular/material/slider";
 import {RouterModule, Routes} from "@angular/router";
+import {SharedRampInputRowModule} from "@ramp/shared/ramp/input-row";
 import {SharedRampPageCoreModule} from "@ramp/shared/ramp/page-core";
 import {SharedRampQueryPageModule} from "@ramp/shared/ramp/query-page";
 import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
@@ -29,6 +30,7 @@ const ROUTES: Routes = [
     MatSliderModule,
     ReactiveFormsModule,
     SharedRampPageCoreModule,
+    SharedRampInputRowModule,
     SharedUiDescriptionPanelModule,
     MatInputModule
   ],

@@ -1,37 +1,13 @@
 <div class ="content-panel">
-  <div fxLayout="row" fxLayoutAlign="center end">
-    <div fxFlex="40" *ngIf="showInput">
-      <mat-form-field class="full-width" appearance="outline" color="accent">
-        <mat-label>{{input | titlecase}}</mat-label>
-        <textarea
-          matInput
-          [rows]="10"
-          [formControl]="inputFormCtrl"
-          placeholder= {{examples}} cdkTextareaAutosize></textarea>
-      </mat-form-field>
-    </div>
-    <div fxFlex="10" class = "button-holder">
-      <ng-content select=".additional-params"></ng-content>
-      <div fxFlexAlign="end">
-        <button mat-flat-button color="accent" (click)="fetchData()" class="bottom-align">
-          Search
-        </button>
-      </div>
-    </div>
-  </div>
   <ng-container *ngIf="dataAsDataProperty && dataAsDataProperty.length > 0; then dataTable; else noData">
   </ng-container>
   <ng-template #dataTable>
   <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="dataAsDataProperty">
     <div fxFlex="90">
       <div fxLayout="row" fxLayoutAlign="end start">
-        <div fxFlex="22">
+    <!--    <div fxFlex="22">
           {{rampQuery?.numFoundIds}} of {{queryCount}} identifiers found.
-          <button mat-button class="tool-button list-download" (click)="downloadData()"
-                  matTooltip="Download Data" color="accent">
-            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
-          </button>
-        </div>
+        </div>-->
       </div>
       <ncats-frontend-library-ncats-datatable
         [fieldsConfig]="dataColumns"
