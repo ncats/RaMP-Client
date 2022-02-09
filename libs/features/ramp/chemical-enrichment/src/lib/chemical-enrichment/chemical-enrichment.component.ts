@@ -1,9 +1,10 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {ChemicalEnrichment, RampQuery} from "@ramp/models/ramp-models";
+import {TREE_VIEWER_COMPONENT} from "@ramp/features/ramp/chemical-enrichment";
+import {ChemicalEnrichment, Classes, RampQuery} from "@ramp/models/ramp-models";
 import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchEnrichmentFromMetabolites, RampFacade} from "@ramp/stores/ramp-store";
+import {fetchClassesFromMetabolites, fetchEnrichmentFromMetabolites, RampFacade} from "@ramp/stores/ramp-store";
 
 @Component({
   selector: 'ramp-chemical-enrichment',
@@ -43,11 +44,32 @@ export class ChemicalEnrichmentComponent extends PageCoreComponent implements On
       field: "geneOrCompound",
       sortable: true
     }),
-  ]
+  ];
+  classesColumns: DataProperty[] = [
+    //todo this isn't sortable
+    new DataProperty({
+      label: "Source ID",
+      field: "sourceId"
+    }),
+    new DataProperty({
+      label: "ClassyFire Classes",
+      field: "classyFireTree",
+      customComponent: TREE_VIEWER_COMPONENT
+    }),
+    new DataProperty({
+      label: "LIPIDMAPS Classes",
+      field: "lipidMapsTree",
+      customComponent: TREE_VIEWER_COMPONENT
+    })
+  ];
+  classesLoading = false;
+  enrichmentLoading = false;
+
   query!: RampQuery;
 
   matches = 0;
   dataAsDataProperty!: { [key: string]: DataProperty }[];
+  classesAsDataProperty!: { [key: string]: DataProperty }[];
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -70,12 +92,39 @@ export class ChemicalEnrichmentComponent extends PageCoreComponent implements On
           });
           return newObj;
         })
+        this.enrichmentLoading = false;
         this.ref.markForCheck()
       }
     })
+
+    this.rampFacade.classes$.subscribe((res: {data: Classes[], query: RampQuery} | undefined) => {
+      if (res && res.data) {
+        this._mapClasses(res.data);
+      }
+      if (res && res.query) {
+        this.query = res.query;
+      }
+      this.classesLoading = false;
+      this.ref.markForCheck();
+    })
+
   }
 
   fetchEnrichment(event: string[]): void {
+    this.classesLoading = true;
+    this.rampFacade.dispatch(fetchClassesFromMetabolites({metabolites: event}))
+    this.enrichmentLoading = true;
     this.rampFacade.dispatch(fetchEnrichmentFromMetabolites({metabolites: event}))
   }
+
+  private _mapClasses(data: any): void {
+    this.classesAsDataProperty = data.map((obj: Classes) => {
+      const newObj: { [key: string]: DataProperty } = {};
+      Object.entries(obj).map((value: any, index: any) => {
+        newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+      });
+      return newObj;
+    })
+  }
+
 }

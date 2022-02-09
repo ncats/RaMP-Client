@@ -1,12 +1,21 @@
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {FlexLayoutModule} from "@angular/flex-layout";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatTabsModule} from "@angular/material/tabs";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
 import {EffectsModule} from "@ngrx/effects";
 import {StoreModule} from "@ngrx/store";
+import {SharedRampInputRowModule} from "@ramp/shared/ramp/input-row";
+import {SharedRampPageCoreModule} from "@ramp/shared/ramp/page-core";
+import {SharedRampQueryPageModule} from "@ramp/shared/ramp/query-page";
+import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
+import {SharedUiLoadingSpinnerModule} from "@ramp/shared/ui/loading-spinner";
+import {SharedUiObjectTreeModule} from "@ramp/shared/ui/object-tree";
 import {RampFacade, StoresRampStoreModule} from "@ramp/stores/ramp-store";
 
 import { ChemicalEnrichmentComponent } from './chemical-enrichment.component';
@@ -23,8 +32,15 @@ describe('ChemicalEnrichmentComponent', () => {
         RouterTestingModule,
         StoresRampStoreModule,
         HttpClientTestingModule,
-        FormsModule,
-        ReactiveFormsModule,
+        SharedRampQueryPageModule,
+        SharedRampPageCoreModule,
+        SharedRampInputRowModule,
+        SharedUiLoadingSpinnerModule,
+        SharedUiObjectTreeModule,
+        SharedUiDescriptionPanelModule,
+        FlexLayoutModule,
+        MatTabsModule,
+        MatFormFieldModule,
         StoreModule.forRoot(
           {},
           {

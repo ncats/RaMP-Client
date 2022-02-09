@@ -2,9 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {ReactiveFormsModule} from "@angular/forms";
+import {MatButtonModule} from "@angular/material/button";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatTooltipModule} from "@angular/material/tooltip";
 import {RouterModule, Routes} from "@angular/router";
 import {SharedRampInputRowModule} from "@ramp/shared/ramp/input-row";
 import {SharedRampPageCoreModule} from "@ramp/shared/ramp/page-core";
@@ -23,21 +27,25 @@ const ROUTES: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(ROUTES),
-    SharedRampQueryPageModule,
-    SharedRampInputRowModule,
-    SharedUiDescriptionPanelModule,
-    SharedUiObjectTreeModule,
-    SharedRampPageCoreModule,
-    MatCheckboxModule,
-    SharedUiFilterPanelModule,
-    FlexLayoutModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(ROUTES),
+        SharedRampQueryPageModule,
+        SharedRampInputRowModule,
+        SharedUiDescriptionPanelModule,
+        SharedUiObjectTreeModule,
+        SharedRampPageCoreModule,
+        MatCheckboxModule,
+        SharedUiFilterPanelModule,
+        FlexLayoutModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatTabsModule
+    ],
   declarations: [
     MetabolitesFromOntologiesComponent
   ],

@@ -1,11 +1,18 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormControl} from "@angular/forms";
+import {MatTabGroup} from "@angular/material/tabs";
 import {ActivatedRoute} from "@angular/router";
 import {Metabolite, RampQuery} from "@ramp/models/ramp-models";
 import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
 import {QueryPageComponent} from "@ramp/shared/ramp/query-page";
+import {FilterPanelComponent} from "@ramp/shared/ui/filter-panel";
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchMetabolitesFromOntologies, fetchOntologies, RampFacade} from "@ramp/stores/ramp-store";
+import {
+  fetchMetabolitesFromOntologies,
+  fetchMetabolitesFromOntologiesFile,
+  fetchOntologies,
+  RampFacade
+} from "@ramp/stores/ramp-store";
 import {debounceTime, distinctUntilChanged, map} from "rxjs";
 
 @Component({
@@ -14,6 +21,10 @@ import {debounceTime, distinctUntilChanged, map} from "rxjs";
   styleUrls: ['./metabolites-from-ontologies.component.scss']
 })
 export class MetabolitesFromOntologiesComponent extends PageCoreComponent implements OnInit {
+  @ViewChildren('filterPanel') filterPanels!:QueryList<FilterPanelComponent>;
+  @ViewChild('metaTabs') metaTabs!:ElementRef<MatTabGroup>;
+  tabIndex = 0;
+
   metaboliteRaw!: Metabolite[];
   allOntoFilterCtrl: FormControl = new FormControl();
   metaboliteColumns: DataProperty[] = [
@@ -44,6 +55,7 @@ export class MetabolitesFromOntologiesComponent extends PageCoreComponent implem
   allOntologies!: any[];
   selectedOntologies: any [] = [];
   globalFilter?: string;
+  disableSearch = false;
 
 //  columns = ['select', 'ontology', 'count'];
 
@@ -70,6 +82,8 @@ export class MetabolitesFromOntologiesComponent extends PageCoreComponent implem
       distinctUntilChanged()
     )
       .subscribe(term => {
+        console.log(this);
+
         console.log(term)
         if(term.trim() && term.trim().length > 0) {
           this.ontologies = [];
@@ -111,6 +125,7 @@ export class MetabolitesFromOntologiesComponent extends PageCoreComponent implem
           });
           return newObj;
         })
+        this.tabIndex = 1;
       }
       if (res && res.query) {
         this.query = res.query;
@@ -120,6 +135,7 @@ export class MetabolitesFromOntologiesComponent extends PageCoreComponent implem
   }
 
   setValues(values: any) {
+    console.log(values)
     if(values.added) {
       this.selectedOntologies = Array.from(new Set(this.selectedOntologies.concat(values.added)));
     }
@@ -127,11 +143,26 @@ export class MetabolitesFromOntologiesComponent extends PageCoreComponent implem
       values.removed.forEach((val: { value: any; })=> this.selectedOntologies = this.selectedOntologies.filter(ont => ont.value !== val.value))
     }
       console.log(this.selectedOntologies);
+    let sum = 0;
+    this.selectedOntologies.forEach(onto => sum += onto.count);
+      this.disableSearch = sum > 10000;
   }
 
-  fetchMetabolites(event: string[]): void {
+  clearAll() {
+    this.filterPanels.forEach(panel => panel.fieldSelection.clear());
+  }
+
+  fetchMetabolites(): void {
     const ontologiesList = this.selectedOntologies.map(ont => ont.value)
     console.log(ontologiesList);
     this.rampFacade.dispatch(fetchMetabolitesFromOntologies({ontologies: ontologiesList}))
   }
+
+  fetchMetabolitesFile(): void {
+    const ontologiesList = this.selectedOntologies.map(ont => ont.value)
+    console.log(ontologiesList);
+    this.rampFacade.dispatch(fetchMetabolitesFromOntologiesFile({ontologies: ontologiesList, format: 'tsv'}))
+  }
+
+
 }

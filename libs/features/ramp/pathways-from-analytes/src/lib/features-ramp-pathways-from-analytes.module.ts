@@ -32,5 +32,8 @@ const ROUTES: Routes = [
   declarations: [
     PathwaysFromAnalytesComponent
   ],
+  exports: [
+    PathwaysFromAnalytesComponent
+  ]
 })
 export class FeaturesRampPathwaysFromAnalytesModule {}

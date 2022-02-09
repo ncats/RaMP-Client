@@ -115,6 +115,7 @@ export class NcatsDatatableComponent
    */
   @Input()
   set fieldsConfig(value: DataProperty[]) {
+    console.log(value);
     this._fieldsConfig.next(value);
   }
 
