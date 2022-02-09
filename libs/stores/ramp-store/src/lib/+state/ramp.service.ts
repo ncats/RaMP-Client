@@ -262,19 +262,32 @@ fetchChemicalClass(metabolites: string[]): Observable<{metClasses: Classes[], fu
            return this.http
              .post<string[]>(`${this.url}combined-fisher-test`,  {pathways: response.data})
          }),*/
-         mergeMap((req: any) => {
+/*         mergeMap((req: any) => {
            return this.http
              .post<string[]>(`${this.url}filter-fisher-test-results`,  {
                fishers_results: req.data.fishresults,
                p_holmadj_cutoff:  p_holmadj_cutoff,
                p_fdradj_cutoff: p_fdradj_cutoff
              })
-         }),
-  /*      mergeMap((req: any) => {
+         }),*/
+        mergeMap((req: any) => {
            console.log(req);
            return this.http
              .post<string[]>(`${this.url}cluster-fisher-test-results`,  {
-               fishers_results: req.data.fishresults
+               fishers_results: req.data,
+                perc_analyte_overlap: 0.2,
+                min_pathway_tocluster: 2,
+                perc_pathway_overlap: 0.2
+             })
+         }),
+/*        mergeMap((req: any) => {
+           console.log(req);
+           return this.http
+             .post<string[]>(`${this.url}cluster-plot`,  {
+               fishers_results: req.data,
+                perc_analyte_overlap: 0.2,
+                min_pathway_tocluster: 2,
+                perc_pathway_overlap: 0.2
              })
          }),*/
          map((response: any) => {
@@ -346,6 +359,15 @@ fetchEnrichmentFromPathways2(analytes: string[]) {
       );
   }
 
+  fetchMetabolitesFromOntologiesFile(ontologies: string[], format: string) {
+    const params = {
+      ontology: ontologies.join(','),
+      format: format
+    };
+    this.http
+      .post<string[]>(`${this.url}metabolites-from-ontologies`, params, HTTP_OPTIONS)
+      .subscribe((response: any) => this._downloadFile(response, "fetchMetabolitesFromOntologies"));
+  }
   fetchOntologies() {
     return this.http
       .get<string[]>(`${this.url}ontology-types`) // ,{responseType: 'text'})

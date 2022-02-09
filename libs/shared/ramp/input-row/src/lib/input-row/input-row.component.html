@@ -13,7 +13,7 @@
     <ng-content select=".additional-params"></ng-content>
     <div fxFlexAlign="end">
       <button mat-flat-button color="accent" (click)="fetchData()" class="bottom-align">
-        Search
+        <span fxHide.lt-lg>Search</span><mat-icon>search</mat-icon>
       </button>
       &nbsp;&nbsp;&nbsp;
       <button mat-stroked-button class="tool-button list-download" (click)="downloadData()"

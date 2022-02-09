@@ -1,14 +1,12 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChange} from '@angular/core';
-import {FormControl} from "@angular/forms";
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import {ActivatedRoute} from "@angular/router";
-import {RampQuery} from "@ramp/models/ramp-models";
+import {ChangeDetectionStrategy, Component, Input, OnInit, SimpleChange} from '@angular/core';
 import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
 
 @Component({
   selector: 'ramp-query-page',
   templateUrl: './query-page.component.html',
-  styleUrls: ['./query-page.component.scss']})
+  styleUrls: ['./query-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
 export class QueryPageComponent implements OnInit {
   @Input() dataColumns!: DataProperty[];
   @Input() dataAsDataProperty!: { [key: string]: DataProperty }[];
@@ -24,6 +22,7 @@ export class QueryPageComponent implements OnInit {
   }
 
   ngOnChanges(change: {[n: string]: SimpleChange}) {
+    console.log(change);
     if (change.dataAsDataProperty && !change.dataAsDataProperty.firstChange) {
       if (!this.dataAsDataProperty.length || this.dataAsDataProperty.length === 0) {
         this.noDataArr = true;

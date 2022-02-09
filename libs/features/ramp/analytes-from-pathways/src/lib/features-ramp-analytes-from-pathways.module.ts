@@ -28,5 +28,8 @@ const ROUTES: Routes = [
   declarations: [
     AnalytesFromPathwaysComponent
   ],
+  exports: [
+    AnalytesFromPathwaysComponent
+  ]
 })
 export class FeaturesRampAnalytesFromPathwaysModule {}

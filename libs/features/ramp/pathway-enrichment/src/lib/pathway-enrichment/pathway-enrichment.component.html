@@ -11,34 +11,83 @@
       <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
     </div>
   </div>
-
-  <ramp-input-row
-    [input]="input"
-    [examples]="examples"
-    [showDownload]="false"
-    (dataSearch)="fetchEnrichment($event)">
-    <div class ="additional-params">
-      <mat-label>p_holmadj_cutoff</mat-label>
-      <div fxLayout="row">
-        <mat-slider min="0" max="1.0" step="0.01" [thumbLabel]="true" [formControl]="holmFormCtrl"></mat-slider>
-        <mat-form-field appearance="outline" color="accent" class="p-val-input">
-          <input matInput type="number" step="0.01" [formControl]="holmFormCtrl" >
-        </mat-form-field>
-      </div>
+  <mat-tab-group [color] = "'accent'">
+    <mat-tab [label] ="'Input'">
       <br>
-      <mat-label>p_fdradj_cutoff</mat-label>
-      <div fxLayout="row">
-        <mat-slider min="0" max="1.0" step="0.01" [thumbLabel]="true" [formControl]="fdrFormCtrl"></mat-slider>
-        <mat-form-field appearance="outline" color="accent" class="p-val-input">
-          <input matInput type="number" step="0.01" [formControl]="fdrFormCtrl" >
-        </mat-form-field>
+      <br>
+      <br>
+      <ramp-input-row
+        [input]="input"
+        [examples]="examples"
+        [showDownload]="false"
+        (dataSearch)="fetchEnrichment($event)">
+      </ramp-input-row>
+    </mat-tab>
+    <mat-tab [disabled] = !pathwayDataAsDataProperty>
+      <ng-template mat-tab-label>
+        Pathways {{pathwayDataAsDataProperty ? pathwayDataAsDataProperty.length : ''}}
+        <ramp-loading [isLoading]="pathwaysLoading" [size]="'small'" [position]="'right'" ></ramp-loading>
+      </ng-template>
+      <ramp-query-page
+        [dataColumns]="pathwayColumns"
+        [dataAsDataProperty]="pathwayDataAsDataProperty"
+        [matches]="matches">
+      </ramp-query-page>
+    </mat-tab>
+    <mat-tab> <!--[disabled] = !dataAsDataProperty-->
+      <ng-template mat-tab-label>
+        Enriched Pathways {{dataAsDataProperty ? dataAsDataProperty.length : ''}}
+        <ramp-loading [isLoading]="enrichmentLoading" [size]="'small'" [position]="'right'" ></ramp-loading>
+      </ng-template>
+      <div fxLayout="row" fxLayoutAlign="space-around start" class ="additional-params">
+        <div fxFlex = 40>
+        <h3>Filter Results</h3>
+          <div fxLayout="row" fxLayoutAlign="space-around center">
+            <div fxFlex="80">
+              <mat-form-field appearance="outline" color="accent" class="p-val-input">
+                <mat-label>p_holmadj_cutoff</mat-label>
+                <input matInput type="number" step="0.01" [formControl]="holmFormCtrl" >
+              </mat-form-field>
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <mat-form-field appearance="outline" color="accent" class="p-val-input">
+                <mat-label>p_fdradj_cutoff</mat-label>
+                <input matInput type="number" step="0.01" [formControl]="fdrFormCtrl" >
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div fxFlex = 55>
+        <h3>Cluster Results</h3>
+          <div fxLayout="row" fxLayoutAlign="space-around center">
+            <div fxFlex="90">
+              <mat-checkbox color="accent" (change)="setCluster($event)">Show Cluster Assignment</mat-checkbox>
+         <br>
+         <br>
+              <mat-form-field appearance="outline" color="accent" >
+                <mat-label>Percent Analyte Overlap</mat-label>
+                <input matInput type="number" step="0.01" [formControl]="percentAnalyteFormCtrl" >
+              </mat-form-field>
+              <mat-form-field appearance="outline" color="accent">
+                <mat-label>Percent Pathway Overlap</mat-label>
+                <input matInput type="number" step="0.01" [formControl]="percentPathwayFormCtrl" >
+              </mat-form-field>
+              <mat-form-field appearance="outline" color="accent">
+                <mat-label>Minimum Pathways per Cluster</mat-label>
+                <input matInput type="number" step="1" [formControl]="minPathWayFormCtrl" >
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </ramp-input-row>
-
-<ramp-query-page
-  [dataColumns]="enrichmentColumns"
-  [dataAsDataProperty]="dataAsDataProperty"
-  [matches]="matches">
-</ramp-query-page>
+      <ramp-query-page
+        [dataColumns]="enrichmentColumns"
+        [dataAsDataProperty]="dataAsDataProperty"
+        [matches]="matches">
+      </ramp-query-page>
+    </mat-tab>
+   <!-- <mat-tab [label] = "'Clustered Pathways'">
+    </mat-tab>-->
+  </mat-tab-group>
 </div>

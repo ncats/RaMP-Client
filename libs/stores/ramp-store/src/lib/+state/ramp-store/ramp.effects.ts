@@ -116,6 +116,15 @@ fetchMetabolitesFromOntologies = createEffect(() =>
     )
   )
 
+  fetchMetabolitesFromOntologiesFile = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchMetabolitesFromOntologiesFile),
+      tap((action) =>
+        this.rampService.fetchMetabolitesFromOntologiesFile(action.ontologies, action.format)
+      )
+    ), {dispatch: false}
+  )
+
 
   fetchOntologies = createEffect(() =>
     this.actions$.pipe(

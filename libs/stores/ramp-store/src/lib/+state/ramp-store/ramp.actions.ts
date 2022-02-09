@@ -93,6 +93,11 @@ export const fetchMetabolitesFromOntologies = createAction(
   props<{ontologies: string[]}>()
 );
 
+export const fetchMetabolitesFromOntologiesFile = createAction(
+  '[Ramp/API] fetchMetabolitesFromOntologiesFile',
+  props<{ontologies: string[], format: string }>()
+);
+
 export const fetchMetabolitesFromOntologiesSuccess = createAction(
   '[Ramp/API] fetchMetabolitesFromOntologies Success',
   props<{

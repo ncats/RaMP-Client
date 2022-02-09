@@ -2,22 +2,25 @@
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="50">
       <div fxLayout="row" fxLayoutAlign="start start">
-        <h2>Queries</h2>
+        <h2>Gene and Protein Annotations</h2>
       </div>
       <div fxLayout="row" fxLayoutAlign="space-around start">
       <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/analytes-from-pathways'">Analytes <br> from <br> Pathways</mat-card>
       <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/pathways-from-analytes'">Pathways <br> from <br> Analytes</mat-card>
       <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/common-reaction-analytes'">Common <br> Reaction <br> Analytes</mat-card>
-        </div>
+        <div fxFlex=20></div>
+      </div>
       </div>
   </div>
   <br>
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="50">
       <div fxLayout="row" fxLayoutAlign="start start">
-        <h2>Chemical Properties</h2>
+        <h2>Metabolite Annotations</h2>
       </div>
       <div fxLayout="row" fxLayoutAlign="space-around start">
+        <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/ontologies-from-metabolites'">Ontologies <br> from <br> Metabolites</mat-card>
+        <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/metabolites-from-ontologies'">Metabolites <br> from <br> Ontologies</mat-card>
         <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/classes-from-metabolites'">Chemical <br> Classes</mat-card>
         <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/properties-from-metabolites'">Chemical <br> Properties</mat-card>
         </div>
@@ -31,11 +34,13 @@
       <div fxLayout="row" fxLayoutAlign="space-around start">
         <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/pathway-analysis'">Pathway <br> Enrichment <br> Analysis</mat-card>
         <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/chemical-analysis'">Chemical <br> Analysis</mat-card>
-        </div>
+        <div fxFlex=20></div>
+        <div fxFlex=20></div>
+      </div>
       </div>
   </div>
   <br>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
+<!--  <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="50">
       <div fxLayout="row" fxLayoutAlign="start start">
         <h2>Ontologies</h2>
@@ -43,7 +48,8 @@
       <div fxLayout="row" fxLayoutAlign="space-around start">
         <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/ontologies-from-metabolites'">Ontologies <br> from <br> Metabolites</mat-card>
         <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/metabolites-from-ontologies'">Metabolites <br> from <br> Ontologies</mat-card>
-        </div>
+        <div fxFlex=20></div>
       </div>
-  </div>
+      </div>
+  </div>-->
 </div>

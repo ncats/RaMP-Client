@@ -3,31 +3,28 @@
     class=""
     *ngIf="showLabel"
     matTooltip="{{ property.tooltip || property.label }}"
-    ><b>{{ property.label }}:&nbsp;</b></span
-  >
-  <ng-container *ngIf="property.url; then link; else nolink"> </ng-container>
-
-  <ng-template #link>
-    <ng-container *ngIf="property.internalLink; then facet; else externalLink">
+    ><b>{{ property.label }}:&nbsp;</b></span>
+  <div [ngSwitch]="displayType()">
+    <ng-container *ngSwitchCase="'internalLink'">
+        <a
+          [routerLink]="property.internalLink"
+          [queryParams]="property?.queryParams"
+          matTooltip="{{ property.tooltip || property.label }}"
+        >{{ property.value }}</a>
     </ng-container>
-    <ng-template #facet>
-      <a
-        [routerLink]="property.internalLink"
-        [queryParams]="property?.queryParams"
-        matTooltip="{{ property.tooltip || property.label }}"
-        >{{ property.value }}</a
-      >
-    </ng-template>
-    <ng-template #externalLink>
-      <a
-        href="{{ property.url }}"
-        target="_blank"
-        rel="noreferrer"
-        [attr.aria-label]="property.label"
-        class="external-link"
-        >{{ property.label }}</a
-      >
-    </ng-template>
-  </ng-template>
-  <ng-template #nolink>{{ property.value }}</ng-template>
+    <ng-container *ngSwitchCase="'externalLink'">
+        <a
+          href="{{ property.url }}"
+          target="_blank"
+          rel="noreferrer"
+          [attr.aria-label]="property.label"
+          class="external-link">{{ property.label }}</a>
+    </ng-container>
+    <ng-container *ngSwitchCase="'number'">
+      <div class="number-display">{{ property.value | number }}</div>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      {{ property.value }}
+    </ng-container>
+  </div>
 </div>

@@ -1,13 +1,23 @@
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {FlexLayoutModule} from "@angular/flex-layout";
 import { ReactiveFormsModule} from "@angular/forms";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatTabsModule} from "@angular/material/tabs";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
 import {EffectsModule} from "@ngrx/effects";
 import {StoreModule} from "@ngrx/store";
 import {MatSliderModule} from '@angular/material/slider';
+import {SharedRampInputRowModule} from "@ramp/shared/ramp/input-row";
+import {SharedRampPageCoreModule} from "@ramp/shared/ramp/page-core";
+import {SharedRampQueryPageModule} from "@ramp/shared/ramp/query-page";
+import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
+import {SharedUiLoadingSpinnerModule} from "@ramp/shared/ui/loading-spinner";
 import {RampFacade, StoresRampStoreModule} from "@ramp/stores/ramp-store";
 
 import { PathwayEnrichmentComponent } from './pathway-enrichment.component';
@@ -24,8 +34,18 @@ describe('PathwayEnrichmentComponent', () => {
         RouterTestingModule,
         StoresRampStoreModule,
         HttpClientTestingModule,
-        ReactiveFormsModule,
+        SharedRampQueryPageModule,
+        FlexLayoutModule,
+        MatFormFieldModule,
         MatSliderModule,
+        ReactiveFormsModule,
+        SharedUiLoadingSpinnerModule,
+        SharedRampPageCoreModule,
+        SharedRampInputRowModule,
+        SharedUiDescriptionPanelModule,
+        MatInputModule,
+        MatTabsModule,
+        MatCheckboxModule,
         StoreModule.forRoot(
           {},
           {

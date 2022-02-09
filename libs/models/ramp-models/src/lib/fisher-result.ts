@@ -9,8 +9,9 @@ export class FisherResult {
   total_In_Path_Gene!: number;
   analytes!: string;
   pathwayName!: string;
-  pathwaysource!: string;
-  pathwaysourceId!: string;
+  pathwaySource!: string;
+  pathwayId!: string;
+  cluster_assignment?: number;
 
   constructor (obj: any) {
     Object.assign(this, obj);

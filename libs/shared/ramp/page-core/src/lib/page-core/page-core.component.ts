@@ -1,4 +1,4 @@
-import {Component, SimpleChange} from '@angular/core';
+import {Component, Input, SimpleChange} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
