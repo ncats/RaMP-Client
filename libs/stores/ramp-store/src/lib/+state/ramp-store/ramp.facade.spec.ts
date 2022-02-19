@@ -1,11 +1,10 @@
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule, Store } from '@ngrx/store';
 import { NxModule } from '@nrwl/angular';
 import { readFirst } from '@nrwl/angular/testing/src/testing-utils';
-
 
 import * as RampActions from './ramp.actions';
 import { RampEffects } from './ramp.effects';
@@ -48,7 +47,7 @@ describe('RampFacade', () => {
           StoreModule.forRoot({}),
           EffectsModule.forRoot([]),
           CustomFeatureModule,
-          HttpClientTestingModule
+          HttpClientTestingModule,
         ],
       })
       class RootModule {}
@@ -73,7 +72,7 @@ describe('RampFacade', () => {
       list = await readFirst(facade.allRampEntity$);
       isLoaded = await readFirst(facade.loading$);
 
-    //  expect(list.length).toBe(0);
+      //  expect(list.length).toBe(0);
       expect(isLoaded).toBe(true);
     });
 

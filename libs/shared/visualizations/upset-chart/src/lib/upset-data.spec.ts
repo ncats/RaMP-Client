@@ -1,10 +1,10 @@
 import { UpsetData } from './upset-data';
 
 const UPSETTESTDATA = {
-  sets:["REACTOME","HMDB"],
-  size:61,
-  id: 666
-}
+  sets: ['REACTOME', 'HMDB'],
+  size: 61,
+  id: 666,
+};
 
 describe('UpsetData', () => {
   it('should create an instance', () => {

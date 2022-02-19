@@ -5,7 +5,9 @@ import {
   Component,
   EventEmitter,
   Injector,
-  Input, IterableDiffer, IterableDiffers,
+  Input,
+  IterableDiffer,
+  IterableDiffers,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -25,7 +27,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { BehaviorSubject, Subject } from 'rxjs';
-import {MatRow, MatTable, MatTableDataSource} from '@angular/material/table';
+import { MatRow, MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -34,9 +36,19 @@ import { takeUntil } from 'rxjs/operators';
 import { PageData } from './models/page-data';
 import { DataProperty } from './models/data-property';
 
-
-const _sortingDataAccessor = (item: {[key: string]:DataProperty}, property:string) => {
- return item[property] ? item[property].value : 0;
+const _sortingDataAccessor = (
+  item: { [key: string]: DataProperty },
+  property: string
+) => {
+  if (item[property]) {
+    if (!isNaN(item[property].value)) {
+      return item[property].value;
+    } else {
+      return item[property].value.toLocaleUpperCase();
+    }
+  } else {
+    return 0;
+  }
 };
 
 /**
@@ -69,7 +81,6 @@ const _sortingDataAccessor = (item: {[key: string]:DataProperty}, property:strin
 export class NcatsDatatableComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
-
   /**
    * Table object
    */
@@ -115,7 +126,6 @@ export class NcatsDatatableComponent
    */
   @Input()
   set fieldsConfig(value: DataProperty[]) {
-    console.log(value);
     this._fieldsConfig.next(value);
   }
 
@@ -258,9 +268,7 @@ export class NcatsDatatableComponent
   /**
    * injector for custom data
    */
-  constructor(private ref: ChangeDetectorRef,
-              private _injector: Injector) {
-}
+  constructor(private ref: ChangeDetectorRef, private _injector: Injector) {}
   /**
    * Init: get the columns to be displayed.
    * Table data is tracked by the data getter and setter
@@ -271,22 +279,24 @@ export class NcatsDatatableComponent
       // Unsubscribe once term has value
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((res) => {
-        if(res) {
+        if (res) {
           if (this.useInternalPaginator) {
-            this.dataSource = new MatTableDataSource<DataProperty>(res.map((val: any) => new DataProperty((val))));
-            this.pageData = new PageData({total: res.length});
+            this.dataSource = new MatTableDataSource<DataProperty>(
+              res.map((val: any) => new DataProperty(val))
+            );
+            this.pageData = new PageData({ total: res.length });
           } else {
             this.dataSource.data = res;
             this.ref.detectChanges();
           }
           if (this.internalSort) {
-           this.dataSource.sortingDataAccessor = _sortingDataAccessor;
+            this.dataSource.sortingDataAccessor = _sortingDataAccessor;
             this.dataSource.sort = this._sort;
-            this._sort.sortChange.subscribe(res => {
+            this._sort.sortChange.subscribe((res) => {
               if (this.dataSource.paginator) {
-                this.dataSource.paginator.firstPage()
+                this.dataSource.paginator.firstPage();
               }
-            })
+            });
           }
           this.ref.detectChanges();
         }
@@ -303,29 +313,7 @@ export class NcatsDatatableComponent
       });
   }
 
-  /**
-   * set the sort and paginators
-   * since the total is not know, it needs to be manually set based on the page data passes in
-   */
-  ngAfterViewInit() {
-        /*if (this.fieldsConfig) {
-          console.log(this.fieldsConfig);
-          const defaultSort: DataProperty[] = this.fieldsConfig.filter(field => field.sorted);
-          console.log(defaultSort);
-          if (defaultSort.length > 0 && this.data) {
-            console.log(defaultSort[0])
-            this._sort.sort({
-              id:defaultSort[0].field,
-              start: defaultSort[0].sorted ?defaultSort[0].sorted : 'asc',
-              disableClear: true
-            })
-            this.dataTable.renderRows();*/
-      //      this.dataSource.
-         //   this.dataSource.sortactive = defaultSort[0].field;
-         //   this.data.sort.direction = defaultSort[0].sorted;
-    //      }
-      //  }
-  }
+  ngAfterViewInit() {}
 
   /**
    * used to track data changes
@@ -405,6 +393,17 @@ export class NcatsDatatableComponent
     } else {
       this.displayColumns = this.displayFields.map((field) => field.field);
       this.ref.detectChanges();
+    }
+    const defaultSort: DataProperty[] = this.fieldsConfig.filter(
+      (field) => field.sorted
+    );
+    if (defaultSort.length > 0 && this.data) {
+      this._sort.sort({
+        id: defaultSort[0].field,
+        start: defaultSort[0].sorted ? defaultSort[0].sorted : 'asc',
+        disableClear: true,
+      });
+      this.dataTable.renderRows();
     }
   }
 

@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/stores/ramp-store",
+  "sourceRoot": "libs/stores/ramp-store/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/stores/ramp-store"],
+      "options": {
+        "jestConfig": "libs/stores/ramp-store/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/stores/ramp-store/src/**/*.ts",
+          "libs/stores/ramp-store/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -29,7 +29,7 @@
 /*
  * This padding sets alignment of the nested nodes.
  */
-.object-tree .mat-nested-tree-node div[role=group] {
+.object-tree .mat-nested-tree-node div[role='group'] {
   padding-left: 40px;
 }
 
@@ -38,6 +38,6 @@
  * Leaf nodes need to have padding so as to align with other non-leaf nodes
  * under the same parent.
  */
-.object-tree div[role=group] > .mat-tree-node {
+.object-tree div[role='group'] > .mat-tree-node {
   padding-left: 40px;
 }

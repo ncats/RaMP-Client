@@ -4,8 +4,9 @@ export class Pathway {
   pathwayId!: string;
   pathwayType!: string;
   analyteName!: string;
+  inputId!: string;
 
   constructor(obj: any) {
-  Object.assign(this, obj);
+    Object.assign(this, obj);
   }
-  }
+}

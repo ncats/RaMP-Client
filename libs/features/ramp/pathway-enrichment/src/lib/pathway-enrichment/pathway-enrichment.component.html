@@ -2,80 +2,148 @@
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="95">
       <h1 class="page-title">
-        {{title | titlecase}}
+        {{ title | titlecase }}
       </h1>
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="95">
-      <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
+      <ramp-description
+        [supportedIds]="supportedIds"
+        [description]="description"
+        [function]="query?.functionCall"
+      ></ramp-description>
     </div>
   </div>
-  <mat-tab-group [color] = "'accent'">
-    <mat-tab [label] ="'Input'">
-      <br>
-      <br>
-      <br>
+  <mat-tab-group [color]="'accent'">
+    <mat-tab [label]="'Input'">
+      <br />
+      <br />
+      <br />
       <ramp-input-row
         [input]="input"
         [examples]="examples"
         [showDownload]="false"
-        (dataSearch)="fetchEnrichment($event)">
+        (dataSearch)="fetchEnrichment($event)"
+      >
       </ramp-input-row>
     </mat-tab>
-    <mat-tab [disabled] = !pathwayDataAsDataProperty>
+    <mat-tab [disabled]="!pathwayDataAsDataProperty">
       <ng-template mat-tab-label>
-        Pathways {{pathwayDataAsDataProperty ? pathwayDataAsDataProperty.length : ''}}
-        <ramp-loading [isLoading]="pathwaysLoading" [size]="'small'" [position]="'right'" ></ramp-loading>
+        Pathways
+        {{ pathwayDataAsDataProperty ? pathwayDataAsDataProperty.length : '' }}
+        <ramp-loading
+          [isLoading]="pathwaysLoading"
+          [size]="'small'"
+          [position]="'right'"
+        ></ramp-loading>
       </ng-template>
+<br>
+<br>
+      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="matches && matches.length > 0">
+        <div fxFlex="95">
+          Matched {{matches?.length}} of {{inputList?.length}} {{input}}
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="noMatches && noMatches.length > 0">
+        <div fxFlex="80">
+          There were no matches for the following {{input}}:
+          {{noMatches.join(", ")}}
+        </div>
+        <div fxFlex = 10>
+          <button
+            mat-stroked-button
+            class="tool-button list-download"
+            (click)="downloadPathwayData()"
+            matTooltip="Download Data"
+            color="accent"
+          >
+            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+          </button>
+        </div>
+      </div>
+
       <ramp-query-page
         [dataColumns]="pathwayColumns"
         [dataAsDataProperty]="pathwayDataAsDataProperty"
-        [matches]="matches">
+        [matches]="matches"
+      >
       </ramp-query-page>
     </mat-tab>
-    <mat-tab> <!--[disabled] = !dataAsDataProperty-->
+    <mat-tab>
+      <!--[disabled] = !dataAsDataProperty-->
       <ng-template mat-tab-label>
-        Enriched Pathways {{dataAsDataProperty ? dataAsDataProperty.length : ''}}
-        <ramp-loading [isLoading]="enrichmentLoading" [size]="'small'" [position]="'right'" ></ramp-loading>
+        Enriched Pathways
+        {{ dataAsDataProperty ? dataAsDataProperty.length : '' }}
+        <ramp-loading
+          [isLoading]="enrichmentLoading"
+          [size]="'small'"
+          [position]="'right'"
+        ></ramp-loading>
       </ng-template>
-      <div fxLayout="row" fxLayoutAlign="space-around start" class ="additional-params">
-        <div fxFlex = 40>
-        <h3>Filter Results</h3>
-          <div fxLayout="row" fxLayoutAlign="space-around center">
-            <div fxFlex="80">
-              <mat-form-field appearance="outline" color="accent" class="p-val-input">
-                <mat-label>p_holmadj_cutoff</mat-label>
-                <input matInput type="number" step="0.01" [formControl]="holmFormCtrl" >
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-around start"
+        class="additional-params"
+      >
+        <div fxFlex="40">
+          <h3>Filter Results</h3>
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <div fxFlex="40">
+              <mat-form-field
+                appearance="outline"
+                color="accent"
+                class="p-val-input"
+              >
+                <mat-label>P-Value Cutoff</mat-label>
+                <input matInput type="number" [formControl]="pValueFormCtrl" />
               </mat-form-field>
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <mat-form-field appearance="outline" color="accent" class="p-val-input">
-                <mat-label>p_fdradj_cutoff</mat-label>
-                <input matInput type="number" step="0.01" [formControl]="fdrFormCtrl" >
-              </mat-form-field>
+            </div>
+            <div fxFlex="40">
+             <mat-radio-group [formControl]="pValueTypeFormCtrl">
+               <mat-radio-button [value]="'Pval_combined_Holm'" [color]="'accent'">Holm</mat-radio-button> &nbsp;
+               <mat-radio-button [value]="'Pval_combined_FDR'" [color]="'accent'">FDR</mat-radio-button> &nbsp;
+               <mat-radio-button [value]="'Pval_combined'" [color]="'accent'">Pval Combined</mat-radio-button>
+             </mat-radio-group>
             </div>
           </div>
         </div>
-        <div fxFlex = 55>
-        <h3>Cluster Results</h3>
+
+        <div fxFlex="55">
+          <h3>Cluster Results</h3>
           <div fxLayout="row" fxLayoutAlign="space-around center">
             <div fxFlex="90">
-              <mat-checkbox color="accent" (change)="setCluster($event)">Show Cluster Assignment</mat-checkbox>
-         <br>
-         <br>
-              <mat-form-field appearance="outline" color="accent" >
+              <mat-checkbox color="accent" (change)="setCluster($event)"
+                >Show Cluster Assignment</mat-checkbox
+              >
+              <br />
+              <br />
+              <mat-form-field appearance="outline" color="accent">
                 <mat-label>Percent Analyte Overlap</mat-label>
-                <input matInput type="number" step="0.01" [formControl]="percentAnalyteFormCtrl" >
+                <input
+                  matInput
+                  type="number"
+                  step="0.01"
+                  [formControl]="percentAnalyteFormCtrl"
+                />
               </mat-form-field>
               <mat-form-field appearance="outline" color="accent">
                 <mat-label>Percent Pathway Overlap</mat-label>
-                <input matInput type="number" step="0.01" [formControl]="percentPathwayFormCtrl" >
+                <input
+                  matInput
+                  type="number"
+                  step="0.01"
+                  [formControl]="percentPathwayFormCtrl"
+                />
               </mat-form-field>
               <mat-form-field appearance="outline" color="accent">
                 <mat-label>Minimum Pathways per Cluster</mat-label>
-                <input matInput type="number" step="1" [formControl]="minPathWayFormCtrl" >
+                <input
+                  matInput
+                  type="number"
+                  step="1"
+                  [formControl]="minPathWayFormCtrl"
+                />
               </mat-form-field>
             </div>
           </div>
@@ -84,10 +152,15 @@
       <ramp-query-page
         [dataColumns]="enrichmentColumns"
         [dataAsDataProperty]="dataAsDataProperty"
-        [matches]="matches">
+        [matches]="matches"
+      >
       </ramp-query-page>
     </mat-tab>
-   <!-- <mat-tab [label] = "'Clustered Pathways'">
-    </mat-tab>-->
+     <mat-tab [label] = "'Clustered Pathways'" *ngIf="image">
+       <br>
+       <br>
+       <br>
+       <div [innerHTML]="image"></div>
+    </mat-tab>
   </mat-tab-group>
 </div>

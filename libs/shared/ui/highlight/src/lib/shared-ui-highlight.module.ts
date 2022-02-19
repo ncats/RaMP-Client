@@ -4,11 +4,7 @@ import { HighlightPipe } from './highlight.pipe';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [
-    HighlightPipe
-  ],
-  exports: [
-    HighlightPipe
-  ]
+  declarations: [HighlightPipe],
+  exports: [HighlightPipe],
 })
 export class SharedUiHighlightModule {}

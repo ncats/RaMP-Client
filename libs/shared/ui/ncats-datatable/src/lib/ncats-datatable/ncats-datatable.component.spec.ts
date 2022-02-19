@@ -1,11 +1,11 @@
-import {PortalModule} from "@angular/cdk/portal";
+import { PortalModule } from '@angular/cdk/portal';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {FlexLayoutModule} from "@angular/flex-layout";
-import {MatCheckboxModule} from "@angular/material/checkbox";
-import {MatPaginatorModule} from "@angular/material/paginator";
-import {MatSortModule} from "@angular/material/sort";
-import {MatTableModule} from "@angular/material/table";
-import {MatTooltipModule} from "@angular/material/tooltip";
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { NcatsDatatableComponent } from './ncats-datatable.component';
 
@@ -23,8 +23,8 @@ describe('NcatsDatatableComponent', () => {
         MatSortModule,
         MatCheckboxModule,
         PortalModule,
-        MatTooltipModule
-      ]
+        MatTooltipModule,
+      ],
     }).compileComponents();
   }));
 

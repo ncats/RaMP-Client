@@ -1,13 +1,13 @@
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import {MatDialogModule} from "@angular/material/dialog";
-import {RouterTestingModule} from "@angular/router/testing";
-import {EffectsModule} from "@ngrx/effects";
-import {StoreModule} from "@ngrx/store";
-import {FeaturesRampRampHeaderModule} from "@ramp/features/ramp/ramp-header";
-import {SharedUiLoadingSpinnerModule} from "@ramp/shared/ui/loading-spinner";
-import {RampFacade, StoresRampStoreModule} from "@ramp/stores/ramp-store";
-import {environment} from "../environments/environment";
+import { MatDialogModule } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { FeaturesRampRampHeaderModule } from '@ramp/features/ramp/ramp-header';
+import { SharedUiLoadingSpinnerModule } from '@ramp/shared/ui/loading-spinner';
+import { RampFacade, StoresRampStoreModule } from '@ramp/stores/ramp-store';
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -27,15 +27,13 @@ describe('AppComponent', () => {
             metaReducers: !environment.production ? [] : [],
             runtimeChecks: {
               strictActionImmutability: true,
-              strictStateImmutability: true
-            }
+              strictStateImmutability: true,
+            },
           }
         ),
         EffectsModule.forRoot([]),
-        ],
-      providers: [
-        RampFacade
-      ]
+      ],
+      providers: [RampFacade],
     }).compileComponents();
   });
 

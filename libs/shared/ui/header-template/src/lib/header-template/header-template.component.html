@@ -6,19 +6,27 @@
         <ng-container *ngIf="link.children; then menu; else menulink">
         </ng-container>
         <ng-template #menu>
-          <button mat-button [matMenuTriggerFor]="dynamicMenu">{{link.label ? link.label : link.link}}</button>
+          <button mat-button [matMenuTriggerFor]="dynamicMenu">
+            {{ link.label ? link.label : link.link }}
+          </button>
           <mat-menu #dynamicMenu="matMenu">
-            <button *ngFor="let child of link.children" mat-menu-item [routerLink]= child.link>
-              {{child.label ? child.label : child.link}}
+            <button
+              *ngFor="let child of link.children"
+              mat-menu-item
+              [routerLink]="child.link"
+            >
+              {{ child.label ? child.label : child.link }}
             </button>
           </mat-menu>
         </ng-template>
         <ng-template #menulink>
-          <a mat-button
-             routerLink="/{{ link.link }}"
-             [ngClass]="{ active: isActive(link?.link) }"
-             class="header-link-button"
-          >{{ link.label ? link.label : link.link }}</a>
+          <a
+            mat-button
+            routerLink="/{{ link.link }}"
+            [ngClass]="{ active: isActive(link?.link) }"
+            class="header-link-button"
+            >{{ link.label ? link.label : link.link }}</a
+          >
         </ng-template>
       </div>
       <span class="fill-remaining-space"></span>

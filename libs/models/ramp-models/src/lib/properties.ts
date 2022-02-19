@@ -11,7 +11,7 @@ export class Properties {
   imageUrl!: string;
 
   constructor(obj: any) {
-    Object.assign(this, obj)
+    Object.assign(this, obj);
     this.imageUrl = this.iso_smiles;
   }
 }

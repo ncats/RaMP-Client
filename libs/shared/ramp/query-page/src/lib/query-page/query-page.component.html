@@ -1,26 +1,36 @@
-<div class ="content-panel">
-  <ng-container *ngIf="dataAsDataProperty && dataAsDataProperty.length > 0; then dataTable; else noData">
+<div class="content-panel">
+  <ng-container
+    *ngIf="
+      dataAsDataProperty && dataAsDataProperty.length > 0;
+      then dataTable;
+      else noData
+    "
+  >
   </ng-container>
   <ng-template #dataTable>
-  <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="dataAsDataProperty">
-    <div fxFlex="90">
-      <div fxLayout="row" fxLayoutAlign="end start">
-    <!--    <div fxFlex="22">
+    <div
+      fxLayout="row"
+      fxLayoutAlign="space-around start"
+      *ngIf="dataAsDataProperty"
+    >
+      <div fxFlex="90">
+        <div fxLayout="row" fxLayoutAlign="end start">
+          <!--    <div fxFlex="22">
           {{rampQuery?.numFoundIds}} of {{queryCount}} identifiers found.
         </div>-->
+        </div>
+        <ncats-frontend-library-ncats-datatable
+          [fieldsConfig]="dataColumns"
+          [data]="dataAsDataProperty"
+          [asDataSource]="true"
+          [internalSort]="true"
+          [useInternalPaginator]="true"
+        ></ncats-frontend-library-ncats-datatable>
       </div>
-      <ncats-frontend-library-ncats-datatable
-        [fieldsConfig]="dataColumns"
-        [data]="dataAsDataProperty"
-        [asDataSource] = true
-        [internalSort] = true
-        [useInternalPaginator] = true
-      ></ncats-frontend-library-ncats-datatable>
     </div>
-  </div>
   </ng-template>
 
   <ng-template #noData>
-    <h1 *ngIf="noDataArr"> no data found!</h1>
+    <h1 *ngIf="noDataArr">no data found!</h1>
   </ng-template>
 </div>

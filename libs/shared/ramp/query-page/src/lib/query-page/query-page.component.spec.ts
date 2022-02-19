@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {FlexLayoutModule} from "@angular/flex-layout";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatButtonModule} from "@angular/material/button";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ActivatedRoute} from "@angular/router";
-import {RouterTestingModule} from "@angular/router/testing";
-import {SharedNcatsDataDownloadModule} from "@ramp/shared/ncats/data-download";
-import {SharedUiDescriptionPanelModule} from "@ramp/shared/ui/description-panel";
-import {SharedUiNcatsDatatableModule} from "@ramp/shared/ui/ncats-datatable";
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SharedNcatsDataDownloadModule } from '@ramp/shared/ncats/data-download';
+import { SharedUiDescriptionPanelModule } from '@ramp/shared/ui/description-panel';
+import { SharedUiNcatsDatatableModule } from '@ramp/shared/ui/ncats-datatable';
 
 import { QueryPageComponent } from './query-page.component';
 
@@ -19,7 +19,7 @@ describe('QueryPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QueryPageComponent ],
+      declarations: [QueryPageComponent],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
@@ -31,25 +31,28 @@ describe('QueryPageComponent', () => {
         MatButtonModule,
         SharedUiDescriptionPanelModule,
         SharedUiNcatsDatatableModule,
-        SharedNcatsDataDownloadModule
+        SharedNcatsDataDownloadModule,
       ],
       providers: [
         {
-          provide: ActivatedRoute, useValue: {
+          provide: ActivatedRoute,
+          useValue: {
             snapshot: {
               data: {
-                title: "Analytes From Pathways",
-                input: "pathways",
-                function: "analytes <- RaMP::getAnalyteFromPathway(pathway=\"###REPLACE###\")",
-                examples: "De Novo Triacylglycerol Biosynthesis, sphingolipid metabolism",
-                description: "Analytes (genes, proteins, metabolites) can be retrieve by pathway. Enter a list of exact pathway names."
-              }
-            }
-          }
-        }
+                title: 'Analytes From Pathways',
+                input: 'pathways',
+                function:
+                  'analytes <- RaMP::getAnalyteFromPathway(pathway="###REPLACE###")',
+                examples:
+                  'De Novo Triacylglycerol Biosynthesis, sphingolipid metabolism',
+                description:
+                  'Analytes (genes, proteins, metabolites) can be retrieve by pathway. Enter a list of exact pathway names.',
+              },
+            },
+          },
+        },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {

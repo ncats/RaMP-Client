@@ -1,24 +1,22 @@
 import { createAction, props } from '@ngrx/store';
 import {
-  Analyte,
+  Analyte, ChemicalEnrichment,
   Classes,
   Metabolite,
   Ontology,
   Pathway,
-  Properties, RampQuery,
+  Properties,
+  RampQuery,
   Reaction,
   SourceVersion
 } from "@ramp/models/ramp-models";
-import { RampEntity} from './ramp.models';
+import { RampEntity } from './ramp.models';
 
 export const init = createAction('[Ramp] Init');
 
 export const initSuccess = createAction(
   '[Ramp/API] init Success',
-  props<{
-    metabolites: string[],
-    genes: string[]
-  }>()
+  props<{ data: [{ analyteType: string, idTypes: string[]}]}>()
 );
 
 export const initFailure = createAction(
@@ -87,22 +85,21 @@ export const loadAnalyteIntersectsFailure = createAction(
   props<{ error: any }>()
 );
 
-
 export const fetchMetabolitesFromOntologies = createAction(
   '[Ramp/API] fetchMetabolitesFromOntologies',
-  props<{ontologies: string[]}>()
+  props<{ ontologies: string[] }>()
 );
 
 export const fetchMetabolitesFromOntologiesFile = createAction(
   '[Ramp/API] fetchMetabolitesFromOntologiesFile',
-  props<{ontologies: string[], format: string }>()
+  props<{ ontologies: string[]; format: string }>()
 );
 
 export const fetchMetabolitesFromOntologiesSuccess = createAction(
   '[Ramp/API] fetchMetabolitesFromOntologies Success',
   props<{
-    data: Metabolite[],
-    query: RampQuery
+    data: Metabolite[];
+    query: RampQuery;
   }>()
 );
 
@@ -113,19 +110,19 @@ export const fetchMetaboliteFromOntologiesFailure = createAction(
 
 export const fetchOntologiesFromMetabolites = createAction(
   '[Ramp/API] Fetch OntologiesFromMetabolites',
-  props<{analytes: string[]}>()
+  props<{ analytes: string[] }>()
 );
 
 export const fetchOntologiesFromMetabolitesFile = createAction(
   '[Ramp/API] Fetch fetchOntologiesFromMetabolitesFile',
-  props<{metabolite: string[], format: string }>()
+  props<{ metabolite: string[]; format: string }>()
 );
 
 export const fetchOntologiesFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch OntologiesFromMetabolites Success',
   props<{
-    data: Ontology[],
-    query: RampQuery
+    data: Ontology[];
+    query: RampQuery;
   }>()
 );
 
@@ -141,14 +138,14 @@ export const fetchAnalytesFromPathways = createAction(
 
 export const fetchAnalytesFromPathwaysFile = createAction(
   '[Ramp/API] Fetch fetchAnalytesFromPathwaysFile',
-  props<{ pathways: string[], format: string }>()
+  props<{ pathways: string[]; format: string }>()
 );
 
 export const fetchAnalytesFromPathwaysSuccess = createAction(
   '[Ramp/API] Fetch fetchAnalytesFromPathways Success',
   props<{
-    data: Analyte[],
-    query: RampQuery
+    data: Analyte[];
+    query: RampQuery;
   }>()
 );
 
@@ -159,33 +156,32 @@ export const fetchAnalytesFromPathwaysFailure = createAction(
 
 export const fetchPathwaysFromAnalytes = createAction(
   '[Ramp/API] Fetch fetchPathwaysFromAnalytes',
-  props<{analytes: string[]}>()
+  props<{ analytes: string[] }>()
 );
 
 export const fetchPathwaysFromAnalytesFile = createAction(
   '[Ramp/API] Fetch fetchPathwaysFromAnalytesFile',
-  props<{ analytes: string[], format: string }>()
+  props<{ analytes: string[]; format: string }>()
 );
 
 export const fetchPathwaysFromAnalytesSuccess = createAction(
   '[Ramp/API] Fetch fetchPathwaysFromAnalytes Success',
   props<{
-    data: Pathway[],
-    query: RampQuery
-  }>());
+    data: Pathway[];
+    query: RampQuery;
+  }>()
+);
 
 export const fetchPathwaysFromAnalytesFailure = createAction(
   '[Ramp/API] Fetch fetchPathwaysFromAnalytes Failure',
   props<{ error: any }>()
 );
 
-export const fetchOntologies = createAction(
-  '[Ramp/API] Fetch fetchOntologies'
-);
+export const fetchOntologies = createAction('[Ramp/API] Fetch fetchOntologies');
 
 export const fetchOntologiesSuccess = createAction(
   '[Ramp/API] Fetch fetchOntologies Success',
-  props<{ ontologies: any[]}>()
+  props<{ ontologies: any[] }>()
 );
 
 export const fetchOntologiesFailure = createAction(
@@ -195,19 +191,19 @@ export const fetchOntologiesFailure = createAction(
 
 export const fetchCommonReactionAnalytes = createAction(
   '[Ramp/API] Fetch fetchCommonReactionAnalytes',
-  props<{analytes: string[]}>()
+  props<{ analytes: string[] }>()
 );
 
 export const fetchCommonReactionAnalytesFile = createAction(
   '[Ramp/API] Fetch ffetchCommonReactionAnalytes',
-  props<{ analytes: string[], format: string }>()
+  props<{ analytes: string[]; format: string }>()
 );
 
 export const fetchCommonReactionAnalytesSuccess = createAction(
   '[Ramp/API] Fetch fetchCommonReactionAnalytes Success',
   props<{
-    data: Reaction[],
-    query: RampQuery
+    data: Reaction[];
+    query: RampQuery;
   }>()
 );
 
@@ -218,19 +214,19 @@ export const fetchCommonReactionAnalytesFailure = createAction(
 
 export const fetchClassesFromMetabolites = createAction(
   '[Ramp/API] Fetch fetchClassesFromMetabolites',
-  props<{metabolites: string[]}>()
+  props<{ metabolites: string[] }>()
 );
 
 export const fetchClassesFromMetabolitesFile = createAction(
   '[Ramp/API] Fetch fetchClassesFromMetabolitesFile',
-  props<{metabolites: string[], format: string }>()
+  props<{ metabolites: string[]; format: string }>()
 );
 
 export const fetchClassesFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch fetchClassesFromMetabolites Success',
   props<{
-    data: Classes[],
-    query: RampQuery
+    data: Classes[];
+    query: RampQuery;
   }>()
 );
 
@@ -241,19 +237,19 @@ export const fetchClassesFromMetabolitesFailure = createAction(
 
 export const fetchPropertiesFromMetabolites = createAction(
   '[Ramp/API] Fetch fetchPropertiesFromMetabolites',
-  props<{metabolites: string[]}>()
+  props<{ metabolites: string[] }>()
 );
 
 export const fetchPropertiesFromMetabolitesFile = createAction(
   '[Ramp/API] Fetch fetchPropertiesFromMetabolitesFile',
-  props<{metabolites: string[], format: string }>()
+  props<{ metabolites: string[]; format: string }>()
 );
 
 export const fetchPropertiesFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch fetchPropertiesFromMetabolites Success',
   props<{
-    data: Properties[],
-    query: RampQuery
+    data: Properties[];
+    query: RampQuery;
   }>()
 );
 
@@ -264,12 +260,12 @@ export const fetchPropertiesFromMetabolitesFailure = createAction(
 
 export const fetchEnrichmentFromMetabolites = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromMetabolites',
-  props<{metabolites: string[]}>()
+  props<{ metabolites: string[] }>()
 );
 
 export const fetchEnrichmentFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromMetabolites Success',
-  props<{ chemicalEnrichments: any}>()
+  props<{ data: ChemicalEnrichment[] }>()
 );
 
 export const fetchEnrichmentFromMetabolitesFailure = createAction(
@@ -278,19 +274,19 @@ export const fetchEnrichmentFromMetabolitesFailure = createAction(
 );
 export const fetchEnrichmentFromPathways = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways',
-  props<{pathways: string[],
-    p_holmadj_cutoff: number,
-    p_fdradj_cutoff: number
+  props<{
+    pathways: string[];
+    cutoff_type: string;
+    cutoff_pvalue: number;
   }>()
 );
 
 export const fetchEnrichmentFromPathwaysSuccess = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways Success',
-  props<{ pathwayEnrichments: any}>()
+  props<{ pathwayEnrichments: any }>()
 );
 
 export const fetchEnrichmentFromPathwaysFailure = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways Failure',
   props<{ error: any }>()
 );
-

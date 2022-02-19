@@ -1,9 +1,5 @@
 import { RampEntity } from './ramp.models';
-import {
-  rampAdapter,
-  RampPartialState,
-  initialState,
-} from './ramp.reducer';
+import { rampAdapter, RampPartialState, initialState } from './ramp.reducer';
 import * as RampSelectors from './ramp.selectors';
 
 describe('Ramp Selectors', () => {

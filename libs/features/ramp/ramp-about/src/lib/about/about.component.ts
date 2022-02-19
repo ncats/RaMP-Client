@@ -1,4 +1,4 @@
-import {ScrollDispatcher} from '@angular/cdk/overlay';
+import { ScrollDispatcher } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,16 +8,16 @@ import {
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import {EntityCount, SourceVersion} from "@ramp/models/ramp-models";
-import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {initAbout, RampFacade} from '@ramp/stores/ramp-store';
-import {tap} from "rxjs";
+import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
+import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
+import { initAbout, RampFacade } from '@ramp/stores/ramp-store';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'ramp-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AboutComponent implements OnInit {
   @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
@@ -35,78 +35,85 @@ export class AboutComponent implements OnInit {
   entityCounts!: EntityCount[];
   entityCountsColumns: DataProperty[] = [
     new DataProperty({
-      label: "Category",
-      field: "status_category",
+      label: 'Category',
+      field: 'status_category',
       sortable: true,
-      sorted: 'asc'
+      sorted: 'asc',
     }),
-     new DataProperty({
-      label: "ChEBI",
-      field: "chebi",
-       sortable: true
+    new DataProperty({
+      label: 'ChEBI',
+      field: 'chebi',
+      sortable: true,
     }),
-     new DataProperty({
-      label: "HMDB",
-      field: "hmdb",
-       sortable: true
-     }),
-     new DataProperty({
-      label: "KEGG",
-      field: "kegg",
-       sortable: true
-     }),
-     new DataProperty({
-      label: "LIPIDMAPS",
-      field: "lipidmaps",
-       sortable: true
-     }),
-     new DataProperty({
-      label: "Reactome",
-      field: "reactome",
-       sortable: true
-     }),
-     new DataProperty({
-      label: "WikiPathways",
-      field: "wiki",
-       sortable: true
-     })
+    new DataProperty({
+      label: 'HMDB',
+      field: 'hmdb',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'KEGG',
+      field: 'kegg',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS',
+      field: 'lipidmaps',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'Reactome',
+      field: 'reactome',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'WikiPathways',
+      field: 'wiki',
+      sortable: true,
+    }),
   ];
 
   constructor(
     private changeDetector: ChangeDetectorRef,
     private scrollDispatcher: ScrollDispatcher,
-    private rampFacade: RampFacade
+    protected rampFacade: RampFacade
   ) {}
 
   ngOnInit(): void {
     this.rampFacade.dispatch(initAbout());
-    this.rampFacade.allRampStore$.pipe(
-      tap(data => {
-        if(data.sourceVersions) {
-          this.sourceVersions = data.sourceVersions;
-          this.changeDetector.markForCheck();
-        }
-        if(data.entityCounts) {
-          this.entityCounts = data.entityCounts.map((count: { [s: string]: unknown; } | ArrayLike<unknown>) => {
-            const newObj: {[key: string]: DataProperty} = {};
-            Object.entries(count).map((value: any) => {
-              newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
-            });
-            return newObj;
-          });
-          this.changeDetector.markForCheck();
-        }
-        if(data.geneIntersects) {
-          this.genesData = data.geneIntersects;
-          this.changeDetector.markForCheck();
-        }
-        if(data.metaboliteIntersects){
-          this.compoundsData = data.metaboliteIntersects;
-          this.changeDetector.markForCheck();
-        }
-      }
-    )
-    ).subscribe()
+    this.rampFacade.allRampStore$
+      .pipe(
+        tap((data) => {
+          if (data.sourceVersions) {
+            this.sourceVersions = data.sourceVersions;
+            this.changeDetector.markForCheck();
+          }
+          if (data.entityCounts) {
+            this.entityCounts = data.entityCounts.map(
+              (count: { [s: string]: unknown } | ArrayLike<unknown>) => {
+                const newObj: { [key: string]: DataProperty } = {};
+                Object.entries(count).map((value: any) => {
+                  newObj[value[0]] = new DataProperty({
+                    name: value[0],
+                    label: value[0],
+                    value: value[1],
+                  });
+                });
+                return newObj;
+              }
+            );
+            this.changeDetector.markForCheck();
+          }
+          if (data.geneIntersects) {
+            this.genesData = data.geneIntersects;
+            this.changeDetector.markForCheck();
+          }
+          if (data.metaboliteIntersects) {
+            this.compoundsData = data.metaboliteIntersects;
+            this.changeDetector.markForCheck();
+          }
+        })
+      )
+      .subscribe();
 
     this.scrollDispatcher.scrolled().subscribe((data) => {
       if (data) {

@@ -1,5 +1,5 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {LinkTemplateProperty} from "@ramp/shared/ui/header-template";
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
 
 @Component({
   selector: 'ramp-header',

@@ -3,35 +3,35 @@ export class Ontology {
   idType?: string;
   metabolites?: string;
   ontology?: string;
-  sourceId?: string;
+  sourceId!: string;
   commonName?: string;
   rampOntologyId?: string;
   count!: number;
 
   constructor(obj: any) {
-    if(obj.HMDBOntologyType) {
+    if (obj.HMDBOntologyType) {
       this.HMDBOntologyType = obj.HMDBOntologyType;
     }
-    if(obj.IDtype) {
+    if (obj.IDtype) {
       this.idType = obj.IDtype;
     }
-    if(obj.Metabolites) {
+    if (obj.Metabolites) {
       this.metabolites = obj.Metabolites;
     }
-    if(obj.Ontology) {
+    if (obj.Ontology) {
       this.ontology = obj.Ontology;
     }
-    if(obj.sourceId) {
+    if (obj.sourceId) {
       this.sourceId = obj.sourceId;
     }
-    if(obj.commonName) {
+    if (obj.commonName) {
       this.ontology = obj.commonName;
     }
-    if(obj.rampOntologyId) {
+    if (obj.rampOntologyId) {
       this.rampOntologyId = obj.rampOntologyId;
     }
 
-    if(obj.metCount) {
+    if (obj.metCount) {
       this.count = obj.metCount;
     }
   }

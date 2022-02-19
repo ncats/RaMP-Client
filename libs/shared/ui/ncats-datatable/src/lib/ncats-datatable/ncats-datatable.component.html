@@ -73,14 +73,16 @@
             <ncats-property-display
               [property]="value"
               [showLabel]="false"
+              [displayType] = field.displayType
             ></ncats-property-display>
-            <br>
+            <br />
           </span>
         </div>
         <ng-template #single>
           <ncats-property-display
             [property]="row[field.field]"
             [showLabel]="false"
+            [displayType] = field.displayType
           ></ncats-property-display>
         </ng-template>
       </ng-template>

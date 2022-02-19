@@ -1,29 +1,42 @@
 <mat-card>
   <mat-card-content>
-    <div >
-      <h2>{{label}}</h2>
+    <div>
+      <h2>{{ label }}</h2>
       <div>
         <mat-form-field class="full-width" appearance="standard">
           <mat-label>Filter</mat-label>
-        <input matInput [placeholder]="'filter'" [formControl]=filterFormCtrl>
+          <input
+            matInput
+            [placeholder]="'filter'"
+            [formControl]="filterFormCtrl"
+          />
         </mat-form-field>
       </div>
       <cdk-virtual-scroll-viewport itemSize="10" class="viewport">
-        <div *cdkVirtualFor="let item of filteredData" class="filter-item" (click)="fieldSelection.toggle(item)">
-          <mat-checkbox (click)="$event.stopPropagation()"
-                        (change)="$event ? fieldSelection.toggle(item) : null"
-                        [checked]="fieldSelection.isSelected(item)"
-                        aria-label={{item.value}}>
+        <div
+          *cdkVirtualFor="let item of filteredData"
+          class="filter-item"
+          (click)="fieldSelection.toggle(item)"
+        >
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? fieldSelection.toggle(item) : null"
+            [checked]="fieldSelection.isSelected(item)"
+            aria-label="{{ item.value }}"
+          >
           </mat-checkbox>
-         <span [innerHTML]="item.value  | highlight : globalFilter ? globalFilter : filterFormCtrl.value"></span>
-          <span class="count">{{item.count}}</span>
+          <span
+            [innerHTML]="
+              item.value
+                | highlight
+                  : (globalFilter ? globalFilter : filterFormCtrl.value)
+            "
+          ></span>
+          <span class="count">{{ item.count }}</span>
         </div>
       </cdk-virtual-scroll-viewport>
 
-
-
-
-<!--
+      <!--
       <table mat-table #filterTable [dataSource]="dataSource" (scroll)="scrollDetected($event)" class="filter-table">
 
         &lt;!&ndash; Checkbox Column &ndash;&gt;

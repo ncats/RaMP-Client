@@ -13,7 +13,7 @@ export class FisherResult {
   pathwayId!: string;
   cluster_assignment?: number;
 
-  constructor (obj: any) {
+  constructor(obj: any) {
     Object.assign(this, obj);
 
     if (obj.Num_In_Path_Metab) {
@@ -32,5 +32,4 @@ export class FisherResult {
       this.total_In_Path_Gene = obj.Total_In_Path_Gene;
     }
   }
-
 }

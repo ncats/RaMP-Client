@@ -1,17 +1,23 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {BehaviorSubject} from "rxjs";
-import {takeWhile} from "rxjs/operators";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
+import { BehaviorSubject } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'ramp-structure-viewer',
   templateUrl: './structure-viewer.component.html',
   styleUrls: ['./structure-viewer.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StructureViewerComponent implements OnInit {
-
   /**
    * image url
    */
@@ -53,28 +59,22 @@ export class StructureViewerComponent implements OnInit {
    * grab config to fetch the image urls
    * @param {ChangeDetectorRef} ref
    */
-  constructor(
-    private ref: ChangeDetectorRef
-  ) {
-  }
+  constructor(private ref: ChangeDetectorRef) {}
 
   /**
    * get data from parent by subscription
    * set as smiles
    */
   ngOnInit() {
-    console.log(this);
-    // now we can subscribe to it
     this._data
       // listen to data as long as term is undefined or null
       // Unsubscribe once term has value
-      .subscribe(data => {
-        if(data && data.url) {
+      .subscribe((data) => {
+        if (data && data.url) {
           this.url = data.url;
           this.ligandName = data.value;
           this.ref.detectChanges();
         }
       });
   }
-
 }

@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl} from "@angular/forms";
-import {ActivatedRoute} from "@angular/router";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ramp-input-row',
   templateUrl: './input-row.component.html',
-  styleUrls: ['./input-row.component.scss']
+  styleUrls: ['./input-row.component.scss'],
 })
 export class InputRowComponent implements OnInit {
   @Input() showInput = true;
@@ -20,24 +20,26 @@ export class InputRowComponent implements OnInit {
   public queryCount = 0;
   public retArr: string[] = [];
 
-
-
-  constructor(
-  ) { }
+  constructor() {}
 
   ngOnInit(): void {
     this.inputFormCtrl.setValue(this.examples);
-    if(!this.retArr) {
+    if (!this.retArr) {
       this.parseInput();
     }
   }
 
   public parseInput() {
-    if(this.inputFormCtrl.value && this.inputFormCtrl.value.length > 0 ) {
+    if (this.inputFormCtrl.value && this.inputFormCtrl.value.length > 0) {
       if (Array.isArray(this.inputFormCtrl.value)) {
-        this.retArr = this.inputFormCtrl.value.map((val: string) => val = val.trim());
+        this.retArr = this.inputFormCtrl.value.map(
+          (val: string) => (val = val.trim())
+        );
       } else {
-        this.retArr = this.inputFormCtrl.value.trim().split(/[\t\n,;]+/).map((val: string) => val.trim());
+        this.retArr = this.inputFormCtrl.value
+          .trim()
+          .split(/[\t\n,;]+/)
+          .map((val: string) => val.trim());
       }
     }
     this.queryCount = this.retArr.length;
@@ -53,5 +55,4 @@ export class InputRowComponent implements OnInit {
     this.parseInput();
     this.dataDownload.emit(this.retArr);
   }
-
 }

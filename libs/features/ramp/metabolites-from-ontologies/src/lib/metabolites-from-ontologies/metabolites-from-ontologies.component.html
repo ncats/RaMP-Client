@@ -1,64 +1,91 @@
 <div class="content-panel">
-<div fxLayout="row" fxLayoutAlign="space-around start">
-  <div fxFlex="95">
-    <h1 class="page-title">
-      {{title | titlecase}}
-    </h1>
-  </div>
-</div>
-<div fxLayout="row" fxLayoutAlign="space-around start">
-  <div fxFlex="95">
-    <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
-  </div>
-</div>
-
-  <mat-tab-group [selectedIndex]="tabIndex" [color] = "'accent'">
-    <mat-tab [label]="'Input'">
   <div fxLayout="row" fxLayoutAlign="space-around start">
-  <div fxFlex="95">
-    <mat-form-field class="full-width" appearance="standard">
-      <input matInput placeholder="Search all Ontologies" [formControl] = allOntoFilterCtrl>
-    </mat-form-field>
-  </div>
-</div>
-<div class="grid-list">
-  <div *ngFor="let ontology of ontologies">
-    <ramp-filter-panel #filterPanel *ngIf=ontology.ontologyType
-                       [label] = ontology.ontologyType
-                       [data]="ontology.values"
-                       [globalFilter]="globalFilter"
-                       (selectionChange)="setValues($event)">
-    </ramp-filter-panel>
+    <div fxFlex="95">
+      <h1 class="page-title">
+        {{ title | titlecase }}
+      </h1>
     </div>
-  <div>
-    *note: Search is only available when the total metabolite count < 10,000. <br>
-        <button mat-flat-button
-                color="accent"
-                [disabled] = disableSearch
-                (click)="fetchMetabolites()" class="bottom-align">
-          <span fxHide.lt-lg>Search</span> <mat-icon>search</mat-icon>
-        </button>
-        &nbsp;&nbsp;&nbsp;
-        <button mat-stroked-button class="tool-button list-download" (click)="fetchMetabolitesFile()"
-                matTooltip="Download Data" color="accent">
-          <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
-        </button>
-    <br>
-    <br>
-    <button mat-stroked-button class="tool-button" (click)="clearAll()"
-                matTooltip="Clear All Selections" color="warn">
-          <span fxHide.lt-lg>Clear All Selections</span><mat-icon>delete</mat-icon>
-        </button>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-around start">
+    <div fxFlex="95">
+      <ramp-description
+        [supportedIds]="supportedIds"
+        [description]="description"
+        [function]="query?.functionCall"
+      ></ramp-description>
+    </div>
+  </div>
+
+  <mat-tab-group [selectedIndex]="tabIndex" [color]="'accent'">
+    <mat-tab [label]="'Input'">
+      <div fxLayout="row" fxLayoutAlign="space-around start">
+        <div fxFlex="95">
+          <mat-form-field class="full-width" appearance="standard">
+            <input
+              matInput
+              placeholder="Search all Ontologies"
+              [formControl]="allOntoFilterCtrl"
+            />
+          </mat-form-field>
+        </div>
       </div>
-</div>
+      <div class="grid-list">
+        <div *ngFor="let ontology of ontologies">
+          <ramp-filter-panel
+            #filterPanel
+            *ngIf="ontology.ontologyType"
+            [label]="ontology.ontologyType"
+            [data]="ontology.values"
+            [globalFilter]="globalFilter"
+            (selectionChange)="setValues($event)"
+          >
+          </ramp-filter-panel>
+        </div>
+        <div>
+          *note: Search is only available when the total metabolite count <
+          10,000. <br />
+          <button
+            mat-flat-button
+            color="accent"
+            [disabled]="disableSearch"
+            (click)="fetchMetabolites()"
+            class="bottom-align"
+          >
+            <span fxHide.lt-lg>Search</span> <mat-icon>search</mat-icon>
+          </button>
+          &nbsp;&nbsp;&nbsp;
+          <button
+            mat-stroked-button
+            class="tool-button list-download"
+            (click)="fetchMetabolitesFile()"
+            matTooltip="Download Data"
+            color="accent"
+          >
+            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+          </button>
+          <br />
+          <br />
+          <button
+            mat-stroked-button
+            class="tool-button"
+            (click)="clearAll()"
+            matTooltip="Clear All Selections"
+            color="warn"
+          >
+            <span fxHide.lt-lg>Clear All Selections</span
+            ><mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
     </mat-tab>
-<mat-tab [label] = "'Results'" [disabled] = !dataAsDataProperty>
-  <ng-template matTabContent>
-<ramp-query-page
-  [dataColumns]="metaboliteColumns"
-  [dataAsDataProperty]="dataAsDataProperty">
-</ramp-query-page>
-  </ng-template>
-</mat-tab>
-</mat-tab-group>
+    <mat-tab [label]="'Results'" [disabled]="!dataAsDataProperty">
+      <ng-template matTabContent>
+        <ramp-query-page
+          [dataColumns]="metaboliteColumns"
+          [dataAsDataProperty]="dataAsDataProperty"
+        >
+        </ramp-query-page>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </div>

@@ -1,33 +1,40 @@
-import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {Analyte, Ontology, Pathway, Reaction, SourceVersion} from "@ramp/models/ramp-models";
+import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import {
+  Analyte,
+  Ontology,
+  Pathway,
+  Reaction,
+  SourceVersion,
+} from '@ramp/models/ramp-models';
 import {
   fetchClassesFromMetabolitesFile,
-  fetchCommonReactionAnalytesFile, fetchOntologiesFromMetabolitesFile,
+  fetchCommonReactionAnalytesFile,
+  fetchOntologiesFromMetabolitesFile,
   fetchPathwaysFromAnalytesFile,
-  RampService
+  RampService,
 } from '@ramp/stores/ramp-store';
-import {mergeMap, of, tap,} from "rxjs";
-import {catchError, map} from "rxjs/operators";
+import { mergeMap, of, tap } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import * as RampActions from './ramp.actions';
 
 @Injectable()
 export class RampEffects {
-
   init$ = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.init),
       mergeMap((action) =>
-        this.rampService.fetchSupportedIds()
-          .pipe(
-            map((ret) => {
-              console.log(ret);
-              return RampActions.initSuccess({ ...ret })
-              },
-              catchError((error:ErrorEvent) => of(RampActions.initFailure({error})))
+        this.rampService.fetchSupportedIds().pipe(
+          map(
+            (ret: any) => {
+              return RampActions.initSuccess( {data: ret} );
+            },
+            catchError((error: ErrorEvent) =>
+              of(RampActions.initFailure({ error }))
             )
           )
+        )
       )
     )
   );
@@ -36,14 +43,16 @@ export class RampEffects {
     this.actions$.pipe(
       ofType(RampActions.initAbout),
       mergeMap((action) =>
-        this.rampService.loadAboutData()
-          .pipe(
-            map((ret) => {
-              return RampActions.loadRampAboutSuccess({ data: ret })
-              },
-              catchError((error:ErrorEvent) => of(RampActions.loadSourceVersionsFailure({error})))
+        this.rampService.loadAboutData().pipe(
+          map(
+            (ret) => {
+              return RampActions.loadRampAboutSuccess({ data: ret });
+            },
+            catchError((error: ErrorEvent) =>
+              of(RampActions.loadSourceVersionsFailure({ error }))
             )
           )
+        )
       )
     )
   );
@@ -52,12 +61,15 @@ export class RampEffects {
     this.actions$.pipe(
       ofType(RampActions.loadSourceVersions),
       mergeMap((action) =>
-           this.rampService.fetchSourceVersions()
-             .pipe(
-               map((ret: SourceVersion[]) => RampActions.loadSourceVersionsSuccess({ versions: ret }),
-            catchError((error:ErrorEvent) => of(RampActions.loadSourceVersionsFailure({error})))
-               )
-             )
+        this.rampService.fetchSourceVersions().pipe(
+          map(
+            (ret: SourceVersion[]) =>
+              RampActions.loadSourceVersionsSuccess({ versions: ret }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.loadSourceVersionsFailure({ error }))
+            )
+          )
+        )
       )
     )
   );
@@ -66,271 +78,359 @@ export class RampEffects {
     this.actions$.pipe(
       ofType(RampActions.fetchOntologiesFromMetabolites),
       mergeMap((action) =>
-        this.rampService.fetchOntologiesFromMetabolites(action.analytes)
-          .pipe(
-            map((ret: {ontologies: Ontology[], functionCall: string, numFoundIds: number}) =>
-                RampActions.fetchOntologiesFromMetabolitesSuccess(
-                  {
-                    data: ret.ontologies,
-                    query: {
-                      functionCall: ret.functionCall,
-                      numFoundIds: ret.numFoundIds
-                    }
-                  }
-                  ),
-              catchError((error:ErrorEvent) => of(RampActions.fetchOntologiesFromMetabolitesFailure({error})))
+        this.rampService.fetchOntologiesFromMetabolites(action.analytes).pipe(
+          map(
+            (ret: {
+              ontologies: Ontology[];
+              functionCall: string;
+              numFoundIds: number;
+            }) =>
+              RampActions.fetchOntologiesFromMetabolitesSuccess({
+                data: ret.ontologies,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+              }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.fetchOntologiesFromMetabolitesFailure({ error }))
             )
           )
+        )
       )
     )
-  )
+  );
 
-  fetchOntologiesFromMetabolitesFile = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchOntologiesFromMetabolitesFile),
-      tap((action) =>
-        this.rampService.fetchOntologiesFromMetabolitesFile(action.metabolite, action.format)
-      )
-    ), {dispatch: false}
-  )
+  fetchOntologiesFromMetabolitesFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchOntologiesFromMetabolitesFile),
+        tap((action) =>
+          this.rampService.fetchOntologiesFromMetabolitesFile(
+            action.metabolite,
+            action.format
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
-fetchMetabolitesFromOntologies = createEffect(() =>
+  fetchMetabolitesFromOntologies = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchMetabolitesFromOntologies),
       mergeMap((action) =>
-        this.rampService.fetchMetabolitesFromOntologies(action.ontologies)
-          .pipe(
-            map((ret: {metabolites: any[], functionCall: string, numFoundIds: number}) =>
-                RampActions.fetchMetabolitesFromOntologiesSuccess(
-                  {
-                    data: ret.metabolites,
-                    query: {
-                      functionCall: ret.functionCall,
-                      numFoundIds: ret.numFoundIds
-                    }
-                  }),
-              catchError((error:ErrorEvent) => of(RampActions.fetchMetaboliteFromOntologiesFailure({error})))
+        this.rampService.fetchMetabolitesFromOntologies(action.ontologies).pipe(
+          map(
+            (ret: {
+              metabolites: any[];
+              functionCall: string;
+              numFoundIds: number;
+            }) =>
+              RampActions.fetchMetabolitesFromOntologiesSuccess({
+                data: ret.metabolites,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+              }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.fetchMetaboliteFromOntologiesFailure({ error }))
             )
           )
+        )
       )
     )
-  )
+  );
 
-  fetchMetabolitesFromOntologiesFile = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchMetabolitesFromOntologiesFile),
-      tap((action) =>
-        this.rampService.fetchMetabolitesFromOntologiesFile(action.ontologies, action.format)
-      )
-    ), {dispatch: false}
-  )
-
+  fetchMetabolitesFromOntologiesFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchMetabolitesFromOntologiesFile),
+        tap((action) =>
+          this.rampService.fetchMetabolitesFromOntologiesFile(
+            action.ontologies,
+            action.format
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
   fetchOntologies = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchOntologies),
       mergeMap(() =>
-        this.rampService.fetchOntologies()
-          .pipe(
-            map((ret:any) => RampActions.fetchOntologiesSuccess({ ontologies: ret }),
-              catchError((error:ErrorEvent) => of(RampActions.fetchOntologiesFailure({error})))
+        this.rampService.fetchOntologies().pipe(
+          map(
+            (ret: any) =>
+              RampActions.fetchOntologiesSuccess({ ontologies: ret }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.fetchOntologiesFailure({ error }))
             )
           )
+        )
       )
     )
-  )
+  );
 
   fetchAnalytesFromPathways = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchAnalytesFromPathways),
       mergeMap((action) =>
-        this.rampService.fetchAnalytesFromPathways(action.pathways)
-          .pipe(
-            map((ret: {analytes: Analyte[], functionCall: string, numFoundIds: number}) =>
+        this.rampService.fetchAnalytesFromPathways(action.pathways).pipe(
+          map(
+            (ret: {
+              analytes: Analyte[];
+              functionCall: string;
+              numFoundIds: number;
+            }) =>
               RampActions.fetchAnalytesFromPathwaysSuccess({
                 data: ret.analytes,
-                  query: {
-                    functionCall: ret.functionCall,
-                    numFoundIds: ret.numFoundIds
-                  }
-                })
-            ),
-            catchError((error:ErrorEvent) => of(RampActions.fetchAnalytesFromPathwaysFailure({error})))
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+              })
+          ),
+          catchError((error: ErrorEvent) =>
+            of(RampActions.fetchAnalytesFromPathwaysFailure({ error }))
           )
+        )
       )
     )
-  )
+  );
 
-  fetchAnalytesFromPathwaysFile = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchAnalytesFromPathwaysFile),
-      tap((action) =>
-        this.rampService.fetchAnalytesFromPathwaysFile(action.pathways, action.format)
-      )
-    ), {dispatch: false}
-  )
+  fetchAnalytesFromPathwaysFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchAnalytesFromPathwaysFile),
+        tap((action) =>
+          this.rampService.fetchAnalytesFromPathwaysFile(
+            action.pathways,
+            action.format
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
-fetchPathwaysFromAnalytes = createEffect(() =>
+  fetchPathwaysFromAnalytes = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchPathwaysFromAnalytes),
       mergeMap((action) =>
-        this.rampService.fetchPathwaysFromAnalytes(action.analytes)
-          .pipe(
-            map((ret: {pathways: Pathway[], functionCall: string, numFoundIds: number}) => {
-              return RampActions.fetchPathwaysFromAnalytesSuccess(
-                {
-                  data: ret.pathways,
-                  query: {
-                    functionCall: ret.functionCall,
-                    numFoundIds: ret.numFoundIds
-                  }
-                })
-            }),
-            catchError((error:ErrorEvent) => {
-              console.log(error);
-              return of(RampActions.fetchPathwaysFromAnalytesFailure({error}))
-            })
-          )
+        this.rampService.fetchPathwaysFromAnalytes(action.analytes).pipe(
+          map(
+            (ret: {
+              pathways: Pathway[];
+              functionCall: string;
+              numFoundIds: number;
+            }) => {
+              return RampActions.fetchPathwaysFromAnalytesSuccess({
+                data: ret.pathways,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+              });
+            }
+          ),
+          catchError((error: ErrorEvent) => {
+            console.log(error);
+            return of(RampActions.fetchPathwaysFromAnalytesFailure({ error }));
+          })
+        )
       )
     )
-  )
+  );
 
-  fetchPathwaysFromAnalytesFile = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchPathwaysFromAnalytesFile),
-      tap((action) =>
-        this.rampService.fetchPathwaysFromAnalytesFile(action.analytes, action.format)
-      )
-    ), {dispatch: false}
-  )
+  fetchPathwaysFromAnalytesFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchPathwaysFromAnalytesFile),
+        tap((action) =>
+          this.rampService.fetchPathwaysFromAnalytesFile(
+            action.analytes,
+            action.format
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
   fetchCommonReactionAnalytes = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchCommonReactionAnalytes),
       mergeMap((action) =>
-        this.rampService.fetchCommonReactionAnalytes(action.analytes)
-          .pipe(
-            map((ret: {reactions: Reaction[], functionCall: string, numFoundIds: number}) =>
-                RampActions.fetchCommonReactionAnalytesSuccess(
-                  {
-                    data: ret.reactions,
-                    query: {
-                      functionCall: ret.functionCall,
-                      numFoundIds: ret.numFoundIds
-                    }
-                  }
-                ),
-              catchError((error:ErrorEvent) => of(RampActions.fetchCommonReactionAnalytesFailure({error})))
+        this.rampService.fetchCommonReactionAnalytes(action.analytes).pipe(
+          map(
+            (ret: {
+              reactions: Reaction[];
+              functionCall: string;
+              numFoundIds: number;
+            }) =>
+              RampActions.fetchCommonReactionAnalytesSuccess({
+                data: ret.reactions,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+              }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.fetchCommonReactionAnalytesFailure({ error }))
             )
           )
+        )
       )
     )
-  )
+  );
 
-  fetchCommonReactionAnalytesFile = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchCommonReactionAnalytesFile),
-      tap((action) =>
-        this.rampService.fetchCommonReactionAnalytesFile(action.analytes, action.format)
-      )
-    ), {dispatch: false}
-  )
+  fetchCommonReactionAnalytesFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchCommonReactionAnalytesFile),
+        tap((action) =>
+          this.rampService.fetchCommonReactionAnalytesFile(
+            action.analytes,
+            action.format
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
   fetchClassesFromMetabolites = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchClassesFromMetabolites),
       mergeMap((action) =>
-        this.rampService.fetchChemicalClass(action.metabolites)
-          .pipe(
-            map((ret: {metClasses: any[], functionCall: string, numFoundIds: number}) =>
-                 RampActions.fetchClassesFromMetabolitesSuccess(
-                  {
+        this.rampService.fetchChemicalClass(action.metabolites).pipe(
+          map(
+            (ret: {
+              metClasses: any[];
+              functionCall: string;
+              numFoundIds: number;
+            }) =>
+              RampActions.fetchClassesFromMetabolitesSuccess({
                 data: ret.metClasses,
-                  query: {
-                functionCall: ret.functionCall,
-                  numFoundIds: ret.numFoundIds
-                   }
-                }
-                ),
-              catchError((error:ErrorEvent) => of(RampActions.fetchClassesFromMetabolitesFailure({error})))
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+              }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.fetchClassesFromMetabolitesFailure({ error }))
             )
           )
+        )
       )
     )
-  )
+  );
 
-  fetchClassesFromMetabolitesFile = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchClassesFromMetabolitesFile),
-      tap((action) =>
-        this.rampService.fetchClassesFromMetabolitesFile(action.metabolites, action.format)
-      )
-    ), {dispatch: false}
-  )
+  fetchClassesFromMetabolitesFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchClassesFromMetabolitesFile),
+        tap((action) =>
+          this.rampService.fetchClassesFromMetabolitesFile(
+            action.metabolites,
+            action.format
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
-  fetchPropertiesFromMetabolitesFile = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchPropertiesFromMetabolitesFile),
-      tap((action) =>
-        this.rampService.fetchPropertiesFromMetabolitesFile(action.metabolites, action.format)
-      )
-    ), {dispatch: false}
-  )
+  fetchPropertiesFromMetabolitesFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchPropertiesFromMetabolitesFile),
+        tap((action) =>
+          this.rampService.fetchPropertiesFromMetabolitesFile(
+            action.metabolites,
+            action.format
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
   fetchPropertiesFromMetabolites = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchPropertiesFromMetabolites),
       mergeMap((action) =>
-        this.rampService.fetchPropertiesFromMetabolites(action.metabolites)
+        this.rampService
+          .fetchPropertiesFromMetabolites(action.metabolites)
           .pipe(
-            map((ret: {properties: any[], functionCall: string, numFoundIds: number}) => {
-             return RampActions.fetchPropertiesFromMetabolitesSuccess({
-               data: ret.properties,
-               query: {
-                 functionCall: ret.functionCall,
-                 numFoundIds: ret.numFoundIds
-               }})
+            map(
+              (ret: {
+                properties: any[];
+                functionCall: string;
+                numFoundIds: number;
+              }) => {
+                return RampActions.fetchPropertiesFromMetabolitesSuccess({
+                  data: ret.properties,
+                  query: {
+                    functionCall: ret.functionCall,
+                    numFoundIds: ret.numFoundIds,
+                  },
+                });
               },
-              catchError((error:ErrorEvent) => of(RampActions.fetchPropertiesFromMetabolitesFailure({error})))
+              catchError((error: ErrorEvent) =>
+                of(RampActions.fetchPropertiesFromMetabolitesFailure({ error }))
+              )
             )
           )
       )
     )
-  )
+  );
 
-fetchChemicalAnalysis = createEffect(() =>
+  fetchChemicalAnalysis = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchEnrichmentFromMetabolites),
       mergeMap((action) =>
-        this.rampService.fetchEnrichmentFromMetabolites(action.metabolites)
+        this.rampService
+          .fetchEnrichmentFromMetabolites(action.metabolites)
           .pipe(
-            map((ret: any) => {
-             return RampActions.fetchEnrichmentFromMetabolitesSuccess({ chemicalEnrichments: ret })
+            map(
+              (ret: any) => {
+              //  console.log(ret);
+                return RampActions.fetchEnrichmentFromMetabolitesSuccess({
+                  data: ret,
+                });
               },
-              catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromMetabolitesFailure({error})))
+              catchError((error: ErrorEvent) =>
+                of(RampActions.fetchEnrichmentFromMetabolitesFailure({ error }))
+              )
             )
           )
       )
     )
-  )
+  );
 
-fetchPathwayAnalysis = createEffect(() =>
+  fetchPathwayAnalysis = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchEnrichmentFromPathways),
       mergeMap((action) =>
-        this.rampService.fetchEnrichmentFromPathways(action.pathways, action.p_holmadj_cutoff, action.p_fdradj_cutoff)
+        this.rampService
+          .fetchEnrichmentFromPathways(
+            action.pathways,
+            action.cutoff_type,
+            action.cutoff_pvalue
+          )
           .pipe(
-            map((ret: any) => {
-             return RampActions.fetchEnrichmentFromPathwaysSuccess({ pathwayEnrichments: ret })
+            map(
+              (ret: any) => {
+                return RampActions.fetchEnrichmentFromPathwaysSuccess({
+                  pathwayEnrichments: ret,
+                });
               },
-              catchError((error:ErrorEvent) => of(RampActions.fetchEnrichmentFromPathwaysFailure({error})))
+              catchError((error: ErrorEvent) =>
+                of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
+              )
             )
           )
       )
     )
-  )
-
-
+  );
 
   constructor(
     private readonly actions$: Actions,
