@@ -11,8 +11,9 @@ COPY ${SOURCE_FOLDER} .
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh && \
     npm config set unsafe-perm true && \
-    npm i && \
     npm i -g @angular/cli && \
+    npm install -g nx && \
+    npm i && \
     NODE_OPTIONS=--max_old_space_size=4096 ng build ramp-client --prod
 
 FROM labshare/docker-base-web
