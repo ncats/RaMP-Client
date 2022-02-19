@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/highlight",
+  "sourceRoot": "libs/shared/ui/highlight/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/ui/highlight"],
+      "options": {
+        "jestConfig": "libs/shared/ui/highlight/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/highlight/src/**/*.ts",
+          "libs/shared/ui/highlight/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

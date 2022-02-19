@@ -4,11 +4,7 @@ import { PageCoreComponent } from './page-core/page-core.component';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [
-    PageCoreComponent
-  ],
-  exports: [
-    PageCoreComponent
-  ]
+  declarations: [PageCoreComponent],
+  exports: [PageCoreComponent],
 })
 export class SharedRampPageCoreModule {}

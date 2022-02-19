@@ -2,47 +2,64 @@
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="95">
       <h1 class="page-title">
-        {{title | titlecase}}
+        {{ title | titlecase }}
       </h1>
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="95">
-      <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
+      <ramp-description
+        [supportedIds]="supportedIds"
+        [description]="description"
+        [function]="query?.functionCall"
+      ></ramp-description>
     </div>
   </div>
-  <mat-tab-group [color] = "'accent'">
-    <mat-tab [label] ="'Input'">
-      <br>
-      <br>
-      <br>
+  <mat-tab-group [color]="'accent'">
+    <mat-tab [label]="'Input'">
+      <br />
+      <br />
+      <br />
       <ramp-input-row
         [input]="input"
         [examples]="examples"
         (dataSearch)="fetchEnrichment($event)"
-        (dataDownload)="fetchEnrichment($event)">
+        (dataDownload)="fetchEnrichment($event)"
+      >
       </ramp-input-row>
     </mat-tab>
-    <mat-tab [disabled] = !classesAsDataProperty>
+    <mat-tab [disabled]="!classesAsDataProperty">
       <ng-template mat-tab-label>
-        Chemical Classes {{classesAsDataProperty ? classesAsDataProperty.length : ''}}
-        <ramp-loading [isLoading]="classesLoading" [size]="'small'" [position]="'right'" ></ramp-loading>
+        Chemical Classes
+        {{ classesAsDataProperty ? classesAsDataProperty.length : '' }}
+        <ramp-loading
+          [isLoading]="classesLoading"
+          [size]="'small'"
+          [position]="'right'"
+        ></ramp-loading>
       </ng-template>
       <ramp-query-page
         [dataColumns]="classesColumns"
         [dataAsDataProperty]="classesAsDataProperty"
-        [matches]="matches">
+        [matches]="matches"
+      >
       </ramp-query-page>
     </mat-tab>
-    <mat-tab [disabled] = !dataAsDataProperty>
+    <mat-tab [disabled]="!dataAsDataProperty">
       <ng-template mat-tab-label>
-        Enriched Chemical Classes {{dataAsDataProperty ? dataAsDataProperty.length : ''}}
-        <ramp-loading [isLoading]="enrichmentLoading" [size]="'small'" [position]="'right'" ></ramp-loading>
+        Enriched Chemical Classes
+        {{ dataAsDataProperty ? dataAsDataProperty.length : '' }}
+        <ramp-loading
+          [isLoading]="enrichmentLoading"
+          [size]="'small'"
+          [position]="'right'"
+        ></ramp-loading>
       </ng-template>
       <ramp-query-page
         [dataColumns]="enrichmentColumns"
         [dataAsDataProperty]="dataAsDataProperty"
-        [matches]="matches">
+        [matches]="matches"
+      >
       </ramp-query-page>
     </mat-tab>
   </mat-tab-group>

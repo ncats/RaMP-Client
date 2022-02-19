@@ -1,82 +1,136 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {Classes, RampQuery} from "@ramp/models/ramp-models";
-import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
-import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchClassesFromMetabolites, fetchClassesFromMetabolitesFile, RampFacade} from "@ramp/stores/ramp-store";
-import {TREE_VIEWER_COMPONENT} from "../features-ramp-classes-from-metabolites.module";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Classes, RampQuery } from '@ramp/models/ramp-models';
+import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
+import {
+  fetchClassesFromMetabolites,
+  fetchClassesFromMetabolitesFile,
+  RampFacade,
+} from '@ramp/stores/ramp-store';
+import { TREE_VIEWER_COMPONENT } from '../features-ramp-classes-from-metabolites.module';
 
 @Component({
   selector: 'ramp-classes-from-metabolites',
   templateUrl: './classes-from-metabolites.component.html',
-  styleUrls: ['./classes-from-metabolites.component.scss']
+  styleUrls: ['./classes-from-metabolites.component.scss'],
 })
-export class ClassesFromMetabolitesComponent extends PageCoreComponent implements OnInit {
+export class ClassesFromMetabolitesComponent
+  extends PageCoreComponent
+  implements OnInit
+{
   classesColumns: DataProperty[] = [
-    //todo this isn't sortable
     new DataProperty({
-      label: "Source ID",
-      field: "sourceId"
+      label: 'Source IDs',
+      field: 'sourceId',
+      sortable: true
     }),
     new DataProperty({
-      label: "ClassyFire Classes",
-      field: "classyFireTree",
-      customComponent: TREE_VIEWER_COMPONENT
+      label: 'ClassyFire Super Class',
+      field: 'classyFireSuperClass',
+      sortable: true
     }),
     new DataProperty({
-      label: "LIPIDMAPS Classes",
-      field: "lipidMapsTree",
-      customComponent: TREE_VIEWER_COMPONENT
-    })
-  ]
-  query!: RampQuery;
-  dataAsDataProperty!: { [key: string]: DataProperty }[];
-/*  supportedIds!: {
-    metabolites: string[],
-    genes: string[]
-  } | undefined;*/
+      label: 'ClassyFire Class',
+      field: 'classyFireClass',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'ClassyFire Sub Class',
+      field: 'classyFireSubClass',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS Category',
+      field: 'lipidMapsCategory',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS Main Class',
+      field: 'lipidMapsMainClass',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS Sub Class',
+      field: 'lipidMapsSubClass',
+      sortable: true
+    }),
+  /*  new DataProperty({
+      label: 'ClassyFire Classes',
+      field: 'classyFireTree',
+      customComponent: TREE_VIEWER_COMPONENT,
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS Classes',
+      field: 'lipidMapsTree',
+      customComponent: TREE_VIEWER_COMPONENT,
+    }),*/
+  ];
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade,
+    protected rampFacade: RampFacade,
     protected route: ActivatedRoute
   ) {
-    super(route);
+    super(route, rampFacade);
   }
 
-
   ngOnInit(): void {
-/*    this.rampFacade.supportedIds$.subscribe(ids => {
-      this.supportedIds = ids
-      this.ref.markForCheck()
-    })*/
-
-    this.rampFacade.classes$.subscribe((res: {data: Classes[], query: RampQuery} | undefined) => {
-      if (res && res.data) {
-        this._mapData(res.data);
+    this.rampFacade.classes$.subscribe(
+      (res: { data: Classes[]; query: RampQuery } | undefined) => {
+        if (res && res.data) {
+          const classGroup: Map<string, any> = new Map<string, any>();
+          res.data.forEach((chclass) => {
+            const classObj = classGroup.get(chclass.treePath);
+            if (classObj) {
+              classObj.sourceIds.push(chclass.sourceId);
+              classGroup.set(chclass.treePath, classObj);
+            } else {
+              //   const temp = {...chclass};
+              const temp = {
+                sourceIds: [chclass.sourceId],
+                classyFireTree: chclass.classyFireTree,
+                lipidMapsTree: chclass.lipidMapsTree,
+              };
+              classGroup.set(chclass.treePath, temp);
+            }
+          });
+          this._mapData(res.data);
+          this.matches = Array.from(new Set(res.data.map(chemClass => chemClass.sourceId.toLocaleLowerCase())));
+          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
+        }
+        if (res && res.query) {
+          this.query = res.query;
+        }
+        this.ref.markForCheck();
       }
-      if (res && res.query) {
-        this.query = res.query;
-      }
-      this.ref.markForCheck();
-    })
+    );
   }
 
   fetchClasses(event: string[]): void {
-    this.rampFacade.dispatch(fetchClassesFromMetabolites({metabolites: event}))
+    this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.rampFacade.dispatch(
+      fetchClassesFromMetabolites({ metabolites: event })
+    );
   }
 
   fetchClassesFile(event: string[]): void {
-    this.rampFacade.dispatch(fetchClassesFromMetabolitesFile({metabolites: event, format: 'tsv'}))
+    this.rampFacade.dispatch(
+      fetchClassesFromMetabolitesFile({ metabolites: event, format: 'tsv' })
+    );
   }
 
   private _mapData(data: any): void {
     this.dataAsDataProperty = data.map((obj: Classes) => {
       const newObj: { [key: string]: DataProperty } = {};
       Object.entries(obj).map((value: any, index: any) => {
-        newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+        newObj[value[0]] = new DataProperty({
+          name: value[0],
+          label: value[0],
+          value: value[1],
+        });
       });
       return newObj;
-    })
+    });
   }
 }

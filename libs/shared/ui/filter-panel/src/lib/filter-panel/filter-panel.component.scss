@@ -8,12 +8,11 @@
 }
 
 .filter-item {
-    display: grid;
+  display: grid;
   height: 50px;
-    grid-auto-rows: max-content;
+  grid-auto-rows: max-content;
   grid-template-columns: 0.2fr 2.1fr 0.7fr;
-  grid-template-areas:
-    "checkbox label count";
+  grid-template-areas: 'checkbox label count';
 }
 .count {
   grid-area: count;
@@ -21,8 +20,9 @@
   padding-right: 1vw;
 }
 
-.checkbox { grid-area: checkbox; }
-.label { grid-area: label; }
-
-
-
+.checkbox {
+  grid-area: checkbox;
+}
+.label {
+  grid-area: label;
+}

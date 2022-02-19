@@ -16,7 +16,7 @@
           class="list-button"
           (click)="scroll(capabilities)"
           [ngClass]="{ active: isActive('capabilities') }"
-        >Capabilities
+          >Capabilities
         </a>
         <a
           mat-list-item
@@ -24,7 +24,7 @@
           class="list-button"
           (click)="scroll(dataSources)"
           [ngClass]="{ active: isActive('dataSources') }"
-        >Data Sources
+          >Data Sources
         </a>
         <a
           mat-list-item
@@ -32,7 +32,7 @@
           class="list-button"
           (click)="scroll(summaryStatistics)"
           [ngClass]="{ active: isActive('summaryStatistics') }"
-        >Summary Statistics
+          >Summary Statistics
         </a>
         <a
           mat-list-item
@@ -85,8 +85,11 @@
             RaMP (Relational database of Metabolomic Pathways) is a
             multi-sourced integrated database with comprehensive pathway,
             chemical, and ontology annoations for genes, proteins, and
-            metabolites. <span *ngIf="sourceVersions?.length">Information within RaMP is harmonized from the
-            following data sources:</span>
+            metabolites.
+            <span *ngIf="sourceVersions?.length"
+              >Information within RaMP is harmonized from the following data
+              sources:</span
+            >
           </p>
           <ul class="ramp-list">
             <li *ngFor="let version of sourceVersions">
@@ -136,7 +139,7 @@
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Hyperlink to the KEGG website. Link opens in a new tab."
-              >KEGG</a
+                >KEGG</a
               >
               (through
               <a
@@ -144,14 +147,14 @@
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Hyperlink to the HMDB  website. Link opens in a new tab."
-              >HMDB</a
+                >HMDB</a
               >),
               <a
                 href="https://reactome.org/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Hyperlink to the Reactome website. Hyperlink opens in a new tab."
-              >Reactome</a
+                >Reactome</a
               >
               , and
               <a
@@ -159,7 +162,7 @@
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Hyperlink to the WikiPathways website. Hyperlink opens in a new tab."
-              >WikiPathways</a
+                >WikiPathways</a
               >.
             </li>
             <li>
@@ -175,7 +178,7 @@
                 rel="noreferrer"
                 aria-label="Hyperlink to the HMDB
                   website. Link opens in a new tab"
-              >HMDB</a
+                >HMDB</a
               >, which is based on a standardized set of ontological definitions
               on metabolite processes, roles, physiological effects and
               disposition (e.g., biological location and source).
@@ -188,7 +191,7 @@
                 rel="noreferrer"
                 aria-label="Hyperlink
                   to the ClassyFire Chemical Taxonomy website. Link opens in a new tab."
-              >HMDB’s ClassyFire Chemical Taxonomy</a
+                >HMDB’s ClassyFire Chemical Taxonomy</a
               >
               and
               <a
@@ -197,7 +200,7 @@
                 rel="noreferrer"
                 aria-label="Hyperlink
                   to the LipidMAPS website. Link opens in a new tab."
-              >LipidMAPS</a
+                >LipidMAPS</a
               >
               lipid classification system
             </li>
@@ -220,7 +223,7 @@
         </div>
       </div>
     </div>
-    <div fxLayout="row" id="dataSources" #dataSources #scrollSection >
+    <div fxLayout="row" id="dataSources" #dataSources #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100" *ngIf="entityCounts">
         <div
           class="section-header"
@@ -231,8 +234,8 @@
         <div class="section-content">
           <ncats-frontend-library-ncats-datatable
             [fieldsConfig]="entityCountsColumns"
-            [data]= "entityCounts"
-            [internalSort] = true
+            [data]="entityCounts"
+            [internalSort]="true"
           ></ncats-frontend-library-ncats-datatable>
         </div>
       </div>
@@ -244,7 +247,11 @@
       #summaryStatistics
       #scrollSection
     >
-      <div fxFlex="75" fxFlex.lt-md="100" *ngIf="compoundsData?.length || genesData?.length">
+      <div
+        fxFlex="75"
+        fxFlex.lt-md="100"
+        *ngIf="compoundsData?.length || genesData?.length"
+      >
         <div
           class="section-header"
           [ngClass]="{ active: isActive('summaryStatistics') }"
@@ -294,7 +301,7 @@
           <p>If you use RaMP, please cite the following work:</p>
           <p>
             <a href="https://www.mdpi.com/2218-1989/8/1/16" target="_blank"
-            >Zhang, B., et al., RaMP: A Comprehensive Relational Database of
+              >Zhang, B., et al., RaMP: A Comprehensive Relational Database of
               Metabolomics Pathways for Pathway Enrichment Analysis of Genes and
               Metabolites. Metabolites, 2018. 8(1). PMID: 29470400; PMCID:
               PMC5876005; DOI: 10.3390/metabo8010016</a
@@ -307,7 +314,7 @@
               target="_blank"
               rel="noreferrer"
               aria-label="Link to a book chapter about RaMP"
-            >this chapter</a
+              >this chapter</a
             >.
           </p>
           <p>Detailed instructions for installing RaMP locally are below.</p>
@@ -332,7 +339,11 @@
           RaMP Team and Contact
         </div>
         <div class="section-content">
-          <div fxLayout="row" fxLayoutAlign="space-around center">
+          <br>
+          <br>
+          <br>
+          <h2 class ="contributor-header">Current Contributors</h2>
+          <div fxLayout="row" fxLayoutAlign="space-around start">
             <div fxFlex="20" class="portrait-holder">
               <picture>
                 <source
@@ -349,7 +360,7 @@
                   class="ramp-portrait"
                 />
               </picture>
-              <br/>
+              <br />
               <h2>John Braisted</h2>
             </div>
             <div fxFlex="20" class="portrait-holder">
@@ -392,26 +403,6 @@
             <div fxFlex="20" class="portrait-holder">
               <picture>
                 <source
-                  srcset="/assets/ramp-about/images/team/jorge_neyra.webp"
-                  type="image/webp"
-                />
-                <source
-                  srcset="/assets/ramp-about/images/team/jorge_neyra.jpg"
-                  type="image/jpeg"
-                />
-                <img
-                  src="/assets/ramp-about/images/team/jorge_neyra.jpg"
-                  alt="Jorge Neyra portrait"
-                  class="ramp-portrait"
-                />
-              </picture>
-              <h2>Jorge Neyra</h2>
-            </div>
-          </div>
-          <div fxLayout="row" fxLayoutAlign="space-around center">
-            <div fxFlex="20" class="portrait-holder">
-              <picture>
-                <source
                   srcset="/assets/ramp-about/images/team/andrew_patt.webp"
                   type="image/webp"
                 />
@@ -427,6 +418,9 @@
               </picture>
               <h2>Andrew Patt</h2>
             </div>
+
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-around center">
             <div fxFlex="20" class="portrait-holder">
               <picture>
                 <source
@@ -448,15 +442,11 @@
             <div fxFlex="20" class="portrait-holder">
               <picture>
                 <source
-                  srcset="
-                    /assets/ramp-about/images/team/kyle_spencer.webp
-                  "
+                  srcset="/assets/ramp-about/images/team/kyle_spencer.webp"
                   type="image/webp"
                 />
                 <source
-                  srcset="
-                    /assets/ramp-about/images/team/kyle_spencer.jpg
-                  "
+                  srcset="/assets/ramp-about/images/team/kyle_spencer.jpg"
                   type="image/jpeg"
                 />
                 <img
@@ -486,6 +476,39 @@
               <h2>Cole Tindall</h2>
             </div>
           </div>
+          <br>
+          <br>
+          <h2>Previous Contributors</h2>
+          <div fxLayout="row" fxLayoutAlign="space-around center">
+            <div fxFlex="20" class="portrait-holder">
+              <picture>
+                <source
+                  srcset="/assets/ramp-about/images/team/jorge_neyra.webp"
+                  type="image/webp"
+                />
+                <source
+                  srcset="/assets/ramp-about/images/team/jorge_neyra.jpg"
+                  type="image/jpeg"
+                />
+                <img
+                  src="/assets/ramp-about/images/team/jorge_neyra.jpg"
+                  alt="Jorge Neyra portrait"
+                  class="ramp-portrait"
+                />
+              </picture>
+              <h2>Jorge Neyra</h2>
+            </div>
+
+            <div fxFlex="20" class="portrait-holder">
+              <h2>Rohith Vanam</h2>
+            </div>
+            <div fxFlex="20" class="portrait-holder">
+              <h2>Shunchao Wang</h2>
+            </div>
+            <div fxFlex="20" class="portrait-holder">
+              <h2>Bofei Zhang</h2>
+            </div>
+            </div>
           <p>
             For questions or issues, please submit an issue on our
             <a
@@ -493,7 +516,7 @@
               target="_blank"
               rel="noreferrer"
               aria-label="Link to the RaMP DB codebase"
-            >GitHub site</a
+              >GitHub site</a
             >
             or send us an email at
             <a href="mailto:NCATSRaMP@nih.gov">NCATSRaMP@nih.gov</a>
@@ -522,22 +545,22 @@
           RaMP code is freely available via our GitHub pages:
           <mat-list>
             <mat-list-item
-            ><a
-              href="https://github.com/ncats/RaMP-DB"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Link to the RaMP DB GitHub page"
-            >RaMP DB</a
-            ></mat-list-item
+              ><a
+                href="https://github.com/ncats/RaMP-DB"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the RaMP DB GitHub page"
+                >RaMP DB</a
+              ></mat-list-item
             >
             <mat-list-item
-            ><a
-              href="https://github.com/ncats/RaMP-Client"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Link to the RaMP Client GitHub page"
-            >RaMP Client</a
-            ></mat-list-item
+              ><a
+                href="https://github.com/ncats/RaMP-Client"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the RaMP Client GitHub page"
+                >RaMP Client</a
+              ></mat-list-item
             >
           </mat-list>
         </div>
@@ -556,7 +579,7 @@
               target="_blank"
               rel="noreferrer"
               aria-label="Link to the GPL-2 license site"
-            >GPL-2</a
+              >GPL-2</a
             >
             license.
           </p>

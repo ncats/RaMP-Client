@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ramp/input-row",
+  "sourceRoot": "libs/shared/ramp/input-row/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/ramp/input-row"],
+      "options": {
+        "jestConfig": "libs/shared/ramp/input-row/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ramp/input-row/src/**/*.ts",
+          "libs/shared/ramp/input-row/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

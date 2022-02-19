@@ -2,13 +2,17 @@
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="95">
       <h1 class="page-title">
-        {{title | titlecase}}
+        {{ title | titlecase }}
       </h1>
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="95">
-      <ramp-description [supportedIds]="supportedIds" [description]="description" [function] = query?.functionCall></ramp-description>
+      <ramp-description
+        [supportedIds]="supportedIds"
+        [description]="description"
+        [function]="query?.functionCall"
+      ></ramp-description>
     </div>
   </div>
 
@@ -16,12 +20,25 @@
     [input]="input"
     [examples]="examples"
     (dataSearch)="fetchAnalytes($event)"
-    (dataDownload)="fetchAnalytesFile($event)">
+    (dataDownload)="fetchAnalytesFile($event)"
+  >
   </ramp-input-row>
 
-<ramp-query-page
-  [dataColumns]="analyteColumns"
-  [dataAsDataProperty]="dataAsDataProperty"
->
-</ramp-query-page>
+  <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="matches && matches.length > 0">
+    <div fxFlex="95">
+      Matched {{matches.length}} of {{inputList.length}} {{input}}
+      </div>
+    </div>
+      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="noMatches && noMatches.length > 0">
+    <div fxFlex="95">
+  There were no matches for the following {{input}}:
+  {{noMatches.join(", ")}}
+    </div>
+  </div>
+
+  <ramp-query-page
+    [dataColumns]="analyteColumns"
+    [dataAsDataProperty]="dataAsDataProperty"
+  >
+  </ramp-query-page>
 </div>

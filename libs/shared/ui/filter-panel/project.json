@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/filter-panel",
+  "sourceRoot": "libs/shared/ui/filter-panel/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/ui/filter-panel"],
+      "options": {
+        "jestConfig": "libs/shared/ui/filter-panel/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/filter-panel/src/**/*.ts",
+          "libs/shared/ui/filter-panel/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/object-tree",
+  "sourceRoot": "libs/shared/ui/object-tree/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/ui/object-tree"],
+      "options": {
+        "jestConfig": "libs/shared/ui/object-tree/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/object-tree/src/**/*.ts",
+          "libs/shared/ui/object-tree/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -3,6 +3,7 @@ library(sqldf)
 library(config)
 library(R.cache)
 library(readr)
+library(ggplot2)
 
 serializers <- list(
   "json" = serializer_json(),
@@ -123,7 +124,6 @@ function(metabolite="", type="biological") {
   num_submitted_ids <- length(metabolites_ids)
   #metabolites_ids <- sapply(metabolites_ids, shQuote)
   metabolites_ids <- paste(metabolites_ids, collapse = ", ")
-  #print(metabolites_ids)
 
   if (type == "biological") {
     ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
@@ -235,7 +235,6 @@ function(pathway="", analyte_type="both", format = "json", res) {
 #' @post /api/pathways-from-analytes
 function(analytes="", format = "json", res) {
   analytes <- c(analytes)
-  print(analytes)
   pathways_df <- tryCatch({
     pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
   },
@@ -245,7 +244,6 @@ function(analytes="", format = "json", res) {
 
   analytes <- paste(analytes, collapse = ", ")
   res$serializer <- serializers[[format]]
-  print(analytes)
   if(format == "tsv") {
     return(
       as_attachment(unique(pathways_df), "getPathwayFromAnalyte.tsv")
@@ -404,22 +402,88 @@ function(pathways) {
 #' Return filtered Fisher's test results
 #' from given list of Fisher's test results
 #' @param fishers_results
-#' @param p_holmadj_cutoff
-#' @param p_fdradj_cutoff
+#' @param pval_type one of "fdr" or "holm"
+#' @param pval_cutoff
 #' @post /api/filter-fisher-test-results
-function(fishers_results, p_holmadj_cutoff=0.2, p_fdradj_cutoff=0.2) {
-  fishers_results$fishresults <- as.data.frame(fishers_results)
+function(fishers_results,  pval_type = 'fdr', pval_cutoff = 0.1) {
   filtered_results <- RaMP::FilterFishersResults(
     fishers_df = fishers_results,
-    p_holmadj_cutoff = p_holmadj_cutoff,
-    p_fdradj_cutoff = p_fdradj_cutoff
+    pval_type = pval_type,
+    pval_cutoff = pval_cutoff
   )
   fishers_results <- paste(fishers_results, collapse = ", ")
   return(list(
     data = filtered_results,
-    function_call = paste0("RaMP::FilterFishersResults(", fishers_results, "))")
+    function_call = paste0("RaMP::FilterFishersResults(", fishers_results, ")")
   ))
 }
+
+#####
+#' Return clustered Fisher's test results
+#' from given list of Fisher's test results
+#' @param fishers_results
+#' @param perc_analyte_overlap
+#' @param perc_pathway_overlap
+#' @param min_pathway_tocluster
+#' @post /api/cluster-fisher-test-results
+function(
+  fishers_results,
+  #analyte_source_id,
+  perc_analyte_overlap = 0.2,
+  perc_pathway_overlap = 0.2,
+  min_pathway_tocluster=2
+) {
+  if (typeof(min_pathway_tocluster) == "character") {
+    min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
+  }
+  clustering_results <- RaMP::findCluster(
+    fishers_results,
+    perc_analyte_overlap = perc_analyte_overlap,
+    min_pathway_tocluster = min_pathway_tocluster,
+    perc_pathway_overlap = perc_pathway_overlap
+  )
+  return(
+    list(
+      data = clustering_results
+      # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
+      #numFoundIds = length(unique(chemical_enrichment_df$chem_props$chem_source_id))
+    )
+  )
+}
+
+#####
+#' Return clustered Fisher's test results
+#' from given list of Fisher's test results
+#' @param fishers_results
+#' @param perc_analyte_overlap
+#' @param perc_pathway_overlap
+#' @param min_pathway_tocluster
+#' @post /api/cluster-plot
+#' @serializer contentType list(type='image/svg')
+#'
+function(
+  fishers_results,
+perc_analyte_overlap = 0.2,
+  perc_pathway_overlap = 0.2,
+  min_pathway_tocluster=2
+) {
+  if (typeof(min_pathway_tocluster) == "character") {
+    min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
+  }
+
+  clustered_plot <- RaMP::pathwayResultsPlot(
+    fishers_results,
+    text_size = 8,
+    perc_analyte_overlap = perc_analyte_overlap,
+    min_pathway_tocluster = min_pathway_tocluster,
+    perc_pathway_overlap = perc_pathway_overlap
+  )
+  file <- ggsave('file.svg',clustered_plot, width = 10, height = 10)
+  r <- readBin(file,'raw',n = file.info(file)$size)
+  unlink("file.svg")
+  return(r)
+}
+
 
 #####
 #' Perform chemical enrichment on given metabolites
@@ -470,122 +534,12 @@ function() {
   return(ontologies)
 }
 
-
-
-
-
-#####
-#' Return clustered Fisher's test results
-#' from given list of Fisher's test results
-#' @param fishers_results
-#' @param perc_analyte_overlap
-#' @param perc_pathway_overlap
-#' @param min_pathway_tocluster
-#' @post /api/cluster-fisher-test-results
-function(
-  fishers_results,
-  #analyte_source_id,
-  perc_analyte_overlap = 0.2,
-  perc_pathway_overlap = 0.2,
-  min_pathway_tocluster=2
-) {
- # analytes <- c(analyte_source_id)
-  print('yo')
-  if (typeof(min_pathway_tocluster) == "character") {
-    min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
-  }
-  #fishers_results <- as.data.frame(fishers_results)
- # fishers_results <- c(fishers_results)
-  clustering_results <- RaMP::findCluster(
-    fishers_results,
-    perc_analyte_overlap = perc_analyte_overlap,
-    min_pathway_tocluster = min_pathway_tocluster,
-    perc_pathway_overlap = perc_pathway_overlap
-  )
-  return(
-    list(
-      data = clustering_results
-      # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
-      #numFoundIds = length(unique(chemical_enrichment_df$chem_props$chem_source_id))
-    )
-  )
-}
-
-#####
-#' Return clustered Fisher's test results
-#' from given list of Fisher's test results
-#' @param fishers_results
-#' @param perc_analyte_overlap
-#' @param perc_pathway_overlap
-#' @param min_pathway_tocluster
-#' @post /api/cluster-plot
-function(
-  fishers_results,
-  perc_analyte_overlap = 0.2,
-  perc_pathway_overlap = 0.2,
-  min_pathway_tocluster=2
-) {
-  if (typeof(min_pathway_tocluster) == "character") {
-    min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
-  }
-  clustered_plot <- RaMP::pathwayResultsPlot(
-    fishers_results,
-    perc_analyte_overlap = perc_analyte_overlap,
-    min_pathway_tocluster = min_pathway_tocluster,
-    perc_pathway_overlap = perc_pathway_overlap
-  )
-  return(clustered_plot)
-}
-
-
-
-
-########## NOT USED ########
-
-#####
-#' Return filtered Fisher's test results
-#' from given list of Fisher's test results
-#' @param analyte_source_id
-#' @param perc_analyte_overlap
-#' @param perc_pathway_overlap
-#' @param min_pathway_tocluster
-#' @parser json
-#' @post /api/cluster-fisher-test-results-extended
-function(
-  req,
-  analyte_source_id,
-  perc_analyte_overlap = 0.2,
-  perc_pathway_overlap = 0.2,
-  min_pathway_tocluster = 2
-) {
-  analytes <- c(analyte_source_id)
-  if (typeof(min_pathway_tocluster) == "character") {
-    min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
-  }
-  fishers_results <- req$body
-  fishers_results$fishresults <- as.data.frame(fishers_results$fishresults)
-  clustering_results <- RaMP::findCluster(
-    fishers_results,
-    perc_analyte_overlap = perc_analyte_overlap,
-    min_pathway_tocluster = min_pathway_tocluster,
-    perc_pathway_overlap = perc_pathway_overlap
-  )
-
-  fishresults <- clustering_results$fishresults
-
-  response <- list(
-    fishresults = clustering_results$fishresults
-  )
-
-  return(response)
-}
-
-
 #####
 #' Return available high level chemical class types (from ClassyFire)
 #' @param classtype
 #' @get /api/chemical-class-type
 function() {
+  ##todo show these in chemical classes page
   classtypes <- tryCatch({
     getMetabClassTypes()
   },

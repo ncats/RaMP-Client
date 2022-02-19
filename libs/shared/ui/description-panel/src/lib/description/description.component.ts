@@ -1,16 +1,16 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
-import {BehaviorSubject} from "rxjs";
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'ramp-description',
   templateUrl: './description.component.html',
   styleUrls: ['./description.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DescriptionComponent {
   @Input() function!: string | undefined;
-  @Input() supportedIds?: string[];
+  @Input() supportedIds?: [{ analyteType: string, idTypes: string[]}];
 
   /**
    * initialize a private variable _data, it's a BehaviorSubject
@@ -20,23 +20,18 @@ export class DescriptionComponent {
 
   @Input()
   set description(value: string) {
-    if(value) {
-      this._description.next(value)
+    if (value) {
+      this._description.next(value);
     }
-  };
+  }
 
   get description(): string {
-  return this._description.value;
+    return this._description.value;
   }
 
-  constructor(
-    private sanitizer: DomSanitizer
-  ) {
-  }
+  constructor(private sanitizer: DomSanitizer) {}
 
-getDescription(): SafeHtml{
+  getDescription(): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(this._description.value);
+  }
 }
-
-}
-

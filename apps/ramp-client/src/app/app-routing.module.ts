@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import  rFunctions from '../assets/data/rFunctions.json';
-import {environment} from "../environments/environment";
+import rFunctions from '../assets/data/rFunctions.json';
+import { environment } from '../environments/environment';
 
 const routes: Routes = [
   {
@@ -40,8 +40,8 @@ const routes: Routes = [
         (m) => m.FeaturesRampOntologiesModule
       ),
     data: {
-     ...rFunctions["ontologies-from-analytes"]
-    }
+      ...rFunctions['ontologies-from-analytes'],
+    },
   },
   {
     path: 'metabolites-from-ontologies',
@@ -52,8 +52,8 @@ const routes: Routes = [
         (m) => m.FeaturesRampMetabolitesFromOntologiesModule
       ),
     data: {
-     ...rFunctions["metabolites-from-ontologies"]
-    }
+      ...rFunctions['metabolites-from-ontologies'],
+    },
   },
   {
     path: 'analytes-from-pathways',
@@ -64,8 +64,8 @@ const routes: Routes = [
         (m) => m.FeaturesRampAnalytesFromPathwaysModule
       ),
     data: {
-     ...rFunctions["analytes-from-pathways"]
-    }
+      ...rFunctions['analytes-from-pathways'],
+    },
   },
   {
     path: 'pathways-from-analytes',
@@ -76,8 +76,8 @@ const routes: Routes = [
         (m) => m.FeaturesRampPathwaysFromAnalytesModule
       ),
     data: {
-     ...rFunctions["pathways-from-analytes"]
-    }
+      ...rFunctions['pathways-from-analytes'],
+    },
   },
   {
     path: 'common-reaction-analytes',
@@ -88,8 +88,8 @@ const routes: Routes = [
         (m) => m.FeaturesRampCommonReactionAnalytesModule
       ),
     data: {
-     ...rFunctions["common-reaction-analytes"]
-    }
+      ...rFunctions['common-reaction-analytes'],
+    },
   },
   {
     path: 'classes-from-metabolites',
@@ -100,8 +100,8 @@ const routes: Routes = [
         (m) => m.FeaturesRampClassesFromMetabolitesModule
       ),
     data: {
-     ...rFunctions["classes-from-metabolites"]
-    }
+      ...rFunctions['classes-from-metabolites'],
+    },
   },
   {
     path: 'properties-from-metabolites',
@@ -112,9 +112,9 @@ const routes: Routes = [
         (m) => m.FeaturesRampPropertiesFromMetabolitesModule
       ),
     data: {
-     ...rFunctions["properties-from-metabolites"],
-      renderUrl: environment.rendererUrl
-    }
+      ...rFunctions['properties-from-metabolites'],
+      renderUrl: environment.rendererUrl,
+    },
   },
   {
     path: 'chemical-enrichment',
@@ -125,8 +125,8 @@ const routes: Routes = [
         (m) => m.FeaturesRampChemicalEnrichmentModule
       ),
     data: {
-     ...rFunctions["chemical-enrichment"]
-    }
+      ...rFunctions['chemical-enrichment'],
+    },
   },
   {
     path: 'pathway-enrichment',
@@ -137,9 +137,9 @@ const routes: Routes = [
         (m) => m.FeaturesRampPathwayEnrichmentModule
       ),
     data: {
-     ...rFunctions["pathway-enrichment"]
-    }
-  }
+      ...rFunctions['pathway-enrichment'],
+    },
+  },
 ];
 
 @NgModule({

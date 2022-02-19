@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/ncats-datatable",
+  "sourceRoot": "libs/shared/ui/ncats-datatable/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/ui/ncats-datatable"],
+      "options": {
+        "jestConfig": "libs/shared/ui/ncats-datatable/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/ncats-datatable/src/**/*.ts",
+          "libs/shared/ui/ncats-datatable/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

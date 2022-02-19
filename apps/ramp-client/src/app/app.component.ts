@@ -5,111 +5,112 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
-import {ErrorDialogComponent} from "@ramp/shared/ui/error-dialog";
-import {LinkTemplateProperty} from "@ramp/shared/ui/header-template";
-import {RampFacade} from "@ramp/stores/ramp-store";
-
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorDialogComponent } from '@ramp/shared/ui/error-dialog';
+import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
+import { RampFacade } from '@ramp/stores/ramp-store';
 
 @Component({
   selector: 'ramp-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
-
   title = 'ramp-client';
   loading = true;
   links: LinkTemplateProperty[] = [
     {
-      link: "Queries",
+      link: 'Biological Pathways',
       children: [
         {
-          link: "analytes-from-pathways",
-          label: "Analytes from Pathways"
+          link: 'analytes-from-pathways',
+          label: 'Analytes from Pathways',
         },
         {
-          link: "pathways-from-analytes",
-          label: "Pathways from Analytes"
-        },
-        {
-          link: "common-reaction-analytes",
-          label: "Common Reaction Analytes"
+          link: 'pathways-from-analytes',
+          label: 'Pathways from Analytes',
         }
-      ]
+      ],
     },
     {
-      link: "Chemical Properties",
+      link: 'Chemical Classes',
       children: [
         {
-          link: "classes-from-metabolites",
-          label: "Chemical Classes from Metabolites"
+          link: 'classes-from-metabolites',
+          label: 'Chemical Classes from Metabolites',
         },
         {
-          link: "properties-from-metabolites",
-          label: "Chemical Properties from Metabolites"
-        }
-      ]
-    },{
-      link: "Analysis",
-      children: [
-        {
-          link: "pathway-enrichment",
-          label: "Pathway Enrichment Analysis"
+          link: 'properties-from-metabolites',
+          label: 'Chemical Properties from Metabolites',
         },
-        {
-          link: "chemical-enrichment",
-          label: "Chemical Enrichment Analysis"
-        }
-      ]
+      ],
     },
     {
-      link: "Ontologies",
+      link: 'Ontologies',
       children: [
         {
-          link: "ontologies-from-metabolites",
-          label: "Ontologies from Metabolites"
+          link: 'ontologies-from-metabolites',
+          label: 'Ontologies from Metabolites',
         },
         {
-          link: "metabolites-from-ontologies",
-          label: "Metabolites from Ontologies"
-        }
-      ]
+          link: 'metabolites-from-ontologies',
+          label: 'Metabolites from Ontologies',
+        },
+      ],
     },
     {
-      link: "about",
-      label: "About"
-    }
-  ]
+      link: 'Reactions',
+      children: [
+        {
+          link: 'common-reaction-analytes',
+          label: 'Common Reaction Analytes',
+        }
+        ]
+    },
+    {
+      link: 'Enrichment Analyses',
+      children: [
+        {
+          link: 'pathway-enrichment',
+          label: 'Pathway Enrichment Analysis',
+        },
+        {
+          link: 'chemical-enrichment',
+          label: 'Chemical Enrichment Analysis',
+        },
+      ],
+    },
+    {
+      link: 'about',
+      label: 'About',
+    },
+  ];
 
   constructor(
     public dialog: MatDialog,
     private changeRef: ChangeDetectorRef,
-    private rampFacade: RampFacade
-  ) {
-
-  }
+    protected rampFacade: RampFacade
+  ) {}
 
   ngOnInit() {
-    this.rampFacade.error$.subscribe(error=> {
-      if(error) {
+    this.rampFacade.error$.subscribe((error) => {
+      if (error) {
         console.log(error);
-       /* this.dialog.open(ErrorDialogComponent, {
+        /* this.dialog.open(ErrorDialogComponent, {
           data: {
             error: error,
           },
         });*/
       }
-    })
-
-    this.rampFacade.loading$.subscribe(res=> {
-      this.loading = res;
-      this.changeRef.markForCheck();
-
     });
 
-  //  this.rampFacade.init();
+    this.rampFacade.loading$.subscribe((res) => {
+      this.loading = res;
+      this.changeRef.markForCheck();
+    });
+
+    //  this.rampFacade.init();
   }
 }

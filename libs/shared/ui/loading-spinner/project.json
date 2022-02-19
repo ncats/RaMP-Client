@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/loading-spinner",
+  "sourceRoot": "libs/shared/ui/loading-spinner/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/shared/ui/loading-spinner"],
+      "options": {
+        "jestConfig": "libs/shared/ui/loading-spinner/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/loading-spinner/src/**/*.ts",
+          "libs/shared/ui/loading-spinner/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

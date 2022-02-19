@@ -1,2 +1,1 @@
-export class PathwayEnrichment {
-}
+export class PathwayEnrichment {}

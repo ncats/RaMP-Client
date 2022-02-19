@@ -80,12 +80,13 @@ export class DataProperty {
    */
   description?: string;
 
+  displayType?: 'string' | 'number' | 'externalLink' | 'internalLink' | 'date'
+
   /**
    * deconstruct json as dataproperty object
    * @param data
    */
   constructor(data?: any) {
-
     Object.assign(this, data);
     if (!this.field) {
       this.field = data.label;

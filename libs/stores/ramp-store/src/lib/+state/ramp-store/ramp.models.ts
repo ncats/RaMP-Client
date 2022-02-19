@@ -7,8 +7,8 @@ import {
   Properties,
   Reaction,
   SourceVersion,
-  RampQuery
-} from "@ramp/models/ramp-models";
+  RampQuery,
+} from '@ramp/models/ramp-models';
 
 /**
  * Interface for the 'RampStore' data
@@ -16,49 +16,46 @@ import {
 export interface RampEntity {
   id: string | number; // Primary ID
   name: string;
-  supportedIds?: {
-    metabolites: string[],
-    genes: string[]
-  }
+  supportedIds?: [{ analyteType: string, idTypes: string[]}];
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
-  metaboliteIntersects?:[];
-  geneIntersects?:[];
+  metaboliteIntersects?: [];
+  geneIntersects?: [];
   ontologiesList?: any[];
 
   ontology?: {
-    data: Ontology[],
-    query: RampQuery
+    data: Ontology[];
+    query: RampQuery;
   };
 
   analytes?: {
-    data: Analyte[],
-    query: RampQuery
-  }
+    data: Analyte[];
+    query: RampQuery;
+  };
 
   pathways?: {
-    data: Pathway[],
-    query: RampQuery
-  }
+    data: Pathway[];
+    query: RampQuery;
+  };
 
   reactions?: {
-    data: Reaction[],
-    query: RampQuery
+    data: Reaction[];
+    query: RampQuery;
   };
 
   metClasses?: {
-    data: Classes[],
-    query: RampQuery
-  }
+    data: Classes[];
+    query: RampQuery;
+  };
 
   metabolites?: {
-    data: Metabolite[],
-    query: RampQuery
+    data: Metabolite[];
+    query: RampQuery;
   };
 
   properties?: {
-    data: Properties[],
-    query: RampQuery
+    data: Properties[];
+    query: RampQuery;
   };
 
   chemicalEnrichments?: any;

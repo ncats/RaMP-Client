@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/features/ramp/analytes-from-pathways",
+  "sourceRoot": "libs/features/ramp/analytes-from-pathways/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/features/ramp/analytes-from-pathways"],
+      "options": {
+        "jestConfig": "libs/features/ramp/analytes-from-pathways/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/features/ramp/analytes-from-pathways/src/**/*.ts",
+          "libs/features/ramp/analytes-from-pathways/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": ["lib:analytes-from-pathways"]
+}

@@ -1,66 +1,107 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {TREE_VIEWER_COMPONENT} from "@ramp/features/ramp/chemical-enrichment";
-import {ChemicalEnrichment, Classes, RampQuery} from "@ramp/models/ramp-models";
-import {PageCoreComponent} from "@ramp/shared/ramp/page-core";
-import {DataProperty} from "@ramp/shared/ui/ncats-datatable";
-import {fetchClassesFromMetabolites, fetchEnrichmentFromMetabolites, RampFacade} from "@ramp/stores/ramp-store";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { TREE_VIEWER_COMPONENT } from '@ramp/features/ramp/chemical-enrichment';
+import {
+  ChemicalEnrichment,
+  Classes,
+  RampQuery,
+} from '@ramp/models/ramp-models';
+import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
+import {
+  fetchClassesFromMetabolites,
+  fetchEnrichmentFromMetabolites,
+  RampFacade,
+} from '@ramp/stores/ramp-store';
 
 @Component({
   selector: 'ramp-chemical-enrichment',
   templateUrl: './chemical-enrichment.component.html',
-  styleUrls: ['./chemical-enrichment.component.scss']
+  styleUrls: ['./chemical-enrichment.component.scss'],
 })
-export class ChemicalEnrichmentComponent extends PageCoreComponent implements OnInit {
-  enrichmentRaw!: ChemicalEnrichment[];
+export class ChemicalEnrichmentComponent
+  extends PageCoreComponent
+  implements OnInit
+{
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
-      label: "Pathway Name",
-      field: "pathwayName",
-      sortable: true
-    }),
-    /*    new DataProperty({
-          label: "Pathway Category",
-          field: "pathwayCategory",
-          sortable: true
-        }),*/
-    new DataProperty({
-      label: "Pathway Type",
-      field: "pathwayType",
-      sortable: true
+      label: 'Category',
+      field: 'category',
+      sortable: true,
+      sorted: 'asc'
     }),
     new DataProperty({
-      label: "enrichment Name",
-      field: "enrichmentName",
-      sortable: true
+      label: 'Class Name',
+      field: 'class_name',
+      sortable: true,
     }),
     new DataProperty({
-      label: "Source enrichment ID",
-      field: "sourceenrichmentIDs",
-      sortable: true
+      label: 'Metabolite Hits',
+      field: 'met_hits',
+      sortable: true,
     }),
     new DataProperty({
-      label: "enrichment Class",
-      field: "geneOrCompound",
-      sortable: true
+      label: 'Pop hits',
+      field: 'pop_hits',
+      sortable: true,
     }),
+    new DataProperty({
+      label: 'Metabolite Count',
+      field: 'met_size',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'Pop Count',
+      field: 'pop_size',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'P Value',
+      field: 'p_value',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'adjP_BH',
+      field: 'adjP_BH',
+      sortable: true,
+    })
   ];
   classesColumns: DataProperty[] = [
-    //todo this isn't sortable
     new DataProperty({
-      label: "Source ID",
-      field: "sourceId"
+      label: 'Source IDs',
+      field: 'sourceId',
+      sortable: true
     }),
     new DataProperty({
-      label: "ClassyFire Classes",
-      field: "classyFireTree",
-      customComponent: TREE_VIEWER_COMPONENT
+      label: 'ClassyFire Super Class',
+      field: 'classyFireSuperClass',
+      sortable: true
     }),
     new DataProperty({
-      label: "LIPIDMAPS Classes",
-      field: "lipidMapsTree",
-      customComponent: TREE_VIEWER_COMPONENT
-    })
+      label: 'ClassyFire Class',
+      field: 'classyFireClass',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'ClassyFire Sub Class',
+      field: 'classyFireSubClass',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS Category',
+      field: 'lipidMapsCategory',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS Main Class',
+      field: 'lipidMapsMainClass',
+      sortable: true
+    }),
+    new DataProperty({
+      label: 'LIPIDMAPS Sub Class',
+      field: 'lipidMapsSubClass',
+      sortable: true
+    }),
   ];
   classesLoading = false;
   enrichmentLoading = false;
@@ -73,58 +114,72 @@ export class ChemicalEnrichmentComponent extends PageCoreComponent implements On
 
   constructor(
     private ref: ChangeDetectorRef,
-    private rampFacade: RampFacade,
+    protected rampFacade: RampFacade,
     protected route: ActivatedRoute
   ) {
-    super(route);
+    super(route, rampFacade);
   }
 
-
   ngOnInit(): void {
-    this.rampFacade.chemicalEnrichment$.subscribe((res: ChemicalEnrichment[] | undefined) => {
-      if (res && res.length) {
-        this.enrichmentRaw = res;
-        //  this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
-        this.dataAsDataProperty = res.map((enrichment: ChemicalEnrichment) => {
-          const newObj: { [key: string]: DataProperty } = {};
-          Object.entries(enrichment).map((value: any, index: any) => {
-            newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
-          });
-          return newObj;
-        })
-        this.enrichmentLoading = false;
-        this.ref.markForCheck()
+    this.rampFacade.chemicalEnrichment$.subscribe(
+      (res: {data: ChemicalEnrichment[] }| undefined) => {
+        if (res && res.data) {
+          //  this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
+          this.dataAsDataProperty = res.data.map(
+            (enrichment: ChemicalEnrichment) => {
+              const newObj: { [key: string]: DataProperty } = {};
+              Object.entries(enrichment).map((value: any, index: any) => {
+                newObj[value[0]] = new DataProperty({
+                  name: value[0],
+                  label: value[0],
+                  value: value[1]
+                });
+              });
+              return newObj;
+            }
+          );
+          this.enrichmentLoading = false;
+          this.ref.markForCheck();
+        }
       }
-    })
+    );
 
-    this.rampFacade.classes$.subscribe((res: {data: Classes[], query: RampQuery} | undefined) => {
-      if (res && res.data) {
-        this._mapClasses(res.data);
+    this.rampFacade.classes$.subscribe(
+      (res: { data: Classes[]; query: RampQuery } | undefined) => {
+        if (res && res.data) {
+          this._mapClasses(res.data);
+        }
+        if (res && res.query) {
+          this.query = res.query;
+        }
+        this.classesLoading = false;
+        this.ref.markForCheck();
       }
-      if (res && res.query) {
-        this.query = res.query;
-      }
-      this.classesLoading = false;
-      this.ref.markForCheck();
-    })
-
+    );
   }
 
   fetchEnrichment(event: string[]): void {
     this.classesLoading = true;
-    this.rampFacade.dispatch(fetchClassesFromMetabolites({metabolites: event}))
+    this.rampFacade.dispatch(
+      fetchClassesFromMetabolites({ metabolites: event })
+    );
     this.enrichmentLoading = true;
-    this.rampFacade.dispatch(fetchEnrichmentFromMetabolites({metabolites: event}))
+    this.rampFacade.dispatch(
+      fetchEnrichmentFromMetabolites({ metabolites: event })
+    );
   }
 
   private _mapClasses(data: any): void {
     this.classesAsDataProperty = data.map((obj: Classes) => {
       const newObj: { [key: string]: DataProperty } = {};
       Object.entries(obj).map((value: any, index: any) => {
-        newObj[value[0]] = new DataProperty({name: value[0], label: value[0], value: value[1]});
+        newObj[value[0]] = new DataProperty({
+          name: value[0],
+          label: value[0],
+          value: value[1],
+        });
       });
       return newObj;
-    })
+    });
   }
-
 }

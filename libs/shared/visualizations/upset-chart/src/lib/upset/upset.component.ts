@@ -14,10 +14,16 @@ import {
 import { map, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import {select} from "d3-selection";
-import { axisLeft, AxisScale } from "d3-axis";
-import { scaleBand, ScaleBand, scaleLinear, ScaleLinear, scaleLog } from "d3-scale";
-import {  format } from 'd3-format';
+import { select } from 'd3-selection';
+import { axisLeft, AxisScale } from 'd3-axis';
+import {
+  scaleBand,
+  ScaleBand,
+  scaleLinear,
+  ScaleLinear,
+  scaleLog,
+} from 'd3-scale';
+import { format } from 'd3-format';
 import { extent, max } from 'd3-array';
 import { UpsetData } from '../upset-data';
 
@@ -141,14 +147,12 @@ export class UpsetComponent implements OnInit {
     const bottomRowHeight = this.height - topRowHeight - innerMargin;
 
     // Initialize scales
-    const xScale: ScaleBand<string> =
-      scaleBand()
+    const xScale: ScaleBand<string> = scaleBand()
       .domain(this.data.map((d) => d.id))
       .range([0, rightColWidth])
       .paddingInner(0.2);
 
-    const yCombinationScale: ScaleBand<string> =
-      scaleBand()
+    const yCombinationScale: ScaleBand<string> = scaleBand()
       .domain(this.allSetIds)
       .range([0, bottomRowHeight])
       .paddingInner(0.2);
@@ -159,21 +163,18 @@ export class UpsetComponent implements OnInit {
       | (number[] & ScaleLinear<number, number>);
 
     if (this.scale === 'log') {
-      intersectionSizeScale =
-        scaleLog()
+      intersectionSizeScale = scaleLog()
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-      yAxis =
-        axisLeft(intersectionSizeScale)
+      yAxis = axisLeft(intersectionSizeScale)
         .scale(intersectionSizeScale)
         .tickFormat((d, i) => {
           return (i % 5 === 0 && format(',d')(Number(d))) || '';
         })
         .tickSize(5);
     } else {
-      intersectionSizeScale =
-        scaleLinear()
+      intersectionSizeScale = scaleLinear()
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
@@ -181,8 +182,7 @@ export class UpsetComponent implements OnInit {
     }
 
     // Prepare the overall layout
-    const svg =
-      select(element)
+    const svg = select(element)
       .append('svg:svg')
       .attr('width', this.width)
       .attr('height', this.height);
@@ -291,8 +291,7 @@ export class UpsetComponent implements OnInit {
     // const intersectionSizeAxis = d3.axisLeft(intersectionSizeScale).ticks(3);
 
     //todo: this ignores the previous Yaxis assignment
-    const intersectionSizeAxis =
-      axisLeft(intersectionSizeScale)
+    const intersectionSizeAxis = axisLeft(intersectionSizeScale)
       .scale(intersectionSizeScale)
       .tickFormat((d, i) => {
         return (i % 5 === 0 && format(',d')(Number(d))) || '';
@@ -358,12 +357,12 @@ export class UpsetComponent implements OnInit {
       //todo: fix the ts-ignore
       .attr('y', (d) =>
         d.size > 0
-          // @ts-ignore
-          //todo: fix the ts-ignore
-          ? intersectionSizeScale(d.size) + this.margin.top
-          // @ts-ignore
-          //todo: fix the ts-ignore
-          : intersectionSizeScale(1) + this.margin.top
+          ? // @ts-ignore
+            //todo: fix the ts-ignore
+            intersectionSizeScale(d.size) + this.margin.top
+          : // @ts-ignore
+            //todo: fix the ts-ignore
+            intersectionSizeScale(1) + this.margin.top
       )
       .text((d: { size: number }) => format(',d')(Number(d.size)));
   }

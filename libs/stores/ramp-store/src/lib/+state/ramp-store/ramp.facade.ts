@@ -26,8 +26,12 @@ export class RampFacade {
   reactions$ = this.store.pipe(select(RampSelectors.getCommonReactions));
   classes$ = this.store.pipe(select(RampSelectors.getClasses));
   properties$ = this.store.pipe(select(RampSelectors.getProperties));
-  chemicalEnrichment$ = this.store.pipe(select(RampSelectors.getChemicalEnrichment));
-  pathwayEnrichment$ = this.store.pipe(select(RampSelectors.getPathwayEnrichment));
+  chemicalEnrichment$ = this.store.pipe(
+    select(RampSelectors.getChemicalEnrichment)
+  );
+  pathwayEnrichment$ = this.store.pipe(
+    select(RampSelectors.getPathwayEnrichment)
+  );
 
   constructor(private readonly store: Store) {}
 

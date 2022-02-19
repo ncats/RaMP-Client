@@ -8,7 +8,6 @@ describe('RampStore Reducer', () => {
   const createRampEntity = (id: string, name = ''): RampEntity => ({
     id,
     name: name || `name-${id}`,
-
   });
 
   describe('valid RampStore actions', () => {
