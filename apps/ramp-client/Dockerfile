@@ -14,7 +14,7 @@ RUN apk update && apk upgrade && \
     npm i -g @angular/cli && \
     npm install -g nx && \
     npm i && \
-    NODE_OPTIONS=--max_old_space_size=4096 ng build ramp-client --prod
+    NODE_OPTIONS=--max_old_space_size=4096  nx build ramp-client --configuration=production
 
 FROM labshare/docker-base-web
 
