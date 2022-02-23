@@ -1,4 +1,11 @@
 .p-val-input {
-  max-width: 90%;
   margin-bottom: -1.4em;
+}
+
+.divider {
+  min-height: 100%;
+  border-top: 0;
+  border-right-width: 1.4px;
+  border-right-style: solid;
+  border-right-color: rgba(0, 0, 0, 0.12);
 }

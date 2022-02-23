@@ -93,22 +93,25 @@
               <mat-form-field
                 appearance="outline"
                 color="accent"
-                class="p-val-input"
-              >
+                class="p-val-input">
                 <mat-label>P-Value Cutoff</mat-label>
                 <input matInput type="number" [formControl]="pValueFormCtrl" />
               </mat-form-field>
             </div>
             <div fxFlex="40">
              <mat-radio-group [formControl]="pValueTypeFormCtrl">
-               <mat-radio-button [value]="'Pval_combined_Holm'" [color]="'accent'">Holm</mat-radio-button> &nbsp;
-               <mat-radio-button [value]="'Pval_combined_FDR'" [color]="'accent'">FDR</mat-radio-button> &nbsp;
-               <mat-radio-button [value]="'Pval_combined'" [color]="'accent'">Pval Combined</mat-radio-button>
+               <mat-radio-button [value]="'fdr'" [color]="'accent'">FDR</mat-radio-button> <br>
+               <mat-radio-button [value]="'holm'" [color]="'accent'">Holm</mat-radio-button> <br>
+               <mat-radio-button [value]="'pval'" [color]="'accent'">Pval Combined</mat-radio-button>
              </mat-radio-group>
             </div>
           </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+              <div fxFlex="20">
+              <button mat-flat-button (click)="filterPathways()" [color]="'accent'">Filter</button>
+                </div>
+            </div>
         </div>
-
         <div fxFlex="55">
           <h3>Cluster Results</h3>
           <div fxLayout="row" fxLayoutAlign="space-around center">
@@ -116,8 +119,8 @@
               <mat-checkbox color="accent" (change)="setCluster($event)"
                 >Show Cluster Assignment</mat-checkbox
               >
-              <br />
-              <br />
+              <br>
+              <br>
               <mat-form-field appearance="outline" color="accent">
                 <mat-label>Percent Analyte Overlap</mat-label>
                 <input
@@ -145,6 +148,11 @@
                   [formControl]="minPathWayFormCtrl"
                 />
               </mat-form-field>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start start">
+            <div fxFlex="20">
+              <button mat-flat-button (click)="clusterResults()" [color]="'accent'">Recompute Clusters</button>
             </div>
           </div>
         </div>

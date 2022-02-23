@@ -2,7 +2,7 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
 import {
   Analyte, ChemicalEnrichment,
-  Classes,
+  Classes, FisherResult,
   Metabolite,
   Ontology,
   Pathway,
@@ -65,7 +65,12 @@ export interface State extends EntityState<RampEntity> {
    // query: RampQuery;
   };
 
-  pathwayEnrichments?: any;
+  pathwayEnrichments?: {
+    data: FisherResult[];
+    query: RampQuery;
+  };
+  combined_fishers_dataframe?: any;
+  filtered_fishers_dataframe?: any;
 }
 
 export interface RampPartialState {
@@ -211,11 +216,35 @@ const rampReducer = createReducer(
 
   on(
     RampActions.fetchEnrichmentFromPathwaysSuccess,
-    (state, { pathwayEnrichments }) => ({
-      ...state,
-      loading: false,
-      pathwayEnrichments: pathwayEnrichments,
-    })
+    (state, { data, query, combinedFishersDataframe }) =>  {
+      return ({
+        ...state,
+        loading: false,
+        pathwayEnrichments: { data, query },
+        combined_fishers_dataframe: combinedFishersDataframe
+      })
+    }
+  ),
+
+on(
+    RampActions.filterEnrichmentFromPathwaysSuccess,
+    (state, { data, query, filteredFishersDataframe }) =>  {
+      return ({
+        ...state,
+        loading: false,
+        pathwayEnrichments: { data, query },
+        filtered_fishers_dataframe: filteredFishersDataframe
+      })
+    }
+  ),
+
+  on(
+    RampActions.fetchClusterFromEnrichmentSuccess,
+    (state, {data, query}) =>  ({
+        ...state,
+        loading: false,
+        pathwayEnrichments: { data, query }
+      })
   ),
 
   on(
