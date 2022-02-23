@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import {
   Analyte, ChemicalEnrichment,
-  Classes,
+  Classes, FisherResult,
   Metabolite,
   Ontology,
   Pathway,
@@ -272,21 +272,78 @@ export const fetchEnrichmentFromMetabolitesFailure = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromMetabolites Failure',
   props<{ error: any }>()
 );
+
 export const fetchEnrichmentFromPathways = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways',
   props<{
     pathways: string[];
-    cutoff_type: string;
-    cutoff_pvalue: number;
   }>()
 );
 
 export const fetchEnrichmentFromPathwaysSuccess = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways Success',
-  props<{ pathwayEnrichments: any }>()
+  props<{
+  data: FisherResult[];
+  query: RampQuery;
+  combinedFishersDataframe: any;
+    pval_type?: string;
+    pval_cutoff?: number;
+ }>()
 );
 
 export const fetchEnrichmentFromPathwaysFailure = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways Failure',
+  props<{ error: any }>()
+);
+
+
+export const filterEnrichmentFromPathways = createAction(
+  '[Ramp/API] Fetch filterEnrichmentFromPathways',
+  props<{
+    pval_type: string;
+    pval_cutoff: number;
+    perc_analyte_overlap?: number;
+    min_pathway_tocluster?: number;
+    perc_pathway_overlap?: number;
+  }>()
+);
+
+export const filterEnrichmentFromPathwaysSuccess = createAction(
+  '[Ramp/API] filterEnrichmentFromPathways Success',
+  props<{
+  data: FisherResult[];
+    query: RampQuery;
+    filteredFishersDataframe?: any;
+    perc_analyte_overlap?: number;
+    min_pathway_tocluster?: number;
+    perc_pathway_overlap?: number;
+  }>()
+);
+
+export const filterEnrichmentFromPathwaysFailure = createAction(
+  '[Ramp/API]  filterEnrichmentFromPathways Failure',
+  props<{ error: any }>()
+);
+
+
+export const fetchClusterFromEnrichment = createAction(
+  '[Ramp/API] Fetch fetchClusterFromEnrichment',
+  props<{
+    perc_analyte_overlap: number;
+    min_pathway_tocluster: number;
+    perc_pathway_overlap: number;
+  }>()
+);
+
+export const fetchClusterFromEnrichmentSuccess = createAction(
+  '[Ramp/API] Fetch fetchClusterFromEnrichment Success',
+  props<{
+  data: FisherResult[];
+  query: RampQuery;
+ }>()
+);
+
+export const fetchClusterFromEnrichmentFailure = createAction(
+  '[Ramp/API] Fetch fetchClusterFromEnrichment Failure',
   props<{ error: any }>()
 );

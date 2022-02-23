@@ -4,15 +4,17 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute } from '@angular/router';
 import {
+  FisherResult,
   Pathway,
   PathwayEnrichment,
-  RampQuery,
-} from '@ramp/models/ramp-models';
+  RampQuery
+} from "@ramp/models/ramp-models";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
+  fetchClusterFromEnrichment,
   fetchEnrichmentFromPathways,
-  fetchPathwaysFromAnalytes, fetchPathwaysFromAnalytesFile,
+  fetchPathwaysFromAnalytes, fetchPathwaysFromAnalytesFile, filterEnrichmentFromPathways,
   RampFacade
 } from "@ramp/stores/ramp-store";
 
@@ -30,7 +32,7 @@ export class PathwayEnrichmentComponent
   percentAnalyteFormCtrl: FormControl = new FormControl(0.2);
 
   pValueFormCtrl: FormControl = new FormControl(0.2);
-  pValueTypeFormCtrl: FormControl = new FormControl('holm');
+  pValueTypeFormCtrl: FormControl = new FormControl('fdr');
 
   pathwaysLoading = false;
   enrichmentLoading = false;
@@ -129,11 +131,12 @@ image: any;
   ngOnInit(): void {
     this.rampFacade.pathwayEnrichment$.subscribe(
       (res: any | undefined) => {
-        if (res) {
+        if (res && res.data) {
+        //  console.log(res);
         //  let objectURL = URL.createObjectURL(res);
-          this.image = this.sanitizer.bypassSecurityTrustHtml(res);
+      //    this.image = this.sanitizer.bypassSecurityTrustHtml(res);
 
-          /*  this.dataAsDataProperty = res.map((enrichment: PathwayEnrichment) => {
+            this.dataAsDataProperty = res.data.map((enrichment: FisherResult) => {
               const newObj: { [key: string]: DataProperty } = {};
               Object.entries(enrichment).map((value: any, index: any) => {
                 newObj[value[0]] = new DataProperty({
@@ -144,10 +147,13 @@ image: any;
               });
               return newObj;
             });
-            this.allDataAsDataProperty = this.dataAsDataProperty;*/
+            this.allDataAsDataProperty = this.dataAsDataProperty;
           this.enrichmentLoading = false;
           this.ref.markForCheck();
         }
+        if (res && res.query) {
+      this.query = res.query;
+    }
       }
     );
 
@@ -158,21 +164,34 @@ image: any;
           this.matches = Array.from(new Set(res.data.map(pathway => pathway.inputId.toLocaleLowerCase())));
           this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
         }
-        /*      if (res && res.query) {
-              this.query = res.query;
-            }*/
+
         this.pathwaysLoading = false;
         this.ref.markForCheck();
       }
     );
+  }
 
-    this.pValueFormCtrl.valueChanges.subscribe(
-      (change) =>
-        (this.dataAsDataProperty = this.allDataAsDataProperty.filter(
-          (prop) => {
-            return prop[this.pValueTypeFormCtrl.value] < this.pValueFormCtrl.value
-          }
-        ))
+  filterPathways() {
+    this.rampFacade.dispatch(
+      filterEnrichmentFromPathways({
+        pval_type: this.pValueTypeFormCtrl.value,
+        pval_cutoff: this.pValueFormCtrl.value,
+        perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
+        min_pathway_tocluster: this.minPathWayFormCtrl.value,
+        perc_pathway_overlap: this.percentPathwayFormCtrl.value
+      })
+    );
+  }
+
+  clusterResults(){
+    this.rampFacade.dispatch(
+      filterEnrichmentFromPathways({
+        pval_type: this.pValueTypeFormCtrl.value,
+        pval_cutoff: this.pValueFormCtrl.value,
+        perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
+        min_pathway_tocluster: this.minPathWayFormCtrl.value,
+        perc_pathway_overlap: this.percentPathwayFormCtrl.value
+      })
     );
   }
 
@@ -182,11 +201,7 @@ image: any;
     this.pathwaysLoading = true;
     this.enrichmentLoading = true;
     this.rampFacade.dispatch(
-      fetchEnrichmentFromPathways({
-        pathways: event,
-        cutoff_type: this.pValueTypeFormCtrl.value,
-        cutoff_pvalue: this.pValueFormCtrl.value,
-      })
+      fetchEnrichmentFromPathways({ pathways: event })
     );
   }
 

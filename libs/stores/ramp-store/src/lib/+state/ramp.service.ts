@@ -68,20 +68,7 @@ export class RampService {
 
   fetchSupportedIds() {
     return this.http
-      .get<{ data: any[] }>(`${this.url}id-types`) // ,{responseType: 'text'})
-      /*.pipe(
-        map((response) => {
-          console.log(response)
-          return [{
-            label: "",
-            ids: response.data[0].idTypes},
-            {
-
-            genes: response.data[1].idTypes,
-          }];
-        })*/
-        // catchError(this.handleError('fetchEntityCounts', []))
-    //  );
+      .get<{ data: any[] }>(`${this.url}id-types`);
   }
 
   fetchMetaboliteIntersects() {
@@ -96,7 +83,7 @@ export class RampService {
     return this.http
       .get<{ data: any[] }>(
         `${this.url}analyte_intersects?analytetype=${param}&query_scope=mapped-to-pathway`
-      ) // ,{responseType: 'text'})
+      )
       .pipe(
         map((response) => response.data),
         catchError(this.handleError('fetchAnalyteIntersects', []))
@@ -301,41 +288,18 @@ export class RampService {
       );
   }
 
-  fetchEnrichmentFromPathways(
-    analytes: string[],
-    pval_type: string,
-    pval_cutoff: number
-  ) {
+  fetchEnrichmentFromPathways(analytes: string[]): Observable<{
+    data: FisherResult[];
+    functionCall: string;
+    combinedFishersDataframe: any;
+  }> {
     return (
       this.http
-        // .post<string[]>(`${this.url}pathways-from-analytes`,  {analyte: analytes})
         .post<string[]>(`${this.url}combined-fisher-test`, {
           pathways: analytes,
         })
         .pipe(
-          mergeMap((cftreq: any) => {
-         //   console.log(cftreq);
-            return this.http.post<string[]>(
-              `${this.url}filter-fisher-test-results`,
-              {
-                fishers_results: cftreq.data,
-                pval_type: pval_type,
-                pval_cutoff: pval_cutoff,
-              }
-            );
-          }),
-/*          mergeMap((fftreq: any) => {
-            console.log(req);
-            return this.http.post<string[]>(
-              `${this.url}cluster-fisher-test-results`,
-              {
-                fishers_results: req.data,
-                perc_analyte_overlap: 0.2,
-                min_pathway_tocluster: 2,
-                perc_pathway_overlap: 0.2,
-              }
-            );
-          }),*/
+/*
           mergeMap(( req: any) => {
          //  console.log(req);
            const body = {
@@ -350,15 +314,108 @@ export class RampService {
             return this.http
              .post<string[]>(`${this.url}cluster-plot`,body, options)
          }),
+*/
           map((response: any) => {
-       //     console.log(response);
-            return response//.data.fishresults.map(
-            //  (obj: any) => new FisherResult(obj)
-           // );
+            return {
+              data: response.data.fishresults.map((obj: any) => new FisherResult(obj)),
+              combinedFishersDataframe: response.data,
+              functionCall: response.function_call[0]
+            };
           })
         )
     );
   }
+
+
+  filterPathwayEnrichment(
+    dataframe: any,
+    pval_type?: string,
+    pval_cutoff?: number
+  ){
+    return this.http.post<string[]>(
+      `${this.url}filter-fisher-test-results`,
+      {
+        fishers_results: dataframe,
+        pval_type: pval_type,
+        pval_cutoff: pval_cutoff,
+      }
+    )
+      .pipe(
+        map((response: any) => {
+      return {
+        data: response.data.fishresults.map((obj: any) => new FisherResult(obj)),
+        filteredFishersDataframe: response.data,
+        functionCall: response.function_call[0]
+      };
+    })
+  );
+  }
+
+  getClusterdData(
+    dataframe: any,
+    perc_analyte_overlap?: number,
+    min_pathway_tocluster?: number,
+    perc_pathway_overlap?: number
+  ){
+      return forkJoin({
+        clusterData: this.clusterPathwayEnrichment(
+        dataframe,
+        perc_analyte_overlap,
+        min_pathway_tocluster,
+        perc_pathway_overlap
+        ),
+        entityCounts: this.fetchClusterPlot(
+          dataframe,
+          perc_analyte_overlap,
+          min_pathway_tocluster,
+          perc_pathway_overlap
+        ),
+      });
+  }
+
+  clusterPathwayEnrichment(
+    dataframe: any,
+    perc_analyte_overlap?: number,
+    min_pathway_tocluster?: number,
+    perc_pathway_overlap?: number
+  ){
+    return this.http
+      .post<string[]>(`${this.url}cluster-fisher-test-results`,  {
+        fishers_results: dataframe,
+        perc_analyte_overlap: perc_analyte_overlap,
+        min_pathway_tocluster: min_pathway_tocluster,
+        perc_pathway_overlap: perc_pathway_overlap,
+      })
+      .pipe(
+        map((response: any) => {
+          return {
+            data: response.data.fishresults.map((obj: any) => new FisherResult(obj)),
+            combinedFishersDataframe: response.data
+          };
+        }),
+        catchError(this.handleError('chemical enrichment', []))
+      );
+  }
+
+  fetchClusterPlot(
+    dataframe: any,
+    perc_analyte_overlap?: number,
+    min_pathway_tocluster?: number,
+    perc_pathway_overlap?: number
+  ){
+      const body = {
+        fishers_results: dataframe,
+        text_size: 8,
+        perc_analyte_overlap:  perc_analyte_overlap,
+        min_pathway_tocluster: min_pathway_tocluster,
+        perc_pathway_overlap: perc_pathway_overlap
+      }
+      const options: Object = {responseType: 'blob' as 'text'};
+
+      return this.http
+        .post<string[]>(`${this.url}cluster-plot`,body, options)
+  }
+
 
   fetchOntologiesFromMetabolites(analytes: string[]): Observable<{
     ontologies: Ontology[];
@@ -433,6 +490,7 @@ export class RampService {
         this._downloadFile(response, 'fetchMetabolitesFromOntologies')
       );
   }
+
   fetchOntologies() {
     return this.http
       .get<string[]>(`${this.url}ontology-types`) // ,{responseType: 'text'})

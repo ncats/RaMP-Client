@@ -387,6 +387,7 @@ function(metabolites="", property="all", format = "json", res) {
 #' from given list of analytes query results
 #' @param pathways
 #' @post /api/combined-fisher-test
+#' @serializer json list(digits = 6)
 function(pathways) {
   fishers_results_df <- RaMP::runCombinedFisherTest(
     pathways
@@ -402,9 +403,10 @@ function(pathways) {
 #' Return filtered Fisher's test results
 #' from given list of Fisher's test results
 #' @param fishers_results
-#' @param pval_type one of "fdr" or "holm"
+#' @param pval_type one of "fdr" or "holm" or "pval"
 #' @param pval_cutoff
 #' @post /api/filter-fisher-test-results
+#' @serializer json list(digits = 6)
 function(fishers_results,  pval_type = 'fdr', pval_cutoff = 0.1) {
   filtered_results <- RaMP::FilterFishersResults(
     fishers_df = fishers_results,
@@ -426,6 +428,7 @@ function(fishers_results,  pval_type = 'fdr', pval_cutoff = 0.1) {
 #' @param perc_pathway_overlap
 #' @param min_pathway_tocluster
 #' @post /api/cluster-fisher-test-results
+#' @serializer json list(digits = 6)
 function(
   fishers_results,
   #analyte_source_id,
@@ -463,7 +466,7 @@ function(
 #'
 function(
   fishers_results,
-perc_analyte_overlap = 0.2,
+  perc_analyte_overlap = 0.2,
   perc_pathway_overlap = 0.2,
   min_pathway_tocluster=2
 ) {
@@ -482,6 +485,35 @@ perc_analyte_overlap = 0.2,
   r <- readBin(file,'raw',n = file.info(file)$size)
   unlink("file.svg")
   return(r)
+}
+
+#####
+#' Return clustered Fisher's test results
+#' from given list of Fisher's test results
+#' @param fishers_results
+#' @param perc_analyte_overlap
+#' @param perc_pathway_overlap
+#' @param min_pathway_tocluster
+#' @post /api/cluster-plot-png
+#' @serializer contentType list(type='image/png')
+function(
+  fishers_results,
+  perc_analyte_overlap = 0.2,
+  perc_pathway_overlap = 0.2,
+  min_pathway_tocluster=2
+) {
+  if (typeof(min_pathway_tocluster) == "character") {
+    min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
+  }
+
+  clustered_plot <- RaMP::pathwayResultsPlot(
+    fishers_results,
+    text_size = 8,
+    perc_analyte_overlap = perc_analyte_overlap,
+    min_pathway_tocluster = min_pathway_tocluster,
+    perc_pathway_overlap = perc_pathway_overlap
+  )
+  return(print(clustered_plot))
 }
 
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from "@ngrx/store";
 import {
   Analyte,
   Ontology,
@@ -11,10 +12,10 @@ import {
   fetchClassesFromMetabolitesFile,
   fetchCommonReactionAnalytesFile,
   fetchOntologiesFromMetabolitesFile,
-  fetchPathwaysFromAnalytesFile,
-  RampService,
-} from '@ramp/stores/ramp-store';
-import { mergeMap, of, tap } from 'rxjs';
+  fetchPathwaysFromAnalytesFile, RampPartialState,
+  RampService
+} from "@ramp/stores/ramp-store";
+import { mergeMap, of, tap, withLatestFrom } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 
 import * as RampActions from './ramp.actions';
@@ -392,7 +393,6 @@ export class RampEffects {
           .pipe(
             map(
               (ret: any) => {
-              //  console.log(ret);
                 return RampActions.fetchEnrichmentFromMetabolitesSuccess({
                   data: ret,
                 });
@@ -412,16 +412,12 @@ export class RampEffects {
       mergeMap((action) =>
         this.rampService
           .fetchEnrichmentFromPathways(
-            action.pathways,
-            action.cutoff_type,
-            action.cutoff_pvalue
+            action.pathways
           )
           .pipe(
             map(
               (ret: any) => {
-                return RampActions.fetchEnrichmentFromPathwaysSuccess({
-                  pathwayEnrichments: ret,
-                });
+                return RampActions.fetchEnrichmentFromPathwaysSuccess({...ret});
               },
               catchError((error: ErrorEvent) =>
                 of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
@@ -432,8 +428,62 @@ export class RampEffects {
     )
   );
 
+  filterEnrichedPathways = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.filterEnrichmentFromPathways, RampActions.fetchEnrichmentFromPathwaysSuccess),
+      withLatestFrom(this.store),
+      mergeMap(([action, state]) => {
+        return  this.rampService
+            .filterPathwayEnrichment(
+              state.rampStore.combined_fishers_dataframe,
+              action.pval_type,
+              action.pval_cutoff,
+            )
+            .pipe(
+              map(
+                (ret: any) => {
+                  return RampActions.filterEnrichmentFromPathwaysSuccess({ ...ret });
+                },
+                catchError((error: ErrorEvent) =>
+                  of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
+                )
+              )
+            )
+        }
+      )
+    )
+  );
+
+  fetchPathwayCluster = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.filterEnrichmentFromPathwaysSuccess, RampActions.fetchClusterFromEnrichment),
+      withLatestFrom(this.store),
+      mergeMap(([action, state]) => {
+        return  this.rampService
+            .clusterPathwayEnrichment(
+              state.rampStore.filtered_fishers_dataframe,
+              action.perc_analyte_overlap,
+              action.min_pathway_tocluster,
+              action.perc_pathway_overlap
+              )
+            .pipe(
+              map(
+                (ret: any) => {
+                  return RampActions.fetchClusterFromEnrichmentSuccess({ ...ret });
+                },
+                catchError((error: ErrorEvent) =>
+                  of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
+                )
+              )
+            )
+        }
+      )
+    )
+  );
+
   constructor(
     private readonly actions$: Actions,
-    private rampService: RampService
+    private rampService: RampService,
+    private store: Store<RampPartialState>
   ) {}
 }

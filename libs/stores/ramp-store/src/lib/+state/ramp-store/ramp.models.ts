@@ -7,8 +7,8 @@ import {
   Properties,
   Reaction,
   SourceVersion,
-  RampQuery,
-} from '@ramp/models/ramp-models';
+  RampQuery, FisherResult
+} from "@ramp/models/ramp-models";
 
 /**
  * Interface for the 'RampStore' data
@@ -59,5 +59,10 @@ export interface RampEntity {
   };
 
   chemicalEnrichments?: any;
-  pathwayEnrichments?: any;
+  pathwayEnrichments?: {
+    data: FisherResult[];
+    query: RampQuery;
+  };
+  combined_fishers_dataframe?: any;
+  filtered_fishers_dataframe?: any;
 }
