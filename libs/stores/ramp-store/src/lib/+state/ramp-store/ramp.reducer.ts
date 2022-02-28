@@ -71,6 +71,7 @@ export interface State extends EntityState<RampEntity> {
   };
   combined_fishers_dataframe?: any;
   filtered_fishers_dataframe?: any;
+  clusterPlot?: any;
 }
 
 export interface RampPartialState {
@@ -240,10 +241,11 @@ on(
 
   on(
     RampActions.fetchClusterFromEnrichmentSuccess,
-    (state, {data, query}) =>  ({
+    (state, {data, plot, query}) => ({
         ...state,
         loading: false,
-        pathwayEnrichments: { data, query }
+        pathwayEnrichments: { data, query },
+        clusterPlot: plot
       })
   ),
 

@@ -26,6 +26,7 @@ export class RampFacade {
   reactions$ = this.store.pipe(select(RampSelectors.getCommonReactions));
   classes$ = this.store.pipe(select(RampSelectors.getClasses));
   properties$ = this.store.pipe(select(RampSelectors.getProperties));
+  clusterPlot$ = this.store.pipe(select(RampSelectors.getClusterPlot));
   chemicalEnrichment$ = this.store.pipe(
     select(RampSelectors.getChemicalEnrichment)
   );

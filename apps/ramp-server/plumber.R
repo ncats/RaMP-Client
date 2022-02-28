@@ -461,6 +461,7 @@ function(
 #' @param perc_analyte_overlap
 #' @param perc_pathway_overlap
 #' @param min_pathway_tocluster
+#' @param filename
 #' @post /api/cluster-plot
 #' @serializer contentType list(type='image/svg')
 #'
@@ -468,7 +469,8 @@ function(
   fishers_results,
   perc_analyte_overlap = 0.2,
   perc_pathway_overlap = 0.2,
-  min_pathway_tocluster=2
+  min_pathway_tocluster=2,
+  filename
 ) {
   if (typeof(min_pathway_tocluster) == "character") {
     min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
@@ -481,9 +483,9 @@ function(
     min_pathway_tocluster = min_pathway_tocluster,
     perc_pathway_overlap = perc_pathway_overlap
   )
-  file <- ggsave('file.svg',clustered_plot, width = 10, height = 10)
+  file <- ggsave(filename,clustered_plot, width = 10, height = 10)
   r <- readBin(file,'raw',n = file.info(file)$size)
-  unlink("file.svg")
+  unlink(filename)
   return(r)
 }
 

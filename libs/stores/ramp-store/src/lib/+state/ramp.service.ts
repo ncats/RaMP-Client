@@ -358,13 +358,13 @@ export class RampService {
     perc_pathway_overlap?: number
   ){
       return forkJoin({
-        clusterData: this.clusterPathwayEnrichment(
+        data: this.clusterPathwayEnrichment(
         dataframe,
         perc_analyte_overlap,
         min_pathway_tocluster,
         perc_pathway_overlap
         ),
-        entityCounts: this.fetchClusterPlot(
+        plot: this.fetchClusterPlot(
           dataframe,
           perc_analyte_overlap,
           min_pathway_tocluster,
@@ -408,12 +408,18 @@ export class RampService {
         text_size: 8,
         perc_analyte_overlap:  perc_analyte_overlap,
         min_pathway_tocluster: min_pathway_tocluster,
-        perc_pathway_overlap: perc_pathway_overlap
+        perc_pathway_overlap: perc_pathway_overlap,
+        filename: Date.now() + '.svg'
       }
-      const options: Object = {responseType: 'blob' as 'text'};
-
+      const options: Object = {responseType: 'text' as 'text'};
       return this.http
         .post<string[]>(`${this.url}cluster-plot`,body, options)
+        .pipe(
+          map((response: any) => {
+            return  response;
+          }),
+          catchError(this.handleError('chemical enrichment', []))
+        );
   }
 
 

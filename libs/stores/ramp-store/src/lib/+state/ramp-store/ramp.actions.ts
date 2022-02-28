@@ -339,6 +339,7 @@ export const fetchClusterFromEnrichmentSuccess = createAction(
   '[Ramp/API] Fetch fetchClusterFromEnrichment Success',
   props<{
   data: FisherResult[];
+  plot: any;
   query: RampQuery;
  }>()
 );

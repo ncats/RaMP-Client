@@ -36,6 +36,7 @@ export class PathwayEnrichmentComponent
 
   pathwaysLoading = false;
   enrichmentLoading = false;
+  imageLoading = false;
 
   enrichmentRaw!: PathwayEnrichment[];
   enrichmentColumns: DataProperty[] = [
@@ -132,10 +133,6 @@ image: any;
     this.rampFacade.pathwayEnrichment$.subscribe(
       (res: any | undefined) => {
         if (res && res.data) {
-        //  console.log(res);
-        //  let objectURL = URL.createObjectURL(res);
-      //    this.image = this.sanitizer.bypassSecurityTrustHtml(res);
-
             this.dataAsDataProperty = res.data.map((enrichment: FisherResult) => {
               const newObj: { [key: string]: DataProperty } = {};
               Object.entries(enrichment).map((value: any, index: any) => {
@@ -169,6 +166,17 @@ image: any;
         this.ref.markForCheck();
       }
     );
+
+    this.rampFacade.clusterPlot$.subscribe(
+      (res: any | undefined) => {
+        if (res && res.length> 0) {
+             this.image = this.sanitizer.bypassSecurityTrustHtml(res);
+        }
+        this.imageLoading = false;
+        this.ref.markForCheck();
+      }
+    );
+
   }
 
   filterPathways() {
@@ -200,6 +208,7 @@ image: any;
     this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
     this.pathwaysLoading = true;
     this.enrichmentLoading = true;
+    this.imageLoading = true;
     this.rampFacade.dispatch(
       fetchEnrichmentFromPathways({ pathways: event })
     );

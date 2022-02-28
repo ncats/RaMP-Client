@@ -65,4 +65,5 @@ export interface RampEntity {
   };
   combined_fishers_dataframe?: any;
   filtered_fishers_dataframe?: any;
+  clusterPlot?: any;
 }
