@@ -1,0 +1,44 @@
+
+
+.footer-template {
+  padding: 5vh 1vw 5vh 1vw;
+  margin: 0 auto;
+}
+
+.links-header{
+  display: block;
+  text-align: center;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  color: white;
+}
+
+.link-list {
+  text-align: center;
+}
+
+.link-list > a, .link-list > span {
+  color: white;
+  display: block;
+  font-size: 1em;
+  padding: 1.5vh 0 .2vh 0
+}
+
+@media only screen and (max-width: 960px) {
+
+  .links-header{
+    font-size: 1em;
+    padding: 2vw;
+    text-align: start;
+  }
+
+  .link-list {
+    display: flex;
+    margin-top:1vh;
+    margin-bottom:1vh;
+  }
+  .link-list > a {
+    font-size: .8em;
+    padding: 3vw;
+  }
+}

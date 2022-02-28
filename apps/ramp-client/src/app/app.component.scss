@@ -1,11 +1,14 @@
 @use '@angular/material' as mat;
 @import 'ncats-theme';
 
-.main-content {
-  padding-top: 64px;
-}
+
 
 .toolbar-template {
+  background-color: mat.get-color-from-palette($app-accent);
+  color: #ffffff;
+}
+
+.footer-template {
   background-color: mat.get-color-from-palette($app-accent);
   color: #ffffff;
 }
@@ -16,4 +19,14 @@
 
 .toolbar-template a {
   color: #ffffff;
+}
+
+.content-wrapper {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.ramp-logo-footer {
+  max-width: 100%;
 }

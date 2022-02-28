@@ -115,3 +115,9 @@ export const getPathwayEnrichment = createSelector(
   getRampState,
   (state: State) => state.pathwayEnrichments
 );
+
+export const getClusterPlot = createSelector(
+  getRampState,
+  (state: State) => state.clusterPlot
+
+);

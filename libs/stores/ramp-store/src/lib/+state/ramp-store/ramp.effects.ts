@@ -460,7 +460,7 @@ export class RampEffects {
       withLatestFrom(this.store),
       mergeMap(([action, state]) => {
         return  this.rampService
-            .clusterPathwayEnrichment(
+            .getClusterdData(
               state.rampStore.filtered_fishers_dataframe,
               action.perc_analyte_overlap,
               action.min_pathway_tocluster,
@@ -469,7 +469,7 @@ export class RampEffects {
             .pipe(
               map(
                 (ret: any) => {
-                  return RampActions.fetchClusterFromEnrichmentSuccess({ ...ret });
+                  return RampActions.fetchClusterFromEnrichmentSuccess({ data: ret.data.data, plot: ret.plot, query: ret.query });
                 },
                 catchError((error: ErrorEvent) =>
                   of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))

@@ -70,8 +70,7 @@
       >
       </ramp-query-page>
     </mat-tab>
-    <mat-tab>
-      <!--[disabled] = !dataAsDataProperty-->
+    <mat-tab [disabled]="!dataAsDataProperty">
       <ng-template mat-tab-label>
         Enriched Pathways
         {{ dataAsDataProperty ? dataAsDataProperty.length : '' }}
@@ -164,7 +163,15 @@
       >
       </ramp-query-page>
     </mat-tab>
-     <mat-tab [label] = "'Clustered Pathways'" *ngIf="image">
+     <mat-tab [disabled]="!image">
+       <ng-template mat-tab-label>
+         Clustered Pathways
+         <ramp-loading
+           [isLoading]="imageLoading"
+           [size]="'small'"
+           [position]="'right'"
+         ></ramp-loading>
+       </ng-template>
        <br>
        <br>
        <br>

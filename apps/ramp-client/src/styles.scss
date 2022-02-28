@@ -41,11 +41,13 @@ $ramp-theme: mat.define-light-theme(
 @include header-theme($app-theme);
 
 html,
-body {
+app-root {
   height: 100%;
 }
+
 body {
-  margin: 0;
+  margin-bottom: 0;
+  margin-top: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
@@ -53,9 +55,12 @@ body {
   width: 95%;
 }
 .content-panel {
-  margin-top: 2vh;
+  margin-top: 10vh;
+  padding-bottom: 10vh;
 }
 
 .code-block {
   white-space: break-spaces;
 }
+
+
