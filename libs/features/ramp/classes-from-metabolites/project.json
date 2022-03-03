@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/classes-from-metabolites"],
+      "outputs": [
+        "coverage/libs/features/ramp/classes-from-metabolites"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/classes-from-metabolites/jest.config.js",
         "passWithNoTests": true

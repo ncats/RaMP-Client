@@ -24,6 +24,7 @@
     "shared-ramp-query-page": "libs/shared/ramp/query-page",
     "shared-ui-description-panel": "libs/shared/ui/description-panel",
     "shared-ui-error-dialog": "libs/shared/ui/error-dialog",
+    "shared-ui-feedback-panel": "libs/shared/ui/feedback-panel",
     "shared-ui-filter-panel": "libs/shared/ui/filter-panel",
     "shared-ui-header-template": "libs/shared/ui/header-template",
     "shared-ui-highlight": "libs/shared/ui/highlight",

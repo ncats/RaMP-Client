@@ -14,6 +14,7 @@ import {
   fetchOntologiesFromMetabolitesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-ontologies-from-metabolites',
@@ -58,7 +59,9 @@ export class OntologiesFromMetabolitesComponent
   }
 
   ngOnInit(): void {
-    this.rampFacade.ontologies$.subscribe(
+    this.rampFacade.ontologies$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Ontology[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           this._mapData(res.data);

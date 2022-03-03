@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/analytes-from-pathways"],
+      "outputs": [
+        "coverage/libs/features/ramp/analytes-from-pathways"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/analytes-from-pathways/jest.config.js",
         "passWithNoTests": true
@@ -22,5 +24,7 @@
       }
     }
   },
-  "tags": ["lib:analytes-from-pathways"]
+  "tags": [
+    "lib:analytes-from-pathways"
+  ]
 }

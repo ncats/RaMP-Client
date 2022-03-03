@@ -1,4 +1,3 @@
-<div class="content-panel">
   <ng-container
     *ngIf="
       dataAsDataProperty && dataAsDataProperty.length > 0;
@@ -14,11 +13,6 @@
       *ngIf="dataAsDataProperty"
     >
       <div fxFlex="90">
-        <div fxLayout="row" fxLayoutAlign="end start">
-          <!--    <div fxFlex="22">
-          {{rampQuery?.numFoundIds}} of {{queryCount}} identifiers found.
-        </div>-->
-        </div>
         <ncats-frontend-library-ncats-datatable
           [fieldsConfig]="dataColumns"
           [data]="dataAsDataProperty"
@@ -33,4 +27,3 @@
   <ng-template #noData>
     <h1 *ngIf="noDataArr">no data found!</h1>
   </ng-template>
-</div>

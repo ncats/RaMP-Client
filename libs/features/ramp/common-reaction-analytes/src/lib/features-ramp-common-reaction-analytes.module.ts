@@ -11,6 +11,7 @@ import { SharedRampInputRowModule } from '@ramp/shared/ramp/input-row';
 import { SharedRampPageCoreModule } from '@ramp/shared/ramp/page-core';
 import { SharedRampQueryPageModule } from '@ramp/shared/ramp/query-page';
 import { SharedUiDescriptionPanelModule } from '@ramp/shared/ui/description-panel';
+import { SharedUiFeedbackPanelModule } from "@ramp/shared/ui/feedback-panel";
 import { SharedUiNcatsDatatableModule } from '@ramp/shared/ui/ncats-datatable';
 import { CommonReactionAnalytesComponent } from './common-reaction-analytes/common-reaction-analytes.component';
 
@@ -30,6 +31,7 @@ const ROUTES: Routes = [
     SharedUiDescriptionPanelModule,
     SharedRampPageCoreModule,
     FlexLayoutModule,
+    SharedUiFeedbackPanelModule
   ],
   declarations: [CommonReactionAnalytesComponent],
 })

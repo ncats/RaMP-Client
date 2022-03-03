@@ -6,7 +6,7 @@
   *ngIf="showPaginator && pageData"
 >
   <div fxFlex="55" fxFlexAlign="end">
-    <mat-paginator
+    <mat-paginator #paginatorTop
       [pageSizeOptions]="[10, 20, 50]"
       [pageSize]="pageData.skip > 0 ? pageData.skip : 10"
       [length]="pageData.total ? pageData.total : 10"
@@ -117,6 +117,7 @@
     class="detail-row"
   ></tr>
 </table>
+<!--
 <div
   fxLayout="row"
   fxLayout.xs="column"
@@ -125,14 +126,15 @@
   *ngIf="showPaginator && pageData"
 >
   <div fxFlex="55" fxFlexAlign="end">
-    <mat-paginator
+    <mat-paginator #paginatorBottom
       [pageSizeOptions]="[10, 20, 50]"
       [pageSize]="pageData.skip > 0 ? pageData.skip : 10"
       [length]="pageData.total ? pageData.total : 10"
       [showFirstLastButtons]="true"
-      (page)="changePage($event)"
+      (page)="changePage($event); paginatorTop.pageIndex = $event.pageIndex"
       [hidePageSize]="hidePageSize"
     >
     </mat-paginator>
   </div>
 </div>
+-->

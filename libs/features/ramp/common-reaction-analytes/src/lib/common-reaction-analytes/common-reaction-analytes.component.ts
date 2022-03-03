@@ -8,6 +8,7 @@ import {
   fetchCommonReactionAnalytesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-common-reaction-analytes',
@@ -18,20 +19,38 @@ export class CommonReactionAnalytesComponent
   extends PageCoreComponent
   implements OnInit
 {
+
+
+  inputAnalyte!: string;
+  inputCommonNames!: string;
+  rxnPartnerCommonName!: string;
+  rxnPartnerIds!: string[];
+  rxnPartnerIdsString!: string;
+
   reactionColumns: DataProperty[] = [
     new DataProperty({
-      label: 'Analyte',
+      label: 'Analyte Id',
       field: 'inputAnalyte',
       sortable: true,
     }),
     new DataProperty({
+      label: 'Analyte',
+      field: 'inputCommonNames',
+      sortable: true,
+    }),
+    new DataProperty({
+      label: 'Relation',
+      field: 'queryRelation',
+      sortable: true,
+    }),
+    new DataProperty({
       label: 'Catalyzed By',
-      field: 'inputCatalyzedByCommonName',
+      field: 'rxnPartnerCommonName',
       sortable: true,
     }),
     new DataProperty({
       label: 'Catalyst IDs',
-      field: 'inputCatalyzedBySourceIdsString',
+      field: 'rxnPartnerIdsString',
     }),
   ];
 
@@ -44,12 +63,14 @@ export class CommonReactionAnalytesComponent
   }
 
   ngOnInit(): void {
-    this.rampFacade.reactions$.subscribe(
+    this.rampFacade.reactions$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Reaction[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           this._mapData(res.data);
-       //   this.matches = Array.from(new Set(res.data.map(reaction => reaction.inputAnalyte.toLocaleLowerCase())));
-        //  this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
+          this.matches = Array.from(new Set(res.data.map(reaction => reaction.inputAnalyte.toLocaleLowerCase())));
+          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
         }
         if (res && res.query) {
           this.query = res.query;

@@ -56,11 +56,17 @@ body {
 }
 .content-panel {
   margin-top: 10vh;
-  padding-bottom: 10vh;
+  padding-bottom: 5vh;
 }
 
 .code-block {
   white-space: break-spaces;
+  background: #454545;
+  color: #ffffff;
+  border: solid 1px;
+  border-radius: 5px;
+  padding: 10px;
+  max-width: 100%;
 }
 
 

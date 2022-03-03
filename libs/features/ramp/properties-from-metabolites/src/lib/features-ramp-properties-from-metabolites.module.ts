@@ -6,6 +6,7 @@ import { SharedRampInputRowModule } from '@ramp/shared/ramp/input-row';
 import { SharedRampPageCoreModule } from '@ramp/shared/ramp/page-core';
 import { SharedRampQueryPageModule } from '@ramp/shared/ramp/query-page';
 import { SharedUiDescriptionPanelModule } from '@ramp/shared/ui/description-panel';
+import { SharedUiFeedbackPanelModule } from "@ramp/shared/ui/feedback-panel";
 import {
   SharedUiNcatsStructureViewerModule,
   StructureViewerComponent,
@@ -34,6 +35,7 @@ const ROUTES: Routes = [
     SharedUiNcatsStructureViewerModule,
     SharedUiDescriptionPanelModule,
     FlexLayoutModule,
+    SharedUiFeedbackPanelModule
   ],
   declarations: [PropertiesFromMetabolitesComponent],
   providers: [

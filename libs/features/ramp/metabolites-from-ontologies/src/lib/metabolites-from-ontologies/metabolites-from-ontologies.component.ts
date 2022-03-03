@@ -12,7 +12,6 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { Metabolite, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
-import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
 import { FilterPanelComponent } from '@ramp/shared/ui/filter-panel';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
@@ -21,7 +20,7 @@ import {
   fetchOntologies,
   RampFacade,
 } from '@ramp/stores/ramp-store';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { distinctUntilChanged, map, takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-metabolites-from-ontologies',
@@ -36,7 +35,6 @@ export class MetabolitesFromOntologiesComponent
   @ViewChild('metaTabs') metaTabs!: ElementRef<MatTabGroup>;
   tabIndex = 0;
 
-  metaboliteRaw!: Metabolite[];
   allOntoFilterCtrl: FormControl = new FormControl();
   metaboliteColumns: DataProperty[] = [
     new DataProperty({
@@ -60,15 +58,12 @@ export class MetabolitesFromOntologiesComponent
       sortable: true,
     }),
   ];
-  query!: RampQuery;
-  dataAsDataProperty!: { [key: string]: DataProperty }[];
   ontologies!: any[];
   allOntologies!: any[];
   selectedOntologies: any[] = [];
   globalFilter?: string;
   disableSearch = false;
-
-  //  columns = ['select', 'ontology', 'count'];
+  loading = false;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -81,7 +76,9 @@ export class MetabolitesFromOntologiesComponent
   ngOnInit(): void {
     this.rampFacade.dispatch(fetchOntologies());
     this.allOntoFilterCtrl.valueChanges
-      .pipe(distinctUntilChanged())
+      .pipe(
+        takeUntil(this.ngUnsubscribe),
+        distinctUntilChanged())
       .subscribe((term) => {
         if (term.trim() && term.trim().length > 0) {
           this.ontologies = [];
@@ -104,7 +101,8 @@ export class MetabolitesFromOntologiesComponent
 
     this.rampFacade.ontologiesList$
       .pipe(
-        map((res: any) => {
+      takeUntil(this.ngUnsubscribe),
+    map((res: any) => {
           if (res && res.data) {
             this.ontologies = res.data.map(
               (ont: { ontologyType: string; values: any[]; count: number }) => {
@@ -130,7 +128,9 @@ export class MetabolitesFromOntologiesComponent
       )
       .subscribe();
 
-    this.rampFacade.metabolites$.subscribe(
+    this.rampFacade.metabolites$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Metabolite[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
@@ -149,6 +149,7 @@ export class MetabolitesFromOntologiesComponent
         if (res && res.query) {
           this.query = res.query;
         }
+        this.loading = false;
         this.ref.markForCheck();
       }
     );
@@ -178,6 +179,8 @@ export class MetabolitesFromOntologiesComponent
   }
 
   fetchMetabolites(): void {
+    this.loading = true;
+    this.tabIndex = 0;
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
     this.rampFacade.dispatch(
       fetchMetabolitesFromOntologies({ ontologies: ontologiesList })

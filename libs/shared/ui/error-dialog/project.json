@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/error-dialog"],
+      "outputs": [
+        "coverage/libs/shared/ui/error-dialog"
+      ],
       "options": {
         "jestConfig": "libs/shared/ui/error-dialog/jest.config.js",
         "passWithNoTests": true

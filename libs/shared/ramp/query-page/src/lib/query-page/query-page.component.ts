@@ -16,8 +16,6 @@ import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 export class QueryPageComponent implements OnInit {
   @Input() dataColumns!: DataProperty[];
   @Input() dataAsDataProperty!: { [key: string]: DataProperty }[];
-  @Input() matches = 0;
-  public queryCount = 0;
   noDataArr = false;
 
   constructor() {}

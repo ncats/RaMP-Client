@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/common-reaction-analytes"],
+      "outputs": [
+        "coverage/libs/features/ramp/common-reaction-analytes"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/common-reaction-analytes/jest.config.js",
         "passWithNoTests": true
@@ -22,5 +24,7 @@
       }
     }
   },
-  "tags": ["libs:common-reaction-analytes"]
+  "tags": [
+    "libs:common-reaction-analytes"
+  ]
 }

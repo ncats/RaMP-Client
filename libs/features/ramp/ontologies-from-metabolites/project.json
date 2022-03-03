@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/ontologies-from-metabolites"],
+      "outputs": [
+        "coverage/libs/features/ramp/ontologies-from-metabolites"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/ontologies-from-metabolites/jest.config.js",
         "passWithNoTests": true
@@ -22,5 +24,7 @@
       }
     }
   },
-  "tags": ["libs:ontologies"]
+  "tags": [
+    "libs:ontologies"
+  ]
 }

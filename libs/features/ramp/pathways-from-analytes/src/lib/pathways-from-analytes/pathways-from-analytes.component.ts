@@ -8,6 +8,7 @@ import {
   fetchPathwaysFromAnalytesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-pathways-from-analytes',
@@ -53,7 +54,9 @@ export class PathwaysFromAnalytesComponent extends PageCoreComponent implements 
 
   ngOnInit(): void {
 
-    this.rampFacade.pathways$.subscribe(
+    this.rampFacade.pathways$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Pathway[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           this._mapData(res.data);

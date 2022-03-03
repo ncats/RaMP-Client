@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/ncats-structure-viewer"],
+      "outputs": [
+        "coverage/libs/shared/ui/ncats-structure-viewer"
+      ],
       "options": {
         "jestConfig": "libs/shared/ui/ncats-structure-viewer/jest.config.js",
         "passWithNoTests": true

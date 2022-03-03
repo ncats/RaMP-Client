@@ -8,6 +8,7 @@ import {
   fetchPropertiesFromMetabolitesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
+import { takeUntil } from "rxjs";
 import { STRUCTURE_VIEWER_COMPONENT } from '../features-ramp-properties-from-metabolites.module';
 
 @Component({
@@ -72,7 +73,9 @@ export class PropertiesFromMetabolitesComponent
   }
 
   ngOnInit(): void {
-    this.rampFacade.properties$.subscribe(
+    this.rampFacade.properties$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Properties[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           this._mapData(res.data);

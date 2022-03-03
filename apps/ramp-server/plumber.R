@@ -94,11 +94,11 @@ function(analytetype, query_scope) {
 #* Return ontologies from list of metabolites
 #* @param metabolite
 #* @param format one of "json" or "tsv"
-#* @get /api/ontologies-from-metabolites
+#* @param NameOrIds one of “name” or “ids”, default “ids"
 #* @post /api/ontologies-from-metabolites
-function(metabolite="", type="biological", format = "json", res) {
+function(metabolite, NameOrIds= "ids", format = "json", res) {
   metabolites_ids <- c(metabolite)
-  ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
+  ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids, NameOrIds = NameOrIds)
   metabolites_ids <- paste(metabolites_ids, collapse = ", ")
   res$serializer <- serializers[[format]]
   if(format == "tsv") {
@@ -114,56 +114,11 @@ function(metabolite="", type="biological", format = "json", res) {
   }
 }
 
-#####***** TODO: THIS DOESN'T RETURN DATA
-#* Query: Return ontologies from list of metabolites
-#* @param metabolite
-#* @serializer unboxedJSON
-#* @get /api/ontologies-from-metabolites
-function(metabolite="", type="biological") {
-  metabolites_ids <- c(metabolite)
-  num_submitted_ids <- length(metabolites_ids)
-  #metabolites_ids <- sapply(metabolites_ids, shQuote)
-  metabolites_ids <- paste(metabolites_ids, collapse = ", ")
-
-  if (type == "biological") {
-    ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids)
-  } else { # EM: this is a place holder although we could consider implementing only one type, or subsetting to the 7 different types (e.g. source, subcellular, etc)
-    ontologies_df <- NULL
-  }
-
-  # Reformat metabolites_ids for function call output:
-  metabolites_ids <- sapply(metabolite, shQuote)
-  metabolites_ids <- paste(metabolites_ids, collapse = ", ")
-
-  if(is.null(ontologies_df)) {
-    return(
-      list(
-        temp=metabolites_ids,
-        num_submitted_ids = num_submitted_ids,
-        numFoundIds = 0,
-        data = vector(),
-        function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
-      )
-    )
-  } else {
-    return(
-      list(
-        temp=metabolites_ids,
-        num_submitted_ids = num_submitted_ids,
-        numFoundIds = length(unique(ontologies_df$sourceId)),
-        data = ontologies_df,
-        function_call = paste0("RaMP::getOntoFromMeta(analytes = ",metabolites_ids,")")
-      )
-    )
-  }
-}
-
 #* Return metabolites from ontology
 #* @param ontology
 #* @param format one of "json" or "tsv"
-#* @get /api/metabolites-from-ontologies
 #* @post /api/metabolites-from-ontologies
-function(ontology="", format = "json", res) {
+function(ontology, format = "json", res) {
   ontologies_names <- c(ontology)
   ontologies_names <- paste(ontologies_names, collapse = ", ")
 
@@ -192,7 +147,6 @@ function(ontology="", format = "json", res) {
     )
   }
   }
-  #return(analytes_df)
 }
 
 ##########
@@ -200,9 +154,8 @@ function(ontology="", format = "json", res) {
 #' @param pathway
 #' @param analyte_type
 #' @param format one of "json" or "tsv"
-#' @get /api/analytes-from-pathways
 #' @post /api/analytes-from-pathways
-function(pathway="", analyte_type="both", format = "json", res) {
+function(pathway, analyte_type="both", format = "json", res) {
   pathway <- c(pathway)
   analyte <- analyte_type
   analytes_df <- tryCatch({
@@ -231,9 +184,8 @@ function(pathway="", analyte_type="both", format = "json", res) {
 #' Return pathways from given list of analytes
 #' @param analytes
 #' @param format one of "json" or "tsv"
-#' @get /api/pathways-from-analytes
 #' @post /api/pathways-from-analytes
-function(analytes="", format = "json", res) {
+function(analytes, format = "json", res) {
   analytes <- c(analytes)
   pathways_df <- tryCatch({
     pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
@@ -266,7 +218,7 @@ function(analytes="", format = "json", res) {
 #' @param format one of "json" or "tsv"
 #' @get /api/common-reaction-analytes
 #' @post /api/common-reaction-analytes
-function(analyte="", format = "json", res) {
+function(analyte, format = "json", res) {
   analytes <- c(analyte)
   analytes_names <- paste(analytes, collapse = ", ")
   analytes_df_ids <- tryCatch({
@@ -311,7 +263,6 @@ function(analyte="", format = "json", res) {
 #' Return available chemical classes of given metabolites in RaMP-DB
 #' @param metabolites
 #' @param format one of "json" or "tsv"
-#' @get /api/chemical-classes
 #' @post /api/chemical-classes
 function(metabolites="", format ="json", res) {
   mets <- c(metabolites)
@@ -346,11 +297,9 @@ function(metabolites="", format ="json", res) {
 #' @param metabolites
 #' @param property
 #' @param format one of "json" or "tsv"
-#' @get /api/chemical-properties
 #' @post /api/chemical-properties
 function(metabolites="", property="all", format = "json", res) {
   metabolites <- c(metabolites)
-  #properties <- NULL
   properties <- property
   if (!is.null(property)) {
     properties <- c(property)
@@ -523,9 +472,8 @@ function(
 #' Perform chemical enrichment on given metabolites
 #' @param metabolites
 #' @param format one of "json" or "tsv"
-#' @get /api/chemical-enrichment
 #' @post /api/chemical-enrichment
-function(metabolites="", format = "json", res) {
+function(metabolites, format = "json", res) {
   metabolites <- c(metabolites)
   chemical_enrichment_df <- tryCatch({
     enrichment_df <- RaMP::chemicalClassEnrichment(

@@ -14,11 +14,11 @@ RUN apk update && apk upgrade && \
     npm i -g @angular/cli && \
     npm install -g nx && \
     npm i && \
-    NODE_OPTIONS=--max_old_space_size=4096  nx build ramp-client --configuration=production
+    NODE_OPTIONS=--max_old_space_size=4096 nx run ramp-client:prerender:production
 
 FROM labshare/docker-base-web
 
 # Install NCATS required packages
 RUN apt-get update && apt-get install -y net-tools
 
-COPY --from=build /var/www/app/dist/apps/ramp-client/ /var/www/app
+COPY --from=build /var/www/app/dist/apps/ramp-client/browser /var/www/app

@@ -31,34 +31,42 @@
     <mat-tab [disabled]="!classesAsDataProperty">
       <ng-template mat-tab-label>
         Chemical Classes
-        {{ classesAsDataProperty ? classesAsDataProperty.length : '' }}
         <ramp-loading
           [isLoading]="classesLoading"
           [size]="'small'"
           [position]="'right'"
         ></ramp-loading>
       </ng-template>
+      <ramp-feedback-panel
+        [matchesLength]="matches.length"
+        [dataLength] = classesAsDataProperty.length
+        [inputLength]="inputList.length"
+        [noMatches]="noMatches"
+        [inputType]="input">
+      </ramp-feedback-panel>
+
       <ramp-query-page
         [dataColumns]="classesColumns"
-        [dataAsDataProperty]="classesAsDataProperty"
-        [matches]="matches"
-      >
+        [dataAsDataProperty]="classesAsDataProperty">
       </ramp-query-page>
     </mat-tab>
     <mat-tab [disabled]="!dataAsDataProperty">
       <ng-template mat-tab-label>
         Enriched Chemical Classes
-        {{ dataAsDataProperty ? dataAsDataProperty.length : '' }}
         <ramp-loading
           [isLoading]="enrichmentLoading"
           [size]="'small'"
           [position]="'right'"
         ></ramp-loading>
       </ng-template>
+
+      <ramp-feedback-panel
+        [function]="query?.functionCall">
+      </ramp-feedback-panel>
+
       <ramp-query-page
         [dataColumns]="enrichmentColumns"
         [dataAsDataProperty]="dataAsDataProperty"
-        [matches]="matches"
       >
       </ramp-query-page>
     </mat-tab>

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RampQuery } from "@ramp/models/ramp-models";
 import { DataProperty } from "@ramp/shared/ui/ncats-datatable";
 import { RampFacade } from "@ramp/stores/ramp-store";
+import { Subject } from "rxjs";
 
 @Component({
   selector: 'ramp-page-core',
@@ -16,12 +17,18 @@ export class PageCoreComponent {
   title!: string;
   description!: string;
   query!: RampQuery;
-  matches!: any;
+  matches: any[] = [];
   inputList: string[] = [];
   noMatches: string[] = [];
-  dataAsDataProperty!: { [key: string]: DataProperty }[];
+  dataAsDataProperty: { [key: string]: DataProperty }[] = [];
 
   supportedIdTypes!: [{ analyteType: string, idTypes: string[]}] | undefined;
+
+  /**
+   * Behaviour subject to allow extending class to unsubscribe on destroy
+   * @type {Subject<any>}
+   */
+  protected ngUnsubscribe: Subject<any> = new Subject();
 
   constructor(
     protected route: ActivatedRoute,
@@ -36,5 +43,13 @@ export class PageCoreComponent {
         this.supportedIds = res.data.filter((type: { analyteType: any; }) => this.route.snapshot.data.supportedIdTypes.includes(type.analyteType));
       }
     })
+  }
+
+  /**
+   * clean up on leaving component
+   */
+  ngOnDestroy() {
+    this.ngUnsubscribe.next("bye-bye");
+    this.ngUnsubscribe.complete();
   }
 }
