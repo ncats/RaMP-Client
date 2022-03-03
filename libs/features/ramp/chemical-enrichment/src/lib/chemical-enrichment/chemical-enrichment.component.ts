@@ -13,6 +13,7 @@ import {
   fetchEnrichmentFromMetabolites,
   RampFacade,
 } from '@ramp/stores/ramp-store';
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-chemical-enrichment',
@@ -106,11 +107,7 @@ export class ChemicalEnrichmentComponent
   classesLoading = false;
   enrichmentLoading = false;
 
-  query!: RampQuery;
-
-  matches = 0;
-  dataAsDataProperty!: { [key: string]: DataProperty }[];
-  classesAsDataProperty!: { [key: string]: DataProperty }[];
+  classesAsDataProperty: { [key: string]: DataProperty }[] = [];
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -121,7 +118,9 @@ export class ChemicalEnrichmentComponent
   }
 
   ngOnInit(): void {
-    this.rampFacade.chemicalEnrichment$.subscribe(
+    this.rampFacade.chemicalEnrichment$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: {data: ChemicalEnrichment[] }| undefined) => {
         if (res && res.data) {
           //  this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
@@ -144,10 +143,14 @@ export class ChemicalEnrichmentComponent
       }
     );
 
-    this.rampFacade.classes$.subscribe(
+    this.rampFacade.classes$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Classes[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           this._mapClasses(res.data);
+          this.matches = Array.from(new Set(res.data.map(classes => classes.sourceId.toLocaleLowerCase())));
+          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
         }
         if (res && res.query) {
           this.query = res.query;
@@ -160,6 +163,7 @@ export class ChemicalEnrichmentComponent
 
   fetchEnrichment(event: string[]): void {
     this.classesLoading = true;
+    this.inputList = event.map(item => item.toLocaleLowerCase());
     this.rampFacade.dispatch(
       fetchClassesFromMetabolites({ metabolites: event })
     );

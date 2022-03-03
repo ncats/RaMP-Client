@@ -1,22 +1,32 @@
 export class Reaction {
   inputAnalyte!: string;
-  inputCatalyzedByCommonName!: string;
-  inputCatalyzedBySourceIdsArray!: string[];
-  inputCatalyzedBySourceIdsString!: string;
+  inputCommonNames!: string;
+  rxnPartnerCommonName!: string;
+  rxnPartnerIds!: string[];
+  rxnPartnerIdsString!: string;
+  queryRelation!: string;
 
   constructor(obj: any) {
-    if (obj.Input_Analyte) {
-      this.inputAnalyte = obj.Input_Analyte;
+    if (obj.input_analyte) {
+      this.inputAnalyte = obj.input_analyte;
     }
 
-    if (obj.Input_CatalyzedBy_CommonName) {
-      this.inputCatalyzedByCommonName = obj.Input_CatalyzedBy_CommonName;
+    if (obj.query_relation) {
+      this.queryRelation = obj.query_relation;
     }
 
-    if (obj.Input_CatalyzedBy_SourceIds) {
-      this.inputCatalyzedBySourceIdsString = obj.Input_CatalyzedBy_SourceIds;
-      this.inputCatalyzedBySourceIdsArray =
-        obj.Input_CatalyzedBy_SourceIds.split('; ');
+    if (obj.input_common_names) {
+      this.inputCommonNames = obj.input_common_names;
+    }
+
+    if (obj.rxn_partner_common_name) {
+      this.rxnPartnerCommonName = obj.rxn_partner_common_name;
+    }
+
+    if (obj.rxn_partner_ids) {
+      this.rxnPartnerIdsString = obj.rxn_partner_ids;
+      this.rxnPartnerIds =
+        obj.rxn_partner_ids.split('; ');
     }
   }
 }

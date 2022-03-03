@@ -264,6 +264,11 @@ export class NcatsDatatableComponent
   @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
     this.dataSource.paginator = paginator;
   }
+/*
+  @ViewChild('paginatorTop') paginatorTop!: MatPaginator;
+  @ViewChild('paginatorBottom') paginatorBottom!: MatPaginator;
+
+*/
 
   /**
    * injector for custom data
@@ -313,7 +318,8 @@ export class NcatsDatatableComponent
       });
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+  }
 
   /**
    * used to track data changes
@@ -340,6 +346,20 @@ export class NcatsDatatableComponent
    * @param $event
    */
   changePage($event: PageEvent): void {
+ /*
+    if(this.dataSource) {
+      const previous: number = $event.previousPageIndex ? $event.previousPageIndex * $event.pageSize : 0;
+      const page: number = $event.pageIndex * $event.pageSize;
+
+      if((previous < page)){
+      this.dataSource.data = this.data.slice(previous, page);
+        this.dataTable.renderRows();
+      } else {
+        this.dataSource.data = this.data.slice(page, previous);
+        this.dataTable.renderRows();
+      }
+      this.ref.markForCheck();
+    }*/
     this.pageChange.emit($event);
   }
 

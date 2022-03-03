@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/feedback-panel",
+  "sourceRoot": "libs/shared/ui/feedback-panel/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/ui/feedback-panel"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/ui/feedback-panel/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/feedback-panel/src/**/*.ts",
+          "libs/shared/ui/feedback-panel/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

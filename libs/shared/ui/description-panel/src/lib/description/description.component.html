@@ -1,12 +1,10 @@
 <div class="description" [innerHTML]="getDescription()"></div>
 <br />
 <div class="supportedIds" *ngIf="supportedIds && supportedIds.length > 0">
-  The following id types are supported: <br />
+  Supported id types: <br />
   <div *ngFor="let supportedId of supportedIds">
  <span><b>{{ supportedId.analyteType }}</b>: {{ supportedId.idTypes }} </span>
+    <br>
     </div>
 </div>
-<div>
-  <div *ngIf="function">The following R function was called:</div>
-  <pre class="code-block">{{ function}}</pre>
-</div>
+

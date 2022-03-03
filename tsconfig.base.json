@@ -76,6 +76,9 @@
       "@ramp/shared/ui/error-dialog": [
         "libs/shared/ui/error-dialog/src/index.ts"
       ],
+      "@ramp/shared/ui/feedback-panel": [
+        "libs/shared/ui/feedback-panel/src/index.ts"
+      ],
       "@ramp/shared/ui/filter-panel": [
         "libs/shared/ui/filter-panel/src/index.ts"
       ],

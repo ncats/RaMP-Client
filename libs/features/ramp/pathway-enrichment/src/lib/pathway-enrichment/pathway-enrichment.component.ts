@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import {
   FisherResult,
   Pathway,
-  PathwayEnrichment,
   RampQuery
 } from "@ramp/models/ramp-models";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -17,6 +16,7 @@ import {
   fetchPathwaysFromAnalytes, fetchPathwaysFromAnalytesFile, filterEnrichmentFromPathways,
   RampFacade
 } from "@ramp/stores/ramp-store";
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-pathway-enrichment',
@@ -38,7 +38,6 @@ export class PathwayEnrichmentComponent
   enrichmentLoading = false;
   imageLoading = false;
 
-  enrichmentRaw!: PathwayEnrichment[];
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
       label: 'Pathway Name',
@@ -55,11 +54,14 @@ export class PathwayEnrichmentComponent
       field: 'pathwayId',
       sortable: true,
     }),
-    /*    new DataProperty({
-      label: "Pval Metabolite",
-      field: "pval_Metab",
-      sortable: true
-    }),*/
+        new DataProperty({
+      label: "Metabolite Count",
+      field: "metabCount"
+    }),
+    new DataProperty({
+      label: "Gene Count",
+      field: "geneCount",
+    }),
     new DataProperty({
       label: 'Analytes',
       field: 'analytes',
@@ -80,6 +82,12 @@ export class PathwayEnrichmentComponent
       field: 'Pval_combined_Holm',
       sortable: true,
     }),
+    new DataProperty({
+      label: 'Cluster Assignment',
+      field: 'cluster_assignment',
+      sortable: true,
+      sorted: 'asc',
+    })
   ];
   pathwayColumns: DataProperty[] = [
     new DataProperty({
@@ -118,7 +126,7 @@ export class PathwayEnrichmentComponent
 
   allDataAsDataProperty!: { [key: string]: DataProperty }[];
   pathwayDataAsDataProperty!: { [key: string]: DataProperty }[];
-image: any;
+  image: any;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -130,7 +138,9 @@ image: any;
   }
 
   ngOnInit(): void {
-    this.rampFacade.pathwayEnrichment$.subscribe(
+    this.rampFacade.pathwayEnrichment$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: any | undefined) => {
         if (res && res.data) {
             this.dataAsDataProperty = res.data.map((enrichment: FisherResult) => {
@@ -144,8 +154,9 @@ image: any;
               });
               return newObj;
             });
-            this.allDataAsDataProperty = this.dataAsDataProperty;
           this.enrichmentLoading = false;
+          this.allDataAsDataProperty = this.dataAsDataProperty;
+          this.imageLoading = false;
           this.ref.markForCheck();
         }
         if (res && res.query) {
@@ -154,7 +165,9 @@ image: any;
       }
     );
 
-    this.rampFacade.pathways$.subscribe(
+    this.rampFacade.pathways$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Pathway[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           this._mapPathwaysData(res.data);
@@ -167,7 +180,9 @@ image: any;
       }
     );
 
-    this.rampFacade.clusterPlot$.subscribe(
+    this.rampFacade.clusterPlot$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: any | undefined) => {
         if (res && res.length> 0) {
              this.image = this.sanitizer.bypassSecurityTrustHtml(res);
@@ -180,6 +195,7 @@ image: any;
   }
 
   filterPathways() {
+    this.enrichmentLoading = true;
     this.rampFacade.dispatch(
       filterEnrichmentFromPathways({
         pval_type: this.pValueTypeFormCtrl.value,
@@ -192,10 +208,9 @@ image: any;
   }
 
   clusterResults(){
+    this.enrichmentLoading = true;
     this.rampFacade.dispatch(
-      filterEnrichmentFromPathways({
-        pval_type: this.pValueTypeFormCtrl.value,
-        pval_cutoff: this.pValueFormCtrl.value,
+      fetchClusterFromEnrichment({
         perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
         min_pathway_tocluster: this.minPathWayFormCtrl.value,
         perc_pathway_overlap: this.percentPathwayFormCtrl.value

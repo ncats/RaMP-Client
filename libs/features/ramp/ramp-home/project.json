@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/ramp-home"],
+      "outputs": [
+        "coverage/libs/features/ramp/ramp-home"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/ramp-home/jest.config.js",
         "passWithNoTests": true

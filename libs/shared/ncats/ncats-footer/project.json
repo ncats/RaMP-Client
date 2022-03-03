@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ncats/ncats-footer"],
+      "outputs": [
+        "coverage/libs/shared/ncats/ncats-footer"
+      ],
       "options": {
         "jestConfig": "libs/shared/ncats/ncats-footer/jest.config.js",
         "passWithNoTests": true

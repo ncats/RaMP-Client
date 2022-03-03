@@ -2,115 +2,107 @@
   <div fxLayout="row" fxLayoutAlign="space-around start">
     <div fxFlex="50">
       <div fxLayout="row" fxLayoutAlign="start start">
-        <h2>Gene and Protein Annotations</h2>
+        <div fxFlex="50">
+          <h2>Biological Pathways</h2>
+          <div fxLayout="row" fxLayoutAlign="space-around start">
+            <mat-card
+              class="ramp-tile"
+              fxFlex="30"
+              [routerLink]="'/analytes-from-pathways'"
+            >Analytes <br />
+              from <br />
+              Pathways
+            </mat-card
+            >
+            <mat-card
+              class="ramp-tile"
+              fxFlex="30"
+              [routerLink]="'/pathways-from-analytes'"
+            >Pathways <br />
+              from <br />
+              Analytes
+            </mat-card
+            >
+          </div>
+        </div>
+        <div fxFlex="50">
+          <div fxLayout="row" fxLayoutAlign="start start">
+            <h2>Chemical Classes</h2>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-around start">
+            <mat-card
+              class="ramp-tile"
+              fxFlex="30"
+              [routerLink]="'/classes-from-metabolites'"
+            >Chemical <br />
+              Classes
+            </mat-card
+            >
+            <mat-card
+              class="ramp-tile"
+              fxFlex="30"
+              [routerLink]="'/properties-from-metabolites'"
+            >Chemical <br />
+              Properties
+            </mat-card
+            >
+          </div>
+        </div>
       </div>
-      <div fxLayout="row" fxLayoutAlign="space-around start">
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/analytes-from-pathways'"
-          >Analytes <br />
-          from <br />
-          Pathways</mat-card
-        >
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/pathways-from-analytes'"
-          >Pathways <br />
-          from <br />
-          Analytes</mat-card
-        >
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/common-reaction-analytes'"
-          >Common <br />
-          Reaction <br />
-          Analytes</mat-card
-        >
-        <div fxFlex="20"></div>
+      <br>
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <div fxFlex="50">
+          <h2>Ontologies</h2>
+          <div fxLayout="row" fxLayoutAlign="space-around start">
+            <mat-card class="ramp-tile" fxFlex="30" [routerLink]="'/ontologies-from-metabolites'">Ontologies <br> from
+              <br> Metabolites
+            </mat-card>
+            <mat-card class="ramp-tile" fxFlex="30" [routerLink]="'/metabolites-from-ontologies'">Metabolites <br> from
+              <br> Ontologies
+            </mat-card>
+          </div>
+        </div>
+        <div fxFlex="50">
+          <div fxLayout="row" fxLayoutAlign="start start">
+            <h2>Reactions</h2>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-around start">
+            <mat-card
+              class="ramp-tile"
+              fxFlex="30"
+              [routerLink]="'/common-reaction-analytes'">
+              Common <br />
+              Reaction <br />
+              Analytes
+            </mat-card>
+            <div fxFlex ="30"></div>
+          </div>
+        </div>
       </div>
+      <br>
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <div fxFlex="50">
+          <h2>Enrichment Analysis</h2>
+          <div fxLayout="row" fxLayoutAlign="space-around start">
+            <mat-card
+              class="ramp-tile"
+              fxFlex="30"
+              [routerLink]="'/pathway-enrichment'"
+            >Pathway <br />
+              Enrichment <br />
+              Analysis
+            </mat-card>
+            <mat-card
+              class="ramp-tile"
+              fxFlex="30"
+              [routerLink]="'/chemical-enrichment'">
+              Chemical <br />
+              Analysis
+            </mat-card>
+          </div>
+        </div>
+      </div>
+      <br>
     </div>
   </div>
-  <br />
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="50">
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <h2>Metabolite Annotations</h2>
-      </div>
-      <div fxLayout="row" fxLayoutAlign="space-around start">
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/ontologies-from-metabolites'"
-          >Ontologies <br />
-          from <br />
-          Metabolites</mat-card
-        >
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/metabolites-from-ontologies'"
-          >Metabolites <br />
-          from <br />
-          Ontologies</mat-card
-        >
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/classes-from-metabolites'"
-          >Chemical <br />
-          Classes</mat-card
-        >
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/properties-from-metabolites'"
-          >Chemical <br />
-          Properties</mat-card
-        >
-      </div>
-    </div>
-  </div>
-  <br />
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="50">
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <h2>Analysis</h2>
-      </div>
-      <div fxLayout="row" fxLayoutAlign="space-around start">
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/pathway-analysis'"
-          >Pathway <br />
-          Enrichment <br />
-          Analysis</mat-card
-        >
-        <mat-card
-          class="ramp-tile"
-          fxFlex="20"
-          [routerLink]="'/chemical-analysis'"
-          >Chemical <br />
-          Analysis</mat-card
-        >
-        <div fxFlex="20"></div>
-        <div fxFlex="20"></div>
-      </div>
-    </div>
-  </div>
-  <br />
-  <!--  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="50">
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <h2>Ontologies</h2>
-      </div>
-      <div fxLayout="row" fxLayoutAlign="space-around start">
-        <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/ontologies-from-metabolites'">Ontologies <br> from <br> Metabolites</mat-card>
-        <mat-card class = "ramp-tile" fxFlex=20 [routerLink]="'/metabolites-from-ontologies'">Metabolites <br> from <br> Ontologies</mat-card>
-        <div fxFlex=20></div>
-      </div>
-      </div>
-  </div>-->
 </div>

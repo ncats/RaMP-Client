@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/loading-spinner"],
+      "outputs": [
+        "coverage/libs/shared/ui/loading-spinner"
+      ],
       "options": {
         "jestConfig": "libs/shared/ui/loading-spinner/jest.config.js",
         "passWithNoTests": true

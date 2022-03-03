@@ -3,15 +3,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
+  ElementRef, OnDestroy,
   OnInit,
   QueryList,
-  ViewChildren,
-} from '@angular/core';
+  ViewChildren
+} from "@angular/core";
 import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { initAbout, RampFacade } from '@ramp/stores/ramp-store';
-import { tap } from 'rxjs';
+import { Subject, takeUntil, tap } from "rxjs";
 
 @Component({
   selector: 'ramp-about',
@@ -19,8 +19,14 @@ import { tap } from 'rxjs';
   styleUrls: ['./about.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent implements OnInit, OnDestroy {
   @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
+
+  /**
+   * Behaviour subject to allow extending class to unsubscribe on destroy
+   * @type {Subject<any>}
+   */
+  protected ngUnsubscribe: Subject<any> = new Subject();
 
   /**
    * default active element for menu highlighting, will be replaced on scroll
@@ -30,7 +36,6 @@ export class AboutComponent implements OnInit {
 
   genesData!: any[];
   compoundsData!: any[];
-  apiBaseUrl = 'https://ramp-api-alpha.ncats.io/api/';
   sourceVersions!: Array<SourceVersion>;
   entityCounts!: EntityCount[];
   entityCountsColumns: DataProperty[] = [
@@ -82,7 +87,8 @@ export class AboutComponent implements OnInit {
     this.rampFacade.dispatch(initAbout());
     this.rampFacade.allRampStore$
       .pipe(
-        tap((data) => {
+      takeUntil(this.ngUnsubscribe),
+    tap((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
             this.changeDetector.markForCheck();
@@ -115,7 +121,9 @@ export class AboutComponent implements OnInit {
       )
       .subscribe();
 
-    this.scrollDispatcher.scrolled().subscribe((data) => {
+    this.scrollDispatcher.scrolled()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((data) => {
       if (data) {
         let scrollTop: number =
           data.getElementRef().nativeElement.scrollTop + 100;
@@ -155,5 +163,13 @@ export class AboutComponent implements OnInit {
    */
   isActive(check: string): boolean {
     return this.activeElement === check;
+  }
+
+  /**
+   * clean up on leaving component
+   */
+  ngOnDestroy() {
+    this.ngUnsubscribe.next("bye-bye");
+    this.ngUnsubscribe.complete();
   }
 }

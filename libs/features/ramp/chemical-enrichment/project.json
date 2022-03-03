@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/chemical-enrichment"],
+      "outputs": [
+        "coverage/libs/features/ramp/chemical-enrichment"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/chemical-enrichment/jest.config.js",
         "passWithNoTests": true

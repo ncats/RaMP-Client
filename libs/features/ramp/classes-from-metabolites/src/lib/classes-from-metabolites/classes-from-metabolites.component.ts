@@ -8,7 +8,7 @@ import {
   fetchClassesFromMetabolitesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
-import { TREE_VIEWER_COMPONENT } from '../features-ramp-classes-from-metabolites.module';
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-classes-from-metabolites',
@@ -76,7 +76,9 @@ export class ClassesFromMetabolitesComponent
   }
 
   ngOnInit(): void {
-    this.rampFacade.classes$.subscribe(
+    this.rampFacade.classes$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
       (res: { data: Classes[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           const classGroup: Map<string, any> = new Map<string, any>();

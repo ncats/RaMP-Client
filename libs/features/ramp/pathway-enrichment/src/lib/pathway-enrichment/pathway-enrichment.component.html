@@ -31,7 +31,6 @@
     <mat-tab [disabled]="!pathwayDataAsDataProperty">
       <ng-template mat-tab-label>
         Pathways
-        {{ pathwayDataAsDataProperty ? pathwayDataAsDataProperty.length : '' }}
         <ramp-loading
           [isLoading]="pathwaysLoading"
           [size]="'small'"
@@ -40,40 +39,24 @@
       </ng-template>
 <br>
 <br>
-      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="matches && matches.length > 0">
-        <div fxFlex="95">
-          Matched {{matches?.length}} of {{inputList?.length}} {{input}}
-        </div>
-      </div>
-      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="noMatches && noMatches.length > 0">
-        <div fxFlex="80">
-          There were no matches for the following {{input}}:
-          {{noMatches.join(", ")}}
-        </div>
-        <div fxFlex = 10>
-          <button
-            mat-stroked-button
-            class="tool-button list-download"
-            (click)="downloadPathwayData()"
-            matTooltip="Download Data"
-            color="accent"
-          >
-            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
-          </button>
-        </div>
-      </div>
+      <ramp-feedback-panel
+        *ngIf="matches && matches.length > 0"
+        [matchesLength]="matches.length"
+        [dataLength] = pathwayDataAsDataProperty.length
+        [inputLength]="inputList.length"
+        [noMatches]="noMatches"
+        [inputType]="'pathways'">
+      </ramp-feedback-panel>
 
       <ramp-query-page
         [dataColumns]="pathwayColumns"
         [dataAsDataProperty]="pathwayDataAsDataProperty"
-        [matches]="matches"
       >
       </ramp-query-page>
     </mat-tab>
-    <mat-tab [disabled]="!dataAsDataProperty">
+    <mat-tab [disabled]="!dataAsDataProperty || dataAsDataProperty.length === 0">
       <ng-template mat-tab-label>
         Enriched Pathways
-        {{ dataAsDataProperty ? dataAsDataProperty.length : '' }}
         <ramp-loading
           [isLoading]="enrichmentLoading"
           [size]="'small'"
@@ -115,7 +98,10 @@
           <h3>Cluster Results</h3>
           <div fxLayout="row" fxLayoutAlign="space-around center">
             <div fxFlex="90">
-              <mat-checkbox color="accent" (change)="setCluster($event)"
+              <mat-checkbox
+                color="accent"
+                [checked] = true
+                (change)="setCluster($event)"
                 >Show Cluster Assignment</mat-checkbox
               >
               <br>
@@ -156,10 +142,11 @@
           </div>
         </div>
       </div>
+      <ramp-loading
+        [isLoading]="enrichmentLoading"></ramp-loading>
       <ramp-query-page
         [dataColumns]="enrichmentColumns"
         [dataAsDataProperty]="dataAsDataProperty"
-        [matches]="matches"
       >
       </ramp-query-page>
     </mat-tab>

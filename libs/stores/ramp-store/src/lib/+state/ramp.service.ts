@@ -166,7 +166,7 @@ export class RampService {
       analyte: analytes,
     };
     return this.http
-      .post<string[]>(`${this.url}common-reaction-analytes`, options, HTTP_OPTIONS) // ,{responseType: 'text'})
+      .post<string[]>(`${this.url}common-reaction-analytes`, options)
       .pipe(
         map((response: any) => {
           return {
@@ -416,7 +416,7 @@ export class RampService {
         .post<string[]>(`${this.url}cluster-plot`,body, options)
         .pipe(
           map((response: any) => {
-            return  response;
+            return  response.toString();
           }),
           catchError(this.handleError('chemical enrichment', []))
         );

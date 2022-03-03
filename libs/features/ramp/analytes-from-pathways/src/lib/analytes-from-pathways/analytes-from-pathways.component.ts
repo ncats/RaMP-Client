@@ -8,6 +8,7 @@ import {
   fetchAnalytesFromPathwaysFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
+import { takeUntil } from "rxjs";
 
 @Component({
   selector: 'ramp-analytes-from-pathways',
@@ -52,19 +53,21 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
   }
 
   ngOnInit(): void {
-    this.rampFacade.analytes$.subscribe(
-      (res: { data: Analyte[]; query: RampQuery } | undefined) => {
-        if (res && res.data) {
-          this._mapData(res.data);
-          this.matches = Array.from(new Set(res.data.map(pathway => pathway.pathwayName.toLocaleLowerCase())));
-          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
+    this.rampFacade.analytes$
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(
+        (res: { data: Analyte[]; query: RampQuery } | undefined) => {
+          if (res && res.data) {
+            this._mapData(res.data);
+            this.matches = Array.from(new Set(res.data.map(pathway => pathway.pathwayName.toLocaleLowerCase())));
+            this.noMatches = this.inputList.filter((p: string) => !this.matches.includes(p.toLocaleLowerCase()));
+          }
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          this.ref.markForCheck();
         }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        this.ref.markForCheck();
-      }
-    );
+      );
   }
 
   fetchAnalytes(event: string[]): void {

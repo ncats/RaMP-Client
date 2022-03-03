@@ -6,7 +6,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/ncats-datatable"],
+      "outputs": [
+        "coverage/libs/shared/ui/ncats-datatable"
+      ],
       "options": {
         "jestConfig": "libs/shared/ui/ncats-datatable/jest.config.js",
         "passWithNoTests": true
