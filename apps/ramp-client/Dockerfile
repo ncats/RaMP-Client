@@ -21,4 +21,4 @@ FROM labshare/docker-base-web
 # Install NCATS required packages
 RUN apt-get update && apt-get install -y net-tools
 
-COPY --from=build /var/www/app/dist/apps/ramp-client/browser /var/www/app
+COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
