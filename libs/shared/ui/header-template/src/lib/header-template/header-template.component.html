@@ -10,16 +10,27 @@
             {{ link.label ? link.label : link.link }}
           </button>
           <mat-menu #dynamicMenu="matMenu">
-            <button
-              *ngFor="let child of link.children"
-              mat-menu-item
-              [routerLink]="child.link"
-            >
+           <span *ngFor="let child of link.children">
+            <button mat-menu-item
+              [routerLink]="child.link">
               {{ child.label ? child.label : child.link }}
             </button>
+             </span>
           </mat-menu>
         </ng-template>
         <ng-template #menulink>
+          <ng-container *ngIf="link.external; then external; else internal">
+          </ng-container>
+          <ng-template #external>
+          <a
+            mat-button
+            href="{{ link.link }}"
+            class="header-link-button"
+            >{{ link.label ? link.label : link.link }}
+          <mat-icon>open_in_new</mat-icon>
+          </a>
+        </ng-template>
+          <ng-template #internal>
           <a
             mat-button
             routerLink="/{{ link.link }}"
@@ -27,6 +38,7 @@
             class="header-link-button"
             >{{ link.label ? link.label : link.link }}</a
           >
+        </ng-template>
         </ng-template>
       </div>
       <span class="fill-remaining-space"></span>

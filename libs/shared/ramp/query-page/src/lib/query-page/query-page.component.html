@@ -25,5 +25,12 @@
   </ng-template>
 
   <ng-template #noData>
-    <h1 *ngIf="noDataArr">no data found!</h1>
+    <div
+      *ngIf="noDataArr"
+      fxLayout="row"
+      fxLayoutAlign="space-around start">
+      <div fxFlex="90">
+    <h1>no data found!</h1>
+      </div>
+    </div>
   </ng-template>

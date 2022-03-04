@@ -139,13 +139,13 @@ const routes: Routes = [
     data: {
       ...rFunctions['pathway-enrichment'],
     },
-  },
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), {
+  imports: [RouterModule.forRoot(routes, {
     initialNavigation: 'enabledNonBlocking'
-}],
+})],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
