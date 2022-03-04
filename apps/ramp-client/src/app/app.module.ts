@@ -6,6 +6,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { SharedNcatsNcatsFooterModule } from "@ramp/shared/ncats/ncats-footer";
 import { SharedUiLoadingSpinnerModule } from '@ramp/shared/ui/loading-spinner';
+import { PrebootModule } from "preboot";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -35,6 +36,7 @@ export function rampInit(rampFacade: RampFacade) {
   declarations: [AppComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    PrebootModule.withConfig({ appRoot: 'app-root' }),
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
