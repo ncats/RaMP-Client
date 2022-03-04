@@ -139,7 +139,7 @@ const routes: Routes = [
     data: {
       ...rFunctions['pathway-enrichment'],
     },
-  },
+  }
 ];
 
 @NgModule({

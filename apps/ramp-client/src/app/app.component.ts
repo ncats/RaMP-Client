@@ -86,6 +86,11 @@ export class AppComponent implements OnInit {
       link: 'about',
       label: 'About',
     },
+    {
+      link: 'https://ramp-api-alpha.ncats.io/__docs__/',
+      label: 'API',
+      external: true
+    },
   ];
 
   constructor(
