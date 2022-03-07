@@ -49,6 +49,7 @@ pipeline {
                         "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
                         checkout scm
+                        sh 'docker pull labshare/docker-base-web'
                         configFileProvider([
                             configFile(fileId: 'rampdb-client-environment-ci.yml', targetLocation: 'apps/ramp-client/src/environments/environment.prod.ts')
                         ]) {
