@@ -1,107 +1,96 @@
 <div class="tile-holder">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
+  <div fxLayout="row" fxLayoutAlign="space-around center">
     <div fxFlex="50">
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="50">
-          <h2>Biological Pathways</h2>
-          <div fxLayout="row" fxLayoutAlign="space-around start">
-            <mat-card
-              class="ramp-tile"
-              fxFlex="30"
-              [routerLink]="'/analytes-from-pathways'"
-            >Analytes <br />
-              from <br />
-              Pathways
-            </mat-card
-            >
-            <mat-card
-              class="ramp-tile"
-              fxFlex="30"
-              [routerLink]="'/pathways-from-analytes'"
-            >Pathways <br />
-              from <br />
-              Analytes
-            </mat-card
-            >
-          </div>
-        </div>
-        <div fxFlex="50">
-          <div fxLayout="row" fxLayoutAlign="start start">
-            <h2>Chemical Classes</h2>
-          </div>
-          <div fxLayout="row" fxLayoutAlign="space-around start">
-            <mat-card
-              class="ramp-tile"
-              fxFlex="30"
-              [routerLink]="'/classes-from-metabolites'"
-            >Chemical <br />
-              Classes
-            </mat-card
-            >
-            <mat-card
-              class="ramp-tile"
-              fxFlex="30"
-              [routerLink]="'/properties-from-metabolites'"
-            >Chemical <br />
-              Properties
-            </mat-card
-            >
-          </div>
-        </div>
+      <div class="grid-list">
+        <mat-card class= "ramp-tile" >
+          <mat-card-header class="ramp-header"> <h2>Query Biological Pathways </h2></mat-card-header>
+          <mat-card-content>
+            <br>
+            <p>Biological Pathways are drawn from HMDB/KEGG, Reactome, and WikiPathways</p>
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/pathways-from-analytes'"
+            >Pathways from Input Analytes
+            </button>
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/analytes-from-pathways'"
+            >Analytes from Input Pathways
+            </button>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class= "ramp-tile" >
+          <mat-card-header class="ramp-header"> <h2>Query Ontologies</h2></mat-card-header>
+          <mat-card-content>
+            <br>
+            <p>Available ontologies include health condition, organ/components, tissue, biofluid, industrial applications and others.</p>
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/ontologies-from-metabolites'"
+            >Ontologies from Input Metabolites</button>
+
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/metabolites-from-ontologies'"
+            >Metabolites from Input Ontologies</button>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class= "ramp-tile" >
+          <mat-card-header class="ramp-header"> <h2>Query Chemical Classes and Properties</h2></mat-card-header>
+          <mat-card-content>
+            <br>
+            <p>Classes are derived from ClassyFire and LIPIDMAPS and Properties include SMILES, InCHI-key, MW, etc.
+            </p>
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/classes-from-metabolites'"
+            >Chemical Classes from Metabolites</button>
+
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/properties-from-metabolites'"
+            >Chemical Properties from Input Metabolites</button>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class= "ramp-tile" >
+          <mat-card-header class="ramp-header"> <h2>Query Reactions</h2></mat-card-header>
+          <mat-card-content>
+            <br>
+            <p>Metabolic enzyme-metabolite reactions are sourced from HMDB.</p>
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/common-reaction-analytes'"
+            >Retrieve Analytes involved in Same Reactions</button>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class= "ramp-tile" >
+          <mat-card-header class="ramp-header"> <h2>Enrichment Analysis</h2></mat-card-header>
+          <mat-card-content>
+            <br>
+            <p>Identify enriched pathways or chemical classes given an input list of analytes
+            </p>
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/pathway-enrichment'"
+            >Biological Pathway Enrichment</button>
+
+            <button mat-stroked-button
+                    [color] = "'accent'"
+                    class="tile-button"
+                    [routerLink]="'/chemical-enrichment'">
+            Chemical Class Enrichment</button>
+          </mat-card-content>
+        </mat-card>
       </div>
       <br>
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="50">
-          <h2>Ontologies</h2>
-          <div fxLayout="row" fxLayoutAlign="space-around start">
-            <mat-card class="ramp-tile" fxFlex="30" [routerLink]="'/ontologies-from-metabolites'">Ontologies <br> from
-              <br> Metabolites
-            </mat-card>
-            <mat-card class="ramp-tile" fxFlex="30" [routerLink]="'/metabolites-from-ontologies'">Metabolites <br> from
-              <br> Ontologies
-            </mat-card>
-          </div>
-        </div>
-        <div fxFlex="50">
-          <div fxLayout="row" fxLayoutAlign="start start">
-            <h2>Reactions</h2>
-          </div>
-          <div fxLayout="row" fxLayoutAlign="space-around start">
-            <mat-card
-              class="ramp-tile"
-              fxFlex="30"
-              [routerLink]="'/common-reaction-analytes'">
-              Common <br />
-              Reaction <br />
-              Analytes
-            </mat-card>
-            <div fxFlex ="30"></div>
-          </div>
-        </div>
-      </div>
-      <br>
-      <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="50">
-          <h2>Enrichment Analysis</h2>
-          <div fxLayout="row" fxLayoutAlign="space-around start">
-            <mat-card
-              class="ramp-tile"
-              fxFlex="30"
-              [routerLink]="'/pathway-enrichment'"
-            >Pathway <br />
-              Enrichment <br />
-              Analysis
-            </mat-card>
-            <mat-card
-              class="ramp-tile"
-              fxFlex="30"
-              [routerLink]="'/chemical-enrichment'">
-              Chemical <br />
-              Analysis
-            </mat-card>
-          </div>
-        </div>
-      </div>
       <br>
     </div>
   </div>
