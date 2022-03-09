@@ -241,7 +241,7 @@ export class UpsetComponent implements OnInit {
     const connector = combinationGroup
       .filter((d) => d.connectorIndices.length > 0)
       .append('svg:line')
-      .style('fill', '#00667a')
+      .style('fill', '#265668')
       .attr('class', 'connector')
       .attr(
         'y1',
@@ -319,7 +319,7 @@ export class UpsetComponent implements OnInit {
       .data(this.data)
       .join('rect')
       .attr('class', 'bar')
-      .style('fill', '#00667a')
+      .style('fill', '#265668')
       // @ts-ignore
       //todo: fix the ts-ignore
       .attr('height', (d) => topRowHeight - intersectionSizeScale(d.size))

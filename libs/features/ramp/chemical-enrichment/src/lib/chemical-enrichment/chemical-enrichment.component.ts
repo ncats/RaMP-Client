@@ -74,6 +74,10 @@ export class ChemicalEnrichmentComponent
       sortable: true
     }),
     new DataProperty({
+      label: 'Names',
+      field: 'commonNames'
+    }),
+    new DataProperty({
       label: 'ClassyFire Super Class',
       field: 'classyFireSuperClass',
       sortable: true

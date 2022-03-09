@@ -1,4 +1,5 @@
 export class Classes {
+  commonNames!: string;
   classyFireSuperClass!: string;
   classyFireClass!: string;
   classyFireSubClass!: string;
@@ -18,6 +19,10 @@ export class Classes {
     }
     if (obj.levels) {
       obj.levels.forEach((level: any) => {
+        if (level.common_names) {
+          this.commonNames = level.common_names;
+        }
+
         if(level.class_level_name === "ClassyFire_super_class") {
           this.classyFireSuperClass = level.class_name;
         }
