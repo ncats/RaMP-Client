@@ -1,0 +1,29 @@
+<br>
+<br>
+<br>
+<div fxLayout="row" fxLayoutAlign="space-around center">
+  <div fxFlex = "70">
+    <div *ngIf="function">
+      <div >The following R function was called:</div>
+      <pre class="code-block">{{function}}</pre>
+    </div>
+  </div>
+
+
+  <div fxFlex="25" *ngIf="dataLength && dataLength > 0">
+    <mat-card>
+      <div fxLayout="row" fxLayoutAlign="space-around start">
+        <div fxFlex="95">
+          Found {{dataLength}} results <br>
+          Matched {{matchesLength}} of {{inputLength}} {{inputType}}
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="noMatches && noMatches.length > 0">
+        <div fxFlex="95">
+          There were no matches for the following {{inputType}}:
+          {{noMatches.join(", ")}}
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,93 @@
+@use '@angular/material' as mat;
+@import 'ncats-theme';
+
+a {
+  color: mat.get-color-from-palette($app-accent);
+  font-weight: bold;
+}
+
+.about-content {
+  display: flex;
+  height: 100vh;
+  padding-top: 64px;
+}
+
+.title-row {
+  position: fixed;
+  width: 100vw;
+  background-color: white;
+}
+
+.toc-wrapper {
+  padding-left: 0.3vw;
+  margin-top: 2vh;
+}
+
+.ramp-list {
+  list-style: none;
+}
+
+.about-wrapper {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.section-content {
+  font: 400 1rem/1.5rem Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.ramp-title {
+  font: 300 3rem Roboto, 'Helvetica Neue', sans-serif;
+  padding-left: 1vw;
+  margin-top: 2vh;
+  margin-bottom: 0;
+}
+
+.section-header {
+  font: 300 2.5rem Roboto, 'Helvetica Neue', sans-serif;
+  padding-left: 1vw;
+  margin-top: 5vh;
+}
+
+.active {
+  border-left: 8px solid #265668;
+}
+
+.spacer {
+  height: 20vh;
+}
+
+.mat-list-item {
+  margin-bottom: 1vh;
+}
+
+.ramp-capabilities-image {
+  width: auto;
+  height: 400px;
+  max-width: 500px;
+}
+
+.portrait-holder {
+  text-align: center;
+  align-self: center;
+}
+
+@media only screen and (max-width: 768px) {
+  .about-wrapper {
+    flex: 1;
+    overflow: auto;
+  }
+
+  .ramp-title {
+    font: 300 2rem Roboto, 'Helvetica Neue', sans-serif;
+    margin-top: 2vh;
+  }
+}
+
+.ramp-portrait {
+  margin: 0 auto;
+  border-radius: 100%;
+  height: 8vw;
+  width: 8vw;
+}
+

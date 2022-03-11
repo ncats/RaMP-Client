@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/features/ramp/classes-from-metabolites",
+  "sourceRoot": "libs/features/ramp/classes-from-metabolites/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/features/ramp/classes-from-metabolites"
+      ],
+      "options": {
+        "jestConfig": "libs/features/ramp/classes-from-metabolites/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/features/ramp/classes-from-metabolites/src/**/*.ts",
+          "libs/features/ramp/classes-from-metabolites/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/visualizations/upset-chart",
+  "sourceRoot": "libs/shared/visualizations/upset-chart/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/visualizations/upset-chart"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/visualizations/upset-chart/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/visualizations/upset-chart/src/**/*.ts",
+          "libs/shared/visualizations/upset-chart/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

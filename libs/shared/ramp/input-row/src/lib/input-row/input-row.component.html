@@ -1,0 +1,41 @@
+<br>
+<br>
+<br>
+<div fxLayout="row" fxLayoutAlign="center end">
+  <div fxFlex="40" *ngIf="showInput">
+    <mat-form-field class="full-width" appearance="outline" color="accent">
+      <mat-label>{{ input | titlecase }}</mat-label>
+      <textarea
+        matInput
+        [rows]="10"
+        [formControl]="inputFormCtrl"
+        placeholder="{{ examples }}"
+        cdkTextareaAutosize
+      ></textarea>
+    </mat-form-field>
+  </div>
+  <div fxFlex="20" class="button-holder">
+    <ng-content select=".additional-params"></ng-content>
+    <div fxFlexAlign="end">
+      <button
+        mat-flat-button
+        color="accent"
+        (click)="fetchData()"
+        class="bottom-align"
+      >
+        <span fxHide.lt-lg>Search</span><mat-icon>search</mat-icon>
+      </button>
+      &nbsp;&nbsp;&nbsp;
+      <button
+        mat-stroked-button
+        class="tool-button list-download"
+        (click)="downloadData()"
+        matTooltip="Download Data"
+        color="accent"
+        *ngIf="showDownload"
+      >
+        <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ramp/page-core",
+  "sourceRoot": "libs/shared/ramp/page-core/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/ramp/page-core"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/ramp/page-core/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ramp/page-core/src/**/*.ts",
+          "libs/shared/ramp/page-core/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,10 @@
+<div class="description" [innerHTML]="getDescription()"></div>
+<br />
+<div class="supportedIds" *ngIf="supportedIds && supportedIds.length > 0">
+  Supported id types: <br />
+  <div *ngFor="let supportedId of supportedIds">
+ <span><b>{{ supportedId.analyteType }}</b>: {{ supportedId.idTypes }} </span>
+    <br>
+    </div>
+</div>
+

@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ncats/data-download",
+  "sourceRoot": "libs/shared/ncats/data-download/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/ncats/data-download"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/ncats/data-download/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ncats/data-download/src/**/*.ts",
+          "libs/shared/ncats/data-download/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

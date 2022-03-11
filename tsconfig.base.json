@@ -1,0 +1,108 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ramp/features/ramp/analytes-from-pathways": [
+        "libs/features/ramp/analytes-from-pathways/src/index.ts"
+      ],
+      "@ramp/features/ramp/chemical-enrichment": [
+        "libs/features/ramp/chemical-enrichment/src/index.ts"
+      ],
+      "@ramp/features/ramp/classes-from-metabolites": [
+        "libs/features/ramp/classes-from-metabolites/src/index.ts"
+      ],
+      "@ramp/features/ramp/common-reaction-analytes": [
+        "libs/features/ramp/common-reaction-analytes/src/index.ts"
+      ],
+      "@ramp/features/ramp/metabolites-from-ontologies": [
+        "libs/features/ramp/metabolites-from-ontologies/src/index.ts"
+      ],
+      "@ramp/features/ramp/ontologies-from-metabolites": [
+        "libs/features/ramp/ontologies-from-metabolites/src/index.ts"
+      ],
+      "@ramp/features/ramp/pathway-enrichment": [
+        "libs/features/ramp/pathway-enrichment/src/index.ts"
+      ],
+      "@ramp/features/ramp/pathways-from-analytes": [
+        "libs/features/ramp/pathways-from-analytes/src/index.ts"
+      ],
+      "@ramp/features/ramp/properties-from-metabolites": [
+        "libs/features/ramp/properties-from-metabolites/src/index.ts"
+      ],
+      "@ramp/features/ramp/ramp-about": [
+        "libs/features/ramp/ramp-about/src/index.ts"
+      ],
+      "@ramp/features/ramp/ramp-header": [
+        "libs/features/ramp/ramp-header/src/index.ts"
+      ],
+      "@ramp/features/ramp/ramp-home": [
+        "libs/features/ramp/ramp-home/src/index.ts"
+      ],
+      "@ramp/models/ramp-models": ["libs/models/ramp-models/src/index.ts"],
+      "@ramp/shared/ncats/data-download": [
+        "libs/shared/ncats/data-download/src/index.ts"
+      ],
+      "@ramp/shared/ncats/ncats-footer": [
+        "libs/shared/ncats/ncats-footer/src/index.ts"
+      ],
+      "@ramp/shared/ncats/ncats-header": [
+        "libs/shared/ncats/ncats-header/src/index.ts"
+      ],
+      "@ramp/shared/ramp/input-row": [
+        "libs/shared/ramp/input-row/src/index.ts"
+      ],
+      "@ramp/shared/ramp/page-core": [
+        "libs/shared/ramp/page-core/src/index.ts"
+      ],
+      "@ramp/shared/ramp/query-page": [
+        "libs/shared/ramp/query-page/src/index.ts"
+      ],
+      "@ramp/shared/ui/description-panel": [
+        "libs/shared/ui/description-panel/src/index.ts"
+      ],
+      "@ramp/shared/ui/error-dialog": [
+        "libs/shared/ui/error-dialog/src/index.ts"
+      ],
+      "@ramp/shared/ui/feedback-panel": [
+        "libs/shared/ui/feedback-panel/src/index.ts"
+      ],
+      "@ramp/shared/ui/filter-panel": [
+        "libs/shared/ui/filter-panel/src/index.ts"
+      ],
+      "@ramp/shared/ui/header-template": [
+        "libs/shared/ui/header-template/src/index.ts"
+      ],
+      "@ramp/shared/ui/highlight": ["libs/shared/ui/highlight/src/index.ts"],
+      "@ramp/shared/ui/loading-spinner": [
+        "libs/shared/ui/loading-spinner/src/index.ts"
+      ],
+      "@ramp/shared/ui/ncats-datatable": [
+        "libs/shared/ui/ncats-datatable/src/index.ts"
+      ],
+      "@ramp/shared/ui/ncats-structure-viewer": [
+        "libs/shared/ui/ncats-structure-viewer/src/index.ts"
+      ],
+      "@ramp/shared/ui/object-tree": [
+        "libs/shared/ui/object-tree/src/index.ts"
+      ],
+      "@ramp/shared/visualizations/upset-chart": [
+        "libs/shared/visualizations/upset-chart/src/index.ts"
+      ],
+      "@ramp/stores/ramp-store": ["libs/stores/ramp-store/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
