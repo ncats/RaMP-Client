@@ -11,6 +11,7 @@ import {
   Reaction,
   SourceVersion
 } from "@ramp/models/ramp-models";
+import { filterEnrichmentFromMetabolitesFailure } from "./ramp.actions";
 
 import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
@@ -69,6 +70,7 @@ export interface State extends EntityState<RampEntity> {
     data: FisherResult[];
     query: RampQuery;
   };
+  enriched_chemical_class?: any;
   combined_fishers_dataframe?: any;
   filtered_fishers_dataframe?: any;
   clusterPlot?: any;
@@ -208,10 +210,20 @@ const rampReducer = createReducer(
 
   on(
     RampActions.fetchEnrichmentFromMetabolitesSuccess,
-    (state, { data }) => ({
+    (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
       chemicalEnrichments: {data},
+      enriched_chemical_class: enriched_chemical_class
+    })
+  ),
+  on(
+    RampActions.filterEnrichmentFromMetabolitesSuccess,
+    (state, { data, enriched_chemical_class }) => ({
+      ...state,
+      loading: false,
+      chemicalEnrichments: {data},
+      enriched_chemical_class: enriched_chemical_class
     })
   ),
 
@@ -260,6 +272,7 @@ on(
     RampActions.fetchCommonReactionAnalytesFailure,
     RampActions.fetchClassesFromMetabolitesFailure,
     RampActions.fetchPropertiesFromMetabolitesFailure,
+    filterEnrichmentFromMetabolitesFailure,
     (state, { error }) => {
       console.log(error);
       return {

@@ -15,7 +15,7 @@ import {
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { forkJoin, Observable, of, tap } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { fetchCommonReactionAnalytesFile } from './ramp-store/ramp.actions';
+import { fetchCommonReactionAnalytesFile, fetchEnrichmentFromMetabolitesFile } from "./ramp-store/ramp.actions";
 
 const HTTP_OPTIONS = {
   headers: new HttpHeaders(),
@@ -119,7 +119,7 @@ export class RampService {
     this.http
       .post<string[]>(`${this.url}analytes-from-pathways`, params, HTTP_OPTIONS)
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchAnalytesFromPathways')
+        this._downloadFile(response, 'fetchAnalytesFromPathways-download.tsv')
       );
   }
 
@@ -153,7 +153,7 @@ export class RampService {
     this.http
       .post<string[]>(`${this.url}pathways-from-analytes`, params, HTTP_OPTIONS)
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchPathwayFromAnalyte')
+        this._downloadFile(response, 'fetchPathwayFromAnalyte-download.tsv')
       );
   }
 
@@ -190,7 +190,7 @@ export class RampService {
         HTTP_OPTIONS
       )
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchCommonReactionAnalytes')
+        this._downloadFile(response, 'fetchCommonReactionAnalytes-download.tsv')
       );
   }
 
@@ -235,7 +235,7 @@ export class RampService {
     this.http
       .post<string[]>(`${this.url}chemical-classes`, params, HTTP_OPTIONS)
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchChemicalClass')
+        this._downloadFile(response, 'fetchChemicalClass-download.tsv')
       );
   }
 
@@ -268,7 +268,7 @@ export class RampService {
     this.http
       .post<string[]>(`${this.url}chemical-properties`, params, HTTP_OPTIONS)
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchChemicalProperties')
+        this._downloadFile(response, 'fetchChemicalProperties-download.tsv')
       );
   }
 
@@ -282,10 +282,47 @@ export class RampService {
         map((response: any) => {
           const retList: ChemicalEnrichment[] = [];
           [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => retList.push(new ChemicalEnrichment(cc))));
-          return retList;
+          return {
+            data: retList,
+            enriched_chemical_class: response.data
+          };
         }),
         catchError(this.handleError('chemical enrichment', []))
       );
+  }
+
+  filterMetaboliteEnrichment(
+    dataframe: any,
+    pval_type?: string,
+    pval_cutoff?: number
+  ){
+    return this.http.post<string[]>(
+      `${this.url}filter-fisher-test-results`,
+      {
+        fishers_results: dataframe,
+        pval_type: pval_type,
+        pval_cutoff: pval_cutoff,
+      }
+    )
+      .pipe(
+        map((response: any) => {
+          const retList: ChemicalEnrichment[] = [];
+          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => retList.push(new ChemicalEnrichment(cc))));
+          return {
+            data: retList,
+            enriched_chemical_class: response.data
+          };
+        })
+      )
+  }
+
+  fetchEnrichmentFromMetabolitesFile(data: any[]) {
+    const enrichments: any = [];
+    Object.values(data).forEach((val: any[]) => {
+      val.forEach(v => enrichments.push(v))
+    })
+    enrichments.pop();
+        this._downloadFile(this._toTSV(enrichments), 'fetchEnrichmentFromMetabolites-download.tsv');
   }
 
   fetchEnrichmentFromPathways(analytes: string[]): Observable<{
@@ -299,22 +336,6 @@ export class RampService {
           pathways: analytes,
         })
         .pipe(
-/*
-          mergeMap(( req: any) => {
-         //  console.log(req);
-           const body = {
-             fishers_results: req.data,
-             text_size: 8,
-             perc_analyte_overlap: 0.2,
-             min_pathway_tocluster: 2,
-             perc_pathway_overlap: 0.2
-           }
-            const options: Object = {responseType: 'text' as 'text'};
-
-            return this.http
-             .post<string[]>(`${this.url}cluster-plot`,body, options)
-         }),
-*/
           map((response: any) => {
             return {
               data: response.data.fishresults.map((obj: any) => new FisherResult(obj)),
@@ -325,7 +346,6 @@ export class RampService {
         )
     );
   }
-
 
   filterPathwayEnrichment(
     dataframe: any,
@@ -456,7 +476,7 @@ export class RampService {
         HTTP_OPTIONS
       )
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchOntologiesFromMetabolites')
+        this._downloadFile(response, 'fetchOntologiesFromMetabolites-download.tsv')
       );
   }
 
@@ -493,7 +513,7 @@ export class RampService {
         HTTP_OPTIONS
       )
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchMetabolitesFromOntologies')
+        this._downloadFile(response, 'fetchMetabolitesFromOntologies-download.tsv')
       );
   }
 
@@ -529,6 +549,28 @@ export class RampService {
       );
   }
 
+  fetchEnrichmentFromPathwaysFile(data: any) {
+    this._downloadFile(this._toTSV(data.fishresults), 'fetchEnrichmentFromPathways-download.tsv')
+  }
+
+  fetchClusterImageFile(data: any) {
+    this._downloadFile(data, 'fetchClusterImageFile-download.svg', 'image/svg+xml')
+  }
+
+  private _toTSV(data: any[]): any[] {
+// grab the column headings (separated by tabs)
+    const headings: string  = Object.keys(data[0]).join('\t');
+// iterate over the data
+    const rows: string[] = data.reduce((acc, c) => {
+
+      // for each row object get its values and add tabs between them
+      // then add them as a new array to the outgoing array
+      return acc.concat([Object.values(c).join('\t')]);
+
+// finally joining each row with a line break
+    }, [headings]).join('\n');
+    return rows;
+  }
   /**
    * Handle Http operation that failed.
    * Let the app continue.
@@ -552,15 +594,15 @@ export class RampService {
     this.url = url;
   }
 
-  private _downloadFile(data: Blob, name: string) {
-    const file = new Blob([data], { type: 'text/tsv' });
+  private _downloadFile(data: any, name: string, type: string = 'text/tsv') {
+    const file = new Blob([data], { type:  type});
     var link = this.dom.createElement('a');
     if (link.download !== undefined) {
       // feature detection
       // Browsers that support HTML5 download attribute
       var url = URL.createObjectURL(file);
       link.setAttribute('href', url);
-      link.setAttribute('download', `${name}-download.tsv`);
+      link.setAttribute('download', `${name}`);
       link.style.visibility = 'hidden';
       this.dom.body.appendChild(link);
       link.click();

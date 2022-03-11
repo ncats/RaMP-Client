@@ -12,8 +12,9 @@ import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClusterFromEnrichment,
-  fetchEnrichmentFromPathways,
+  fetchEnrichmentFromPathways, fetchEnrichmentFromPathwaysFile,
   fetchPathwaysFromAnalytes, fetchPathwaysFromAnalytesFile, filterEnrichmentFromPathways,
+  fetchClusterImageFile,
   RampFacade
 } from "@ramp/stores/ramp-store";
 import { takeUntil } from "rxjs";
@@ -242,11 +243,29 @@ export class PathwayEnrichmentComponent
     this.ref.detectChanges();
   }
 
-  downloadPathwayData(): void {
- /*     this.rampFacade.dispatch(
-        fetchPathwaysFromAnalytesFile({ analytes: event, format: 'tsv' })
-      );*/
+  fetchPathwaysFile(): void {
+    this.rampFacade.dispatch(
+         fetchPathwaysFromAnalytesFile({ analytes: this.inputList, format: 'tsv' })
+    );
   }
+
+  fetchEnrichedPathwaysFile(): void {
+    this.rampFacade.dispatch(
+      fetchEnrichmentFromPathwaysFile()
+    );
+  }
+
+  fetchClusterImageFile(): void {
+    this.rampFacade.dispatch(
+         fetchClusterImageFile({
+           perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
+           min_pathway_tocluster: this.minPathWayFormCtrl.value,
+           perc_pathway_overlap: this.percentPathwayFormCtrl.value
+         })
+    );
+  }
+
+
 
   private _mapPathwaysData(data: any): void {
     this.pathwayDataAsDataProperty = data.map((analyte: Pathway) => {

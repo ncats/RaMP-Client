@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TREE_VIEWER_COMPONENT } from '@ramp/features/ramp/chemical-enrichment';
 import {
@@ -10,9 +11,13 @@ import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClassesFromMetabolites,
+  fetchClassesFromMetabolitesFile,
   fetchEnrichmentFromMetabolites,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
+  fetchEnrichmentFromMetabolitesFile,
+  filterEnrichmentFromMetabolites,
+  filterEnrichmentFromPathways,
+  RampFacade
+} from "@ramp/stores/ramp-store";
 import { takeUntil } from "rxjs";
 
 @Component({
@@ -24,6 +29,9 @@ export class ChemicalEnrichmentComponent
   extends PageCoreComponent
   implements OnInit
 {
+  pValueFormCtrl: FormControl = new FormControl(0.2);
+  pValueTypeFormCtrl: FormControl = new FormControl('fdr');
+
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
       label: 'Category',
@@ -60,11 +68,13 @@ export class ChemicalEnrichmentComponent
       label: 'P Value',
       field: 'p_value',
       sortable: true,
+      displayType: 'string'
     }),
     new DataProperty({
       label: 'adjP_BH',
       field: 'adjP_BH',
       sortable: true,
+      displayType: 'string'
     })
   ];
   classesColumns: DataProperty[] = [
@@ -175,6 +185,28 @@ export class ChemicalEnrichmentComponent
     this.rampFacade.dispatch(
       fetchEnrichmentFromMetabolites({ metabolites: event })
     );
+  }
+
+  fetchClassesFile(): void {
+    this.rampFacade.dispatch(
+      fetchClassesFromMetabolitesFile({ metabolites: this.inputList, format: 'tsv' })
+    );
+  }
+
+  fetchEnrichedClassesFile(): void {
+    this.rampFacade.dispatch(
+      fetchEnrichmentFromMetabolitesFile({ metabolites: this.inputList, format: 'tsv' })
+    );
+  }
+
+  filterEnrichments() {
+    this.enrichmentLoading = true;
+    this.rampFacade.dispatch(
+      filterEnrichmentFromMetabolites({
+        pval_cutoff: this.pValueFormCtrl.value,
+        pval_type: this.pValueTypeFormCtrl.value
+      })
+    )
   }
 
   private _mapClasses(data: any): void {

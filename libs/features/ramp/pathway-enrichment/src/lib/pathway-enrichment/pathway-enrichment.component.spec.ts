@@ -38,7 +38,6 @@ describe('PathwayEnrichmentComponent', () => {
         SharedRampQueryPageModule,
         FlexLayoutModule,
         MatFormFieldModule,
-        MatSliderModule,
         ReactiveFormsModule,
         SharedUiLoadingSpinnerModule,
         SharedRampPageCoreModule,

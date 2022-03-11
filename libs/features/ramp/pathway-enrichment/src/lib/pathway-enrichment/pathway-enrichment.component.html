@@ -47,7 +47,20 @@
         [noMatches]="noMatches"
         [inputType]="'pathways'">
       </ramp-feedback-panel>
-
+      <br>
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <div fxFlex="10">
+      <button
+        mat-stroked-button
+        class="tool-button list-download"
+        (click)="fetchPathwaysFile()"
+        matTooltip="Download Data"
+        color="accent"
+      >
+        <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+      </button>
+        </div>
+      </div>
       <ramp-query-page
         [dataColumns]="pathwayColumns"
         [dataAsDataProperty]="pathwayDataAsDataProperty"
@@ -142,6 +155,20 @@
           </div>
         </div>
       </div>
+      <br>
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <div fxFlex="10">
+          <button
+            mat-stroked-button
+            class="tool-button list-download"
+            (click)="fetchEnrichedPathwaysFile()"
+            matTooltip="Download Data"
+            color="accent"
+          >
+            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+          </button>
+        </div>
+      </div>
       <ramp-loading
         [isLoading]="enrichmentLoading"></ramp-loading>
       <ramp-query-page
@@ -162,6 +189,19 @@
        <br>
        <br>
        <br>
+       <div fxLayout="row" fxLayoutAlign="end center">
+         <div fxFlex="10">
+           <button
+             mat-stroked-button
+             class="tool-button list-download"
+             (click)="fetchClusterImageFile()"
+             matTooltip="Download Data"
+             color="accent"
+           >
+             <span fxHide.lt-lg>Save Image</span><mat-icon>download</mat-icon>
+           </button>
+         </div>
+       </div>
        <div [innerHTML]="image"></div>
     </mat-tab>
   </mat-tab-group>

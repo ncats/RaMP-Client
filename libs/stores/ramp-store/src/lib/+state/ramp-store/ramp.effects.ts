@@ -10,9 +10,9 @@ import {
 } from '@ramp/models/ramp-models';
 import {
   fetchClassesFromMetabolitesFile,
-  fetchCommonReactionAnalytesFile,
+  fetchCommonReactionAnalytesFile, fetchEnrichmentFromMetabolitesFile, fetchEnrichmentFromPathwaysFile,
   fetchOntologiesFromMetabolitesFile,
-  fetchPathwaysFromAnalytesFile, RampPartialState,
+  fetchPathwaysFromAnalytesFile, filterEnrichmentFromMetabolites, RampPartialState,
   RampService
 } from "@ramp/stores/ramp-store";
 import { mergeMap, of, tap, withLatestFrom } from "rxjs";
@@ -354,6 +354,19 @@ export class RampEffects {
     { dispatch: false }
   );
 
+  fetchEnrichmentFromMetabolitesFile = createEffect(
+      () =>
+        this.actions$.pipe(
+          ofType(RampActions.fetchEnrichmentFromMetabolitesFile),
+          withLatestFrom(this.store),
+          tap(([action, state]) =>
+            this.rampService.fetchEnrichmentFromMetabolitesFile(
+              state.rampStore.enriched_chemical_class
+            )
+          )
+        ),
+      { dispatch: false }
+    );
   fetchPropertiesFromMetabolites = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchPropertiesFromMetabolites),
@@ -393,15 +406,39 @@ export class RampEffects {
           .pipe(
             map(
               (ret: any) => {
-                return RampActions.fetchEnrichmentFromMetabolitesSuccess({
-                  data: ret,
-                });
+                return RampActions.fetchEnrichmentFromMetabolitesSuccess({...ret });
               },
               catchError((error: ErrorEvent) =>
                 of(RampActions.fetchEnrichmentFromMetabolitesFailure({ error }))
               )
             )
           )
+      )
+    )
+  );
+
+  filterEnrichedChemicalClasses = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchEnrichmentFromMetabolitesSuccess, RampActions.filterEnrichmentFromMetabolites),
+      withLatestFrom(this.store),
+      mergeMap(([action, state]) => {
+          return  this.rampService
+            .filterMetaboliteEnrichment(
+              state.rampStore.enriched_chemical_class,
+              action.pval_type,
+              action.pval_cutoff,
+            )
+            .pipe(
+              map(
+                (ret: any) => {
+                  return RampActions.filterEnrichmentFromMetabolitesSuccess({ ...ret });
+                },
+                catchError((error: ErrorEvent) =>
+                  of(RampActions.filterEnrichmentFromMetabolitesFailure({ error }))
+                )
+              )
+            )
+        }
       )
     )
   );
@@ -479,6 +516,34 @@ export class RampEffects {
         }
       )
     )
+  );
+
+  fetchEnrichmentFromPathwaysFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchEnrichmentFromPathwaysFile),
+        withLatestFrom(this.store),
+        tap(([action, state]) =>
+          this.rampService.fetchEnrichmentFromPathwaysFile(
+            state.rampStore.filtered_fishers_dataframe
+          )
+        )
+      ),
+    { dispatch: false }
+  );
+
+  fetchClusterImageFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchClusterImageFile),
+        withLatestFrom(this.store),
+        tap(([action, state]) =>
+          this.rampService.fetchClusterImageFile(
+            state.rampStore.clusterPlot,
+          )
+        )
+      ),
+    { dispatch: false }
   );
 
   constructor(
