@@ -334,7 +334,6 @@ export class RampEffects {
         ofType(RampActions.fetchClassesFromMetabolitesFile),
         withLatestFrom(this.store),
         tap(([action, store]) => {
-            console.log(store);
             return this.rampService.fetchClassesFromMetabolitesFile(
               action.metabolites,
               action.format

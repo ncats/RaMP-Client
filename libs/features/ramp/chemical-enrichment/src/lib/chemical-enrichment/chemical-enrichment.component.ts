@@ -194,8 +194,6 @@ export class ChemicalEnrichmentComponent
   }
 
   fetchClassesFile(): void {
-    console.log(this.inputList);
-    console.log(this.dataframe);
     this._downloadFile(this._toTSV(this.dataframe), 'fetchChemicalClass-download.tsv' )
 
    /* this.rampFacade.dispatch(
