@@ -309,6 +309,7 @@ export class RampEffects {
               metClasses: any[];
               functionCall: string;
               numFoundIds: number;
+              dataframe: any
             }) =>
               RampActions.fetchClassesFromMetabolitesSuccess({
                 data: ret.metClasses,
@@ -316,6 +317,7 @@ export class RampEffects {
                   functionCall: ret.functionCall,
                   numFoundIds: ret.numFoundIds,
                 },
+                dataframe: ret.dataframe
               }),
             catchError((error: ErrorEvent) =>
               of(RampActions.fetchClassesFromMetabolitesFailure({ error }))
@@ -330,11 +332,13 @@ export class RampEffects {
     () =>
       this.actions$.pipe(
         ofType(RampActions.fetchClassesFromMetabolitesFile),
-        tap((action) =>
-          this.rampService.fetchClassesFromMetabolitesFile(
-            action.metabolites,
-            action.format
-          )
+        withLatestFrom(this.store),
+        tap(([action, store]) => {
+            return this.rampService.fetchClassesFromMetabolitesFile(
+              action.metabolites,
+              action.format
+            )
+          }
         )
       ),
     { dispatch: false }

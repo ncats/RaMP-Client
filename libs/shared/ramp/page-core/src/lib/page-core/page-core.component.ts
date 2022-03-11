@@ -1,4 +1,5 @@
-import { Component, Optional } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { Component, Inject, Optional } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { RampQuery } from "@ramp/models/ramp-models";
 import { DataProperty } from "@ramp/shared/ui/ncats-datatable";
@@ -16,6 +17,7 @@ export class PageCoreComponent {
   examples!: string;
   title!: string;
   description!: string;
+  dataframe!: any;
   query!: RampQuery;
   matches: any[] = [];
   inputList: string[] = [];
@@ -30,9 +32,25 @@ export class PageCoreComponent {
    */
   protected ngUnsubscribe: Subject<any> = new Subject();
 
+   _toTSV(data: any[]): any[] {
+// grab the column headings (separated by tabs)
+    const headings: string  = Object.keys(data[0]).join('\t');
+// iterate over the data
+    const rows: string[] = data.reduce((acc, c) => {
+
+      // for each row object get its values and add tabs between them
+      // then add them as a new array to the outgoing array
+      return acc.concat([Object.values(c).join('\t')]);
+
+// finally joining each row with a line break
+    }, [headings]).join('\n');
+    return rows;
+  }
+
   constructor(
     protected route: ActivatedRoute,
-    @Optional() protected rampFacade?: RampFacade
+    @Optional() protected rampFacade?: RampFacade,
+    @Inject(DOCUMENT) protected dom?: Document,
   ) {
     this.title = this.route.snapshot.data.title;
     this.description = this.route.snapshot.data.description;
@@ -44,6 +62,25 @@ export class PageCoreComponent {
       }
     })
   }
+
+   _downloadFile(data: any, name: string, type: string = 'text/tsv') {
+if(this.dom) {
+  const file = new Blob([data], { type: type });
+  var link = this.dom.createElement('a');
+  if (link.download !== undefined) {
+    // feature detection
+    // Browsers that support HTML5 download attribute
+    var url = URL.createObjectURL(file);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${name}`);
+    link.style.visibility = 'hidden';
+    this.dom.body.appendChild(link);
+    link.click();
+    this.dom.body.removeChild(link);
+  }
+}
+  }
+
 
   /**
    * clean up on leaving component

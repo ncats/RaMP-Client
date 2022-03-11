@@ -54,6 +54,7 @@ export interface State extends EntityState<RampEntity> {
   metClasses?: {
     data: Classes[];
     query: RampQuery;
+    dataframe: any;
   };
 
   properties?: {
@@ -192,10 +193,10 @@ const rampReducer = createReducer(
 
   on(
     RampActions.fetchClassesFromMetabolitesSuccess,
-    (state, { data, query }) => ({
+    (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      metClasses: { data, query },
+      metClasses: { data, query, dataframe}
     })
   ),
 
