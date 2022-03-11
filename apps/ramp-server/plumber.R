@@ -25,7 +25,6 @@ cors <- function(req, res) {
   }
 }
 
-######## USED IN RAMP UI #############
 ######
 #* Return source version information
 #* @serializer unboxedJSON
@@ -91,6 +90,99 @@ function(analytetype, query_scope) {
 }
 
 #####
+#* Return all types of ontologies present in RaMP-DB
+#* @serializer unboxedJSON
+#* @get /api/ontology-types
+function() {
+  ontologies <- RaMP::getOntologies()
+  ontologies <- list(
+    num_ontology_types = length(unique(ontologies$HMDBOntologyType)),
+    uniq_ontology_types = unique(ontologies$HMDBOntologyType),
+    data = ontologies,
+    function_call = "ontologies <- getOntologies()"
+  )
+  return(ontologies)
+}
+
+#####
+#' Return available high level chemical class types (from ClassyFire)
+#' @param classtype
+#' @get /api/chemical-class-type
+function() {
+  ##todo show these in chemical classes page
+  classtypes <- tryCatch({
+    getMetabClassTypes()
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  return(classtypes)
+}
+
+
+#####
+#' Return pathways from given list of analytes
+#' @param analytes
+#' @param format one of "json" or "tsv"
+#' @post /api/pathways-from-analytes
+function(analytes, format = "json", res) {
+  analytes <- c(analytes)
+  pathways_df <- tryCatch({
+    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
+  },
+    error = function(cond) {
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+
+  analytes <- paste(analytes, collapse = ", ")
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(
+      as_attachment(unique(pathways_df), "getPathwayFromAnalyte.tsv")
+    )
+  } else {
+    return(
+      list(
+        data = unique(pathways_df),
+        function_call = paste0("RaMP::getPathwayFromAnalyte(\"", analytes ,"\")"),
+        numFoundIds = length(unique(pathways_df$commonName))
+      )
+    )
+  }
+}
+
+##########
+#' Return analytes from given list of pathways as either json or a tsv
+#' @param pathway
+#' @param analyte_type
+#' @param format one of "json" or "tsv"
+#' @post /api/analytes-from-pathways
+function(pathway, analyte_type="both", format = "json", res) {
+  pathway <- c(pathway)
+  analyte <- analyte_type
+  analytes_df <- tryCatch({
+    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+  },
+    error = function(cond) {
+      print(cond)
+      return(data.frame(stringsAsFactors = FALSE))
+    })
+  pathways <- paste(pathway, collapse = ", ")
+  res$serializer <- serializers[[format]]
+  if(format == "tsv") {
+    return(as_attachment(unique(analytes_df), "getAnalyteFromPathway.tsv"))
+  } else {
+    return(
+      list(
+        data = analytes_df,
+        function_call = paste0("RaMP::getAnalyteFromPathway(\"", pathways ,"\")"),
+        numFoundIds = length(unique(analytes_df$pathwayName))
+      )
+    )
+  }
+}
+
+#####
 #* Return ontologies from list of metabolites
 #* @param metabolite
 #* @param format one of "json" or "tsv"
@@ -104,13 +196,13 @@ function(metabolite, NameOrIds= "ids", format = "json", res) {
   if(format == "tsv") {
     return(as_attachment(ontologies_df, "getOntoFromMeta.tsv"))
   } else {
-  return(
-    list(
-      data = ontologies_df,
-      function_call = paste0("RaMP::getOntoFromMeta(", metabolites_ids ,")"),
-      numFoundIds = length(unique(ontologies_df$sourceId))
+    return(
+      list(
+        data = ontologies_df,
+        function_call = paste0("RaMP::getOntoFromMeta(", metabolites_ids ,")"),
+        numFoundIds = length(unique(ontologies_df$sourceId))
+      )
     )
-  )
   }
 }
 
@@ -138,81 +230,90 @@ function(ontology, format = "json", res) {
       return(as_attachment(ontologies, "getMetaFromOnto.tsv"))
     } else {
       return(
-      list(
-        data = ontologies,
-        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                               ontologies_names, "))"),
-        numFoundIds = length(unique(ontologies$Ontology))
+        list(
+          data = ontologies,
+          function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+                                 ontologies_names, "))"),
+          numFoundIds = length(unique(ontologies$Ontology))
+        )
       )
-    )
-  }
+    }
   }
 }
 
-##########
-#' Return analytes from given list of pathways as either json or a tsv
-#' @param pathway
-#' @param analyte_type
+######
+#' Return available chemical classes of given metabolites in RaMP-DB
+#' @param metabolites
 #' @param format one of "json" or "tsv"
-#' @post /api/analytes-from-pathways
-function(pathway, analyte_type="both", format = "json", res) {
-  pathway <- c(pathway)
-  analyte <- analyte_type
-  analytes_df <- tryCatch({
-    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+#' @post /api/chemical-classes
+function(metabolites="", format ="json", res) {
+  mets <- c(metabolites)
+  chemical_class_df <- tryCatch({
+    classes_df <- RaMP::chemicalClassSurvey(
+      mets
+    )
   },
     error = function(cond) {
       print(cond)
       return(data.frame(stringsAsFactors = FALSE))
     })
- pathways <- paste(pathway, collapse = ", ")
+  mets <- paste(mets, collapse = ", ")
   res$serializer <- serializers[[format]]
   if(format == "tsv") {
-    return(as_attachment(analytes_df, "getAnalyteFromPathway.tsv"))
-  } else {
-  return(
-    list(
-      data = analytes_df,
-      function_call = paste0("RaMP::getAnalyteFromPathway(\"", pathways ,"\")"),
-      numFoundIds = length(unique(analytes_df$pathwayName))
+    return(
+      as_attachment(chemical_class_df$met_classes, "chemicalClassSurvey.tsv")
     )
-  )
+  } else {
+    return(
+      list(
+        data = chemical_class_df$met_classes,
+        function_call = paste0("RaMP::chemicalClassSurvey(", mets ,"))"),
+        numFoundIds = length(unique(chemical_class_df$met_classes$sourceId))
+      )
+    )
   }
 }
 
 #####
-#' Return pathways from given list of analytes
-#' @param analytes
+#' Return chemical properties of given metabolites
+#' @param metabolites
+#' @param property
 #' @param format one of "json" or "tsv"
-#' @post /api/pathways-from-analytes
-function(analytes, format = "json", res) {
-  analytes <- c(analytes)
-  pathways_df <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
+#' @post /api/chemical-properties
+function(metabolites="", property="all", format = "json", res) {
+  metabolites <- c(metabolites)
+  properties <- property
+  if (!is.null(property)) {
+    properties <- c(property)
+  }
+  chemical_properties_df <- tryCatch({
+    analytes_df <- RaMP::getChemicalProperties(
+      metabolites,
+      propertyList = properties
+    )
   },
     error = function(cond) {
+      print(cond)
       return(data.frame(stringsAsFactors = FALSE))
     })
-
-  analytes <- paste(analytes, collapse = ", ")
+  mets <- paste(metabolites, collapse = ", ")
   res$serializer <- serializers[[format]]
   if(format == "tsv") {
     return(
-      as_attachment(unique(pathways_df), "getPathwayFromAnalyte.tsv")
+      as_attachment(chemical_properties_df$chem_props, "getChemicalProperties.tsv")
     )
   } else {
-  return(
-    list(
-      data = unique(pathways_df),
-      function_call = paste0("RaMP::getPathwayFromAnalyte(\"", analytes ,"\")"),
-      numFoundIds = length(unique(pathways_df$commonName))
+    return(
+      list(
+        data = chemical_properties_df$chem_props,
+        function_call = paste0("RaMP::getChemicalProperties(", mets ,"))"),
+        numFoundIds = length(unique(chemical_properties_df$chem_props$chem_source_id))
+      )
     )
-  )
   }
 }
 
 ####
-# todo numfoundids returns too many
 #' Return analytes involved in same reaction as given list of analytes
 #' @param analyte
 #' @param format one of "json" or "tsv"
@@ -248,85 +349,13 @@ function(analyte, format = "json", res) {
       as_attachment(unique(analytes_df_ids), "rampFastCata.tsv")
     )
   } else {
-  return(
-    list(
-      data = unique(analytes_df_ids),
-      function_call = paste0("RaMP::rampFastCata(", analytes_names ,"))"),
-      numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
-    )
-  )
-  }
-}
-
-######
-#' Return available chemical classes of given metabolites in RaMP-DB
-#' @param metabolites
-#' @param format one of "json" or "tsv"
-#' @post /api/chemical-classes
-function(metabolites="", format ="json", res) {
-  mets <- c(metabolites)
-  chemical_class_df <- tryCatch({
-    classes_df <- RaMP::chemicalClassSurvey(
-      mets
-    )
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  mets <- paste(mets, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
     return(
-      as_attachment(chemical_class_df$met_classes, "chemicalClassSurvey.tsv")
+      list(
+        data = unique(analytes_df_ids),
+        function_call = paste0("RaMP::rampFastCata(", analytes_names ,"))"),
+        numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
+      )
     )
-  } else {
-  return(
-    list(
-      data = chemical_class_df$met_classes,
-      function_call = paste0("RaMP::chemicalClassSurvey(", mets ,"))"),
-      numFoundIds = length(unique(chemical_class_df$met_classes$sourceId))
-    )
-  )
-  }
-}
-
-#####
-#' Return chemical properties of given metabolites
-#' @param metabolites
-#' @param property
-#' @param format one of "json" or "tsv"
-#' @post /api/chemical-properties
-function(metabolites="", property="all", format = "json", res) {
-  metabolites <- c(metabolites)
-  properties <- property
-  if (!is.null(property)) {
-    properties <- c(property)
-  }
-  chemical_properties_df <- tryCatch({
-    analytes_df <- RaMP::getChemicalProperties(
-      metabolites,
-      propertyList = properties
-    )
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  mets <- paste(metabolites, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
-    return(
-      as_attachment(chemical_properties_df$chem_props, "getChemicalProperties.tsv")
-    )
-  } else {
-  return(
-    list(
-      data = chemical_properties_df$chem_props,
-      function_call = paste0("RaMP::getChemicalProperties(", mets ,"))"),
-      numFoundIds = length(unique(chemical_properties_df$chem_props$chem_source_id))
-    )
-  )
   }
 }
 
@@ -463,48 +492,9 @@ function(metabolites, format = "json", res) {
     return(
       list(
         data = chemical_enrichment_df
-       # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
+        # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
         #numFoundIds = length(unique(chemical_enrichment_df$chem_props$chem_source_id))
       )
     )
   }
 }
-
-#####
-#* Return all types of ontologies present in RaMP-DB
-#* @serializer unboxedJSON
-#* @get /api/ontology-types
-function() {
-  ontologies <- RaMP::getOntologies()
-  ontologies <- list(
-    num_ontology_types = length(unique(ontologies$HMDBOntologyType)),
-    uniq_ontology_types = unique(ontologies$HMDBOntologyType),
-    data = ontologies,
-    function_call = "ontologies <- getOntologies()"
-  )
-  return(ontologies)
-}
-
-#####
-#' Return available high level chemical class types (from ClassyFire)
-#' @param classtype
-#' @get /api/chemical-class-type
-function() {
-  ##todo show these in chemical classes page
-  classtypes <- tryCatch({
-    getMetabClassTypes()
-  },
-    error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  return(classtypes)
-}
-
-
-
-
-
-
-
-
-

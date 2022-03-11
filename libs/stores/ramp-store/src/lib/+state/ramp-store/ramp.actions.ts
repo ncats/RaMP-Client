@@ -227,6 +227,7 @@ export const fetchClassesFromMetabolitesSuccess = createAction(
   props<{
     data: Classes[];
     query: RampQuery;
+    dataframe: any;
   }>()
 );
 

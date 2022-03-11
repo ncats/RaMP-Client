@@ -198,6 +198,7 @@ export class RampService {
     metClasses: Classes[];
     functionCall: string;
     numFoundIds: number;
+    dataframe: any
   }> {
     const options = {
       metabolites: metabolites,
@@ -222,6 +223,7 @@ export class RampService {
             ),
             functionCall: response.function_call[0],
             numFoundIds: response.numFoundIds[0],
+            dataframe: response.data
           };
         })
       );
