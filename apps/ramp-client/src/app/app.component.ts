@@ -25,13 +25,26 @@ export class AppComponent implements OnInit {
       link: 'Biological Pathways',
       children: [
         {
-          link: 'analytes-from-pathways',
-          label: 'Analytes from Pathways',
+          link: 'pathways-from-analytes',
+          label: 'Pathways from Input Analytes',
         },
         {
-          link: 'pathways-from-analytes',
-          label: 'Pathways from Analytes',
+          link: 'analytes-from-pathways',
+          label: 'Analytes from Input Pathways',
         }
+      ],
+    },
+    {
+      link: 'Ontologies',
+      children: [
+        {
+          link: 'ontologies-from-metabolites',
+          label: 'Ontologies from Input Metabolites',
+        },
+        {
+          link: 'metabolites-from-ontologies',
+          label: 'Metabolites from Input Ontologies',
+        },
       ],
     },
     {
@@ -43,20 +56,7 @@ export class AppComponent implements OnInit {
         },
         {
           link: 'properties-from-metabolites',
-          label: 'Chemical Properties from Metabolites',
-        },
-      ],
-    },
-    {
-      link: 'Ontologies',
-      children: [
-        {
-          link: 'ontologies-from-metabolites',
-          label: 'Ontologies from Metabolites',
-        },
-        {
-          link: 'metabolites-from-ontologies',
-          label: 'Metabolites from Ontologies',
+          label: 'Chemical Properties from Input Metabolites',
         },
       ],
     },
@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
       children: [
         {
           link: 'common-reaction-analytes',
-          label: 'Common Reaction Analytes',
+          label: 'Retrieve Analytes involved in Same Reactions as input Analytes\n',
         }
         ]
     },
@@ -74,11 +74,11 @@ export class AppComponent implements OnInit {
       children: [
         {
           link: 'pathway-enrichment',
-          label: 'Pathway Enrichment Analysis',
+          label: 'Biological Pathway Enrichment\n',
         },
         {
           link: 'chemical-enrichment',
-          label: 'Chemical Enrichment Analysis',
+          label: 'Chemical Class Enrichment',
         },
       ],
     },
