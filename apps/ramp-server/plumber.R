@@ -216,7 +216,6 @@ function(analytes, format = "json", res) {
 #' Return analytes involved in same reaction as given list of analytes
 #' @param analyte
 #' @param format one of "json" or "tsv"
-#' @get /api/common-reaction-analytes
 #' @post /api/common-reaction-analytes
 function(analyte, format = "json", res) {
   analytes <- c(analyte)
@@ -437,36 +436,6 @@ function(
   unlink(filename)
   return(r)
 }
-
-#####
-#' Return clustered Fisher's test results
-#' from given list of Fisher's test results
-#' @param fishers_results
-#' @param perc_analyte_overlap
-#' @param perc_pathway_overlap
-#' @param min_pathway_tocluster
-#' @post /api/cluster-plot-png
-#' @serializer contentType list(type='image/png')
-function(
-  fishers_results,
-  perc_analyte_overlap = 0.2,
-  perc_pathway_overlap = 0.2,
-  min_pathway_tocluster=2
-) {
-  if (typeof(min_pathway_tocluster) == "character") {
-    min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
-  }
-
-  clustered_plot <- RaMP::pathwayResultsPlot(
-    fishers_results,
-    text_size = 8,
-    perc_analyte_overlap = perc_analyte_overlap,
-    min_pathway_tocluster = min_pathway_tocluster,
-    perc_pathway_overlap = perc_pathway_overlap
-  )
-  return(print(clustered_plot))
-}
-
 
 #####
 #' Perform chemical enrichment on given metabolites
