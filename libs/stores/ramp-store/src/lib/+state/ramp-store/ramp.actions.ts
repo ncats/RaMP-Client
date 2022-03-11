@@ -263,13 +263,44 @@ export const fetchEnrichmentFromMetabolites = createAction(
   props<{ metabolites: string[] }>()
 );
 
+export const fetchEnrichmentFromMetabolitesFile = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromMetabolitesFile',
+  props<{ metabolites: string[], format: string }>()
+);
+
 export const fetchEnrichmentFromMetabolitesSuccess = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromMetabolites Success',
-  props<{ data: ChemicalEnrichment[] }>()
+  props<{
+    data: ChemicalEnrichment[];
+    enriched_chemical_class?: any;
+    pval_type?: string;
+    pval_cutoff?: number;
+  }>()
+);
+
+export const filterEnrichmentFromMetabolites = createAction(
+  '[Ramp/API] filterEnrichmentFromMetabolites',
+  props<{
+    pval_type: string;
+    pval_cutoff: number;
+  }>()
+);
+
+export const filterEnrichmentFromMetabolitesSuccess = createAction(
+  '[Ramp/API] filterEnrichmentFromMetabolites Success',
+  props<{
+    data: ChemicalEnrichment[];
+    enriched_chemical_class?: any;
+  }>()
 );
 
 export const fetchEnrichmentFromMetabolitesFailure = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromMetabolites Failure',
+  props<{ error: any }>()
+);
+
+export const filterEnrichmentFromMetabolitesFailure = createAction(
+  '[Ramp/API] Fetch filterEnrichmentFromMetabolites Failure',
   props<{ error: any }>()
 );
 
@@ -278,6 +309,10 @@ export const fetchEnrichmentFromPathways = createAction(
   props<{
     pathways: string[];
   }>()
+);
+
+export const fetchEnrichmentFromPathwaysFile = createAction(
+  '[Ramp/API] Fetch fetchEnrichmentFromPathwaysFile'
 );
 
 export const fetchEnrichmentFromPathwaysSuccess = createAction(
@@ -328,6 +363,15 @@ export const filterEnrichmentFromPathwaysFailure = createAction(
 
 export const fetchClusterFromEnrichment = createAction(
   '[Ramp/API] Fetch fetchClusterFromEnrichment',
+  props<{
+    perc_analyte_overlap: number;
+    min_pathway_tocluster: number;
+    perc_pathway_overlap: number;
+  }>()
+);
+
+export const fetchClusterImageFile = createAction(
+  '[Ramp/API] Fetch fetchClusterImageFile',
   props<{
     perc_analyte_overlap: number;
     min_pathway_tocluster: number;

@@ -1,8 +1,14 @@
 import { InjectionToken, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatRadioModule } from "@angular/material/radio";
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterModule, Routes } from '@angular/router';
 import { SharedRampInputRowModule } from '@ramp/shared/ramp/input-row';
 import { SharedRampPageCoreModule } from '@ramp/shared/ramp/page-core';
@@ -40,7 +46,13 @@ const ROUTES: Routes = [
     FlexLayoutModule,
     MatTabsModule,
     MatFormFieldModule,
-    SharedUiFeedbackPanelModule
+    SharedUiFeedbackPanelModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatRadioModule,
+    MatInputModule
   ],
   declarations: [ChemicalEnrichmentComponent],
   providers: [

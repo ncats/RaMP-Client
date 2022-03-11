@@ -63,6 +63,8 @@ export interface RampEntity {
     data: FisherResult[];
     query: RampQuery;
   };
+
+  enriched_chemical_class?: any;
   combined_fishers_dataframe?: any;
   filtered_fishers_dataframe?: any;
   clusterPlot?: any;
