@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { FeaturesRampRampHeaderModule } from '@ramp/features/ramp/ramp-header';
+import { SharedNcatsNcatsFooterModule } from "@ramp/shared/ncats/ncats-footer";
 import { SharedUiLoadingSpinnerModule } from '@ramp/shared/ui/loading-spinner';
 import { RampFacade, StoresRampStoreModule } from '@ramp/stores/ramp-store';
 import { environment } from '../environments/environment';
@@ -19,6 +20,7 @@ describe('AppComponent', () => {
         HttpClientTestingModule,
         SharedUiLoadingSpinnerModule,
         FeaturesRampRampHeaderModule,
+        SharedNcatsNcatsFooterModule,
         MatDialogModule,
         StoresRampStoreModule,
         StoreModule.forRoot(
