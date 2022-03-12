@@ -46,6 +46,7 @@ export interface RampEntity {
   metClasses?: {
     data: Classes[];
     query: RampQuery;
+    dataframe: any;
   };
 
   metabolites?: {

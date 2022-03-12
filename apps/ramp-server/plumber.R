@@ -196,13 +196,13 @@ function(metabolite, NameOrIds= "ids", format = "json", res) {
   if(format == "tsv") {
     return(as_attachment(ontologies_df, "getOntoFromMeta.tsv"))
   } else {
-  return(
-    list(
-      data = ontologies_df,
-      function_call = paste0("RaMP::getOntoFromMeta(", metabolites_ids ,")"),
-      numFoundIds = length(unique(ontologies_df$sourceId))
+    return(
+      list(
+        data = ontologies_df,
+        function_call = paste0("RaMP::getOntoFromMeta(", metabolites_ids ,")"),
+        numFoundIds = length(unique(ontologies_df$sourceId))
+      )
     )
-  )
   }
 }
 
@@ -230,14 +230,14 @@ function(ontology, format = "json", res) {
       return(as_attachment(ontologies, "getMetaFromOnto.tsv"))
     } else {
       return(
-      list(
-        data = ontologies,
-        function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                               ontologies_names, "))"),
-        numFoundIds = length(unique(ontologies$Ontology))
+        list(
+          data = ontologies,
+          function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
+                                 ontologies_names, "))"),
+          numFoundIds = length(unique(ontologies$Ontology))
+        )
       )
-    )
-  }
+    }
   }
 }
 
@@ -349,13 +349,13 @@ function(analyte, format = "json", res) {
       as_attachment(unique(analytes_df_ids), "rampFastCata.tsv")
     )
   } else {
-  return(
-    list(
-      data = unique(analytes_df_ids),
-      function_call = paste0("RaMP::rampFastCata(", analytes_names ,"))"),
-      numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
+    return(
+      list(
+        data = unique(analytes_df_ids),
+        function_call = paste0("RaMP::rampFastCata(", analytes_names ,"))"),
+        numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
+      )
     )
-  )
   }
 }
 
@@ -492,7 +492,7 @@ function(metabolites, format = "json", res) {
     return(
       list(
         data = chemical_enrichment_df
-       # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
+        # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
         #numFoundIds = length(unique(chemical_enrichment_df$chem_props$chem_source_id))
       )
     )
