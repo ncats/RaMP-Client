@@ -61,7 +61,9 @@ describe('RampFacade', () => {
      * The initially generated facade::loadAll() returns empty array
      */
     it('loadAll() should return empty list with loading == false', async () => {
+      // @ts-ignore
       let list = await readFirst(facade.allRampEntity$);
+      // @ts-ignore
       let isLoaded = await readFirst(facade.loading$);
 
       expect(list.length).toBe(0);
@@ -69,7 +71,9 @@ describe('RampFacade', () => {
 
       facade.init();
 
+      // @ts-ignore
       list = await readFirst(facade.allRampEntity$);
+      // @ts-ignore
       isLoaded = await readFirst(facade.loading$);
 
       //  expect(list.length).toBe(0);
@@ -80,7 +84,9 @@ describe('RampFacade', () => {
      * Use `loadRampStoreSuccess` to manually update list
      */
     it('allRampEntity$ should return the loaded list; and loading flag == false', async () => {
+      // @ts-ignore
       let list = await readFirst(facade.allRampEntity$);
+      // @ts-ignore
       let isLoaded = await readFirst(facade.loading$);
 
       expect(list.length).toBe(0);
@@ -91,8 +97,9 @@ describe('RampFacade', () => {
           rampStore: [createRampEntity('AAA'), createRampEntity('BBB')],
         })
       );
-
+      // @ts-ignore
       list = await readFirst(facade.allRampEntity$);
+      // @ts-ignore
       isLoaded = await readFirst(facade.loading$);
 
       expect(list.length).toBe(2);
