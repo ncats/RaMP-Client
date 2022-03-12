@@ -1,0 +1,50 @@
+.tile-holder {
+  margin-top: 10vh;
+}
+
+.grid-list {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-template-columns: repeat(auto-fill, minmax(45%, 2fr));
+  grid-template-rows: auto;
+  grid-gap: 3em;
+}
+
+@media only screen and (max-width: 960px) {
+  .grid-list {
+    grid-template-columns: repeat(auto-fill, minmax(90%, 1fr));
+  }
+}
+
+@media only screen and (max-width: 599px) {
+  .grid-list {
+    grid-template-columns: repeat(auto-fill, minmax(90%, 1fr));
+  }
+}
+
+.ramp-tile {
+  border: 1px solid;
+  border-color: #265668;
+  padding: 0;
+
+}
+
+.ramp-header {
+  background-color: #265668;
+  color: #ffffff;
+  padding-top: 12px;
+}
+
+mat-card-content {
+  padding: 16px;
+}
+
+.tile-button {
+  width:95%;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  white-space: break-spaces;
+  word-break: break-word;
+}

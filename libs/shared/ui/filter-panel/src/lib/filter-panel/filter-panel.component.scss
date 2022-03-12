@@ -1,0 +1,28 @@
+.filter-table {
+  min-width: 100%;
+}
+
+.viewport {
+  height: 30vh;
+  width: 100%;
+}
+
+.filter-item {
+  display: grid;
+  height: 50px;
+  grid-auto-rows: max-content;
+  grid-template-columns: 0.2fr 2.1fr 0.7fr;
+  grid-template-areas: 'checkbox label count';
+}
+.count {
+  grid-area: count;
+  text-align: end;
+  padding-right: 1vw;
+}
+
+.checkbox {
+  grid-area: checkbox;
+}
+.label {
+  grid-area: label;
+}

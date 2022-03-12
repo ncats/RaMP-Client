@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ncats/ncats-header",
+  "sourceRoot": "libs/shared/ncats/ncats-header/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/ncats/ncats-header"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/ncats/ncats-header/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ncats/ncats-header/src/**/*.ts",
+          "libs/shared/ncats/ncats-header/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

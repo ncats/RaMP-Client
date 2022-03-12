@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/error-dialog",
+  "sourceRoot": "libs/shared/ui/error-dialog/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/ui/error-dialog"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/ui/error-dialog/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/error-dialog/src/**/*.ts",
+          "libs/shared/ui/error-dialog/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

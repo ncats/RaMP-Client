@@ -1,0 +1,24 @@
+<ncats-frontend-library-header-template class="ncats-header">
+  <div class="left-options">
+    <a
+      href="http://www.ncats.nih.gov"
+      title="National Center for Advancing Translational Sciences | Homepage"
+      target="_blank"
+    >
+      <img
+        src="./assets/ncats/ncats.svg"
+        alt="ncats logo"
+        class="ncats-logo"
+        id="logo"
+      />
+    </a>
+    <span [fxHide.lt-sm]="true">
+      <a href="https://drugs.ncats.io/"
+        ><span class="logo-header subsection"
+          >&nbsp; <span class="logo-header">Inxight:</span> Drugs</span
+        ></a
+      >
+    </span>
+  </div>
+  <div class="right-options" fxLayoutAlign="space-around center"></div>
+</ncats-frontend-library-header-template>

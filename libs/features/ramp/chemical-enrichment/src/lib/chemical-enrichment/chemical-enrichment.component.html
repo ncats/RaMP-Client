@@ -1,0 +1,132 @@
+<div class="content-panel">
+  <div fxLayout="row" fxLayoutAlign="space-around start">
+    <div fxFlex="95">
+      <h1 class="page-title">
+        {{ title | titlecase }}
+      </h1>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-around start">
+    <div fxFlex="95">
+      <ramp-description
+        [supportedIds]="supportedIds"
+        [description]="description"
+        [function]="query?.functionCall"
+      ></ramp-description>
+    </div>
+  </div>
+  <mat-tab-group [color]="'accent'">
+    <mat-tab [label]="'Input'">
+      <br />
+      <br />
+      <br />
+      <ramp-input-row
+        [input]="input"
+        [examples]="examples"
+        [showDownload] = false
+        (dataSearch)="fetchEnrichment($event)"
+      >
+      </ramp-input-row>
+    </mat-tab>
+    <mat-tab [disabled]="classesAsDataProperty.length === 0">
+      <ng-template mat-tab-label>
+        Chemical Classes
+        <ramp-loading
+          [isLoading]="classesLoading"
+          [size]="'small'"
+          [position]="'right'"
+        ></ramp-loading>
+      </ng-template>
+      <ramp-feedback-panel
+        [matchesLength]="matches.length"
+        [dataLength] = classesAsDataProperty.length
+        [inputLength]="inputList.length"
+        [noMatches]="noMatches"
+        [inputType]="input">
+      </ramp-feedback-panel>
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <div fxFlex="10">
+          <button
+            mat-stroked-button
+            class="tool-button list-download"
+            (click)="fetchClassesFile()"
+            matTooltip="Download Data"
+            color="accent"
+          >
+            <span fxHide.lt-lg>Download</span><mat-icon>download</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <ramp-query-page
+        [dataColumns]="classesColumns"
+        [dataAsDataProperty]="classesAsDataProperty">
+      </ramp-query-page>
+    </mat-tab>
+    <mat-tab [disabled]="dataAsDataProperty.length === 0">
+      <ng-template mat-tab-label>
+        Enriched Chemical Classes
+        <ramp-loading
+          [isLoading]="enrichmentLoading"
+          [size]="'small'"
+          [position]="'right'"
+        ></ramp-loading>
+      </ng-template>
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-around start"
+        class="additional-params"
+      >
+        <div fxFlex="40">
+          <h3>Filter Results</h3>
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <div fxFlex="40">
+              <mat-form-field
+                appearance="outline"
+                color="accent"
+                class="p-val-input">
+                <mat-label>P-Value Cutoff</mat-label>
+                <input matInput type="number" [formControl]="pValueFormCtrl" />
+              </mat-form-field>
+            </div>
+            <div fxFlex="40">
+              <mat-radio-group [formControl]="pValueTypeFormCtrl">
+                <mat-radio-button [value]="'fdr'" [color]="'accent'">FDR</mat-radio-button> <br>
+                <mat-radio-button [value]="'pval'" [color]="'accent'">Pval Combined</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start start">
+            <div fxFlex="20">
+              <button mat-flat-button (click)="filterEnrichments()" [color]="'accent'">Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <ramp-feedback-panel
+        [function]="query?.functionCall">
+      </ramp-feedback-panel>
+      <div fxLayout="row" fxLayoutAlign="end center">
+        <div fxFlex="10">
+          <button
+            mat-stroked-button
+            class="tool-button list-download"
+            (click)="fetchEnrichedClassesFile()"
+            matTooltip="Download Data"
+            color="accent"
+          >
+            <span fxHide.lt-lg>Download</span><mat-icon>download</mat-icon>
+          </button>
+        </div>
+      </div>
+      <ramp-loading
+        [isLoading]="enrichmentLoading"></ramp-loading>
+      <ramp-query-page
+        [dataColumns]="enrichmentColumns"
+        [dataAsDataProperty]="dataAsDataProperty"
+      >
+      </ramp-query-page>
+    </mat-tab>
+  </mat-tab-group>
+</div>

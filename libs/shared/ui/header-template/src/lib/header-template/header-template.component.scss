@@ -1,0 +1,20 @@
+.toolbar-template {
+  position: fixed;
+}
+
+img.toolbar-template-logo {
+  height: 100%;
+  cursor: pointer;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.active {
+  text-decoration: underline;
+}
+
+.mobile-menu-container {
+  z-index: 2;
+}

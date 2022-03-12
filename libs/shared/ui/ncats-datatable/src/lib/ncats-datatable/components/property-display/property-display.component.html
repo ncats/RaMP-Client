@@ -1,0 +1,70 @@
+<div *ngIf="property" class="property-holder">
+  <span
+    class=""
+    *ngIf="showLabel"
+    matTooltip="{{ property.tooltip || property.label }}"
+    ><b>{{ property.label }}:&nbsp;</b></span
+  >
+  <div *ngIf="property && isArray(property.value); else single">
+    <span *ngFor="let value of property.value">
+      <div [ngSwitch]="fetchDisplayType()">
+        <ng-container *ngSwitchCase="'internalLink'">
+          <a
+            [routerLink]="property.internalLink"
+            [queryParams]="property?.queryParams"
+            matTooltip="{{ property.tooltip || property.label }}"
+            >{{ value }}</a
+          >
+          <br />
+        </ng-container>
+        <ng-container *ngSwitchCase="'externalLink'">
+          <a
+            href="{{ property.url }}"
+            target="_blank"
+            rel="noreferrer"
+            [attr.aria-label]="property.label"
+            class="external-link"
+            >{{ property.label }}</a
+          >
+          <br />
+        </ng-container>
+        <ng-container *ngSwitchCase="'number'">
+          <div class="number-display">{{ value | number }}</div>
+          <br />
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          {{ value }}
+          <br />
+        </ng-container>
+      </div>
+    </span>
+  </div>
+  <ng-template #single>
+    <div [ngSwitch]="fetchDisplayType()">
+      <ng-container *ngSwitchCase="'internalLink'">
+        <a
+          [routerLink]="property.internalLink"
+          [queryParams]="property?.queryParams"
+          matTooltip="{{ property.tooltip || property.label }}"
+          >{{ property.value }}</a
+        >
+      </ng-container>
+      <ng-container *ngSwitchCase="'externalLink'">
+        <a
+          href="{{ property.url }}"
+          target="_blank"
+          rel="noreferrer"
+          [attr.aria-label]="property.label"
+          class="external-link"
+          >{{ property.label }}</a
+        >
+      </ng-container>
+      <ng-container *ngSwitchCase="'number'">
+        <div class="number-display">{{ property.value | number }}</div>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        {{ property.value }}
+      </ng-container>
+    </div>
+  </ng-template>
+</div>

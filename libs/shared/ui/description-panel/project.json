@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/description-panel",
+  "sourceRoot": "libs/shared/ui/description-panel/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/ui/description-panel"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/ui/description-panel/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/description-panel/src/**/*.ts",
+          "libs/shared/ui/description-panel/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

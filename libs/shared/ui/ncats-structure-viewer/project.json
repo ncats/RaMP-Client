@@ -1,0 +1,28 @@
+{
+  "projectType": "library",
+  "root": "libs/shared/ui/ncats-structure-viewer",
+  "sourceRoot": "libs/shared/ui/ncats-structure-viewer/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/shared/ui/ncats-structure-viewer"
+      ],
+      "options": {
+        "jestConfig": "libs/shared/ui/ncats-structure-viewer/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/ui/ncats-structure-viewer/src/**/*.ts",
+          "libs/shared/ui/ncats-structure-viewer/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

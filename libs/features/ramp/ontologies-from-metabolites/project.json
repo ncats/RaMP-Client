@@ -1,0 +1,30 @@
+{
+  "projectType": "library",
+  "root": "libs/features/ramp/ontologies-from-metabolites",
+  "sourceRoot": "libs/features/ramp/ontologies-from-metabolites/src",
+  "prefix": "ramp",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/libs/features/ramp/ontologies-from-metabolites"
+      ],
+      "options": {
+        "jestConfig": "libs/features/ramp/ontologies-from-metabolites/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/features/ramp/ontologies-from-metabolites/src/**/*.ts",
+          "libs/features/ramp/ontologies-from-metabolites/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": [
+    "libs:ontologies"
+  ]
+}
