@@ -1,17 +1,17 @@
+import { DOCUMENT } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, Inject,
   OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+  ViewEncapsulation
+} from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { Ontology, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchOntologiesFromMetabolites,
-  fetchOntologiesFromMetabolitesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
 import { takeUntil } from "rxjs";
@@ -53,16 +53,17 @@ export class OntologiesFromMetabolitesComponent
   constructor(
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    @Inject(DOCUMENT) protected dom: Document,
   ) {
-    super(route, rampFacade);
+    super(route, rampFacade, dom);
   }
 
   ngOnInit(): void {
     this.rampFacade.ontologies$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Ontology[]; query: RampQuery } | undefined) => {
+      (res: { data: Ontology[]; query: RampQuery, dataframe: any } | undefined) => {
         if (res && res.data) {
           this._mapData(res.data);
           this.matches = Array.from(new Set(res.data.map(onto => onto.sourceId.toLocaleLowerCase())));
@@ -70,6 +71,13 @@ export class OntologiesFromMetabolitesComponent
         }
         if (res && res.query) {
           this.query = res.query;
+        }
+        if (res && res.dataframe) {
+          this.dataframe = res.dataframe;
+          if (this.downloadQueued) {
+            this._downloadFile(this._toTSV(this.dataframe), 'fetchOntologiesFromMetabolitesFile-download.tsv')
+            this.downloadQueued = false;
+          }
         }
         this.ref.markForCheck();
       }
@@ -84,9 +92,12 @@ export class OntologiesFromMetabolitesComponent
   }
 
   fetchOntologiesFile(event: string[]): void {
-    this.rampFacade.dispatch(
-      fetchOntologiesFromMetabolitesFile({ metabolite: event, format: 'tsv' })
-    );
+    if(!this.dataframe) {
+      this.fetchOntologies(event);
+      this.downloadQueued = true;
+    } else {
+      this._downloadFile(this._toTSV(this.dataframe), 'fetchOntologiesFromMetabolitesFile-download.tsv')
+    }
   }
 
   private _mapData(data: any): void {

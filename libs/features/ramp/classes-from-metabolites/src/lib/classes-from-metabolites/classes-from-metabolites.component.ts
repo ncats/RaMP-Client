@@ -1,13 +1,13 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DOCUMENT } from "@angular/common";
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { Classes, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClassesFromMetabolites,
-  fetchClassesFromMetabolitesFile,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
+  RampFacade
+} from "@ramp/stores/ramp-store";
 import { takeUntil } from "rxjs";
 
 @Component({
@@ -19,6 +19,7 @@ export class ClassesFromMetabolitesComponent
   extends PageCoreComponent
   implements OnInit
 {
+  @ViewChild('fileUpload') fileUpload!: ElementRef;
   classesColumns: DataProperty[] = [
     new DataProperty({
       label: 'Source IDs',
@@ -70,20 +71,25 @@ export class ClassesFromMetabolitesComponent
       customComponent: TREE_VIEWER_COMPONENT,
     }),*/
   ];
+  fileName = '';
+  file?: File;
 
   constructor(
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    @Inject(DOCUMENT) protected dom: Document,
   ) {
-    super(route, rampFacade);
+    super(route, rampFacade, dom);
   }
 
   ngOnInit(): void {
     this.rampFacade.classes$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Classes[]; query: RampQuery } | undefined) => {
+      (res: {
+        dataframe: any;
+        data: Classes[]; query: RampQuery } | undefined) => {
         if (res && res.data) {
           const classGroup: Map<string, any> = new Map<string, any>();
           res.data.forEach((chclass) => {
@@ -108,6 +114,13 @@ export class ClassesFromMetabolitesComponent
         if (res && res.query) {
           this.query = res.query;
         }
+        if (res && res.dataframe) {
+          this.dataframe = res.dataframe;
+          if (this.downloadQueued) {
+            this._downloadFile(this._toTSV(this.dataframe), 'fetchChemicalClass-download.tsv')
+            this.downloadQueued = false;
+          }
+        }
         this.ref.markForCheck();
       }
     );
@@ -115,15 +128,24 @@ export class ClassesFromMetabolitesComponent
 
   fetchClasses(event: string[]): void {
     this.inputList = event.map(item => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(
-      fetchClassesFromMetabolites({ metabolites: event })
-    );
+    if(this.file) {
+      this.rampFacade.dispatch(
+        fetchClassesFromMetabolites({ metabolites: event, pop: this.file })
+      );
+    } else {
+      this.rampFacade.dispatch(
+        fetchClassesFromMetabolites({ metabolites: event })
+      );
+    }
   }
 
   fetchClassesFile(event: string[]): void {
-    this.rampFacade.dispatch(
-      fetchClassesFromMetabolitesFile({ metabolites: event, format: 'tsv' })
-    );
+    if(!this.dataframe) {
+      this.fetchClasses(event);
+      this.downloadQueued = true;
+    } else {
+      this._downloadFile(this._toTSV(this.dataframe), 'fetchChemicalClass-download.tsv' )
+    }
   }
 
   private _mapData(data: any): void {
@@ -138,5 +160,19 @@ export class ClassesFromMetabolitesComponent
       });
       return newObj;
     });
+  }
+
+  onFileSelected(event: any) {
+    this.file = event.target.files[0];
+    if (this.file) {
+      this.fileName = this.file.name;
+      this.ref.markForCheck();
+    }
+  }
+
+  cancelUpload() {
+    this.fileName = '';
+    this.fileUpload.nativeElement.value = '';
+    this.ref.markForCheck();
   }
 }
