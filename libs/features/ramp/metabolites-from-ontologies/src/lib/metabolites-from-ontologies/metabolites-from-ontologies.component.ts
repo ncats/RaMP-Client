@@ -1,12 +1,13 @@
+import { DOCUMENT } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
-  ElementRef,
+  ElementRef, Inject,
   OnInit,
   QueryList,
   ViewChild,
-  ViewChildren,
-} from '@angular/core';
+  ViewChildren
+} from "@angular/core";
 import { FormControl } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
@@ -68,9 +69,10 @@ export class MetabolitesFromOntologiesComponent
   constructor(
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    @Inject(DOCUMENT) protected dom: Document
   ) {
-    super(route, rampFacade);
+    super(route, rampFacade, dom);
   }
 
   ngOnInit(): void {
@@ -131,7 +133,7 @@ export class MetabolitesFromOntologiesComponent
     this.rampFacade.metabolites$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Metabolite[]; query: RampQuery } | undefined) => {
+      (res: { data: Metabolite[]; query: RampQuery, dataframe: any } | undefined) => {
         if (res && res.data) {
           this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
             const newObj: { [key: string]: DataProperty } = {};
@@ -148,6 +150,9 @@ export class MetabolitesFromOntologiesComponent
         }
         if (res && res.query) {
           this.query = res.query;
+        }
+        if (res && res.dataframe) {
+          this.dataframe = res.dataframe;
         }
         this.loading = false;
         this.ref.markForCheck();
@@ -189,11 +194,13 @@ export class MetabolitesFromOntologiesComponent
 
   fetchMetabolitesFile(): void {
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
-    this.rampFacade.dispatch(
-      fetchMetabolitesFromOntologiesFile({
-        ontologies: ontologiesList,
-        format: 'tsv',
-      })
-    );
+    if(ontologiesList.length) {
+        this.rampFacade.dispatch(
+          fetchMetabolitesFromOntologiesFile({
+            ontologies: ontologiesList,
+            format: 'tsv',
+          })
+        );
+      }
   }
 }

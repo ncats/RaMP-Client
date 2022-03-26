@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DOCUMENT } from "@angular/common";
+import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { Pathway, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchPathwaysFromAnalytes,
-  fetchPathwaysFromAnalytesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
 import { takeUntil } from "rxjs";
@@ -47,9 +47,10 @@ export class PathwaysFromAnalytesComponent extends PageCoreComponent implements 
   constructor(
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    @Inject(DOCUMENT) protected dom: Document,
   ) {
-    super(route, rampFacade);
+    super(route, rampFacade, dom);
   }
 
   ngOnInit(): void {
@@ -57,7 +58,7 @@ export class PathwaysFromAnalytesComponent extends PageCoreComponent implements 
     this.rampFacade.pathways$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Pathway[]; query: RampQuery } | undefined) => {
+      (res: { data: Pathway[]; query: RampQuery, dataframe: any } | undefined) => {
         if (res && res.data) {
           this._mapData(res.data);
           this.matches = Array.from(new Set(res.data.map(pathway => pathway.inputId.toLocaleLowerCase())));
@@ -65,6 +66,13 @@ export class PathwaysFromAnalytesComponent extends PageCoreComponent implements 
         }
         if (res && res.query) {
           this.query = res.query;
+        }
+        if (res && res.dataframe) {
+          this.dataframe = res.dataframe;
+          if (this.downloadQueued) {
+            this._downloadFile(this._toTSV(this.dataframe), 'fetchPathwaysFromAnalytes-download.tsv')
+            this.downloadQueued = false;
+          }
         }
         this.ref.markForCheck();
       }
@@ -77,9 +85,12 @@ export class PathwaysFromAnalytesComponent extends PageCoreComponent implements 
   }
 
   fetchPathwaysFile(event: string[]): void {
-    this.rampFacade.dispatch(
-      fetchPathwaysFromAnalytesFile({ analytes: event, format: 'tsv' })
-    );
+    if(!this.dataframe) {
+      this.fetchPathways(event);
+      this.downloadQueued = true;
+    } else {
+      this._downloadFile(this._toTSV(this.dataframe), 'fetchPathwaysFromAnalytes-download.tsv')
+    }
   }
 
   private _mapData(data: any): void {

@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { DOCUMENT } from "@angular/common";
+import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { DomSanitizer } from "@angular/platform-browser";
@@ -12,8 +13,8 @@ import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClusterFromEnrichment,
-  fetchEnrichmentFromPathways, fetchEnrichmentFromPathwaysFile,
-  fetchPathwaysFromAnalytes, fetchPathwaysFromAnalytesFile, filterEnrichmentFromPathways,
+  fetchEnrichmentFromPathways,
+  fetchPathwaysFromAnalytes, filterEnrichmentFromPathways,
   fetchClusterImageFile,
   RampFacade
 } from "@ramp/stores/ramp-store";
@@ -28,6 +29,7 @@ export class PathwayEnrichmentComponent
   extends PageCoreComponent
   implements OnInit
 {
+  @ViewChild('fileUpload') fileUpload!: ElementRef;
   minPathWayFormCtrl: FormControl = new FormControl(2);
   percentPathwayFormCtrl: FormControl = new FormControl(0.2);
   percentAnalyteFormCtrl: FormControl = new FormControl(0.2);
@@ -38,6 +40,9 @@ export class PathwayEnrichmentComponent
   pathwaysLoading = false;
   enrichmentLoading = false;
   imageLoading = false;
+
+  fileName = '';
+  file?: File;
 
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
@@ -55,7 +60,7 @@ export class PathwayEnrichmentComponent
       field: 'pathwayId',
       sortable: true,
     }),
-        new DataProperty({
+    new DataProperty({
       label: "Metabolite Count",
       field: "metabCount"
     }),
@@ -128,14 +133,16 @@ export class PathwayEnrichmentComponent
   allDataAsDataProperty!: { [key: string]: DataProperty }[];
   pathwayDataAsDataProperty!: { [key: string]: DataProperty }[];
   image: any;
+  enrichedDataframe: any;
 
   constructor(
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     protected rampFacade: RampFacade,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    @Inject(DOCUMENT) protected dom: Document,
   ) {
-    super(route, rampFacade);
+    super(route, rampFacade, dom);
   }
 
   ngOnInit(): void {
@@ -163,19 +170,24 @@ export class PathwayEnrichmentComponent
         if (res && res.query) {
       this.query = res.query;
     }
+        if (res && res.dataframe) {
+          this.enrichedDataframe = res.dataframe;
+        }
       }
     );
 
     this.rampFacade.pathways$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Pathway[]; query: RampQuery } | undefined) => {
+      (res: { data: Pathway[]; query: RampQuery, dataframe: any } | undefined) => {
         if (res && res.data) {
           this._mapPathwaysData(res.data);
           this.matches = Array.from(new Set(res.data.map(pathway => pathway.inputId.toLocaleLowerCase())));
           this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
         }
-
+        if (res && res.dataframe) {
+          this.dataframe = res.dataframe;
+        }
         this.pathwaysLoading = false;
         this.ref.markForCheck();
       }
@@ -225,9 +237,20 @@ export class PathwayEnrichmentComponent
     this.pathwaysLoading = true;
     this.enrichmentLoading = true;
     this.imageLoading = true;
-    this.rampFacade.dispatch(
-      fetchEnrichmentFromPathways({ pathways: event })
-    );
+    if(this.file) {
+      this.rampFacade.dispatch(
+        fetchEnrichmentFromPathways({
+          pathways: event,
+          background: this.file
+        })
+      );
+    } else {
+      this.rampFacade.dispatch(
+        fetchEnrichmentFromPathways({
+          pathways: event
+        })
+      );
+    }
   }
 
   setCluster(event: MatCheckboxChange) {
@@ -244,15 +267,11 @@ export class PathwayEnrichmentComponent
   }
 
   fetchPathwaysFile(): void {
-    this.rampFacade.dispatch(
-         fetchPathwaysFromAnalytesFile({ analytes: this.inputList, format: 'tsv' })
-    );
+      this._downloadFile(this._toTSV(this.dataframe), 'fetchPathwaysFromAnalytes-download.tsv')
   }
 
   fetchEnrichedPathwaysFile(): void {
-    this.rampFacade.dispatch(
-      fetchEnrichmentFromPathwaysFile()
-    );
+    this._downloadFile(this._toTSV(this.enrichedDataframe), 'fetchEnrichedPathwaysFromAnalytes-download.tsv')
   }
 
   fetchClusterImageFile(): void {
@@ -265,7 +284,19 @@ export class PathwayEnrichmentComponent
     );
   }
 
+  onFileSelected(event: any) {
+    this.file = event.target.files[0];
+    if (this.file) {
+      this.fileName = this.file.name;
+      this.ref.markForCheck();
+    }
+  }
 
+  cancelUpload() {
+    this.fileName = '';
+    this.fileUpload.nativeElement.value = '';
+    this.ref.markForCheck();
+  }
 
   private _mapPathwaysData(data: any): void {
     this.pathwayDataAsDataProperty = data.map((analyte: Pathway) => {

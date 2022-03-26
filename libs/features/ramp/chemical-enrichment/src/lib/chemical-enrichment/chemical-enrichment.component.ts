@@ -1,8 +1,7 @@
 import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
-import { TREE_VIEWER_COMPONENT } from '@ramp/features/ramp/chemical-enrichment';
 import {
   ChemicalEnrichment,
   Classes,
@@ -12,11 +11,9 @@ import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClassesFromMetabolites,
-  fetchClassesFromMetabolitesFile,
   fetchEnrichmentFromMetabolites,
   fetchEnrichmentFromMetabolitesFile,
   filterEnrichmentFromMetabolites,
-  filterEnrichmentFromPathways,
   RampFacade
 } from "@ramp/stores/ramp-store";
 import { takeUntil } from "rxjs";
@@ -30,6 +27,7 @@ export class ChemicalEnrichmentComponent
   extends PageCoreComponent
   implements OnInit
 {
+@ViewChild('fileUpload') fileUpload!: ElementRef;
   pValueFormCtrl: FormControl = new FormControl(0.2);
   pValueTypeFormCtrl: FormControl = new FormControl('fdr');
 
@@ -123,7 +121,9 @@ export class ChemicalEnrichmentComponent
   enrichmentLoading = false;
 
   classesAsDataProperty: { [key: string]: DataProperty }[] = [];
-  dataframe: any;
+  fileName = '';
+  file?: File;
+  enrichmentDataFrame: any;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -157,6 +157,9 @@ export class ChemicalEnrichmentComponent
           this.enrichmentLoading = false;
           this.ref.markForCheck();
         }
+        /*if (res && res.dataframe) {
+          this.enrichmentDataFrame = res.dataframe;
+        }*/
       }
     );
 
@@ -184,21 +187,26 @@ export class ChemicalEnrichmentComponent
   fetchEnrichment(event: string[]): void {
     this.classesLoading = true;
     this.inputList = event.map(item => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(
-      fetchClassesFromMetabolites({ metabolites: event })
-    );
     this.enrichmentLoading = true;
-    this.rampFacade.dispatch(
-      fetchEnrichmentFromMetabolites({ metabolites: event })
-    );
+    if(this.file) {
+      this.rampFacade.dispatch(
+        fetchClassesFromMetabolites({ metabolites: event, pop: this.file })
+      );
+      this.rampFacade.dispatch(
+        fetchEnrichmentFromMetabolites({ metabolites: event, pop: this.file })
+      );
+    } else {
+      this.rampFacade.dispatch(
+        fetchClassesFromMetabolites({ metabolites: event})
+      );
+      this.rampFacade.dispatch(
+        fetchEnrichmentFromMetabolites({ metabolites: event })
+      );
+    }
   }
 
   fetchClassesFile(): void {
     this._downloadFile(this._toTSV(this.dataframe), 'fetchChemicalClass-download.tsv' )
-
-   /* this.rampFacade.dispatch(
-      fetchClassesFromMetabolitesFile({ metabolites: this.inputList, format: 'tsv' })
-    );*/
   }
 
   fetchEnrichedClassesFile(): void {
@@ -229,5 +237,19 @@ export class ChemicalEnrichmentComponent
       });
       return newObj;
     });
+  }
+
+  onFileSelected(event: any) {
+    this.file = event.target.files[0];
+    if (this.file) {
+      this.fileName = this.file.name;
+      this.ref.markForCheck();
+    }
+  }
+
+  cancelUpload() {
+    this.fileName = '';
+    this.fileUpload.nativeElement.value = '';
+    this.ref.markForCheck();
   }
 }

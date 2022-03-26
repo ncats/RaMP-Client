@@ -30,23 +30,28 @@ export interface State extends EntityState<RampEntity> {
   ontologies?: {
     data: Ontology[];
     query: RampQuery;
+    dataframe: any;
   };
   analytes?: {
     data: Analyte[];
     query: RampQuery;
+    dataframe: any;
   };
   pathways?: {
     data: Pathway[];
     query: RampQuery;
+    dataframe: any;
   };
   reactions?: {
     data: Reaction[];
     query: RampQuery;
+    dataframe: any;
   };
 
   metabolites?: {
     data: Metabolite[];
     query: RampQuery;
+    dataframe: any;
   };
 
   ontologiesList?: any[];
@@ -60,6 +65,7 @@ export interface State extends EntityState<RampEntity> {
   properties?: {
     data: Properties[];
     query: RampQuery;
+    dataframe: any;
   };
 
   chemicalEnrichments?: {
@@ -142,46 +148,46 @@ const rampReducer = createReducer(
 
   on(
     RampActions.fetchOntologiesFromMetabolitesSuccess,
-    (state, { data, query }) => ({
+    (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      ontologies: { data, query },
+      ontologies: { data, query , dataframe},
     })
   ),
 
   on(
     RampActions.fetchAnalytesFromPathwaysSuccess,
-    (state, { data, query }) => ({
+    (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      analytes: { data, query },
+      analytes: { data, query, dataframe },
     })
   ),
 
   on(
     RampActions.fetchPathwaysFromAnalytesSuccess,
-    (state, { data, query }) => ({
+    (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      pathways: { data, query },
+      pathways: { data, query, dataframe },
     })
   ),
 
   on(
     RampActions.fetchCommonReactionAnalytesSuccess,
-    (state, { data, query }) => ({
+    (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      reactions: { data, query },
+      reactions: { data, query, dataframe },
     })
   ),
 
   on(
     RampActions.fetchMetabolitesFromOntologiesSuccess,
-    (state, { data, query }) => ({
+    (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      metabolites: { data, query },
+      metabolites: { data, query, dataframe },
     })
   ),
 
@@ -202,10 +208,10 @@ const rampReducer = createReducer(
 
   on(
     RampActions.fetchPropertiesFromMetabolitesSuccess,
-    (state, { data, query }) => ({
+    (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      properties: { data, query },
+      properties: { data, query, dataframe },
     })
   ),
 
@@ -214,7 +220,7 @@ const rampReducer = createReducer(
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
-      chemicalEnrichments: {data},
+      chemicalEnrichments: {data, enriched_chemical_class},
       enriched_chemical_class: enriched_chemical_class
     })
   ),
@@ -223,7 +229,7 @@ const rampReducer = createReducer(
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
-      chemicalEnrichments: {data},
+      chemicalEnrichments: {data, enriched_chemical_class},
       enriched_chemical_class: enriched_chemical_class
     })
   ),
@@ -254,10 +260,10 @@ on(
 
   on(
     RampActions.fetchClusterFromEnrichmentSuccess,
-    (state, {data, plot, query}) => ({
+    (state, {data, plot, query, dataframe}) => ({
         ...state,
         loading: false,
-        pathwayEnrichments: { data, query },
+        pathwayEnrichments: { data, query, dataframe},
         clusterPlot: plot
       })
   ),

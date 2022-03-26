@@ -1,6 +1,8 @@
 import { InjectionToken, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
 import { RouterModule, Routes } from '@angular/router';
 import { SharedRampInputRowModule } from '@ramp/shared/ramp/input-row';
 import { SharedRampPageCoreModule } from '@ramp/shared/ramp/page-core';
@@ -34,7 +36,9 @@ const ROUTES: Routes = [
     SharedUiObjectTreeModule,
     SharedUiDescriptionPanelModule,
     FlexLayoutModule,
-    SharedUiFeedbackPanelModule
+    SharedUiFeedbackPanelModule,
+    MatIconModule,
+    MatButtonModule
   ],
   declarations: [ClassesFromMetabolitesComponent],
   providers: [
