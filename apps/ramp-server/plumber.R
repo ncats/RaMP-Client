@@ -4,7 +4,6 @@ library(config)
 library(R.cache)
 library(readr)
 library(ggplot2)
-library(Rook)
 
 serializers <- list(
   "json" = serializer_json(),
