@@ -343,18 +343,25 @@ function(analyte) {
 #' @post /api/combined-fisher-test
 #' @serializer json list(digits = 6)
 function(analytes = '', file = '', background_type= "database") {
-  if(file == "") {
+  fishers_results_df <- ''
+     if(file == "") {
     fishers_results_df <- RaMP::runCombinedFisherTest(
       analytes,
       background = NULL,
       background_type= "database"
     )
   } else {
-    background <- gsub("\r\n", ",", file)
-    if(length(background) > length(analytes)) {
+    bg <- gsub("\r\n", ",", file)
+       background <- unlist(strsplit(bg, ','))
+#bg <- gsub("\r\n", "','", file)
+#      background <- c("'", bg, ",")
+       print(background)
+       print(length(background))
+       print(length(analytes))
+       if(length(background) > length(analytes)) {
       fishers_results_df <- RaMP::runCombinedFisherTest(
-        analytes,
-        background,
+        analytes = analytes,
+        background = background,
         background_type= "list"
       )
     } else {

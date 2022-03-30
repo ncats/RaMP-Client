@@ -320,7 +320,7 @@ export class RampEffects {
       mergeMap((action) =>
         this.rampService
           .fetchEnrichmentFromPathways(
-            action.pathways,
+            action.analytes,
             action.background
           )
           .pipe(
