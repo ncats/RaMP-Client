@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 1,
   "projects": {
     "features-ramp-analytes-from-pathways": "libs/features/ramp/analytes-from-pathways",
     "features-ramp-chemical-enrichment": "libs/features/ramp/chemical-enrichment",
