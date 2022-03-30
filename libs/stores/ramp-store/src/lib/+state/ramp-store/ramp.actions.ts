@@ -241,7 +241,7 @@ export const fetchCommonReactionAnalytesFailure = createAction(
 export const fetchEnrichmentFromPathways = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways',
   props<{
-    pathways: string[];
+    analytes: string[];
     background?: File
   }>()
 );

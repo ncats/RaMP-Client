@@ -240,14 +240,14 @@ export class PathwayEnrichmentComponent
     if(this.file) {
       this.rampFacade.dispatch(
         fetchEnrichmentFromPathways({
-          pathways: event,
+          analytes: event,
           background: this.file
         })
       );
     } else {
       this.rampFacade.dispatch(
         fetchEnrichmentFromPathways({
-          pathways: event
+          analytes: event
         })
       );
     }
