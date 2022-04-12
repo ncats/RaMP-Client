@@ -223,35 +223,47 @@ function(ontology, format = "json", res) {
 ######
 #' Return available chemical classes of given metabolites in RaMP-DB
 #' @param metabolites
+#' @param biospecimen
 #' @param file: File
 #' @parser multi
 #' @parser text
 #' @parser json
 #' @post /api/chemical-classes
-function(metabolites="", file = '', pop = 'database') {
-  pop <- gsub("\r\n", ",", file)
-  if(length(pop) > length(metabolites)) {
-    chemical_class_df <- tryCatch({
-    classes_df <- RaMP::chemicalClassSurvey(
-      metabolites,
-      pop
-    )
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  } else {
-    chemical_class_df <- tryCatch({
-      classes_df <- RaMP::chemicalClassSurvey(
+function(metabolites="", file = '', biospecimen = '', background_type= "database") {
+  chemical_class_df <- ''
+  if(file == "") {
+    if(biospecimen == "") {
+      print("run with database background")
+      chemical_class_df <- RaMP::chemicalClassSurvey(
         metabolites,
-        pop = "database"
+        background = NULL,
+        background_type= "database"
       )
-    },
-      error = function(cond) {
+    } else {
+      print("run with biospecimen")
+      chemical_class_df <- RaMP::chemicalClassSurvey(
+        metabolites,
+        background = biospecimen,
+        background_type= "biospecimen"
+      )
+    }
+  }
+  else {
+    print("run with background file")
+    bg <- gsub("\r\n", ",", file)
+    background <- unlist(strsplit(bg, ','))
+    if(length(background) > length(metabolites)) {
+      chemical_class_df <- RaMP::chemicalClassSurvey(
+        metabolites,
+        background = background,
+        background_type= "list"
+      )
+    } else {
+      error <- function(cond) {
         print(cond)
         return(data.frame(stringsAsFactors = FALSE))
-      })
+      }
+    }
   }
   mets <- paste(metabolites, collapse = ", ")
     return(
@@ -336,28 +348,36 @@ function(analyte) {
 #' Return combined Fisher's test results
 #' from given list of analytes query results
 #' @param analytes
+#' @param biospecimen
 #' @param file: File
 #' @parser multi
 #' @parser text
 #' @parser json
 #' @post /api/combined-fisher-test
 #' @serializer json list(digits = 6)
-function(analytes = '', file = '', background_type= "database") {
+function(analytes = '', biospecimen = '', file = '', background_type= "database") {
   fishers_results_df <- ''
-     if(file == "") {
-    fishers_results_df <- RaMP::runCombinedFisherTest(
-      analytes,
-      background = NULL,
-      background_type= "database"
-    )
-  } else {
+  if(file == "") {
+    if(biospecimen == "") {
+      print("run with database background")
+      fishers_results_df <- RaMP::runCombinedFisherTest(
+        analytes,
+        background = NULL,
+        background_type= "database"
+      )
+    } else {
+      print("run with biospecimen")
+      fishers_results_df <- RaMP::runCombinedFisherTest(
+        analytes = analytes,
+        background = biospecimen,
+        background_type= "biospecimen"
+      )
+    }
+  }
+   else {
+    print("run with background file")
     bg <- gsub("\r\n", ",", file)
        background <- unlist(strsplit(bg, ','))
-#bg <- gsub("\r\n", "','", file)
-#      background <- c("'", bg, ",")
-       print(background)
-       print(length(background))
-       print(length(analytes))
        if(length(background) > length(analytes)) {
       fishers_results_df <- RaMP::runCombinedFisherTest(
         analytes = analytes,
@@ -471,36 +491,62 @@ function(
 #####
 #' Perform chemical enrichment on given metabolites
 #' @param metabolites
+#' @param biospecimen
 #' @param file: File
 #' @parser multi
 #' @parser text
 #' @parser json
 #' @post /api/chemical-enrichment
-function(metabolites, file = '', pop = "database") {
-  pop <- gsub("\r\n", ",", file)
-  if(length(pop) > length(metabolites)) {
-    chemical_enrichment_df <- tryCatch({
-      classes_df <- RaMP::chemicalClassEnrichment(
+function(metabolites = '', file = '', biospecimen = '', background = "database") {
+  chemical_enrichment_df <- ''
+  if(file == "") {
+    if(biospecimen == "") {
+      print("run with database background")
+      chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
         metabolites,
-        pop
+        background = NULL,
+        background_type= "database"
       )
-    },
-      error = function(cond) {
-        print(cond)
-        return(data.frame(stringsAsFactors = FALSE))
-      })
-  } else {
-    chemical_enrichment_df <- tryCatch({
-      classes_df <- RaMP::chemicalClassEnrichment(
+    } else {
+      print("run with biospecimen")
+      chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
         metabolites,
-        pop = "database"
+        background = biospecimen,
+        background_type= "biospecimen"
       )
-    },
-      error = function(cond) {
-        print(cond)
-        return(data.frame(stringsAsFactors = FALSE))
-      })
+    }
   }
+  else {
+    print("run with background file")
+    bg <- gsub("\r\n", ",", file)
+    background <- unlist(strsplit(bg, ','))
+    if(length(background) > length(metabolites)) {
+      chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
+        metabolites,
+        background = background,
+        background_type= "list"
+      )
+    } else {
+      error <- function(cond) {
+        print(cond)
+        return(data.frame(stringsAsFactors = FALSE))
+      }
+    }
+  }
+
+#
+#$  } else {
+#    chemical_enrichment_df <- tryCatch({
+#      classes_df <- RaMP::chemicalClassEnrichment(
+#        metabolites,
+#        pop = "database"
+#      )
+#    },
+#      error = function(cond) {
+#        print(cond)
+#        return(data.frame(stringsAsFactors = FALSE))
+#      })
+#  }
     return(
       list(
         data = chemical_enrichment_df

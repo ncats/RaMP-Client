@@ -230,7 +230,7 @@ export class RampService {
       );
   }
 
-  fetchChemicalClass(metabolites: string[], pop?: File): Observable<{
+  fetchChemicalClass(metabolites: string[], biospecimen?: string, background?: File): Observable<{
     metClasses: Classes[];
     functionCall: string;
     numFoundIds: number;
@@ -238,8 +238,11 @@ export class RampService {
   }> {
     const formData = new FormData();
     formData.set("metabolites", JSON.stringify(metabolites));
-    if (pop) {
-      formData.set("file", pop, pop.name);
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
+    if (background) {
+      formData.set("file", background, background.name);
     }
     return this.http
       .post<string[]>(`${this.url}chemical-classes`, formData)
@@ -313,11 +316,14 @@ export class RampService {
       );
   }
 
-  fetchEnrichmentFromMetabolites(metabolites: string[], pop?: File) {
+  fetchEnrichmentFromMetabolites(metabolites: string[], biospecimen?: string, background?: File) {
     const formData = new FormData();
     formData.set("metabolites", JSON.stringify(metabolites));
-    if (pop) {
-      formData.set("file", pop, pop.name);
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
+    if (background) {
+      formData.set("file", background, background.name);
     }
     return this.http
       .post<string[]>(`${this.url}chemical-enrichment`, formData) // ,{responseType: 'text'})
@@ -368,16 +374,20 @@ export class RampService {
         this._downloadFile(this._toTSV(enrichments), 'fetchEnrichmentFromMetabolites-download.tsv');
   }
 
-  fetchEnrichmentFromPathways(analytes: string[], background?: File): Observable<{
+  fetchEnrichmentFromPathways(analytes: string[], biospecimen?: string, background?: File): Observable<{
     data: FisherResult[];
     functionCall: string;
     combinedFishersDataframe: any;
   }> {
     const formData = new FormData();
     formData.set("analytes", JSON.stringify(analytes));
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
     if (background) {
       formData.set("file", background, background.name);
     }
+    console.log(formData);
     return (
       this.http
         .post<string[]>(`${this.url}combined-fisher-test`, formData)

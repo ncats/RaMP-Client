@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
+import { MatSelectModule } from "@angular/material/select";
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterModule, Routes } from '@angular/router';
@@ -52,7 +53,8 @@ const ROUTES: Routes = [
     MatIconModule,
     ReactiveFormsModule,
     MatRadioModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule
   ],
   declarations: [ChemicalEnrichmentComponent],
   providers: [

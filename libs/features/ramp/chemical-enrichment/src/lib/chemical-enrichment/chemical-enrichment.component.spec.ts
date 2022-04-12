@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatRadioModule } from "@angular/material/radio";
+import { MatSelectModule } from "@angular/material/select";
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -52,6 +53,7 @@ describe('ChemicalEnrichmentComponent', () => {
         MatTooltipModule,
         MatIconModule,
         ReactiveFormsModule,
+        MatSelectModule,
         MatRadioModule,
         MatInputModule,
         StoreModule.forRoot(

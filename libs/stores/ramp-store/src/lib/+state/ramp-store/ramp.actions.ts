@@ -182,7 +182,8 @@ export const fetchClassesFromMetabolites = createAction(
   '[Ramp/API] Fetch fetchClassesFromMetabolites',
   props<{
     metabolites: string[],
-    pop?: File
+    biospecimen?: string;
+    background?: File;
   }>()
 );
 
@@ -242,7 +243,8 @@ export const fetchEnrichmentFromPathways = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromPathways',
   props<{
     analytes: string[];
-    background?: File
+    biospecimen?: string;
+    background?: File;
   }>()
 );
 
@@ -329,7 +331,8 @@ export const fetchEnrichmentFromMetabolites = createAction(
   '[Ramp/API] Fetch fetchEnrichmentFromMetabolites',
   props<{
     metabolites: string[],
-    pop?: File
+    biospecimen?: string;
+    background?: File;
   }>()
 );
 

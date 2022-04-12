@@ -227,7 +227,8 @@ export class RampEffects {
       mergeMap((action) =>
         this.rampService.fetchChemicalClass(
           action.metabolites,
-          action.pop
+          action.biospecimen,
+          action.background
         ).pipe(
           map(
             (ret: {
@@ -249,6 +250,30 @@ export class RampEffects {
             )
           )
         )
+      )
+    )
+  );
+
+  fetchPathwayAnalysis = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchEnrichmentFromPathways),
+      mergeMap((action) =>
+        this.rampService
+          .fetchEnrichmentFromPathways(
+            action.analytes,
+            action.biospecimen,
+            action.background
+          )
+          .pipe(
+            map(
+              (ret: any) => {
+                return RampActions.fetchEnrichmentFromPathwaysSuccess({...ret});
+              },
+              catchError((error: ErrorEvent) =>
+                of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
+              )
+            )
+          )
       )
     )
   );
@@ -310,29 +335,6 @@ export class RampEffects {
             )
           )
         )
-      )
-    )
-  );
-
-  fetchPathwayAnalysis = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchEnrichmentFromPathways),
-      mergeMap((action) =>
-        this.rampService
-          .fetchEnrichmentFromPathways(
-            action.analytes,
-            action.background
-          )
-          .pipe(
-            map(
-              (ret: any) => {
-                return RampActions.fetchEnrichmentFromPathwaysSuccess({...ret});
-              },
-              catchError((error: ErrorEvent) =>
-                of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
-              )
-            )
-          )
       )
     )
   );
@@ -414,7 +416,11 @@ export class RampEffects {
       ofType(RampActions.fetchEnrichmentFromMetabolites),
       mergeMap((action) =>
         this.rampService
-          .fetchEnrichmentFromMetabolites(action.metabolites, action.pop)
+          .fetchEnrichmentFromMetabolites(
+            action.metabolites,
+            action.biospecimen,
+            action.background
+          )
           .pipe(
             map(
               (ret: any) => {

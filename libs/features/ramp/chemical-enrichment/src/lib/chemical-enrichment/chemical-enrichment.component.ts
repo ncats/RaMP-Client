@@ -30,6 +30,8 @@ export class ChemicalEnrichmentComponent
 @ViewChild('fileUpload') fileUpload!: ElementRef;
   pValueFormCtrl: FormControl = new FormControl(0.2);
   pValueTypeFormCtrl: FormControl = new FormControl('fdr');
+  biospecimenCtrl: FormControl = new FormControl();
+  biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
 
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
@@ -190,17 +192,30 @@ export class ChemicalEnrichmentComponent
     this.enrichmentLoading = true;
     if(this.file) {
       this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({ metabolites: event, pop: this.file })
+        fetchClassesFromMetabolites({ metabolites: event,
+          biospecimen: this.biospecimenCtrl.value,
+          background: this.file
+        })
       );
       this.rampFacade.dispatch(
-        fetchEnrichmentFromMetabolites({ metabolites: event, pop: this.file })
+        fetchEnrichmentFromMetabolites({
+          metabolites: event,
+          biospecimen: this.biospecimenCtrl.value,
+          background: this.file
+        })
       );
     } else {
       this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({ metabolites: event})
+        fetchClassesFromMetabolites({
+          metabolites: event,
+          biospecimen: this.biospecimenCtrl.value
+        })
       );
       this.rampFacade.dispatch(
-        fetchEnrichmentFromMetabolites({ metabolites: event })
+        fetchEnrichmentFromMetabolites({
+          metabolites: event,
+          biospecimen: this.biospecimenCtrl.value
+        })
       );
     }
   }
@@ -250,6 +265,7 @@ export class ChemicalEnrichmentComponent
   cancelUpload() {
     this.fileName = '';
     this.fileUpload.nativeElement.value = '';
+    this.file = undefined;
     this.ref.markForCheck();
   }
 }

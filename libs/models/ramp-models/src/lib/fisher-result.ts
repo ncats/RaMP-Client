@@ -23,6 +23,8 @@ export class FisherResult {
   constructor(obj: any) {
     Object.assign(this, obj);
 
+
+
     if(obj.Total_In_Path_Metab && obj.Num_In_Path_Metab) {
       this.metabCount = obj.Num_In_Path_Metab +'/' + obj.Total_In_Path_Metab
     }
