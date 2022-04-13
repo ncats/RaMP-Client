@@ -241,11 +241,21 @@ function(metabolites="", file = '', biospecimen = '', background_type= "database
       )
     } else {
       print("run with biospecimen")
-      chemical_class_df <- RaMP::chemicalClassSurvey(
-        metabolites,
-        background = biospecimen,
-        background_type= "biospecimen"
-      )
+      chemical_class_df <- tryCatch({
+        RaMP::chemicalClassSurvey(
+          metabolites,
+          background = biospecimen,
+          background_type= "biospecimen"
+        )
+      },
+        error = function(cond) {
+          print("biospecimen error")
+          print(cond)
+          return(list(
+            data = list(),
+            error = cond
+          ))
+        })
     }
   }
   else {

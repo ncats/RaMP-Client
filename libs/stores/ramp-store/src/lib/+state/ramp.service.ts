@@ -248,20 +248,24 @@ export class RampService {
       .post<string[]>(`${this.url}chemical-classes`, formData)
       .pipe(
         map((response: any) => {
+          let metClasses: Classes[] = [];
           const metabMap: Map<string, any> = new Map<string, any>();
-          response.data.forEach((chClass: any) => {
-            let cl = metabMap.get(chClass.sourceId);
-            if (cl) {
-              cl.levels.push(chClass);
-            } else {
-              cl = { sourceId: chClass.sourceId, levels: [chClass] };
-            }
-            metabMap.set(chClass.sourceId, cl);
-          });
-          return {
-            metClasses: [...metabMap.values()].map(
+          if (response.data && response.data.length) {
+            response.data.forEach((chClass: any) => {
+              let cl = metabMap.get(chClass.sourceId);
+              if (cl) {
+                cl.levels.push(chClass);
+              } else {
+                cl = { sourceId: chClass.sourceId, levels: [chClass] };
+              }
+              metabMap.set(chClass.sourceId, cl);
+            });
+            metClasses = [...metabMap.values()].map(
               (obj: any) => new Classes(obj)
-            ),
+            )
+          }
+          return {
+            metClasses: metClasses,
             functionCall: response.function_call[0],
             numFoundIds: response.numFoundIds[0],
             dataframe: response.data
@@ -387,7 +391,6 @@ export class RampService {
     if (background) {
       formData.set("file", background, background.name);
     }
-    console.log(formData);
     return (
       this.http
         .post<string[]>(`${this.url}combined-fisher-test`, formData)
