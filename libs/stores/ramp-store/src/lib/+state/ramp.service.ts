@@ -230,7 +230,7 @@ export class RampService {
       );
   }
 
-  fetchChemicalClass(metabolites: string[], pop?: File): Observable<{
+  fetchChemicalClass(metabolites: string[], biospecimen?: string, background?: File): Observable<{
     metClasses: Classes[];
     functionCall: string;
     numFoundIds: number;
@@ -238,27 +238,34 @@ export class RampService {
   }> {
     const formData = new FormData();
     formData.set("metabolites", JSON.stringify(metabolites));
-    if (pop) {
-      formData.set("file", pop, pop.name);
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
+    if (background) {
+      formData.set("file", background, background.name);
     }
     return this.http
       .post<string[]>(`${this.url}chemical-classes`, formData)
       .pipe(
         map((response: any) => {
+          let metClasses: Classes[] = [];
           const metabMap: Map<string, any> = new Map<string, any>();
-          response.data.forEach((chClass: any) => {
-            let cl = metabMap.get(chClass.sourceId);
-            if (cl) {
-              cl.levels.push(chClass);
-            } else {
-              cl = { sourceId: chClass.sourceId, levels: [chClass] };
-            }
-            metabMap.set(chClass.sourceId, cl);
-          });
-          return {
-            metClasses: [...metabMap.values()].map(
+          if (response.data && response.data.length) {
+            response.data.forEach((chClass: any) => {
+              let cl = metabMap.get(chClass.sourceId);
+              if (cl) {
+                cl.levels.push(chClass);
+              } else {
+                cl = { sourceId: chClass.sourceId, levels: [chClass] };
+              }
+              metabMap.set(chClass.sourceId, cl);
+            });
+            metClasses = [...metabMap.values()].map(
               (obj: any) => new Classes(obj)
-            ),
+            )
+          }
+          return {
+            metClasses: metClasses,
             functionCall: response.function_call[0],
             numFoundIds: response.numFoundIds[0],
             dataframe: response.data
@@ -313,11 +320,14 @@ export class RampService {
       );
   }
 
-  fetchEnrichmentFromMetabolites(metabolites: string[], pop?: File) {
+  fetchEnrichmentFromMetabolites(metabolites: string[], biospecimen?: string, background?: File) {
     const formData = new FormData();
     formData.set("metabolites", JSON.stringify(metabolites));
-    if (pop) {
-      formData.set("file", pop, pop.name);
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
+    if (background) {
+      formData.set("file", background, background.name);
     }
     return this.http
       .post<string[]>(`${this.url}chemical-enrichment`, formData) // ,{responseType: 'text'})
@@ -368,13 +378,16 @@ export class RampService {
         this._downloadFile(this._toTSV(enrichments), 'fetchEnrichmentFromMetabolites-download.tsv');
   }
 
-  fetchEnrichmentFromPathways(analytes: string[], background?: File): Observable<{
+  fetchEnrichmentFromPathways(analytes: string[], biospecimen?: string, background?: File): Observable<{
     data: FisherResult[];
     functionCall: string;
     combinedFishersDataframe: any;
   }> {
     const formData = new FormData();
     formData.set("analytes", JSON.stringify(analytes));
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
     if (background) {
       formData.set("file", background, background.name);
     }

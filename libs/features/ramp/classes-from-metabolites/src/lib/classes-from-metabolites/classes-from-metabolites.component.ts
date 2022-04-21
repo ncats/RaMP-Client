@@ -1,5 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { Classes, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -73,6 +74,8 @@ export class ClassesFromMetabolitesComponent
   ];
   fileName = '';
   file?: File;
+  biospecimenCtrl: FormControl = new FormControl();
+  biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -130,11 +133,18 @@ export class ClassesFromMetabolitesComponent
     this.inputList = event.map(item => item.toLocaleLowerCase());
     if(this.file) {
       this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({ metabolites: event, pop: this.file })
+        fetchClassesFromMetabolites({
+          metabolites: event,
+          biospecimen: this.biospecimenCtrl.value,
+          background: this.file
+        })
       );
     } else {
       this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({ metabolites: event })
+        fetchClassesFromMetabolites({
+          metabolites: event,
+          biospecimen: this.biospecimenCtrl.value,
+        })
       );
     }
   }
@@ -172,6 +182,7 @@ export class ClassesFromMetabolitesComponent
 
   cancelUpload() {
     this.fileName = '';
+    this.file = undefined;
     this.fileUpload.nativeElement.value = '';
     this.ref.markForCheck();
   }

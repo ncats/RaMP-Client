@@ -36,7 +36,9 @@ export class PathwayEnrichmentComponent
 
   pValueFormCtrl: FormControl = new FormControl(0.2);
   pValueTypeFormCtrl: FormControl = new FormControl('fdr');
-
+  biospecimenCtrl: FormControl = new FormControl();
+  biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
+  selectedSpecimen: string = '';
   pathwaysLoading = false;
   enrichmentLoading = false;
   imageLoading = false;
@@ -207,6 +209,30 @@ export class PathwayEnrichmentComponent
 
   }
 
+  fetchEnrichment(event: string[]): void {
+    this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
+    this.pathwaysLoading = true;
+    this.enrichmentLoading = true;
+    this.imageLoading = true;
+    if(this.file) {
+      this.rampFacade.dispatch(
+        fetchEnrichmentFromPathways({
+          analytes: event,
+          biospecimen: this.biospecimenCtrl.value,
+          background: this.file
+        })
+      );
+    } else {
+      this.rampFacade.dispatch(
+        fetchEnrichmentFromPathways({
+          analytes: event,
+          biospecimen: this.biospecimenCtrl.value
+        })
+      );
+    }
+  }
+
   filterPathways() {
     this.enrichmentLoading = true;
     this.rampFacade.dispatch(
@@ -231,27 +257,7 @@ export class PathwayEnrichmentComponent
     );
   }
 
-  fetchEnrichment(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
-    this.pathwaysLoading = true;
-    this.enrichmentLoading = true;
-    this.imageLoading = true;
-    if(this.file) {
-      this.rampFacade.dispatch(
-        fetchEnrichmentFromPathways({
-          pathways: event,
-          background: this.file
-        })
-      );
-    } else {
-      this.rampFacade.dispatch(
-        fetchEnrichmentFromPathways({
-          pathways: event
-        })
-      );
-    }
-  }
+
 
   setCluster(event: MatCheckboxChange) {
     if (event.source.checked) {
@@ -295,6 +301,7 @@ export class PathwayEnrichmentComponent
   cancelUpload() {
     this.fileName = '';
     this.fileUpload.nativeElement.value = '';
+    this.file= undefined;
     this.ref.markForCheck();
   }
 

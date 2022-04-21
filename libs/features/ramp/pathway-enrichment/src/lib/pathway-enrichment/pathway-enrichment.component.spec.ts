@@ -8,13 +8,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from "@angular/material/select";
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { MatSliderModule } from '@angular/material/slider';
 import { SharedRampInputRowModule } from '@ramp/shared/ramp/input-row';
 import { SharedRampPageCoreModule } from '@ramp/shared/ramp/page-core';
 import { SharedRampQueryPageModule } from '@ramp/shared/ramp/query-page';
@@ -45,6 +45,7 @@ describe('PathwayEnrichmentComponent', () => {
         SharedRampInputRowModule,
         SharedUiDescriptionPanelModule,
         MatInputModule,
+        MatSelectModule,
         MatTabsModule,
         MatCheckboxModule,
         MatRadioModule,
