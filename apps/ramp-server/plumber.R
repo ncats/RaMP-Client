@@ -10,6 +10,14 @@ serializers <- list(
   "tsv" = serializer_tsv()
 )
 
+makeFunctionCall<-function(input, functionName){
+    input <- paste(input, collapse = '", "')
+    input <- paste0('c("',input,'")')
+    string <- paste0("RaMP::",functionName,"(",input,")")
+    string <- gsub('(.{1,130})(\\s|$)', '\\1\n', string)
+    return(string)
+}
+
 #* @filter cors
 cors <- function(req, res) {
   res$setHeader("Access-Control-Allow-Origin", "*")
@@ -124,21 +132,18 @@ function() {
 #' @param analytes
 #' @post /api/pathways-from-analytes
 function(analytes, res) {
-  analytes <- c(analytes)
-  pathways_df <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
-  },
+    pathways_df <- tryCatch({
+        pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
+    },
     error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-
-  analytes <- paste(analytes, collapse = ", ")
+        return(data.frame(stringsAsFactors = FALSE))
+    })    
     return(
-      list(
-        data = unique(pathways_df),
-        function_call = paste0("RaMP::getPathwayFromAnalyte(\"", analytes ,"\")"),
-        numFoundIds = length(unique(pathways_df$commonName))
-      )
+        list(
+            data = unique(pathways_df),
+            function_call = makeFunctionCall(analytes,"getPathwayFromAnalyte"),
+            numFoundIds = length(unique(pathways_df$commonName))
+        )
     )
 }
 
@@ -148,23 +153,21 @@ function(analytes, res) {
 #' @param analyte_type
 #' @post /api/analytes-from-pathways
 function(pathway, analyte_type="both") {
-  pathway <- c(pathway)
   analyte <- analyte_type
   analytes_df <- tryCatch({
-    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+      RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
   },
     error = function(cond) {
       print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
+      return(data.frame())
     })
-  pathways <- paste(pathway, collapse = ", ")
-    return(
+  return(
       list(
-        data = analytes_df,
-        function_call = paste0("RaMP::getAnalyteFromPathway(\"", pathways ,"\")"),
-        numFoundIds = length(unique(analytes_df$pathwayName))
+          data = analytes_df,
+          function_call = makeFunctionCall(pathway,"getAnalyteFromPathway"),
+          numFoundIds = length(unique(analytes_df$pathwayName))
       )
-    )
+  )
 }
 
 #####
@@ -173,17 +176,19 @@ function(pathway, analyte_type="both") {
 #* @param NameOrIds one of “name” or “ids”, default “ids"
 #* @post /api/ontologies-from-metabolites
 function(metabolite, NameOrIds= "ids") {
-  metabolites_ids <- c(metabolite)
-  ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids, NameOrIds = NameOrIds)
-  metabolites_ids <- paste(metabolites_ids, collapse = ", ")
+    ontologies_df <- 
+        RaMP::getOntoFromMeta(analytes = metabolite, NameOrIds = NameOrIds)
+    if(is.null(ontologies_df)){
+        ontologies_df<-data.frame()
+    }
     return(
-      list(
-        data = ontologies_df,
-        function_call = paste0("RaMP::getOntoFromMeta(", metabolites_ids ,")"),
-        numFoundIds = length(unique(ontologies_df$sourceId))
-      )
+        list(
+            data = ontologies_df,
+            function_call = makeFunctionCall(metabolite, "getOntoFromMeta"),
+            numFoundIds = length(unique(ontologies_df$sourceId))
+        )
     )
-  }
+}
 
 #* Return metabolites from ontology
 #* @param ontology
@@ -211,8 +216,7 @@ function(ontology, format = "json", res) {
       return(
         list(
           data = ontologies,
-          function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                                 ontologies_names, "))"),
+          function_call = makeFunctionCall(ontology,"getMetaFromOnto"),
           numFoundIds = length(unique(ontologies$Ontology))
         )
       )
@@ -229,59 +233,23 @@ function(ontology, format = "json", res) {
 #' @parser text
 #' @parser json
 #' @post /api/chemical-classes
-function(metabolites="", file = '', biospecimen = '', background_type= "database") {
-  chemical_class_df <- ''
-  if(file == "") {
-    if(biospecimen == "") {
-      print("run with database background")
-      chemical_class_df <- RaMP::chemicalClassSurvey(
-        metabolites,
-        background = NULL,
-        background_type= "database"
-      )
-    } else {
-      print("run with biospecimen")
-      chemical_class_df <- tryCatch({
-        RaMP::chemicalClassSurvey(
-          metabolites,
-          background = biospecimen,
-          background_type= "biospecimen"
-        )
-      },
-        error = function(cond) {
-          print("biospecimen error")
-          print(cond)
-          return(list(
-            data = list(),
-            error = cond
-          ))
-        })
-    }
-  }
-  else {
-    print("run with background file")
-    bg <- gsub("\r\n", ",", file)
-    background <- unlist(strsplit(bg, ','))
-    if(length(background) > length(metabolites)) {
-      chemical_class_df <- RaMP::chemicalClassSurvey(
-        metabolites,
-        background = background,
-        background_type= "list"
-      )
-    } else {
-      error <- function(cond) {
-        print(cond)
-        return(data.frame(stringsAsFactors = FALSE))
-      }
-    }
-  }
-  mets <- paste(metabolites, collapse = ", ")
+function(metabolites="") {
+    ## 4/25 - add a trycatch here
+    chemical_class_df <- tryCatch({RaMP::chemicalClassSurvey(
+                                             metabolites,
+                                             background = NULL,
+                                             background_type= "database"
+                                         )},
+                                  error = function(cond){
+                                      print(cond)
+                                      return(data.frame())
+                                  })
     return(
-      list(
-        data = chemical_class_df$met_classes,
-        function_call = paste0("RaMP::chemicalClassSurvey(", mets ,"))"),
-        numFoundIds = length(unique(chemical_class_df$met_classes$sourceId))
-      )
+        list(
+            data = chemical_class_df$met_classes,
+            function_call = makeFunctionCall(metabolites,"chemicalClassSurvey"),
+            numFoundIds = length(unique(chemical_class_df$met_classes$sourceId))
+        )
     )
 }
 
@@ -291,28 +259,26 @@ function(metabolites="", file = '', biospecimen = '', background_type= "database
 #' @param property
 #' @post /api/chemical-properties
 function(metabolites="", property="all") {
-  metabolites <- c(metabolites)
-  properties <- property
-  if (!is.null(property)) {
-    properties <- c(property)
-  }
-  chemical_properties_df <- tryCatch({
-    analytes_df <- RaMP::getChemicalProperties(
-      metabolites,
-      propertyList = properties
-    )
-  },
+    properties <- property
+    if (!is.null(property)) {
+        properties <- c(property)
+    }
+    chemical_properties_df <- tryCatch({
+        analytes_df <- RaMP::getChemicalProperties(
+                                 metabolites,
+                                 propertyList = properties
+                             )$chem_props
+    },
     error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
+        print(cond)
+        return(data.frame(stringsAsFactors = FALSE))
     })
-  mets <- paste(metabolites, collapse = ", ")
     return(
-      list(
-        data = chemical_properties_df$chem_props,
-        function_call = paste0("RaMP::getChemicalProperties(", mets ,"))"),
-        numFoundIds = length(unique(chemical_properties_df$chem_props$chem_source_id))
-      )
+        list(
+            data = chemical_properties_df,
+            function_call = makeFunctionCall(metabolites,"getChemicalProperties"),
+            numFoundIds = length(unique(chemical_properties_df$chem_source_id))
+        )
     )
 }
 
@@ -321,11 +287,9 @@ function(metabolites="", property="all") {
 #' @param analyte
 #' @post /api/common-reaction-analytes
 function(analyte) {
-  analytes <- c(analyte)
-  analytes_names <- paste(analytes, collapse = ", ")
   analytes_df_ids <- tryCatch({
     analytes_df <- RaMP::rampFastCata(
-      analytes = analytes,
+      analytes = analyte,
       NameOrIds = "ids"
     )
   },
@@ -348,7 +312,7 @@ function(analyte) {
     return(
       list(
         data = unique(analytes_df_ids),
-        function_call = paste0("RaMP::rampFastCata(", analytes_names ,"))"),
+        function_call = makeFunctionCall(analyte,"rampFastCata"),
         numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
       )
     )
