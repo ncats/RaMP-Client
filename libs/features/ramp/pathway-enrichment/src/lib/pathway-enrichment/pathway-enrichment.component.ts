@@ -71,6 +71,10 @@ export class PathwayEnrichmentComponent
       field: "geneCount",
     }),
     new DataProperty({
+      label: "Path Count",
+      field: "pathCount",
+    }),
+    new DataProperty({
       label: 'Analytes',
       field: 'analytes',
       sortable: true,

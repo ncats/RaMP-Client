@@ -19,6 +19,7 @@ export class FisherResult {
   cluster_assignment?: number;
   metabCount!: string;
   geneCount!: string;
+  pathCount!: string;
 
   constructor(obj: any) {
     Object.assign(this, obj);
@@ -31,6 +32,10 @@ export class FisherResult {
 
     if(obj.Total_In_Path_Gene && obj.Num_In_Path_Gene) {
       this.geneCount = obj.Num_In_Path_Gene +'/' + obj.Total_In_Path_Gene
+    }
+
+    if(obj.Total_In_Path && obj.Num_In_Path) {
+      this.pathCount = obj.Num_In_Path +'/' + obj.Total_In_Path
     }
   }
 }
