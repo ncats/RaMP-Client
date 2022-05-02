@@ -28,6 +28,13 @@
         </a>
         <a
           mat-list-item
+          class="list-button"
+          (click)="scroll(dataDownload)"
+          [ngClass]="{ active: isActive('dataDownload') }"
+          >Data Download
+        </a>
+        <a
+          mat-list-item
           *ngIf="compoundsData?.length || genesData?.length"
           class="list-button"
           (click)="scroll(summaryStatistics)"
@@ -49,6 +56,14 @@
           [ngClass]="{ active: isActive('contact') }"
         >
           RaMP Team and Contact
+        </a>
+        <a
+          mat-list-item
+          class="list-button"
+          (click)="scroll(code)"
+          [ngClass]="{ active: isActive('code') }"
+        >
+          Code
         </a>
         <a
           mat-list-item
@@ -207,15 +222,15 @@
           </ul>
           <picture>
             <source
-              srcset="./assets/ramp-about/images/Supported_Queries.webp"
+              srcset="/assets/ramp-about/images/Supported_Queries.webp"
               type="image/webp"
             />
             <source
-              srcset="./assets/ramp-about/images/Supported_Queries.png"
+              srcset="/assets/ramp-about/images/Supported_Queries.png"
               type="image/png"
             />
             <img
-              src="./assets/ramp-about/images/Supported_Queries.png"
+              src="/assets/ramp-about/images/Supported_Queries.png"
               class="ramp-capabilities-image"
               alt="flow diagram illustrating the RaMP data types, annotations and analysis"
             />
@@ -237,6 +252,31 @@
             [data]="entityCounts"
             [internalSort]="true"
           ></ncats-frontend-library-ncats-datatable>
+        </div>
+      </div>
+    </div>
+    <div fxLayout="row" id="dataDownload" #dataDownload #scrollSection>
+      <div fxFlex="75" fxFlex.lt-md="100" >
+        <div
+          class="section-header"
+          [ngClass]="{ active: isActive('dataDownload') }"
+        >
+          Data Sources
+        </div>
+        <div class="section-content">
+         A SQL data dump of RaMP-DB is hosted at
+          <a href="https://figshare.com/"
+             target="_blank"
+             rel="noreferrer"
+             attr.aria-label= "link to figshare"
+          >Figshare</a> and can be accessed
+          <a
+            href="https://figshare.com/ndownloader/files/34941486"
+            target="_blank"
+            rel="noreferrer"
+            attr.aria-label= "link to SQL data dump hosted on figshare"
+
+          >here.</a>
         </div>
       </div>
     </div>
@@ -288,7 +328,6 @@
         </div>
       </div>
     </div>
-
     <div fxLayout="row" id="citation" #citation #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div
@@ -525,6 +564,7 @@
       </div>
     </div>
 
+<!--
     <div fxLayout="row" id="datadownload" #datadownload #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div
@@ -536,6 +576,7 @@
         <div class="section-content"></div>
       </div>
     </div>
+-->
     <div fxLayout="row" id="code" #code #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div class="section-header" [ngClass]="{ active: isActive('code') }">
