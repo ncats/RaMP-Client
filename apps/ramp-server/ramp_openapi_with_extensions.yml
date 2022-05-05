@@ -11,8 +11,8 @@ info:
     email: timothy.sheils@nih.gov
     x-id: 'https://github.com/tsheils'
   termsOfService: https://rampdb.nih.gov
-  tags: 
-  - name: NCATS-API
+tags: 
+- name: NCATS-API
 paths:
   /api/source_versions:
     get:
