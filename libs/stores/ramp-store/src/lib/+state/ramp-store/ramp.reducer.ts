@@ -99,7 +99,7 @@ const rampReducer = createReducer(
   initialState,
   on(RampActions.init, (state) => ({
     ...state,
-    loading: true,
+    loading: false,
     error: null,
   })),
   on(RampActions.loadRampSuccess, (state, { rampStore }) =>
