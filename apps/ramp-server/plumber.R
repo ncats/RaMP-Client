@@ -10,6 +10,14 @@ serializers <- list(
   "tsv" = serializer_tsv()
 )
 
+makeFunctionCall<-function(input, functionName){
+    input <- paste(input, collapse = '", "')
+    input <- paste0('c("',input,'")')
+    string <- paste0("RaMP::",functionName,"(",input,")")
+    string <- gsub('(.{1,130})(\\s|$)', '\\1\n', string)
+    return(string)
+}
+
 #* @filter cors
 cors <- function(req, res) {
   res$setHeader("Access-Control-Allow-Origin", "*")
@@ -119,91 +127,67 @@ function() {
   return(classtypes)
 }
 
-
 #####
 #' Return pathways from given list of analytes
 #' @param analytes
-#' @param format one of "json" or "tsv"
 #' @post /api/pathways-from-analytes
-function(analytes, format = "json", res) {
-  analytes <- c(analytes)
-  pathways_df <- tryCatch({
-    pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
-  },
+function(analytes, res) {
+    pathways_df <- tryCatch({
+        pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
+    },
     error = function(cond) {
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-
-  analytes <- paste(analytes, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
+        return(data.frame(stringsAsFactors = FALSE))
+    })    
     return(
-      as_attachment(unique(pathways_df), "getPathwayFromAnalyte.tsv")
+        list(
+            data = unique(pathways_df),
+            function_call = makeFunctionCall(analytes,"getPathwayFromAnalyte"),
+            numFoundIds = length(unique(pathways_df$commonName))
+        )
     )
-  } else {
-    return(
-      list(
-        data = unique(pathways_df),
-        function_call = paste0("RaMP::getPathwayFromAnalyte(\"", analytes ,"\")"),
-        numFoundIds = length(unique(pathways_df$commonName))
-      )
-    )
-  }
 }
 
 ##########
 #' Return analytes from given list of pathways as either json or a tsv
 #' @param pathway
 #' @param analyte_type
-#' @param format one of "json" or "tsv"
 #' @post /api/analytes-from-pathways
-function(pathway, analyte_type="both", format = "json", res) {
-  pathway <- c(pathway)
+function(pathway, analyte_type="both") {
   analyte <- analyte_type
   analytes_df <- tryCatch({
-    analytes_df <- RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+      RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
   },
     error = function(cond) {
       print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
+      return(data.frame())
     })
-  pathways <- paste(pathway, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
-    return(as_attachment(unique(analytes_df), "getAnalyteFromPathway.tsv"))
-  } else {
-    return(
+  return(
       list(
-        data = analytes_df,
-        function_call = paste0("RaMP::getAnalyteFromPathway(\"", pathways ,"\")"),
-        numFoundIds = length(unique(analytes_df$pathwayName))
+          data = analytes_df,
+          function_call = makeFunctionCall(pathway,"getAnalyteFromPathway"),
+          numFoundIds = length(unique(analytes_df$pathwayName))
       )
-    )
-  }
+  )
 }
 
 #####
 #* Return ontologies from list of metabolites
 #* @param metabolite
-#* @param format one of "json" or "tsv"
 #* @param NameOrIds one of “name” or “ids”, default “ids"
 #* @post /api/ontologies-from-metabolites
-function(metabolite, NameOrIds= "ids", format = "json", res) {
-  metabolites_ids <- c(metabolite)
-  ontologies_df <- RaMP::getOntoFromMeta(analytes = metabolites_ids, NameOrIds = NameOrIds)
-  metabolites_ids <- paste(metabolites_ids, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
-    return(as_attachment(ontologies_df, "getOntoFromMeta.tsv"))
-  } else {
+function(metabolite, NameOrIds= "ids") {
+    ontologies_df <- 
+        RaMP::getOntoFromMeta(analytes = metabolite, NameOrIds = NameOrIds)
+    if(is.null(ontologies_df)){
+        ontologies_df<-data.frame()
+    }
     return(
-      list(
-        data = ontologies_df,
-        function_call = paste0("RaMP::getOntoFromMeta(", metabolites_ids ,")"),
-        numFoundIds = length(unique(ontologies_df$sourceId))
-      )
+        list(
+            data = ontologies_df,
+            function_call = makeFunctionCall(metabolite, "getOntoFromMeta"),
+            numFoundIds = length(unique(ontologies_df$sourceId))
+        )
     )
-  }
 }
 
 #* Return metabolites from ontology
@@ -232,8 +216,7 @@ function(ontology, format = "json", res) {
       return(
         list(
           data = ontologies,
-          function_call = paste0("RaMP::getMetaFromOnto(ontology = c(",
-                                 ontologies_names, "))"),
+          function_call = makeFunctionCall(ontology,"getMetaFromOnto"),
           numFoundIds = length(unique(ontologies$Ontology))
         )
       )
@@ -244,86 +227,69 @@ function(ontology, format = "json", res) {
 ######
 #' Return available chemical classes of given metabolites in RaMP-DB
 #' @param metabolites
-#' @param format one of "json" or "tsv"
+#' @param biospecimen
+#' @param file: File
+#' @parser multi
+#' @parser text
+#' @parser json
 #' @post /api/chemical-classes
-function(metabolites="", format ="json", res) {
-  mets <- c(metabolites)
-  chemical_class_df <- tryCatch({
-    classes_df <- RaMP::chemicalClassSurvey(
-      mets
-    )
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  mets <- paste(mets, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
+function(metabolites="") {
+    ## 4/25 - add a trycatch here
+    chemical_class_df <- tryCatch({RaMP::chemicalClassSurvey(
+                                             metabolites,
+                                             background = NULL,
+                                             background_type= "database"
+                                         )},
+                                  error = function(cond){
+                                      print(cond)
+                                      return(data.frame())
+                                  })
     return(
-      as_attachment(chemical_class_df$met_classes, "chemicalClassSurvey.tsv")
+        list(
+            data = chemical_class_df$met_classes,
+            function_call = makeFunctionCall(metabolites,"chemicalClassSurvey"),
+            numFoundIds = length(unique(chemical_class_df$met_classes$sourceId))
+        )
     )
-  } else {
-    return(
-      list(
-        data = chemical_class_df$met_classes,
-        function_call = paste0("RaMP::chemicalClassSurvey(", mets ,"))"),
-        numFoundIds = length(unique(chemical_class_df$met_classes$sourceId))
-      )
-    )
-  }
 }
 
 #####
 #' Return chemical properties of given metabolites
 #' @param metabolites
 #' @param property
-#' @param format one of "json" or "tsv"
 #' @post /api/chemical-properties
-function(metabolites="", property="all", format = "json", res) {
-  metabolites <- c(metabolites)
-  properties <- property
-  if (!is.null(property)) {
-    properties <- c(property)
-  }
-  chemical_properties_df <- tryCatch({
-    analytes_df <- RaMP::getChemicalProperties(
-      metabolites,
-      propertyList = properties
-    )
-  },
+function(metabolites="", property="all") {
+    properties <- property
+    if (!is.null(property)) {
+        properties <- c(property)
+    }
+    chemical_properties_df <- tryCatch({
+        analytes_df <- RaMP::getChemicalProperties(
+                                 metabolites,
+                                 propertyList = properties
+                             )$chem_props
+    },
     error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
+        print(cond)
+        return(data.frame(stringsAsFactors = FALSE))
     })
-  mets <- paste(metabolites, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
     return(
-      as_attachment(chemical_properties_df$chem_props, "getChemicalProperties.tsv")
+        list(
+            data = chemical_properties_df,
+            function_call = makeFunctionCall(metabolites,"getChemicalProperties"),
+            numFoundIds = length(unique(chemical_properties_df$chem_source_id))
+        )
     )
-  } else {
-    return(
-      list(
-        data = chemical_properties_df$chem_props,
-        function_call = paste0("RaMP::getChemicalProperties(", mets ,"))"),
-        numFoundIds = length(unique(chemical_properties_df$chem_props$chem_source_id))
-      )
-    )
-  }
 }
 
 ####
 #' Return analytes involved in same reaction as given list of analytes
 #' @param analyte
-#' @param format one of "json" or "tsv"
 #' @post /api/common-reaction-analytes
-function(analyte, format = "json", res) {
-  analytes <- c(analyte)
-  analytes_names <- paste(analytes, collapse = ", ")
+function(analyte) {
   analytes_df_ids <- tryCatch({
     analytes_df <- RaMP::rampFastCata(
-      analytes = analytes,
+      analytes = analyte,
       NameOrIds = "ids"
     )
   },
@@ -343,36 +309,66 @@ function(analyte, format = "json", res) {
   #        }
   #    )
   #    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
-    return(
-      as_attachment(unique(analytes_df_ids), "rampFastCata.tsv")
-    )
-  } else {
     return(
       list(
         data = unique(analytes_df_ids),
-        function_call = paste0("RaMP::rampFastCata(", analytes_names ,"))"),
+        function_call = makeFunctionCall(analyte,"rampFastCata"),
         numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
       )
     )
-  }
 }
 
 #####
 #' Return combined Fisher's test results
 #' from given list of analytes query results
-#' @param pathways
+#' @param analytes
+#' @param biospecimen
+#' @param file: File
+#' @parser multi
+#' @parser text
+#' @parser json
 #' @post /api/combined-fisher-test
 #' @serializer json list(digits = 6)
-function(pathways) {
-  fishers_results_df <- RaMP::runCombinedFisherTest(
-    pathways
-  )
-  pathways <- paste(pathways, collapse = ", ")
+function(analytes = '', biospecimen = '', file = '', background_type= "database") {
+  fishers_results_df <- ''
+  if(file == "") {
+    if(biospecimen == "") {
+      print("run with database background")
+      fishers_results_df <- RaMP::runCombinedFisherTest(
+        analytes,
+        background = NULL,
+        background_type= "database"
+      )
+    } else {
+      print("run with biospecimen")
+      fishers_results_df <- RaMP::runCombinedFisherTest(
+        analytes = analytes,
+        background = biospecimen,
+        background_type= "biospecimen"
+      )
+    }
+  }
+   else {
+    print("run with background file")
+    bg <- gsub("\r\n", ",", file)
+       background <- unlist(strsplit(bg, ','))
+       if(length(background) > length(analytes)) {
+      fishers_results_df <- RaMP::runCombinedFisherTest(
+        analytes = analytes,
+        background = background,
+        background_type= "list"
+      )
+    } else {
+      error <- function(cond) {
+        print(cond)
+        return(data.frame(stringsAsFactors = FALSE))
+      }
+  }
+  }
+  analytes <- paste(analytes, collapse = ", ")
   return(list(
     data = fishers_results_df,
-    function_call = paste0("RaMP::runCombinedFisherTest(", pathways, "))")
+    function_call = paste0("RaMP::runCombinedFisherTest(", analytes, "))")
   ))
 }
 
@@ -469,35 +465,68 @@ function(
 #####
 #' Perform chemical enrichment on given metabolites
 #' @param metabolites
-#' @param format one of "json" or "tsv"
+#' @param biospecimen
+#' @param file: File
+#' @parser multi
+#' @parser text
+#' @parser json
 #' @post /api/chemical-enrichment
-function(metabolites, format = "json", res) {
-  metabolites <- c(metabolites)
-  chemical_enrichment_df <- tryCatch({
-    enrichment_df <- RaMP::chemicalClassEnrichment(
-      mets = metabolites,
-    )
-  },
-    error = function(cond) {
-      print(cond)
-      return(data.frame(stringsAsFactors = FALSE))
-    })
-  mets <- paste(metabolites, collapse = ", ")
-  res$serializer <- serializers[[format]]
-  if(format == "tsv") {
-    return(
-      as_attachment(chemical_enrichment_df, "chemicalClassEnrichment.tsv")
-    )
-  } else {
+function(metabolites = '', file = '', biospecimen = '', background = "database") {
+  chemical_enrichment_df <- ''
+  if(file == "") {
+    if(biospecimen == "") {
+      print("run with database background")
+      chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
+        metabolites,
+        background = NULL,
+        background_type= "database"
+      )
+    } else {
+      print("run with biospecimen")
+      chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
+        metabolites,
+        background = biospecimen,
+        background_type= "biospecimen"
+      )
+    }
+  }
+  else {
+    print("run with background file")
+    bg <- gsub("\r\n", ",", file)
+    background <- unlist(strsplit(bg, ','))
+    if(length(background) > length(metabolites)) {
+      chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
+        metabolites,
+        background = background,
+        background_type= "list"
+      )
+    } else {
+      error <- function(cond) {
+        print(cond)
+        return(data.frame(stringsAsFactors = FALSE))
+      }
+    }
+  }
+
+#
+#$  } else {
+#    chemical_enrichment_df <- tryCatch({
+#      classes_df <- RaMP::chemicalClassEnrichment(
+#        metabolites,
+#        pop = "database"
+#      )
+#    },
+#      error = function(cond) {
+#        print(cond)
+#        return(data.frame(stringsAsFactors = FALSE))
+#      })
+#  }
     return(
       list(
         data = chemical_enrichment_df
-        # function_call = paste0("RaMP::chemicalClassEnrichment(", mets ,"))"),
-        #numFoundIds = length(unique(chemical_enrichment_df$chem_props$chem_source_id))
       )
     )
   }
-}
 
 
 

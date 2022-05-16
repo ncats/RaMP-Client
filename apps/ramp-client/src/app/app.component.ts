@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
       ],
     },
     {
-      link: 'Chemical Classes',
+      link: 'Chemical Descriptions',
       children: [
         {
           link: 'classes-from-metabolites',
@@ -115,7 +115,5 @@ export class AppComponent implements OnInit {
       this.loading = res;
       this.changeRef.markForCheck();
     });
-
-    //  this.rampFacade.init();
   }
 }

@@ -23,6 +23,7 @@ export class PageCoreComponent {
   inputList: string[] = [];
   noMatches: string[] = [];
   dataAsDataProperty: { [key: string]: DataProperty }[] = [];
+  downloadQueued = false;
 
   supportedIdTypes!: [{ analyteType: string, idTypes: string[]}] | undefined;
 

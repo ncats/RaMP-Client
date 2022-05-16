@@ -9,10 +9,7 @@ import {
   SourceVersion,
 } from '@ramp/models/ramp-models';
 import {
-  fetchClassesFromMetabolitesFile,
-  fetchCommonReactionAnalytesFile, fetchEnrichmentFromMetabolitesFile, fetchEnrichmentFromPathwaysFile,
-  fetchOntologiesFromMetabolitesFile,
-  fetchPathwaysFromAnalytesFile, filterEnrichmentFromMetabolites, RampPartialState,
+ RampPartialState,
   RampService
 } from "@ramp/stores/ramp-store";
 import { mergeMap, of, tap, withLatestFrom } from "rxjs";
@@ -75,6 +72,66 @@ export class RampEffects {
     )
   );
 
+  fetchPathwaysFromAnalytes = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchPathwaysFromAnalytes),
+      mergeMap((action) =>
+        this.rampService.fetchPathwaysFromAnalytes(action.analytes).pipe(
+          map(
+            (ret: {
+              pathways: Pathway[];
+              functionCall: string;
+              numFoundIds: number;
+              dataframe: any;
+            }) => {
+              return RampActions.fetchPathwaysFromAnalytesSuccess({
+                data: ret.pathways,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+                dataframe: ret.dataframe
+              });
+            }
+          ),
+          catchError((error: ErrorEvent) => {
+            console.log(error);
+            return of(RampActions.fetchPathwaysFromAnalytesFailure({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  fetchAnalytesFromPathways = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchAnalytesFromPathways),
+      mergeMap((action) =>
+        this.rampService.fetchAnalytesFromPathways(action.pathways).pipe(
+          map(
+            (ret: {
+              analytes: Analyte[];
+              functionCall: string;
+              numFoundIds: number;
+              dataframe: any;
+            }) =>
+              RampActions.fetchAnalytesFromPathwaysSuccess({
+                data: ret.analytes,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
+                },
+                dataframe: ret.dataframe
+              })
+          ),
+          catchError((error: ErrorEvent) =>
+            of(RampActions.fetchAnalytesFromPathwaysFailure({ error }))
+          )
+        )
+      )
+    )
+  );
+
   fetchOntologiesFromMetabolites = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchOntologiesFromMetabolites),
@@ -85,6 +142,7 @@ export class RampEffects {
               ontologies: Ontology[];
               functionCall: string;
               numFoundIds: number;
+              dataframe: any;
             }) =>
               RampActions.fetchOntologiesFromMetabolitesSuccess({
                 data: ret.ontologies,
@@ -92,6 +150,7 @@ export class RampEffects {
                   functionCall: ret.functionCall,
                   numFoundIds: ret.numFoundIds,
                 },
+                dataframe: ret.dataframe
               }),
             catchError((error: ErrorEvent) =>
               of(RampActions.fetchOntologiesFromMetabolitesFailure({ error }))
@@ -102,18 +161,21 @@ export class RampEffects {
     )
   );
 
-  fetchOntologiesFromMetabolitesFile = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(RampActions.fetchOntologiesFromMetabolitesFile),
-        tap((action) =>
-          this.rampService.fetchOntologiesFromMetabolitesFile(
-            action.metabolite,
-            action.format
+  fetchOntologies = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchOntologies),
+      mergeMap(() =>
+        this.rampService.fetchOntologies().pipe(
+          map(
+            (ret: any) =>
+              RampActions.fetchOntologiesSuccess({ ontologies: ret }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.fetchOntologiesFailure({ error }))
+            )
           )
         )
-      ),
-    { dispatch: false }
+      )
+    )
   );
 
   fetchMetabolitesFromOntologies = createEffect(() =>
@@ -126,6 +188,7 @@ export class RampEffects {
               metabolites: any[];
               functionCall: string;
               numFoundIds: number;
+              dataframe: any;
             }) =>
               RampActions.fetchMetabolitesFromOntologiesSuccess({
                 data: ret.metabolites,
@@ -133,6 +196,7 @@ export class RampEffects {
                   functionCall: ret.functionCall,
                   numFoundIds: ret.numFoundIds,
                 },
+                dataframe: ret.dataframe
               }),
             catchError((error: ErrorEvent) =>
               of(RampActions.fetchMetaboliteFromOntologiesFailure({ error }))
@@ -157,159 +221,21 @@ export class RampEffects {
     { dispatch: false }
   );
 
-  fetchOntologies = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchOntologies),
-      mergeMap(() =>
-        this.rampService.fetchOntologies().pipe(
-          map(
-            (ret: any) =>
-              RampActions.fetchOntologiesSuccess({ ontologies: ret }),
-            catchError((error: ErrorEvent) =>
-              of(RampActions.fetchOntologiesFailure({ error }))
-            )
-          )
-        )
-      )
-    )
-  );
-
-  fetchAnalytesFromPathways = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchAnalytesFromPathways),
-      mergeMap((action) =>
-        this.rampService.fetchAnalytesFromPathways(action.pathways).pipe(
-          map(
-            (ret: {
-              analytes: Analyte[];
-              functionCall: string;
-              numFoundIds: number;
-            }) =>
-              RampActions.fetchAnalytesFromPathwaysSuccess({
-                data: ret.analytes,
-                query: {
-                  functionCall: ret.functionCall,
-                  numFoundIds: ret.numFoundIds,
-                },
-              })
-          ),
-          catchError((error: ErrorEvent) =>
-            of(RampActions.fetchAnalytesFromPathwaysFailure({ error }))
-          )
-        )
-      )
-    )
-  );
-
-  fetchAnalytesFromPathwaysFile = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(RampActions.fetchAnalytesFromPathwaysFile),
-        tap((action) =>
-          this.rampService.fetchAnalytesFromPathwaysFile(
-            action.pathways,
-            action.format
-          )
-        )
-      ),
-    { dispatch: false }
-  );
-
-  fetchPathwaysFromAnalytes = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchPathwaysFromAnalytes),
-      mergeMap((action) =>
-        this.rampService.fetchPathwaysFromAnalytes(action.analytes).pipe(
-          map(
-            (ret: {
-              pathways: Pathway[];
-              functionCall: string;
-              numFoundIds: number;
-            }) => {
-              return RampActions.fetchPathwaysFromAnalytesSuccess({
-                data: ret.pathways,
-                query: {
-                  functionCall: ret.functionCall,
-                  numFoundIds: ret.numFoundIds,
-                },
-              });
-            }
-          ),
-          catchError((error: ErrorEvent) => {
-            console.log(error);
-            return of(RampActions.fetchPathwaysFromAnalytesFailure({ error }));
-          })
-        )
-      )
-    )
-  );
-
-  fetchPathwaysFromAnalytesFile = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(RampActions.fetchPathwaysFromAnalytesFile),
-        tap((action) =>
-          this.rampService.fetchPathwaysFromAnalytesFile(
-            action.analytes,
-            action.format
-          )
-        )
-      ),
-    { dispatch: false }
-  );
-
-  fetchCommonReactionAnalytes = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchCommonReactionAnalytes),
-      mergeMap((action) =>
-        this.rampService.fetchCommonReactionAnalytes(action.analytes).pipe(
-          map(
-            (ret: {
-              reactions: Reaction[];
-              functionCall: string;
-              numFoundIds: number;
-            }) =>
-              RampActions.fetchCommonReactionAnalytesSuccess({
-                data: ret.reactions,
-                query: {
-                  functionCall: ret.functionCall,
-                  numFoundIds: ret.numFoundIds,
-                },
-              }),
-            catchError((error: ErrorEvent) =>
-              of(RampActions.fetchCommonReactionAnalytesFailure({ error }))
-            )
-          )
-        )
-      )
-    )
-  );
-
-  fetchCommonReactionAnalytesFile = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(RampActions.fetchCommonReactionAnalytesFile),
-        tap((action) =>
-          this.rampService.fetchCommonReactionAnalytesFile(
-            action.analytes,
-            action.format
-          )
-        )
-      ),
-    { dispatch: false }
-  );
-
   fetchClassesFromMetabolites = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchClassesFromMetabolites),
       mergeMap((action) =>
-        this.rampService.fetchChemicalClass(action.metabolites).pipe(
+        this.rampService.fetchChemicalClass(
+          action.metabolites,
+          action.biospecimen,
+          action.background
+        ).pipe(
           map(
             (ret: {
               metClasses: any[];
               functionCall: string;
               numFoundIds: number;
-              dataframe: any
+              dataframe: any;
             }) =>
               RampActions.fetchClassesFromMetabolitesSuccess({
                 data: ret.metClasses,
@@ -328,49 +254,30 @@ export class RampEffects {
     )
   );
 
-  fetchClassesFromMetabolitesFile = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(RampActions.fetchClassesFromMetabolitesFile),
-        withLatestFrom(this.store),
-        tap(([action, store]) => {
-            return this.rampService.fetchClassesFromMetabolitesFile(
-              action.metabolites,
-              action.format
-            )
-          }
-        )
-      ),
-    { dispatch: false }
-  );
-
-  fetchPropertiesFromMetabolitesFile = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(RampActions.fetchPropertiesFromMetabolitesFile),
-        tap((action) =>
-          this.rampService.fetchPropertiesFromMetabolitesFile(
-            action.metabolites,
-            action.format
+  fetchPathwayAnalysis = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchEnrichmentFromPathways),
+      mergeMap((action) =>
+        this.rampService
+          .fetchEnrichmentFromPathways(
+            action.analytes,
+            action.biospecimen,
+            action.background
           )
-        )
-      ),
-    { dispatch: false }
-  );
-
-  fetchEnrichmentFromMetabolitesFile = createEffect(
-      () =>
-        this.actions$.pipe(
-          ofType(RampActions.fetchEnrichmentFromMetabolitesFile),
-          withLatestFrom(this.store),
-          tap(([action, state]) =>
-            this.rampService.fetchEnrichmentFromMetabolitesFile(
-              state.rampStore.enriched_chemical_class
+          .pipe(
+            map(
+              (ret: any) => {
+                return RampActions.fetchEnrichmentFromPathwaysSuccess({...ret});
+              },
+              catchError((error: ErrorEvent) =>
+                of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
+              )
             )
           )
-        ),
-      { dispatch: false }
-    );
+      )
+    )
+  );
+
   fetchPropertiesFromMetabolites = createEffect(() =>
     this.actions$.pipe(
       ofType(RampActions.fetchPropertiesFromMetabolites),
@@ -383,6 +290,7 @@ export class RampEffects {
                 properties: any[];
                 functionCall: string;
                 numFoundIds: number;
+                dataframe: any;
               }) => {
                 return RampActions.fetchPropertiesFromMetabolitesSuccess({
                   data: ret.properties,
@@ -390,6 +298,7 @@ export class RampEffects {
                     functionCall: ret.functionCall,
                     numFoundIds: ret.numFoundIds,
                   },
+                  dataframe: ret.dataframe
                 });
               },
               catchError((error: ErrorEvent) =>
@@ -401,70 +310,31 @@ export class RampEffects {
     )
   );
 
-  fetchChemicalAnalysis = createEffect(() =>
+  fetchCommonReactionAnalytes = createEffect(() =>
     this.actions$.pipe(
-      ofType(RampActions.fetchEnrichmentFromMetabolites),
+      ofType(RampActions.fetchCommonReactionAnalytes),
       mergeMap((action) =>
-        this.rampService
-          .fetchEnrichmentFromMetabolites(action.metabolites)
-          .pipe(
-            map(
-              (ret: any) => {
-                return RampActions.fetchEnrichmentFromMetabolitesSuccess({...ret });
-              },
-              catchError((error: ErrorEvent) =>
-                of(RampActions.fetchEnrichmentFromMetabolitesFailure({ error }))
-              )
-            )
-          )
-      )
-    )
-  );
-
-  filterEnrichedChemicalClasses = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchEnrichmentFromMetabolitesSuccess, RampActions.filterEnrichmentFromMetabolites),
-      withLatestFrom(this.store),
-      mergeMap(([action, state]) => {
-          return  this.rampService
-            .filterMetaboliteEnrichment(
-              state.rampStore.enriched_chemical_class,
-              action.pval_type,
-              action.pval_cutoff,
-            )
-            .pipe(
-              map(
-                (ret: any) => {
-                  return RampActions.filterEnrichmentFromMetabolitesSuccess({ ...ret });
+        this.rampService.fetchCommonReactionAnalytes(action.analytes).pipe(
+          map(
+            (ret: {
+              reactions: Reaction[];
+              functionCall: string;
+              numFoundIds: number;
+              dataframe: any;
+            }) =>
+              RampActions.fetchCommonReactionAnalytesSuccess({
+                data: ret.reactions,
+                query: {
+                  functionCall: ret.functionCall,
+                  numFoundIds: ret.numFoundIds,
                 },
-                catchError((error: ErrorEvent) =>
-                  of(RampActions.filterEnrichmentFromMetabolitesFailure({ error }))
-                )
-              )
-            )
-        }
-      )
-    )
-  );
-
-  fetchPathwayAnalysis = createEffect(() =>
-    this.actions$.pipe(
-      ofType(RampActions.fetchEnrichmentFromPathways),
-      mergeMap((action) =>
-        this.rampService
-          .fetchEnrichmentFromPathways(
-            action.pathways
-          )
-          .pipe(
-            map(
-              (ret: any) => {
-                return RampActions.fetchEnrichmentFromPathwaysSuccess({...ret});
-              },
-              catchError((error: ErrorEvent) =>
-                of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
-              )
+                dataframe: ret.dataframe
+              }),
+            catchError((error: ErrorEvent) =>
+              of(RampActions.fetchCommonReactionAnalytesFailure({ error }))
             )
           )
+        )
       )
     )
   );
@@ -510,7 +380,12 @@ export class RampEffects {
             .pipe(
               map(
                 (ret: any) => {
-                  return RampActions.fetchClusterFromEnrichmentSuccess({ data: ret.data.data, plot: ret.plot, query: ret.query });
+                  return RampActions.fetchClusterFromEnrichmentSuccess({
+                    data: ret.data.data,
+                    plot: ret.plot,
+                    query: ret.query,
+                    dataframe: ret.data.data
+                  });
                 },
                 catchError((error: ErrorEvent) =>
                   of(RampActions.fetchEnrichmentFromPathwaysFailure({ error }))
@@ -520,20 +395,6 @@ export class RampEffects {
         }
       )
     )
-  );
-
-  fetchEnrichmentFromPathwaysFile = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(RampActions.fetchEnrichmentFromPathwaysFile),
-        withLatestFrom(this.store),
-        tap(([action, state]) =>
-          this.rampService.fetchEnrichmentFromPathwaysFile(
-            state.rampStore.filtered_fishers_dataframe
-          )
-        )
-      ),
-    { dispatch: false }
   );
 
   fetchClusterImageFile = createEffect(
@@ -549,6 +410,71 @@ export class RampEffects {
       ),
     { dispatch: false }
   );
+
+  fetchChemicalAnalysis = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchEnrichmentFromMetabolites),
+      mergeMap((action) =>
+        this.rampService
+          .fetchEnrichmentFromMetabolites(
+            action.metabolites,
+            action.biospecimen,
+            action.background
+          )
+          .pipe(
+            map(
+              (ret: any) => {
+                return RampActions.fetchEnrichmentFromMetabolitesSuccess({...ret });
+              },
+              catchError((error: ErrorEvent) =>
+                of(RampActions.fetchEnrichmentFromMetabolitesFailure({ error }))
+              )
+            )
+          )
+      )
+    )
+  );
+
+  filterEnrichedChemicalClasses = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RampActions.fetchEnrichmentFromMetabolitesSuccess, RampActions.filterEnrichmentFromMetabolites),
+      withLatestFrom(this.store),
+      mergeMap(([action, state]) => {
+          return  this.rampService
+            .filterMetaboliteEnrichment(
+              state.rampStore.enriched_chemical_class,
+              action.pval_type,
+              action.pval_cutoff,
+            )
+            .pipe(
+              map(
+                (ret: any) => {
+                  return RampActions.filterEnrichmentFromMetabolitesSuccess({ ...ret });
+                },
+                catchError((error: ErrorEvent) =>
+                  of(RampActions.filterEnrichmentFromMetabolitesFailure({ error }))
+                )
+              )
+            )
+        }
+      )
+    )
+  );
+
+  fetchEnrichmentFromMetabolitesFile = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RampActions.fetchEnrichmentFromMetabolitesFile),
+        withLatestFrom(this.store),
+        tap(([action, state]) =>
+          this.rampService.fetchEnrichmentFromMetabolitesFile(
+            state.rampStore.enriched_chemical_class
+          )
+        )
+      ),
+    { dispatch: false }
+  );
+
 
   constructor(
     private readonly actions$: Actions,

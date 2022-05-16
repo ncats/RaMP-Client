@@ -26,21 +26,25 @@ export interface RampEntity {
   ontology?: {
     data: Ontology[];
     query: RampQuery;
+    dataframe: any;
   };
 
   analytes?: {
     data: Analyte[];
     query: RampQuery;
+    dataframe: any;
   };
 
   pathways?: {
     data: Pathway[];
     query: RampQuery;
+    dataframe: any;
   };
 
   reactions?: {
     data: Reaction[];
     query: RampQuery;
+    dataframe: any;
   };
 
   metClasses?: {
@@ -52,14 +56,17 @@ export interface RampEntity {
   metabolites?: {
     data: Metabolite[];
     query: RampQuery;
+    dataframe: any;
   };
 
   properties?: {
     data: Properties[];
     query: RampQuery;
+    dataframe: any;
   };
 
   chemicalEnrichments?: any;
+
   pathwayEnrichments?: {
     data: FisherResult[];
     query: RampQuery;

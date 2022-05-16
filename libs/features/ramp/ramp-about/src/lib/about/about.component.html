@@ -28,6 +28,13 @@
         </a>
         <a
           mat-list-item
+          class="list-button"
+          (click)="scroll(dataDownload)"
+          [ngClass]="{ active: isActive('dataDownload') }"
+          >Data Download
+        </a>
+        <a
+          mat-list-item
           *ngIf="compoundsData?.length || genesData?.length"
           class="list-button"
           (click)="scroll(summaryStatistics)"
@@ -49,6 +56,14 @@
           [ngClass]="{ active: isActive('contact') }"
         >
           RaMP Team and Contact
+        </a>
+        <a
+          mat-list-item
+          class="list-button"
+          (click)="scroll(code)"
+          [ngClass]="{ active: isActive('code') }"
+        >
+          Code
         </a>
         <a
           mat-list-item
@@ -84,7 +99,7 @@
           <p>
             RaMP (Relational database of Metabolomic Pathways) is a
             multi-sourced integrated database with comprehensive pathway,
-            chemical, and ontology annoations for genes, proteins, and
+            chemical, and ontology annotations for genes, proteins, and
             metabolites.
             <span *ngIf="sourceVersions?.length"
               >Information within RaMP is harmonized from the following data
@@ -207,15 +222,15 @@
           </ul>
           <picture>
             <source
-              srcset="./assets/ramp-about/images/Supported_Queries.webp"
+              srcset="/assets/ramp-about/images/Supported_Queries.webp"
               type="image/webp"
             />
             <source
-              srcset="./assets/ramp-about/images/Supported_Queries.png"
+              srcset="/assets/ramp-about/images/Supported_Queries.png"
               type="image/png"
             />
             <img
-              src="./assets/ramp-about/images/Supported_Queries.png"
+              src="/assets/ramp-about/images/Supported_Queries.png"
               class="ramp-capabilities-image"
               alt="flow diagram illustrating the RaMP data types, annotations and analysis"
             />
@@ -237,6 +252,31 @@
             [data]="entityCounts"
             [internalSort]="true"
           ></ncats-frontend-library-ncats-datatable>
+        </div>
+      </div>
+    </div>
+    <div fxLayout="row" id="dataDownload" #dataDownload #scrollSection>
+      <div fxFlex="75" fxFlex.lt-md="100" >
+        <div
+          class="section-header"
+          [ngClass]="{ active: isActive('dataDownload') }"
+        >
+          Data Download
+        </div>
+        <div class="section-content">
+         A SQL data dump of RaMP-DB is hosted at
+          <a href="https://figshare.com/"
+             target="_blank"
+             rel="noreferrer"
+             attr.aria-label= "link to figshare"
+          >Figshare</a> and can be accessed
+          <a
+            href="https://figshare.com/ndownloader/files/34941486"
+            target="_blank"
+            rel="noreferrer"
+            attr.aria-label= "link to SQL data dump hosted on figshare"
+
+          >here.</a>
         </div>
       </div>
     </div>
@@ -288,7 +328,6 @@
         </div>
       </div>
     </div>
-
     <div fxLayout="row" id="citation" #citation #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div
@@ -525,6 +564,7 @@
       </div>
     </div>
 
+<!--
     <div fxLayout="row" id="datadownload" #datadownload #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div
@@ -536,6 +576,7 @@
         <div class="section-content"></div>
       </div>
     </div>
+-->
     <div fxLayout="row" id="code" #code #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div class="section-header" [ngClass]="{ active: isActive('code') }">
@@ -551,7 +592,16 @@
                 rel="noreferrer"
                 aria-label="Link to the RaMP DB GitHub page"
                 >RaMP DB</a
-              ></mat-list-item
+              > Source code for the RaMP R package</mat-list-item
+            >
+            <mat-list-item
+              ><a
+                href="https://github.com/ncats/RaMP-BackEnd"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the RaMP DB GitHub page"
+                >RaMP Backend</a
+              > Code base for pulling in data, data harmonization and database loading</mat-list-item
             >
             <mat-list-item
               ><a
@@ -560,7 +610,7 @@
                 rel="noreferrer"
                 aria-label="Link to the RaMP Client GitHub page"
                 >RaMP Client</a
-              ></mat-list-item
+              > Front end client consisting of a web application and an R Plumber API</mat-list-item
             >
           </mat-list>
         </div>

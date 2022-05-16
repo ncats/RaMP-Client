@@ -15,7 +15,6 @@ import {
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { forkJoin, Observable, of, tap } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { fetchCommonReactionAnalytesFile, fetchEnrichmentFromMetabolitesFile } from "./ramp-store/ramp.actions";
 
 const HTTP_OPTIONS = {
   headers: new HttpHeaders(),
@@ -90,43 +89,11 @@ export class RampService {
       );
   }
 
-  fetchAnalytesFromPathways(pathways: string[]): Observable<{
-    analytes: Analyte[];
-    functionCall: string;
-    numFoundIds: number;
-  }> {
-    const options = {
-      pathway: pathways,
-    };
-    return this.http
-      .post<string[]>(`${this.url}analytes-from-pathways`, options) // ,{responseType: 'text'})
-      .pipe(
-        map((response: any) => {
-          return {
-            analytes: response.data.map((obj: any) => new Analyte(obj)),
-            functionCall: response.function_call[0],
-            numFoundIds: response.numFoundIds[0],
-          };
-        })
-      );
-  }
-
-  fetchAnalytesFromPathwaysFile(pathways: string[], format: string) {
-    const params = {
-      pathway: pathways,
-      format: format,
-    };
-    this.http
-      .post<string[]>(`${this.url}analytes-from-pathways`, params, HTTP_OPTIONS)
-      .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchAnalytesFromPathways-download.tsv')
-      );
-  }
-
   fetchPathwaysFromAnalytes(analytes: string[]): Observable<{
     pathways: Pathway[];
     functionCall: string;
     numFoundIds: number;
+    dataframe: any;
   }> {
     const options = {
       analytes: analytes,
@@ -139,88 +106,28 @@ export class RampService {
             pathways: response.data.map((obj: any) => new Pathway(obj)),
             functionCall: response.function_call[0],
             numFoundIds: response.numFoundIds[0],
+            dataframe: response.data
           };
         })
         //    catchError(this.handleError('pathways from analytes', of({})))
       );
   }
 
-  fetchPathwaysFromAnalytesFile(analytes: string[], format: string) {
-    const params = {
-      analytes: analytes,
-      format: format,
-    };
-    this.http
-      .post<string[]>(`${this.url}pathways-from-analytes`, params, HTTP_OPTIONS)
-      .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchPathwayFromAnalyte-download.tsv')
-      );
-  }
-
-  fetchCommonReactionAnalytes(analytes: string[]): Observable<{
-    reactions: Reaction[];
+  fetchAnalytesFromPathways(pathways: string[]): Observable<{
+    analytes: Analyte[];
     functionCall: string;
     numFoundIds: number;
+    dataframe: any;
   }> {
     const options = {
-      analyte: analytes,
+      pathway: pathways,
     };
     return this.http
-      .post<string[]>(`${this.url}common-reaction-analytes`, options)
+      .post<string[]>(`${this.url}analytes-from-pathways`, options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
           return {
-            reactions: response.data.map((obj: any) => new Reaction(obj)),
-            functionCall: response.function_call[0],
-            numFoundIds: response.numFoundIds[0],
-          };
-        })
-      );
-  }
-
-  fetchCommonReactionAnalytesFile(analytes: string[], format: string) {
-    const params = {
-      analyte: analytes,
-      format: format,
-    };
-    this.http
-      .post<string[]>(
-        `${this.url}common-reaction-analytes`,
-        params,
-        HTTP_OPTIONS
-      )
-      .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchCommonReactionAnalytes-download.tsv')
-      );
-  }
-
-  fetchChemicalClass(metabolites: string[]): Observable<{
-    metClasses: Classes[];
-    functionCall: string;
-    numFoundIds: number;
-    dataframe: any
-  }> {
-    const options = {
-      metabolites: metabolites,
-    };
-    return this.http
-      .post<string[]>(`${this.url}chemical-classes`, options) // ,{responseType: 'text'})
-      .pipe(
-        map((response: any) => {
-          const metabMap: Map<string, any> = new Map<string, any>();
-          response.data.forEach((chClass: any) => {
-            let cl = metabMap.get(chClass.sourceId);
-            if (cl) {
-              cl.levels.push(chClass);
-            } else {
-              cl = { sourceId: chClass.sourceId, levels: [chClass] };
-            }
-            metabMap.set(chClass.sourceId, cl);
-          });
-          return {
-            metClasses: [...metabMap.values()].map(
-              (obj: any) => new Classes(obj)
-            ),
+            analytes: response.data.map((obj: any) => new Analyte(obj)),
             functionCall: response.function_call[0],
             numFoundIds: response.numFoundIds[0],
             dataframe: response.data
@@ -229,15 +136,141 @@ export class RampService {
       );
   }
 
-  fetchClassesFromMetabolitesFile(metabolites: string[], format: string) {
+  fetchOntologiesFromMetabolites(analytes: string[]): Observable<{
+    ontologies: Ontology[];
+    functionCall: string;
+    numFoundIds: number;
+    dataframe: any;
+  }> {
+    const options = {
+      metabolite: analytes,
+    };
+    return this.http
+      .post<string[]>(`${this.url}ontologies-from-metabolites`, options) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          return {
+            ontologies: response.data.map((obj: any) => new Ontology(obj)),
+            functionCall: response.function_call[0],
+            numFoundIds: response.numFoundIds[0],
+            dataframe: response.data
+          };
+        })
+      );
+  }
+
+  fetchMetabolitesFromOntologies(ontologies: string[]): Observable<{
+    metabolites: Metabolite[];
+    functionCall: string;
+    numFoundIds: number;
+    dataframe: any;
+  }> {
+    const options = {
+      ontology: ontologies.join(','),
+    };
+    return this.http
+      .post<string[]>(`${this.url}metabolites-from-ontologies`, options) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          return {
+            metabolites: response.data.map((obj: any) => new Metabolite(obj)),
+            functionCall: response.function_call[0],
+            numFoundIds: response.numFoundIds[0],
+            dataframe: response.data
+          };
+        })
+      );
+  }
+
+  fetchOntologies() {
+    return this.http
+      .get<string[]>(`${this.url}ontology-types`) // ,{responseType: 'text'})
+      .pipe(
+        map((response: any) => {
+          const ontoMap: Map<
+            string,
+            { ontologyType: string; values: Ontology[] }
+            > = new Map<string, { ontologyType: string; values: Ontology[] }>();
+          response.uniq_ontology_types.forEach((onto: string) =>
+            ontoMap.set(onto, { ontologyType: onto, values: [] })
+          );
+          response.data.forEach((ontoType: any) => {
+            let cl = ontoMap.get(ontoType.HMDBOntologyType);
+            if (cl) {
+              cl.values.push(new Ontology(ontoType));
+            } else {
+              cl = {
+                ontologyType: ontoType.HMDBOntologyType,
+                values: [new Ontology(ontoType)],
+              };
+            }
+            ontoMap.set(ontoType.HMDBOntologyType, cl);
+          });
+          return {
+            data: [...ontoMap.values()],
+          };
+        })
+        //  catchError(this.handleError('pathways from analytes', []))
+      );
+  }
+
+  fetchMetabolitesFromOntologiesFile(ontologies: string[], format: string) {
     const params = {
-      metabolites: metabolites,
+      ontology: ontologies.join(','),
       format: format,
     };
     this.http
-      .post<string[]>(`${this.url}chemical-classes`, params, HTTP_OPTIONS)
+      .post<string[]>(
+        `${this.url}metabolites-from-ontologies`,
+        params,
+        HTTP_OPTIONS
+      )
       .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchChemicalClass-download.tsv')
+        this._downloadFile(response, 'fetchMetabolitesFromOntologies-download.tsv')
+      );
+  }
+
+  fetchChemicalClass(metabolites: string[], biospecimen?: string, background?: File): Observable<{
+    metClasses: Classes[];
+    functionCall: string;
+    numFoundIds: number;
+    dataframe: any
+  }> {
+    const formData = new FormData();
+    formData.set("metabolites", JSON.stringify(metabolites));
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
+    if (background) {
+      formData.set("file", background, background.name);
+    }
+    return this.http
+      .post<string[]>(`${this.url}chemical-classes`, formData)
+      .pipe(
+        map((response: any) => {
+          let metClasses: Classes[] = [];
+          const metabMap: Map<string, any> = new Map<string, any>();
+          if (response.data && response.data.length) {
+            response.data.forEach((chClass: any) => {
+              let cl = metabMap.get(chClass.sourceId);
+              if (cl) {
+                cl.levels.push(chClass);
+              } else {
+                cl = { sourceId: chClass.sourceId, levels: [chClass] };
+              }
+              metabMap.set(chClass.sourceId, cl);
+            });
+            metClasses = [...metabMap.values()].map(
+              (obj: any) => new Classes(obj)
+            )
+          }
+          return {
+            metClasses: metClasses,
+            functionCall: response.function_call[0],
+            numFoundIds: response.numFoundIds[0],
+            dataframe: response.data
+          };
+        })
       );
   }
 
@@ -245,6 +278,7 @@ export class RampService {
     properties: Properties[];
     functionCall: string;
     numFoundIds: number;
+    dataframe: any;
   }> {
     const options = {
       metabolites: metabolites,
@@ -257,29 +291,46 @@ export class RampService {
             properties: response.data.map((obj: any) => new Properties(obj)),
             functionCall: response.function_call[0],
             numFoundIds: response.numFoundIds[0],
+            dataframe: response.data
           };
         })
       );
   }
 
-  fetchPropertiesFromMetabolitesFile(metabolites: string[], format: string) {
-    const params = {
-      metabolites: metabolites,
-      format: format,
+  fetchCommonReactionAnalytes(analytes: string[]): Observable<{
+    reactions: Reaction[];
+    functionCall: string;
+    numFoundIds: number;
+    dataframe: any;
+  }> {
+    const options = {
+      analyte: analytes,
     };
-    this.http
-      .post<string[]>(`${this.url}chemical-properties`, params, HTTP_OPTIONS)
-      .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchChemicalProperties-download.tsv')
+    return this.http
+      .post<string[]>(`${this.url}common-reaction-analytes`, options)
+      .pipe(
+        map((response: any) => {
+          return {
+            reactions: response.data.map((obj: any) => new Reaction(obj)),
+            functionCall: response.function_call[0],
+            numFoundIds: response.numFoundIds[0],
+            dataframe: response.data
+          };
+        })
       );
   }
 
-  fetchEnrichmentFromMetabolites(metabolites: string[]) {
-    const options = {
-      metabolites: metabolites,
-    };
+  fetchEnrichmentFromMetabolites(metabolites: string[], biospecimen?: string, background?: File) {
+    const formData = new FormData();
+    formData.set("metabolites", JSON.stringify(metabolites));
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
+    if (background) {
+      formData.set("file", background, background.name);
+    }
     return this.http
-      .post<string[]>(`${this.url}chemical-enrichment`, options) // ,{responseType: 'text'})
+      .post<string[]>(`${this.url}chemical-enrichment`, formData) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
           const retList: ChemicalEnrichment[] = [];
@@ -327,16 +378,22 @@ export class RampService {
         this._downloadFile(this._toTSV(enrichments), 'fetchEnrichmentFromMetabolites-download.tsv');
   }
 
-  fetchEnrichmentFromPathways(analytes: string[]): Observable<{
+  fetchEnrichmentFromPathways(analytes: string[], biospecimen?: string, background?: File): Observable<{
     data: FisherResult[];
     functionCall: string;
     combinedFishersDataframe: any;
   }> {
+    const formData = new FormData();
+    formData.set("analytes", JSON.stringify(analytes));
+    if (biospecimen) {
+      formData.set("biospecimen", JSON.stringify([biospecimen]));
+    }
+    if (background) {
+      formData.set("file", background, background.name);
+    }
     return (
       this.http
-        .post<string[]>(`${this.url}combined-fisher-test`, {
-          pathways: analytes,
-        })
+        .post<string[]>(`${this.url}combined-fisher-test`, formData)
         .pipe(
           map((response: any) => {
             return {
@@ -442,117 +499,6 @@ export class RampService {
           }),
           catchError(this.handleError('chemical enrichment', []))
         );
-  }
-
-
-  fetchOntologiesFromMetabolites(analytes: string[]): Observable<{
-    ontologies: Ontology[];
-    functionCall: string;
-    numFoundIds: number;
-  }> {
-    const options = {
-      metabolite: analytes,
-    };
-    return this.http
-      .post<string[]>(`${this.url}ontologies-from-metabolites`, options) // ,{responseType: 'text'})
-      .pipe(
-        map((response: any) => {
-          return {
-            ontologies: response.data.map((obj: any) => new Ontology(obj)),
-            functionCall: response.function_call[0],
-            numFoundIds: response.numFoundIds[0],
-          };
-        })
-      );
-  }
-
-  fetchOntologiesFromMetabolitesFile(metabolite: string[], format: string) {
-    const params = {
-      metabolite: metabolite,
-      format: format,
-    };
-    this.http
-      .post<string[]>(
-        `${this.url}ontologies-from-metabolites`,
-        params,
-        HTTP_OPTIONS
-      )
-      .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchOntologiesFromMetabolites-download.tsv')
-      );
-  }
-
-  fetchMetabolitesFromOntologies(ontologies: string[]): Observable<{
-    metabolites: Metabolite[];
-    functionCall: string;
-    numFoundIds: number;
-  }> {
-    const options = {
-      ontology: ontologies.join(','),
-    };
-    return this.http
-      .post<string[]>(`${this.url}metabolites-from-ontologies`, options) // ,{responseType: 'text'})
-      .pipe(
-        map((response: any) => {
-          return {
-            metabolites: response.data.map((obj: any) => new Metabolite(obj)),
-            functionCall: response.function_call[0],
-            numFoundIds: response.numFoundIds[0],
-          };
-        })
-      );
-  }
-
-  fetchMetabolitesFromOntologiesFile(ontologies: string[], format: string) {
-    const params = {
-      ontology: ontologies.join(','),
-      format: format,
-    };
-    this.http
-      .post<string[]>(
-        `${this.url}metabolites-from-ontologies`,
-        params,
-        HTTP_OPTIONS
-      )
-      .subscribe((response: any) =>
-        this._downloadFile(response, 'fetchMetabolitesFromOntologies-download.tsv')
-      );
-  }
-
-  fetchOntologies() {
-    return this.http
-      .get<string[]>(`${this.url}ontology-types`) // ,{responseType: 'text'})
-      .pipe(
-        map((response: any) => {
-          const ontoMap: Map<
-            string,
-            { ontologyType: string; values: Ontology[] }
-          > = new Map<string, { ontologyType: string; values: Ontology[] }>();
-          response.uniq_ontology_types.forEach((onto: string) =>
-            ontoMap.set(onto, { ontologyType: onto, values: [] })
-          );
-          response.data.forEach((ontoType: any) => {
-            let cl = ontoMap.get(ontoType.HMDBOntologyType);
-            if (cl) {
-              cl.values.push(new Ontology(ontoType));
-            } else {
-              cl = {
-                ontologyType: ontoType.HMDBOntologyType,
-                values: [new Ontology(ontoType)],
-              };
-            }
-            ontoMap.set(ontoType.HMDBOntologyType, cl);
-          });
-          return {
-            data: [...ontoMap.values()],
-          };
-        })
-        //  catchError(this.handleError('pathways from analytes', []))
-      );
-  }
-
-  fetchEnrichmentFromPathwaysFile(data: any) {
-    this._downloadFile(this._toTSV(data.fishresults), 'fetchEnrichmentFromPathways-download.tsv')
   }
 
   fetchClusterImageFile(data: any) {

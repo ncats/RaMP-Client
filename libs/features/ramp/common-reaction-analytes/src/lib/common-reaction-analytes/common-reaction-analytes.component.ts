@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DOCUMENT } from "@angular/common";
+import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
 import { RampQuery, Reaction } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchCommonReactionAnalytes,
-  fetchCommonReactionAnalytesFile,
   RampFacade,
 } from '@ramp/stores/ramp-store';
 import { takeUntil } from "rxjs";
@@ -19,14 +19,6 @@ export class CommonReactionAnalytesComponent
   extends PageCoreComponent
   implements OnInit
 {
-
-
-  inputAnalyte!: string;
-  inputCommonNames!: string;
-  rxnPartnerCommonName!: string;
-  rxnPartnerIds!: string[];
-  rxnPartnerIdsString!: string;
-
   reactionColumns: DataProperty[] = [
     new DataProperty({
       label: 'Analyte Id',
@@ -57,16 +49,17 @@ export class CommonReactionAnalytesComponent
   constructor(
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    @Inject(DOCUMENT) protected dom: Document
   ) {
-    super(route, rampFacade);
+    super(route, rampFacade, dom);
   }
 
   ngOnInit(): void {
     this.rampFacade.reactions$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Reaction[]; query: RampQuery } | undefined) => {
+      (res: { data: Reaction[]; query: RampQuery; dataframe: any; } | undefined) => {
         if (res && res.data) {
           this._mapData(res.data);
           this.matches = Array.from(new Set(res.data.map(reaction => reaction.inputAnalyte.toLocaleLowerCase())));
@@ -74,6 +67,13 @@ export class CommonReactionAnalytesComponent
         }
         if (res && res.query) {
           this.query = res.query;
+        }
+        if (res && res.dataframe) {
+          this.dataframe = res.dataframe;
+          if (this.downloadQueued) {
+            this._downloadFile(this._toTSV(this.dataframe), 'fetchCommonReactionAnalytes-download.tsv')
+            this.downloadQueued = false;
+          }
         }
         this.ref.markForCheck();
       }
@@ -86,9 +86,12 @@ export class CommonReactionAnalytesComponent
   }
 
   fetchReactionsFile(event: string[]): void {
-    this.rampFacade.dispatch(
-      fetchCommonReactionAnalytesFile({ analytes: event, format: 'tsv' })
-    );
+    if(!this.dataframe) {
+      this.fetchReactions(event);
+      this.downloadQueued = true;
+    } else {
+      this._downloadFile(this._toTSV(this.dataframe), 'fetchCommonReactionAnalytes-download.tsv' )
+    }
   }
 
   private _mapData(data: any): void {
