@@ -1,0 +1,569 @@
+servers:
+  - url: 'https://ramp-api-alpha.ncats.io'
+openapi: 3.0.3
+info:
+  description: Relational Database of Metabolic Pathways (RaMP) API
+  title: RaMP API v1.0.1
+  version: 1.0.1
+  contact:
+    name: Timothy Sheils
+    x-role: responsible developer
+    email: timothy.sheils@nih.gov
+    x-id: 'https://github.com/tsheils'
+  termsOfService: https://rampdb.nih.gov
+tags:
+- name: NCATS-API
+paths:
+  /api/source_versions:
+    get:
+      summary: Return source version information
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters: []
+  /api/id-types:
+    get:
+      summary: Return analyte ID types
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters: []
+  /api/entity_counts:
+    get:
+      summary: Return counts on entities and their associations
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters: []
+  /api/analyte_intersects:
+    get:
+      summary: Return analyte source intersects
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: analytetype
+          description: >-
+            specifies type of analyte intersects to return, 'metabolites' or
+            'genes'
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: query_scope
+          description: specifies 'global' or 'mapped-to-pathway'
+          in: query
+          required: true
+          schema:
+            type: string
+  /api/ontology-types:
+    get:
+      summary: Return all types of ontologies present in RaMP-DB
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters: []
+  /api/chemical-class-type:
+    get:
+      summary: Return available high level chemical class types (from ClassyFire)
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: classtype
+          in: query
+          required: false
+          schema:
+            type: string
+  /api/pathways-from-analytes:
+    post:
+      summary: Return pathways from given list of analytes
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: analytes
+          in: query
+          required: true
+          schema:
+            type: string
+  /api/analytes-from-pathways:
+    post:
+      summary: Return analytes from given list of pathways as either json or a tsv
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: pathway
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: analyte_type
+          in: query
+          required: false
+          schema:
+            type: string
+            default: both
+  /api/ontologies-from-metabolites:
+    post:
+      summary: Return ontologies from list of metabolites
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: metabolite
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: NameOrIds
+          description: one of �name� or �ids�, default �ids"
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ids
+  /api/metabolites-from-ontologies:
+    post:
+      summary: Return metabolites from ontology
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: ontology
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: format
+          description: one of "json" or "tsv"
+          in: query
+          required: false
+          schema:
+            type: string
+            default: json
+  /api/chemical-classes:
+    post:
+      summary: Return available chemical classes of given metabolites in RaMP-DB
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: metabolites
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: biospecimen
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: file
+          description: File
+          in: query
+          required: false
+          schema:
+            type: string
+  /api/chemical-properties:
+    post:
+      summary: Return chemical properties of given metabolites
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: metabolites
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: property
+          in: query
+          required: false
+          schema:
+            type: string
+            default: all
+  /api/common-reaction-analytes:
+    post:
+      summary: Return analytes involved in same reaction as given list of analytes
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: analyte
+          in: query
+          required: true
+          schema:
+            type: string
+  /api/combined-fisher-test:
+    post:
+      summary: >-
+        Return combined Fisher's test results from given list of analytes query
+        results
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: analytes
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: biospecimen
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: file
+          description: File
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: background_type
+          in: query
+          required: false
+          schema:
+            type: string
+            default: database
+  /api/filter-fisher-test-results:
+    post:
+      summary: >-
+        Return filtered Fisher's test results from given list of Fisher's test
+        results
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: fishers_results
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: pval_type
+          description: one of "fdr" or "holm" or "pval"
+          in: query
+          required: false
+          schema:
+            type: string
+            default: fdr
+        - name: pval_cutoff
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.1
+  /api/cluster-fisher-test-results:
+    post:
+      summary: >-
+        Return clustered Fisher's test results from given list of Fisher's test
+        results
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: fishers_results
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: perc_analyte_overlap
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.2
+        - name: perc_pathway_overlap
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.2
+        - name: min_pathway_tocluster
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 2
+  /api/cluster-plot:
+    post:
+      summary: >-
+        Return clustered Fisher's test results from given list of Fisher's test
+        results
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: fishers_results
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: perc_analyte_overlap
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.2
+        - name: perc_pathway_overlap
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.2
+        - name: min_pathway_tocluster
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 2
+        - name: filename
+          in: query
+          required: true
+          schema:
+            type: string
+  /api/chemical-enrichment:
+    post:
+      summary: Perform chemical enrichment on given metabolites
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: metabolites
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: biospecimen
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: file
+          description: File
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: background
+          in: query
+          required: false
+          schema:
+            type: string
+            default: database
