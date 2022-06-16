@@ -20,9 +20,9 @@
           "apps/ramp-client/src/favicon.ico",
           "apps/ramp-client/src/assets",
           {
-            "input": "libs/features/ramp/ramp-about/src/assets",
+            "input": "libs/features/ramp/ramp-api/src/assets",
             "glob": "**/*",
-            "output": "assets/ramp-about"
+            "output": "assets/ramp-api"
           }
         ],
         "stylePreprocessorOptions": {
@@ -32,6 +32,7 @@
         },
         "styles": [
           "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+          "node_modules/swagger-ui/dist/swagger-ui.css",
           "apps/ramp-client/src/styles.scss"
         ],
         "scripts": []

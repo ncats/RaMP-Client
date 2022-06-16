@@ -166,7 +166,7 @@ export class RampService {
     dataframe: any;
   }> {
     const options = {
-      ontology: ontologies.join(','),
+      ontology: ontologies //.join(','),
     };
     return this.http
       .post<string[]>(`${this.url}metabolites-from-ontologies`, options) // ,{responseType: 'text'})
