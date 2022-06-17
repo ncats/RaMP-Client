@@ -5,6 +5,10 @@ library(R.cache)
 library(readr)
 library(ggplot2)
 
+#* @apiTitle RaMP_API
+#* @apiDescription REST API for the Relational Database of Metabolomics Pathways (RaMP) Application
+#* @apiVersion 1.0.1
+
 serializers <- list(
   "json" = serializer_json(),
   "tsv" = serializer_tsv()
@@ -45,6 +49,34 @@ function() {
     function_call="RaMP::getCurrentRaMPSourceDBVersions()"
   ))
 }
+
+######
+#* Return database version id
+#* @serializer unboxedJSON
+#* @get /api/ramp_db_version
+function() {
+  version <- RaMP::getCurrentRaMPVersion()
+
+  return(list(
+    data = version,
+    function_call="RaMP::getCurrentRaMPVersion()"
+  ))
+}
+
+######
+#* Return current database file url
+#* @serializer unboxedJSON
+#* @get /api/current_db_file_url
+function() {
+  versionInfo <- RaMP::getCurrentRaMPVersion(justVersion = F)
+  dbURL <- unlist(versionInfo$db_sql_url)
+  return(list(
+    data = dbURL,
+    function_call="RaMP::getCurrentRaMPVersion(justVersion = F)"
+  ))
+}
+
+
 
 ####
 #* Return analyte ID types
