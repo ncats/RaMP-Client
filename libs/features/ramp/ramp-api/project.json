@@ -4,6 +4,14 @@
   "sourceRoot": "libs/features/ramp/ramp-api/src",
   "prefix": "ramp",
   "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/features/ramp/ramp-api"],
+      "options": {
+        "jestConfig": "libs/features/ramp/ramp-api/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {

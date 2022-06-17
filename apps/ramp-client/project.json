@@ -23,6 +23,11 @@
             "input": "libs/features/ramp/ramp-api/src/assets",
             "glob": "**/*",
             "output": "assets/ramp-api"
+          },
+          {
+            "input": "libs/features/ramp/ramp-about/src/assets",
+            "glob": "**/*",
+            "output": "assets/ramp-about"
           }
         ],
         "stylePreprocessorOptions": {
@@ -33,9 +38,13 @@
         "styles": [
           "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
           "node_modules/swagger-ui/dist/swagger-ui.css",
+          "node_modules/swagger-ui-dist/swagger-ui.css",
           "apps/ramp-client/src/styles.scss"
         ],
-        "scripts": []
+        "scripts": [
+            "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
+            "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
+        ]
       },
       "configurations": {
         "production": {
@@ -43,7 +52,7 @@
             {
               "type": "initial",
               "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumError": "3mb"
             },
             {
               "type": "anyComponentStyle",

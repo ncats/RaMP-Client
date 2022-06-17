@@ -21,7 +21,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowJs": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,

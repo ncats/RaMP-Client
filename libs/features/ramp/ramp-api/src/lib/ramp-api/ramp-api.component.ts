@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-// import SwaggerUI = require("swagger-ui");
-const SwaggerUI = require('swagger-ui')
+// import SwaggerUIBundle from "swagger-ui-dist";
+ //ng const SwaggerUIBundle = require('swagger-ui-dist').SwaggerUIBundle
 
+declare const SwaggerUIBundle: any;
 
 @Component({
   selector: 'ramp-ramp-api',
@@ -25,7 +26,7 @@ export class RampApiComponent implements OnInit, AfterViewInit {
    * create swagger ui viewer
    */
   ngAfterViewInit() {
-    const ui = SwaggerUI({
+    const ui = SwaggerUIBundle({
       url: '/assets/ramp-api/data/ramp_openapi_with_extensions.yml',
       domNode: this.el.nativeElement
     });
