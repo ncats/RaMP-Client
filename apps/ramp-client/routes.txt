@@ -1,6 +1,7 @@
 /
 /home
 /about
+/api
 /ontologies-from-metabolites
 /metabolites-from-ontologies
 /analytes-from-pathways

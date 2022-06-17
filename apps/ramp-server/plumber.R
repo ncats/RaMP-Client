@@ -129,15 +129,15 @@ function() {
 
 #####
 #' Return pathways from given list of analytes
-#' @param analytes
 #' @post /api/pathways-from-analytes
-function(analytes, res) {
+#' @param analytes:[string]
+function(analytes) {
     pathways_df <- tryCatch({
         pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
     },
     error = function(cond) {
         return(data.frame(stringsAsFactors = FALSE))
-    })    
+    })
     return(
         list(
             data = unique(pathways_df),
@@ -176,7 +176,7 @@ function(pathway, analyte_type="both") {
 #* @param NameOrIds one of “name” or “ids”, default “ids"
 #* @post /api/ontologies-from-metabolites
 function(metabolite, NameOrIds= "ids") {
-    ontologies_df <- 
+    ontologies_df <-
         RaMP::getOntoFromMeta(analytes = metabolite, NameOrIds = NameOrIds)
     if(is.null(ontologies_df)){
         ontologies_df<-data.frame()
@@ -196,8 +196,7 @@ function(metabolite, NameOrIds= "ids") {
 #* @post /api/metabolites-from-ontologies
 function(ontology, format = "json", res) {
   ontologies_names <- c(ontology)
-  ontologies_names <- paste(ontologies_names, collapse = ", ")
-
+ # ontologies_names <- paste(ontologies_names, collapse = ", ")
   ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
   if (is.null(nrow(ontologies))) {
     return(
