@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import SwaggerUI from "swagger-ui";
+// import SwaggerUI = require("swagger-ui");
+const SwaggerUI = require('swagger-ui')
+
 
 @Component({
   selector: 'ramp-ramp-api',
