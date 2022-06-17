@@ -27,4 +27,4 @@ Please follow [these instructions](apps/ramp-client/CLIENT_INSTRUCTIONS.md) to r
 
 ## API
 
-API documentation can be found [here](https://ramp-api-alpha.ncats.io/__docs__/)
+API documentation can be found [here](https://rampdb.nih.gov/api)
