@@ -32,6 +32,15 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'api',
+    pathMatch: 'full',
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+    loadChildren: () =>
+      import('@ramp/features/ramp/ramp-api').then(
+        (m) => m.FeaturesRampRampApiModule
+      ),
+  },
+  {
     path: 'ontologies-from-metabolites',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',

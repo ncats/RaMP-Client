@@ -45,6 +45,9 @@
       "@ramp/features/ramp/ramp-about": [
         "libs/features/ramp/ramp-about/src/index.ts"
       ],
+      "@ramp/features/ramp/ramp-api": [
+        "libs/features/ramp/ramp-api/src/index.ts"
+      ],
       "@ramp/features/ramp/ramp-header": [
         "libs/features/ramp/ramp-header/src/index.ts"
       ],

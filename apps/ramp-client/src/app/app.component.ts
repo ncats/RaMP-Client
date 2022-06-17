@@ -1,14 +1,15 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+  Component, ElementRef,
+  OnInit, ViewChild,
+  ViewEncapsulation
+} from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '@ramp/shared/ui/error-dialog';
 import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
 import { RampFacade } from '@ramp/stores/ramp-store';
+
 
 @Component({
   selector: 'ramp-root',
@@ -87,9 +88,9 @@ export class AppComponent implements OnInit {
       label: 'About',
     },
     {
-      link: 'https://ramp-api-alpha.ncats.io/__docs__/',
+      link: 'api',
       label: 'API',
-      external: true
+      //external: true
     },
   ];
 

@@ -11,6 +11,7 @@
     "features-ramp-pathways-from-analytes": "libs/features/ramp/pathways-from-analytes",
     "features-ramp-properties-from-metabolites": "libs/features/ramp/properties-from-metabolites",
     "features-ramp-ramp-about": "libs/features/ramp/ramp-about",
+    "features-ramp-ramp-api": "libs/features/ramp/ramp-api",
     "features-ramp-ramp-header": "libs/features/ramp/ramp-header",
     "features-ramp-ramp-home": "libs/features/ramp/ramp-home",
     "models-ramp-models": "libs/models/ramp-models",
