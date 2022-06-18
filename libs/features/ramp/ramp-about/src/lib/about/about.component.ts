@@ -38,6 +38,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   compoundsData!: any[];
   sourceVersions!: Array<SourceVersion>;
   entityCounts!: EntityCount[];
+  databaseUrl!: string;
   entityCountsColumns: DataProperty[] = [
     new DataProperty({
       label: 'Category',
@@ -116,6 +117,9 @@ export class AboutComponent implements OnInit, OnDestroy {
           if (data.metaboliteIntersects) {
             this.compoundsData = data.metaboliteIntersects;
             this.changeDetector.markForCheck();
+          }
+          if(data.databaseUrl) {
+            this.databaseUrl = data.databaseUrl
           }
         })
       )

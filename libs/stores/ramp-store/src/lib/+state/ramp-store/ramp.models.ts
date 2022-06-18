@@ -22,6 +22,7 @@ export interface RampEntity {
   metaboliteIntersects?: [];
   geneIntersects?: [];
   ontologiesList?: any[];
+  databaseUrl?: string;
 
   ontology?: {
     data: Ontology[];

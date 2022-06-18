@@ -27,6 +27,7 @@ export interface State extends EntityState<RampEntity> {
   entityCounts?: any;
   metaboliteIntersects?: [];
   geneIntersects?: [];
+  databaseUrl?: string;
   ontologies?: {
     data: Ontology[];
     query: RampQuery;
@@ -132,6 +133,7 @@ const rampReducer = createReducer(
     entityCounts: data.entityCounts,
     metaboliteIntersects: data.metaboliteIntersects,
     geneIntersects: data.geneIntersects,
+    databaseUrl: data.databaseUrl
   })),
 
   on(RampActions.initSuccess, (state, { data }) => ({
