@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angula
 // import SwaggerUIBundle from "swagger-ui-dist";
  //ng const SwaggerUIBundle = require('swagger-ui-dist').SwaggerUIBundle
 
-declare const SwaggerUIBundle: any;
+declare var SwaggerUIBundle: any;
 
 @Component({
   selector: 'ramp-ramp-api',
@@ -30,6 +30,5 @@ export class RampApiComponent implements OnInit, AfterViewInit {
       url: '/assets/ramp-api/data/ramp_openapi_with_extensions.yml',
       domNode: this.el.nativeElement
     });
-    console.log(ui);
   }
 }

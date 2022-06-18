@@ -44,6 +44,7 @@ export class RampService {
       metaboliteIntersects: this.fetchMetaboliteIntersects(),
       geneIntersects: this.fetchGeneIntersects(),
       supportedIds: this.fetchSupportedIds(),
+     // databaseUrl: this.fetchDatabaseUrl()
     });
   }
 
@@ -68,6 +69,17 @@ export class RampService {
   fetchSupportedIds() {
     return this.http
       .get<{ data: any[] }>(`${this.url}id-types`);
+  }
+
+  fetchDatabaseUrl() {
+    return this.http
+      .get<{ data: any[] }>(`${this.url}current_db_file_url`)
+      .pipe(
+        map((response) => {
+          return response.data
+        }),
+        catchError(this.handleError('fetchAnalyteIntersects', []))
+      );
   }
 
   fetchMetaboliteIntersects() {
