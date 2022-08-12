@@ -68,11 +68,11 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/current_db_file_url
 function() {
-  versionInfo <- RaMP::getCurrentRaMPVersion(justVersion = F)
+  versionInfo <- RaMP::getCurrentRaMPVersion(justVersion = FALSE)
   dbURL <- unlist(versionInfo$db_sql_url)
   return(list(
     data = dbURL,
-    function_call="RaMP::getCurrentRaMPVersion(justVersion = F)"
+    function_call="RaMP::getCurrentRaMPVersion(justVersion = FALSE)"
   ))
 }
 
