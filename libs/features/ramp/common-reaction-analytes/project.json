@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/features/ramp/common-reaction-analytes",
   "sourceRoot": "libs/features/ramp/common-reaction-analytes/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/features/ramp/common-reaction-analytes"
-      ],
+      "outputs": ["coverage/libs/features/ramp/common-reaction-analytes"],
       "options": {
-        "jestConfig": "libs/features/ramp/common-reaction-analytes/jest.config.js",
+        "jestConfig": "libs/features/ramp/common-reaction-analytes/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -24,7 +22,5 @@
       }
     }
   },
-  "tags": [
-    "libs:common-reaction-analytes"
-  ]
+  "tags": ["libs:common-reaction-analytes"]
 }

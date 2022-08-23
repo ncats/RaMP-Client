@@ -8,7 +8,7 @@ import {
   ViewChild,
   ViewChildren
 } from "@angular/core";
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { Metabolite, RampQuery } from '@ramp/models/ramp-models';
@@ -36,7 +36,7 @@ export class MetabolitesFromOntologiesComponent
   @ViewChild('metaTabs') metaTabs!: ElementRef<MatTabGroup>;
   tabIndex = 0;
 
-  allOntoFilterCtrl: FormControl = new FormControl();
+  allOntoFilterCtrl: UntypedFormControl = new UntypedFormControl();
   metaboliteColumns: DataProperty[] = [
     new DataProperty({
       label: 'Ontology',

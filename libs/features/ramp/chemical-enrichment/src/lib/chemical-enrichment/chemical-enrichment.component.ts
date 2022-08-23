@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import {
   ChemicalEnrichment,
@@ -28,9 +28,9 @@ export class ChemicalEnrichmentComponent
   implements OnInit
 {
 @ViewChild('fileUpload') fileUpload!: ElementRef;
-  pValueFormCtrl: FormControl = new FormControl(0.2);
-  pValueTypeFormCtrl: FormControl = new FormControl('fdr');
-  biospecimenCtrl: FormControl = new FormControl();
+  pValueFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
+  pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
+  biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
   biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
 
   enrichmentColumns: DataProperty[] = [

@@ -1,14 +1,12 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/ramp-client",
   "sourceRoot": "apps/ramp-client/src",
   "prefix": "ramp-client",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/ramp-client/browser",
         "index": "apps/ramp-client/src/index.html",
@@ -31,9 +29,7 @@
           }
         ],
         "stylePreprocessorOptions": {
-          "includePaths": [
-            "libs/styles/src/styles/"
-          ]
+          "includePaths": ["libs/styles/src/styles/"]
         },
         "styles": [
           "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
@@ -42,8 +38,8 @@
           "apps/ramp-client/src/styles.scss"
         ],
         "scripts": [
-            "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
-            "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
+          "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
+          "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
         ]
       },
       "configurations": {
@@ -108,11 +104,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/apps/ramp-client"
-      ],
+      "outputs": ["coverage/apps/ramp-client"],
       "options": {
-        "jestConfig": "apps/ramp-client/jest.config.js",
+        "jestConfig": "apps/ramp-client/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -123,9 +117,7 @@
         "main": "apps/ramp-client/server.ts",
         "tsConfig": "apps/ramp-client/tsconfig.server.json",
         "stylePreprocessorOptions": {
-          "includePaths": [
-            "libs/styles/src/styles/"
-          ]
+          "includePaths": ["libs/styles/src/styles/"]
         },
         "inlineStyleLanguage": "scss"
       },
@@ -180,7 +172,5 @@
       "defaultConfiguration": "production"
     }
   },
-  "tags": [
-    "app:ramp-client"
-  ]
+  "tags": ["app:ramp-client"]
 }
