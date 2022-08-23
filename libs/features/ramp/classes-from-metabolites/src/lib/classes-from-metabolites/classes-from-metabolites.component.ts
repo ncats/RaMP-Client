@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { Classes, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -74,7 +74,7 @@ export class ClassesFromMetabolitesComponent
   ];
   fileName = '';
   file?: File;
-  biospecimenCtrl: FormControl = new FormControl();
+  biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
   biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
 
   constructor(

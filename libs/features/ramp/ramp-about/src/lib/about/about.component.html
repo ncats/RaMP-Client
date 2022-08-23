@@ -322,18 +322,18 @@
         >
           Data Download
         </div>
-        <div class="section-content">
+        <div class="section-content" *ngIf="databaseUrl">
          A SQL data dump of RaMP-DB is hosted at
           <a href="https://figshare.com/"
              target="_blank"
              rel="noreferrer"
-             attr.aria-label= "link to figshare"
+             aria-label= "link to figshare"
           >Figshare</a> and can be accessed
           <a
-            href="https://figshare.com/ndownloader/files/34990387"
+            href= {{databaseUrl}}
             target="_blank"
             rel="noreferrer"
-            attr.aria-label= "link to SQL data dump hosted on figshare"
+            aria-label= "link to SQL data dump hosted on figshare"
 
           >here.</a>
         </div>
@@ -401,7 +401,7 @@
             href="https://www.biorxiv.org/content/10.1101/2022.01.19.476987v1"
             target="_blank"
             rel="noreferrer"
-            attr.aria-label= "link to Updated RaMP-DB 2 preprint."
+            aria-label= "link to Updated RaMP-DB 2 preprint."
                >here.</a> </p>
           <p>If you use RaMP, please cite the following work:</p>
           <p>

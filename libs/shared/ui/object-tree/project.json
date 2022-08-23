@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/shared/ui/object-tree",
   "sourceRoot": "libs/shared/ui/object-tree/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/shared/ui/object-tree"
-      ],
+      "outputs": ["coverage/libs/shared/ui/object-tree"],
       "options": {
-        "jestConfig": "libs/shared/ui/object-tree/jest.config.js",
+        "jestConfig": "libs/shared/ui/object-tree/jest.config.ts",
         "passWithNoTests": true
       }
     },

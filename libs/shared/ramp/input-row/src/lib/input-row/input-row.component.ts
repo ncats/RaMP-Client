@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -16,7 +16,7 @@ export class InputRowComponent implements OnInit {
   @Output() dataSearch: EventEmitter<string[]> = new EventEmitter<string[]>();
   @Output() dataDownload: EventEmitter<string[]> = new EventEmitter<string[]>();
 
-  inputFormCtrl: FormControl = new FormControl();
+  inputFormCtrl: UntypedFormControl = new UntypedFormControl();
   public queryCount = 0;
   public retArr: string[] = [];
 

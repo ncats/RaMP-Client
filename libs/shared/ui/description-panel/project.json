@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/shared/ui/description-panel",
   "sourceRoot": "libs/shared/ui/description-panel/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/shared/ui/description-panel"
-      ],
+      "outputs": ["coverage/libs/shared/ui/description-panel"],
       "options": {
-        "jestConfig": "libs/shared/ui/description-panel/jest.config.js",
+        "jestConfig": "libs/shared/ui/description-panel/jest.config.ts",
         "passWithNoTests": true
       }
     },

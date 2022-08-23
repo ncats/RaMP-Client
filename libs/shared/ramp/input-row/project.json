@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/shared/ramp/input-row",
   "sourceRoot": "libs/shared/ramp/input-row/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/shared/ramp/input-row"
-      ],
+      "outputs": ["coverage/libs/shared/ramp/input-row"],
       "options": {
-        "jestConfig": "libs/shared/ramp/input-row/jest.config.js",
+        "jestConfig": "libs/shared/ramp/input-row/jest.config.ts",
         "passWithNoTests": true
       }
     },

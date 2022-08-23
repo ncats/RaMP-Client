@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute } from '@angular/router';
@@ -30,13 +30,13 @@ export class PathwayEnrichmentComponent
   implements OnInit
 {
   @ViewChild('fileUpload') fileUpload!: ElementRef;
-  minPathWayFormCtrl: FormControl = new FormControl(2);
-  percentPathwayFormCtrl: FormControl = new FormControl(0.2);
-  percentAnalyteFormCtrl: FormControl = new FormControl(0.2);
+  minPathWayFormCtrl: UntypedFormControl = new UntypedFormControl(2);
+  percentPathwayFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
+  percentAnalyteFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
 
-  pValueFormCtrl: FormControl = new FormControl(0.2);
-  pValueTypeFormCtrl: FormControl = new FormControl('fdr');
-  biospecimenCtrl: FormControl = new FormControl();
+  pValueFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
+  pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
+  biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
   biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
   selectedSpecimen: string = '';
   pathwaysLoading = false;
