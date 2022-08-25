@@ -1,5 +1,6 @@
 servers:
-  - url: 'https://ramp-api-alpha.ncats.io'
+  - url: 'https://https://rampdb.nih.gov/api/'
+  # - url: 'https://ramp-api-alpha.ncats.io'
   # - url: 'http://127.0.0.1:5762/'
 openapi: 3.0.3
 info:
