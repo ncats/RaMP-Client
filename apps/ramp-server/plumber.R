@@ -110,7 +110,7 @@ function() {
 #* @param analytetype specifies type of analyte intersects to return, 'metabolites' or 'genes'
 #* @param query_scope specifies 'global' or 'mapped-to-pathway'
 #* @get /api/analyte_intersects
-function(analytetype, query_scope) {
+function(analytetype, query_scope = 'global') {
   response <- ""
   if(!missing(analytetype)) {
     if(analytetype == 'metabolites') {
