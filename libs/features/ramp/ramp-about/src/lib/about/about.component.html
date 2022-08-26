@@ -180,8 +180,8 @@
                 aria-label="Hyperlink to the RaMP-DB API documentation. Link opens in a new tab."
                 >here</a
              >.  </li>
-           <li> The MySQL data dump can be directly downloaded through <a
-                href="https://figshare.com/ndownloader/files/34990387"
+           <li *ngIf="databaseUrl"> The MySQL data dump can be directly downloaded through <a
+                href={{databaseUrl}}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Hyperlink to the RaMP-DB database download in Figshare. Link opens in a new tab."
