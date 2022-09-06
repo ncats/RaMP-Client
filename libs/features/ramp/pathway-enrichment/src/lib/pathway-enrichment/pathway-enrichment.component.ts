@@ -194,6 +194,9 @@ export class PathwayEnrichmentComponent
         if (res && res.dataframe) {
           this.dataframe = res.dataframe;
         }
+        if (res && res.query) {
+          this.query = res.query;
+        }
         this.pathwaysLoading = false;
         this.ref.markForCheck();
       }

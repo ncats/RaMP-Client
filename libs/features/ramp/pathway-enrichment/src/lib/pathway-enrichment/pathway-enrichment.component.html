@@ -60,14 +60,6 @@
         </div>
       </div>
     </ramp-input-row>
-  <ramp-feedback-panel
-    *ngIf="matches && matches.length > 0"
-    [matchesLength]="matches.length"
-    [dataLength] = pathwayDataAsDataProperty.length
-    [inputLength]="inputList.length"
-    [noMatches]="noMatches"
-    [inputType]="'pathways'">
-  </ramp-feedback-panel>
   <mat-tab-group [color]="'accent'">
     <mat-tab [disabled]="!pathwayDataAsDataProperty">
       <ng-template mat-tab-label>
@@ -78,12 +70,21 @@
           [position]="'right'"
         ></ramp-loading>
       </ng-template>
-<br>
-<br>
+      <ramp-feedback-panel
+        *ngIf="matches && matches.length > 0"
+        [matchesLength]="matches.length"
+        [dataLength] = pathwayDataAsDataProperty.length
+        [inputLength]="inputList.length"
+        [noMatches]="noMatches"
+        [function]="query.functionCall"
+        [inputType]="'pathways'">
+      </ramp-feedback-panel>
+      <br>
       <br>
       <div fxLayout="row" fxLayoutAlign="end center">
         <div fxFlex="10">
       <button
+        *ngIf="dataAsDataProperty && dataAsDataProperty.length > 0"
         mat-stroked-button
         class="tool-button list-download"
         (click)="fetchPathwaysFile()"
