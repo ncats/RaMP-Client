@@ -15,57 +15,60 @@
       ></ramp-description>
     </div>
   </div>
-  <mat-tab-group [color]="'accent'">
-    <mat-tab [label]="'Input'">
-      <br />
-      <br />
-      <br />
-      <ramp-input-row
-        [input]="input"
-        [examples]="examples"
-        [showDownload]="false"
-        (dataSearch)="fetchEnrichment($event)"
-      >
-        <div class ="additional-params">
-          <br>
-          <br>
-          <span class="mat-h3">Optional Background Parameters</span>
-          <br>
-          <br>
-          <input type="file" class="file-input"
-                 accept="text/tab-separated-values, .txt"
-                 (change)="onFileSelected($event)" #fileUpload>
-          <div class="file-upload">
-            <div *ngIf="fileName">
-              <span>{{fileName}}</span>&nbsp;
-              <button mat-mini-fab color="accent" class="upload-btn"
-                      (click)="cancelUpload()">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </div>
-            <div *ngIf="!fileName">
-              <span class="mat-h4">Upload backgound ids</span> &nbsp;
-              <button *ngIf="!fileName" mat-mini-fab color="accent" class="upload-btn"
-                      (click)="fileUpload.click()">
-                <mat-icon>attach_file</mat-icon>
-              </button>
-            </div>
+    <ramp-input-row
+      [input]="input"
+      [examples]="examples"
+      [showDownload]="false"
+      (dataSearch)="fetchEnrichment($event)"
+    >
+      <div class ="additional-params">
+        <br>
+        <br>
+        <span class="mat-h3">Optional Background Parameters</span>
+        <br>
+        <br>
+        <input type="file" class="file-input"
+               accept="text/tab-separated-values, .txt"
+               (change)="onFileSelected($event)" #fileUpload>
+        <div class="file-upload">
+          <div *ngIf="fileName">
+            <span>{{fileName}}</span>&nbsp;
+            <button mat-mini-fab color="accent" class="upload-btn"
+                    (click)="cancelUpload()">
+              <mat-icon>cancel</mat-icon>
+            </button>
           </div>
-          <div> - or - </div>
-          <div>
-            <mat-form-field class="full-width" [color]="'accent'" appearance="standard">
-              <mat-select [formControl]="biospecimenCtrl"
-              placeholder="select biospecimen" >
-                <mat-option [value]=""></mat-option>
-                <mat-option *ngFor="let specimen of biospecimens" [value]="specimen" >
-                  {{specimen}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+          <div *ngIf="!fileName">
+            <span class="mat-h4">Upload backgound ids</span> &nbsp;
+            <button *ngIf="!fileName" mat-mini-fab color="accent" class="upload-btn"
+                    (click)="fileUpload.click()">
+              <mat-icon>attach_file</mat-icon>
+            </button>
           </div>
         </div>
-      </ramp-input-row>
-    </mat-tab>
+        <div> - or - </div>
+        <div>
+          <mat-form-field class="full-width" [color]="'accent'" appearance="standard">
+            <mat-select [formControl]="biospecimenCtrl"
+                        placeholder="select biospecimen" >
+              <mat-option [value]=""></mat-option>
+              <mat-option *ngFor="let specimen of biospecimens" [value]="specimen" >
+                {{specimen}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </ramp-input-row>
+  <ramp-feedback-panel
+    *ngIf="matches && matches.length > 0"
+    [matchesLength]="matches.length"
+    [dataLength] = pathwayDataAsDataProperty.length
+    [inputLength]="inputList.length"
+    [noMatches]="noMatches"
+    [inputType]="'pathways'">
+  </ramp-feedback-panel>
+  <mat-tab-group [color]="'accent'">
     <mat-tab [disabled]="!pathwayDataAsDataProperty">
       <ng-template mat-tab-label>
         Pathways
@@ -77,14 +80,6 @@
       </ng-template>
 <br>
 <br>
-      <ramp-feedback-panel
-        *ngIf="matches && matches.length > 0"
-        [matchesLength]="matches.length"
-        [dataLength] = pathwayDataAsDataProperty.length
-        [inputLength]="inputList.length"
-        [noMatches]="noMatches"
-        [inputType]="'pathways'">
-      </ramp-feedback-panel>
       <br>
       <div fxLayout="row" fxLayoutAlign="end center">
         <div fxFlex="10">
