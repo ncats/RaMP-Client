@@ -346,7 +346,10 @@ export class RampService {
       .pipe(
         map((response: any) => {
           const retList: ChemicalEnrichment[] = [];
-          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => retList.push(new ChemicalEnrichment(cc))));
+          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => {
+            if(cc!='chemical_class_enrichment')
+            retList.push(new ChemicalEnrichment(cc))
+          }));
           return {
             data: retList,
             enriched_chemical_class: response.data
@@ -372,7 +375,10 @@ export class RampService {
       .pipe(
         map((response: any) => {
           const retList: ChemicalEnrichment[] = [];
-          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => retList.push(new ChemicalEnrichment(cc))));
+          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => {
+            if(cc!='chemical_class_enrichment')
+              retList.push(new ChemicalEnrichment(cc))
+          }));
           return {
             data: retList,
             enriched_chemical_class: response.data

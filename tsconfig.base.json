@@ -73,6 +73,9 @@
       "@ramp/shared/ramp/query-page": [
         "libs/shared/ramp/query-page/src/index.ts"
       ],
+      "@ramp/shared/ui/complete-dialog": [
+        "libs/shared/ui/complete-dialog/src/index.ts"
+      ],
       "@ramp/shared/ui/description-panel": [
         "libs/shared/ui/description-panel/src/index.ts"
       ],
