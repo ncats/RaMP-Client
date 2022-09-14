@@ -15,7 +15,7 @@
       ></ramp-description>
     </div>
   </div>
-  <mat-tab-group [color]="'accent'">
+  <mat-tab-group [color]="'accent'" #resultsTabs>
     <mat-tab [label]="'Input'">
       <br />
       <br />
@@ -118,7 +118,7 @@
         <div fxFlex="40">
           <h3>Filter Results</h3>
           <div fxLayout="row" fxLayoutAlign="start center">
-            <div fxFlex="40">
+            <div fxFlex="30">
               <mat-form-field
                 appearance="outline"
                 color="accent"

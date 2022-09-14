@@ -5,6 +5,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
@@ -50,6 +51,7 @@ describe('PathwayEnrichmentComponent', () => {
         MatCheckboxModule,
         MatRadioModule,
         MatButtonModule,
+        MatDialogModule,
         StoreModule.forRoot(
           {},
           {

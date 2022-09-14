@@ -23,6 +23,7 @@
     "shared-ramp-input-row": "libs/shared/ramp/input-row",
     "shared-ramp-page-core": "libs/shared/ramp/page-core",
     "shared-ramp-query-page": "libs/shared/ramp/query-page",
+    "shared-ui-complete-dialog": "libs/shared/ui/complete-dialog",
     "shared-ui-description-panel": "libs/shared/ui/description-panel",
     "shared-ui-error-dialog": "libs/shared/ui/error-dialog",
     "shared-ui-feedback-panel": "libs/shared/ui/feedback-panel",
