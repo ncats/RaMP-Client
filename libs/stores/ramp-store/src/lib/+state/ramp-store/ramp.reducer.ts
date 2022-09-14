@@ -71,17 +71,20 @@ export interface State extends EntityState<RampEntity> {
 
   chemicalEnrichments?: {
     data: ChemicalEnrichment[];
-   // query: RampQuery;
+    openModal?: boolean;
   };
 
   pathwayEnrichments?: {
     data: FisherResult[];
     query: RampQuery;
+    openModal?: boolean;
   };
+
   enriched_chemical_class?: any;
   combined_fishers_dataframe?: any;
   filtered_fishers_dataframe?: any;
   clusterPlot?: any;
+  openModal?: boolean;
 }
 
 export interface RampPartialState {
@@ -231,8 +234,8 @@ const rampReducer = createReducer(
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
-      chemicalEnrichments: {data, enriched_chemical_class},
-      enriched_chemical_class: enriched_chemical_class
+      chemicalEnrichments: {data, enriched_chemical_class, openModal: true},
+      enriched_chemical_class: enriched_chemical_class,
     })
   ),
 
@@ -254,8 +257,8 @@ on(
       return ({
         ...state,
         loading: false,
-        pathwayEnrichments: { data, query },
-        filtered_fishers_dataframe: filteredFishersDataframe
+        pathwayEnrichments: { data, query, openModal: true },
+        filtered_fishers_dataframe: filteredFishersDataframe,
       })
     }
   ),
@@ -266,8 +269,9 @@ on(
         ...state,
         loading: false,
         pathwayEnrichments: { data, query, dataframe},
-        clusterPlot: plot
-      })
+        clusterPlot: plot,
+        openModal: true
+    })
   ),
 
   on(

@@ -1,6 +1,8 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatTabGroup } from "@angular/material/tabs";
 import { ActivatedRoute } from '@angular/router';
 import {
   ChemicalEnrichment,
@@ -8,6 +10,7 @@ import {
   RampQuery,
 } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { CompleteDialogComponent } from "@ramp/shared/ui/complete-dialog";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClassesFromMetabolites,
@@ -27,7 +30,8 @@ export class ChemicalEnrichmentComponent
   extends PageCoreComponent
   implements OnInit
 {
-@ViewChild('fileUpload') fileUpload!: ElementRef;
+  @ViewChild('resultsTabs') resultsTabs!: MatTabGroup;
+  @ViewChild('fileUpload') fileUpload!: ElementRef;
   pValueFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
   pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
   biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
@@ -131,6 +135,7 @@ export class ChemicalEnrichmentComponent
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
     protected route: ActivatedRoute,
+    public dialog: MatDialog,
     @Inject(DOCUMENT) protected dom: Document,
   ) {
     super(route, rampFacade, dom);
@@ -140,9 +145,8 @@ export class ChemicalEnrichmentComponent
     this.rampFacade.chemicalEnrichment$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: {data: ChemicalEnrichment[] }| undefined) => {
+      (res: {data: ChemicalEnrichment[], openModal?: boolean}| undefined) => {
         if (res && res.data) {
-          //  this.matches = new Set([...res.map(obj => obj.pathwayName)]).size
           this.dataAsDataProperty = res.data.map(
             (enrichment: ChemicalEnrichment) => {
               const newObj: { [key: string]: DataProperty } = {};
@@ -157,6 +161,22 @@ export class ChemicalEnrichmentComponent
             }
           );
           this.enrichmentLoading = false;
+
+          if(res.openModal) {
+            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(CompleteDialogComponent, {
+              data: {
+                title: 'Chemical Class',
+                tabs: [ 'Chemical Classes', 'Enriched Chemical Classes']
+              }
+            })
+
+            ref.afterClosed().subscribe(res => {
+              if(res) {
+                this.resultsTabs.selectedIndex = res;
+                this.ref.markForCheck();
+              }
+            })
+          }
           this.ref.markForCheck();
         }
         /*if (res && res.dataframe) {
