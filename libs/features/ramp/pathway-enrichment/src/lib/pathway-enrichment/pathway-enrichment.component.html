@@ -11,11 +11,11 @@
       <ramp-description
         [supportedIds]="supportedIds"
         [description]="description"
-        [function]="query?.functionCall"
+        [function]="query.functionCall"
       ></ramp-description>
     </div>
   </div>
-  <mat-tab-group [color]="'accent'">
+  <mat-tab-group [color]="'accent'" #resultsTabs>
     <mat-tab [label]="'Input'">
       <br />
       <br />

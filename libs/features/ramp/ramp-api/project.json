@@ -1,6 +1,6 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/features/ramp/ramp-api",
   "sourceRoot": "libs/features/ramp/ramp-api/src",
   "prefix": "ramp",
   "targets": {
@@ -8,7 +8,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/features/ramp/ramp-api"],
       "options": {
-        "jestConfig": "libs/features/ramp/ramp-api/jest.config.js",
+        "jestConfig": "libs/features/ramp/ramp-api/jest.config.ts",
         "passWithNoTests": true
       }
     },

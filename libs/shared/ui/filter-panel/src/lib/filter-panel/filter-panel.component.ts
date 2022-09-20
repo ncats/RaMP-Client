@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -17,7 +17,7 @@ export class FilterPanelComponent implements OnInit {
   @Output() selectionChange: EventEmitter<any> = new EventEmitter<any>();
   filteredData!: any[];
 
-  filterFormCtrl: FormControl = new FormControl();
+  filterFormCtrl: UntypedFormControl = new UntypedFormControl();
 
   /**
    * object field to display

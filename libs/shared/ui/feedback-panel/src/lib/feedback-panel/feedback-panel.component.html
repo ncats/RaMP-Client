@@ -2,14 +2,6 @@
 <br>
 <br>
 <div fxLayout="row" fxLayoutAlign="space-around center">
-  <div fxFlex = "70">
-    <div *ngIf="function">
-      <div >The following R function was called:</div>
-      <pre class="code-block">{{function}}</pre>
-    </div>
-  </div>
-
-
   <div fxFlex="25" *ngIf="dataLength && dataLength > 0">
     <mat-card>
       <div fxLayout="row" fxLayoutAlign="space-around start">
@@ -25,5 +17,11 @@
         </div>
       </div>
     </mat-card>
+  </div>
+  <div fxFlex = "70">
+    <div *ngIf="function">
+      <div >The following R function was called:</div>
+      <pre class="code-block">{{function}}</pre>
+    </div>
   </div>
 </div>

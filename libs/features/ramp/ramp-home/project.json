@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/features/ramp/ramp-home",
   "sourceRoot": "libs/features/ramp/ramp-home/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/features/ramp/ramp-home"
-      ],
+      "outputs": ["coverage/libs/features/ramp/ramp-home"],
       "options": {
-        "jestConfig": "libs/features/ramp/ramp-home/jest.config.js",
+        "jestConfig": "libs/features/ramp/ramp-home/jest.config.ts",
         "passWithNoTests": true
       }
     },

@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/shared/ui/ncats-structure-viewer",
   "sourceRoot": "libs/shared/ui/ncats-structure-viewer/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/shared/ui/ncats-structure-viewer"
-      ],
+      "outputs": ["coverage/libs/shared/ui/ncats-structure-viewer"],
       "options": {
-        "jestConfig": "libs/shared/ui/ncats-structure-viewer/jest.config.js",
+        "jestConfig": "libs/shared/ui/ncats-structure-viewer/jest.config.ts",
         "passWithNoTests": true
       }
     },
