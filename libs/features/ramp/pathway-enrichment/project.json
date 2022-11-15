@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/features/ramp/pathway-enrichment",
   "sourceRoot": "libs/features/ramp/pathway-enrichment/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/features/ramp/pathway-enrichment"
-      ],
+      "outputs": ["coverage/libs/features/ramp/pathway-enrichment"],
       "options": {
-        "jestConfig": "libs/features/ramp/pathway-enrichment/jest.config.js",
+        "jestConfig": "libs/features/ramp/pathway-enrichment/jest.config.ts",
         "passWithNoTests": true
       }
     },

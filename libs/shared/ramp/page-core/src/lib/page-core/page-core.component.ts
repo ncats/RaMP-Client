@@ -18,7 +18,10 @@ export class PageCoreComponent {
   title!: string;
   description!: string;
   dataframe!: any;
-  query!: RampQuery;
+  query: RampQuery = {
+    functionCall: '',
+    numFoundIds: 0
+  };
   matches: any[] = [];
   inputList: string[] = [];
   noMatches: string[] = [];

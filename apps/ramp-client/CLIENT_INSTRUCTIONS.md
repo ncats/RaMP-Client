@@ -8,5 +8,5 @@ To run the client application locally, please follow these steps:
 4. Change directory (`cd`) to the `apps/ramp-client` directory of this repository
 5. Type `ng s` or `nx run ramp-client:serve:development` and hit Enter
 
-To build the application and run it in a container, just build and run the dockerfile in the client directory.
+To build the application and run it in a   container, just build and run the dockerfile in the client directory.
 

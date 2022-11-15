@@ -1,7 +1,9 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatTabGroup } from "@angular/material/tabs";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -10,6 +12,7 @@ import {
   RampQuery
 } from "@ramp/models/ramp-models";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { CompleteDialogComponent } from "@ramp/shared/ui/complete-dialog";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClusterFromEnrichment,
@@ -29,20 +32,20 @@ export class PathwayEnrichmentComponent
   extends PageCoreComponent
   implements OnInit
 {
+  @ViewChild('resultsTabs') resultsTabs!: MatTabGroup;
   @ViewChild('fileUpload') fileUpload!: ElementRef;
-  minPathWayFormCtrl: FormControl = new FormControl(2);
-  percentPathwayFormCtrl: FormControl = new FormControl(0.2);
-  percentAnalyteFormCtrl: FormControl = new FormControl(0.2);
+  minPathWayFormCtrl: UntypedFormControl = new UntypedFormControl(2);
+  percentPathwayFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
+  percentAnalyteFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
 
-  pValueFormCtrl: FormControl = new FormControl(0.2);
-  pValueTypeFormCtrl: FormControl = new FormControl('fdr');
-  biospecimenCtrl: FormControl = new FormControl();
+  pValueFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
+  pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
+  biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
   biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
   selectedSpecimen: string = '';
   pathwaysLoading = false;
   enrichmentLoading = false;
   imageLoading = false;
-
   fileName = '';
   file?: File;
 
@@ -146,6 +149,7 @@ export class PathwayEnrichmentComponent
     private sanitizer: DomSanitizer,
     protected rampFacade: RampFacade,
     protected route: ActivatedRoute,
+    public dialog: MatDialog,
     @Inject(DOCUMENT) protected dom: Document,
   ) {
     super(route, rampFacade, dom);
@@ -169,6 +173,8 @@ export class PathwayEnrichmentComponent
               return newObj;
             });
           this.enrichmentLoading = false;
+
+
           this.allDataAsDataProperty = this.dataAsDataProperty;
           this.imageLoading = false;
           this.ref.markForCheck();
@@ -179,7 +185,23 @@ export class PathwayEnrichmentComponent
         if (res && res.dataframe) {
           this.enrichedDataframe = res.dataframe;
         }
-      }
+
+        if (res && res.openModal) {
+            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(CompleteDialogComponent, {
+              data: {
+                title: 'Pathway',
+                tabs: [ 'Pathways', 'Enriched Pathways', 'Clustered Pathways' ]
+              }
+            })
+
+            ref.afterClosed().subscribe(res => {
+              if(res) {
+                this.resultsTabs.selectedIndex = res;
+                this.ref.markForCheck();
+              }
+            })
+          }
+        }
     );
 
     this.rampFacade.pathways$
@@ -193,6 +215,9 @@ export class PathwayEnrichmentComponent
         }
         if (res && res.dataframe) {
           this.dataframe = res.dataframe;
+        }
+        if (res && res.query) {
+          this.query = res.query;
         }
         this.pathwaysLoading = false;
         this.ref.markForCheck();

@@ -1,16 +1,14 @@
 {
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "root": "libs/features/ramp/classes-from-metabolites",
   "sourceRoot": "libs/features/ramp/classes-from-metabolites/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/features/ramp/classes-from-metabolites"
-      ],
+      "outputs": ["coverage/libs/features/ramp/classes-from-metabolites"],
       "options": {
-        "jestConfig": "libs/features/ramp/classes-from-metabolites/jest.config.js",
+        "jestConfig": "libs/features/ramp/classes-from-metabolites/jest.config.ts",
         "passWithNoTests": true
       }
     },

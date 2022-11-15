@@ -38,6 +38,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   compoundsData!: any[];
   sourceVersions!: Array<SourceVersion>;
   entityCounts!: EntityCount[];
+  databaseUrl!: string;
   entityCountsColumns: DataProperty[] = [
     new DataProperty({
       label: 'Category',
@@ -76,6 +77,8 @@ export class AboutComponent implements OnInit, OnDestroy {
       sortable: true,
     }),
   ];
+  dbVersion!: string;
+  dbUpdated!: string;
 
   constructor(
     private changeDetector: ChangeDetectorRef,
@@ -91,6 +94,16 @@ export class AboutComponent implements OnInit, OnDestroy {
     tap((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
+            if(this.sourceVersions.length >0 ){
+              const first = this.sourceVersions[0];
+              if(first.ramp_db_version) {
+                this.dbVersion = first.ramp_db_version;
+              }
+              if(first.db_mod_date) {
+                this.dbUpdated = first.db_mod_date
+              }
+            }
+
             this.changeDetector.markForCheck();
           }
           if (data.entityCounts) {
@@ -116,6 +129,9 @@ export class AboutComponent implements OnInit, OnDestroy {
           if (data.metaboliteIntersects) {
             this.compoundsData = data.metaboliteIntersects;
             this.changeDetector.markForCheck();
+          }
+          if(data.databaseUrl) {
+            this.databaseUrl = data.databaseUrl
           }
         })
       )

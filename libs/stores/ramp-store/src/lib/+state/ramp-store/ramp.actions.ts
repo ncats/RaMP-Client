@@ -310,6 +310,7 @@ export const fetchClusterFromEnrichmentSuccess = createAction(
     plot: any;
     query: RampQuery;
     dataframe: any;
+    openModal?: boolean;
   }>()
 );
 
@@ -365,6 +366,7 @@ export const filterEnrichmentFromMetabolitesSuccess = createAction(
   props<{
     data: ChemicalEnrichment[];
     enriched_chemical_class?: any;
+    openModal?: boolean;
   }>()
 );
 

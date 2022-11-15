@@ -5,6 +5,10 @@ library(R.cache)
 library(readr)
 library(ggplot2)
 
+#* @apiTitle RaMP_API
+#* @apiDescription REST API for the Relational Database of Metabolomics Pathways (RaMP) Application
+#* @apiVersion 1.0.1
+
 serializers <- list(
   "json" = serializer_json(),
   "tsv" = serializer_tsv()
@@ -46,6 +50,34 @@ function() {
   ))
 }
 
+######
+#* Return database version id
+#* @serializer unboxedJSON
+#* @get /api/ramp_db_version
+function() {
+  version <- RaMP::getCurrentRaMPVersion()
+
+  return(list(
+    data = version,
+    function_call="RaMP::getCurrentRaMPVersion()"
+  ))
+}
+
+######
+#* Return current database file url
+#* @serializer unboxedJSON
+#* @get /api/current_db_file_url
+function() {
+  versionInfo <- RaMP::getCurrentRaMPVersion(justVersion = FALSE)
+  dbURL <- unlist(versionInfo$db_sql_url)
+  return(list(
+    data = dbURL,
+    function_call="RaMP::getCurrentRaMPVersion(justVersion = FALSE)"
+  ))
+}
+
+
+
 ####
 #* Return analyte ID types
 #* @serializer unboxedJSON
@@ -78,7 +110,7 @@ function() {
 #* @param analytetype specifies type of analyte intersects to return, 'metabolites' or 'genes'
 #* @param query_scope specifies 'global' or 'mapped-to-pathway'
 #* @get /api/analyte_intersects
-function(analytetype, query_scope) {
+function(analytetype, query_scope = 'global') {
   response <- ""
   if(!missing(analytetype)) {
     if(analytetype == 'metabolites') {

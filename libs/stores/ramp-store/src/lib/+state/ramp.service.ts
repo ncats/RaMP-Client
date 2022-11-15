@@ -44,6 +44,7 @@ export class RampService {
       metaboliteIntersects: this.fetchMetaboliteIntersects(),
       geneIntersects: this.fetchGeneIntersects(),
       supportedIds: this.fetchSupportedIds(),
+      databaseUrl: this.fetchDatabaseUrl()
     });
   }
 
@@ -68,6 +69,17 @@ export class RampService {
   fetchSupportedIds() {
     return this.http
       .get<{ data: any[] }>(`${this.url}id-types`);
+  }
+
+  fetchDatabaseUrl() {
+    return this.http
+      .get<{ data: any[] }>(`${this.url}current_db_file_url`)
+      .pipe(
+        map((response) => {
+          return response.data
+        }),
+        catchError(this.handleError('fetchAnalyteIntersects', []))
+      );
   }
 
   fetchMetaboliteIntersects() {
@@ -334,7 +346,10 @@ export class RampService {
       .pipe(
         map((response: any) => {
           const retList: ChemicalEnrichment[] = [];
-          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => retList.push(new ChemicalEnrichment(cc))));
+          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => {
+            if(cc!='chemical_class_enrichment')
+            retList.push(new ChemicalEnrichment(cc))
+          }));
           return {
             data: retList,
             enriched_chemical_class: response.data
@@ -360,7 +375,10 @@ export class RampService {
       .pipe(
         map((response: any) => {
           const retList: ChemicalEnrichment[] = [];
-          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => retList.push(new ChemicalEnrichment(cc))));
+          [...Object.values(response.data)].forEach((val: any)=> val.forEach((cc:any) => {
+            if(cc!='chemical_class_enrichment')
+              retList.push(new ChemicalEnrichment(cc))
+          }));
           return {
             data: retList,
             enriched_chemical_class: response.data

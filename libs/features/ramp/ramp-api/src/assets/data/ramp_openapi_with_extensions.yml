@@ -1,19 +1,20 @@
 servers:
-  - url: 'https://ramp-api-alpha.ncats.io'
- # - url: 'http://127.0.0.1:5762/'
+  - url: 'https://rampdb.nih.gov'
+ # - url: 'https://ramp-api-alpha.ncats.io'
+  # - url: 'http://127.0.0.1:5762/'
 openapi: 3.0.3
 info:
   description: Relational Database of Metabolic Pathways (RaMP) API
   title: RaMP API v1.0.1
   version: 1.0.1
   contact:
-    name: Timothy Sheils
+    name: RaMP
     x-role: responsible developer
-    email: timothy.sheils@nih.gov
+    email: NCATSRaMP@nih.gov
     x-id: 'https://github.com/tsheils'
   termsOfService: https://rampdb.nih.gov
 tags:
-- name: NCATS-API
+  - name: NCATS-API
 paths:
   /api/source_versions:
     get:
@@ -113,6 +114,9 @@ paths:
           required: true
           schema:
             type: string
+          example:
+            analytetype: "metabolites"
+            query_scope: "mapped-to-pathway"
   /api/ontology-types:
     get:
       summary: Return all types of ontologies present in RaMP-DB
@@ -278,7 +282,7 @@ paths:
                 metabolites:
                   type: array
                   items:
-                      type: string
+                    type: string
                 biospecimen:
                   type: string
                   enum: ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"]
