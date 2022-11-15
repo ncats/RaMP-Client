@@ -77,6 +77,8 @@ export class AboutComponent implements OnInit, OnDestroy {
       sortable: true,
     }),
   ];
+  dbVersion!: string;
+  dbUpdated!: string;
 
   constructor(
     private changeDetector: ChangeDetectorRef,
@@ -92,6 +94,16 @@ export class AboutComponent implements OnInit, OnDestroy {
     tap((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
+            if(this.sourceVersions.length >0 ){
+              const first = this.sourceVersions[0];
+              if(first.ramp_db_version) {
+                this.dbVersion = first.ramp_db_version;
+              }
+              if(first.db_mod_date) {
+                this.dbUpdated = first.db_mod_date
+              }
+            }
+
             this.changeDetector.markForCheck();
           }
           if (data.entityCounts) {

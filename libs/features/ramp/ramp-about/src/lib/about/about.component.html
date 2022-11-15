@@ -96,6 +96,7 @@
           About RaMP
         </div>
         <div class="section-content">
+          <p><span *ngIf="dbVersion">Version: {{dbVersion}}</span><span *ngIf="dbUpdated"> Last updated: {{dbUpdated}}</span></p>
           <p>
             RaMP-DB (Relational database of Metabolomic Pathways) is a
             multi-sourced integrated database with comprehensive annotations on biological pathways,
@@ -136,9 +137,9 @@
                 (e.g. SMILES, InChIs, InChIKeys), chemical classes from Classyfire and LIPIDMAPS.  </li>
               <li> Updated queries on pathways, common reactions, ontologies, chemical classes, and
                 chemical structures.</li>
-              <li> Enrichment analyses an chemical classes.</li>
+              <li> Enrichment analyses on chemical classes.</li>
               <li> Semi-automated curation process to support frequent updates.</li>
-              <li> Update R package and web application.</li>
+              <li> Updated R package and web application.</li>
               <li> New public API for programmatic access.  Available through the menu above or
                 <a
                 href="https://rampdb.nih.gov/api"
@@ -324,18 +325,12 @@
         </div>
         <div class="section-content" *ngIf="databaseUrl">
          A SQL data dump of RaMP-DB is hosted at
-          <a href="https://figshare.com/"
-             target="_blank"
-             rel="noreferrer"
-             aria-label= "link to figshare"
-          >Figshare</a> and can be accessed
           <a
             href= {{databaseUrl}}
             target="_blank"
             rel="noreferrer"
             aria-label= "link to SQL data dump hosted on figshare"
-
-          >here.</a>
+          >Figshare</a>.
         </div>
       </div>
     </div>
@@ -365,21 +360,21 @@
             each resource.
           </p>
           <div fxLayout="row wrap" fxLayoutAlign="space-around center">
-            <div fxFlex.gt-md="63" fxFlex.lt-md="95">
+            <div fxFlex.gt-md="63" fxFlex.lt-md="95"  *ngIf="compoundsData && compoundsData.length > 0">
               <ramp-upset
                 [title]="'Metabolite Overlap'"
                 [data]="compoundsData"
                 scale="log"
-                *ngIf="compoundsData && compoundsData.length > 0"
+
               >
               </ramp-upset>
             </div>
-            <div fxFlex.gt-md="30" fxFlex.lt-md="95">
+            <div fxFlex.gt-md="30" fxFlex.lt-md="95" *ngIf="genesData && genesData.length > 0">
               <ramp-upset
                 [title]="'Gene Overlap'"
                 [data]="genesData"
                 scale="log"
-                *ngIf="genesData && genesData.length > 0"
+
               >
               </ramp-upset>
             </div>
@@ -412,18 +407,6 @@
               PMC5876005; DOI: 10.3390/metabo8010016</a
             >
           </p>
-          <p>
-            An example usage can be found in
-            <a
-              href="https://pubmed.ncbi.nlm.nih.gov/30725469/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Link to a book chapter about RaMP"
-              >this chapter</a
-            >.
-          </p>
-
-
           <p>
             We've also put together
             <a
@@ -467,7 +450,14 @@
                 />
               </picture>
               <br />
-              <h2>John Braisted</h2>
+                <a
+                  href="https://ncats.nih.gov/preclinical/core/informatics/informatics-scientists-software-developers"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the NCATS Informatics staff page"
+                >
+               <h2>John Braisted</h2>
+                </a>
             </div>
             <div fxFlex="20" class="portrait-holder">
               <picture>
@@ -485,7 +475,14 @@
                   class="ramp-portrait"
                 />
               </picture>
+              <a
+                href="https://ncats.nih.gov/staff/eichertd"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the NCATS staff page for Tara Eicher"
+              >
               <h2>Tara Eicher</h2>
+              </a>
             </div>
 
             <div fxFlex="20" class="portrait-holder">
@@ -504,8 +501,18 @@
                   class="ramp-portrait"
                 />
               </picture>
+              <a
+                href="https://ncats.nih.gov/staff/mathee"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the NCATS staff page for Ewy Mathé"
+              >
               <h2>Ewy Mathé</h2>
+              </a>
             </div>
+
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-around center">
             <div fxFlex="20" class="portrait-holder">
               <picture>
                 <source
@@ -522,12 +529,17 @@
                   class="ramp-portrait"
                 />
               </picture>
+              <a
+                href="https://ncats.nih.gov/preclinical/core/informatics/informatics-scientists-software-developers"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the NCATS Informatics staff page"
+              >
               <h2>Andrew Patt</h2>
+              </a>
             </div>
-
-          </div>
-          <div fxLayout="row" fxLayoutAlign="space-around center">
-            <div fxFlex="20" class="portrait-holder">
+            <div fxFlex="20" class="portrait-holder"
+            >
               <picture>
                 <source
                   srcset="/assets/ramp-about/images/team/timothy_sheils.webp"
@@ -543,7 +555,14 @@
                   class="ramp-portrait"
                 />
               </picture>
+              <a
+                href="https://ncats.nih.gov/staff/sheilstk"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the NCATS staff page for Timothy Sheils"
+              >
               <h2>Timothy Sheils</h2>
+              </a>
             </div>
             <div fxFlex="20" class="portrait-holder">
               <picture>
@@ -561,35 +580,56 @@
                   class="ramp-portrait"
                 />
               </picture>
+              <a
+                href="https://ncats.nih.gov/preclinical/core/informatics/informatics-scientists-software-developers"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Link to the NCATS Informatics staff page"
+              >
               <h2>Kyle Spencer</h2>
-            </div>
-            <div fxFlex="20" class="portrait-holder">
-              <picture>
-                <source
-                  srcset="/assets/ramp-about/images/team/cole_tindall.webp"
-                  type="image/webp"
-                />
-                <source
-                  srcset="/assets/ramp-about/images/team/cole_tindall.jpg"
-                  type="image/jpeg"
-                />
-                <img
-                  src="/assets/ramp-about/images/team/cole_tindall.jpg"
-                  alt="Cole Tindall portrait"
-                  class="ramp-portrait"
-                />
-              </picture>
-              <h2>Cole Tindall</h2>
+              </a>
             </div>
           </div>
           <br>
           <br>
           <h2>Previous Contributors</h2>
             <ul>
-              <li> Jorge Neyra </li>
-              <li> Rohith Vanam </li>
-              <li> Shunchao Wang </li>
-              <li> Bofei Zhang </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/in/jorge-neyra-aba63920"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Jorge Neyra on LinkedIn"
+                >
+                  Jorge Neyra
+                </a>
+              </li>
+              <li>
+                  Cole Tindall
+              </li>
+              <li>
+                  Rohith Vanam
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/in/shunchaowang"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Shunchao Wang on LinkedIn"
+                >
+                  Shunchao Wang
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.linkedin.com/in/zhang-bofei-13817a91"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Bofei Zhang on LinkedIn"
+                >
+                  Bofei Zhang
+                </a>
+              </li>
           </ul>
           <p>
             For questions or issues, please submit an issue on our
@@ -607,19 +647,6 @@
       </div>
     </div>
 
-<!--
-    <div fxLayout="row" id="datadownload" #datadownload #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div
-          class="section-header"
-          [ngClass]="{ active: isActive('datadownload') }"
-        >
-          Data Download
-        </div>
-        <div class="section-content"></div>
-      </div>
-    </div>
--->
     <div fxLayout="row" id="code" #code #scrollSection>
       <div fxFlex="75" fxFlex.lt-md="100">
         <div class="section-header" [ngClass]="{ active: isActive('code') }">

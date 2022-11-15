@@ -1,10 +1,3 @@
-@use '@angular/material' as mat;
-@import 'ncats-theme';
-
-a {
-  color: mat.get-color-from-palette($app-accent);
-  font-weight: bold;
-}
 
 .about-content {
   display: flex;
@@ -47,6 +40,7 @@ a {
   font: 300 2.5rem Roboto, 'Helvetica Neue', sans-serif;
   padding-left: 1vw;
   margin-top: 5vh;
+  margin-bottom: 2vh;
 }
 
 .active {

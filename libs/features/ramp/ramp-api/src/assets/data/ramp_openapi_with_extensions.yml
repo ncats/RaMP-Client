@@ -8,9 +8,9 @@ info:
   title: RaMP API v1.0.1
   version: 1.0.1
   contact:
-    name: Timothy Sheils
+    name: RaMP
     x-role: responsible developer
-    email: timothy.sheils@nih.gov
+    email: NCATSRaMP@nih.gov
     x-id: 'https://github.com/tsheils'
   termsOfService: https://rampdb.nih.gov
 tags:

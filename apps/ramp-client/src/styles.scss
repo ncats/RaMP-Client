@@ -51,6 +51,15 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+a {
+  color: mat.get-color-from-palette($app-accent);
+  font-weight: bold;
+}
+
+.ramp-list {
+  list-style: none;
+}
+
 .full-width {
   width: 95%;
 }
