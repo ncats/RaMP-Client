@@ -131,6 +131,7 @@ export class UpsetComponent implements OnInit {
 
   drawContainer(): void {
     const element = this.upsetPlotElement.nativeElement;
+    select(element).select('svg').remove();
     this.width = element.offsetWidth - this.margin.left - this.margin.right;
     this.height = element.offsetHeight - this.margin.top - this.margin.bottom;
 
