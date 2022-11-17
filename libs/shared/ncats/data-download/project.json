@@ -1,4 +1,5 @@
 {
+  "name": "shared-ncats-data-download",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ncats/data-download/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ncats/data-download"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ncats/data-download"],
       "options": {
         "jestConfig": "libs/shared/ncats/data-download/jest.config.ts",
         "passWithNoTests": true

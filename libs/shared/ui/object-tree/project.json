@@ -1,4 +1,5 @@
 {
+  "name": "shared-ui-object-tree",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/object-tree/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/object-tree"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ui/object-tree"],
       "options": {
         "jestConfig": "libs/shared/ui/object-tree/jest.config.ts",
         "passWithNoTests": true

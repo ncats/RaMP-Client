@@ -1,4 +1,5 @@
 {
+  "name": "shared-ui-filter-panel",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/filter-panel/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/filter-panel"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ui/filter-panel"],
       "options": {
         "jestConfig": "libs/shared/ui/filter-panel/jest.config.ts",
         "passWithNoTests": true

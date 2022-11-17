@@ -1,11 +1,12 @@
 {
+  "name": "shared-ui-complete-dialog",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/complete-dialog/src",
   "prefix": "ramp",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/complete-dialog"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ui/complete-dialog"],
       "options": {
         "jestConfig": "libs/shared/ui/complete-dialog/jest.config.ts",
         "passWithNoTests": true

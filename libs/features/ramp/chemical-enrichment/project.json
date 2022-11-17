@@ -1,4 +1,5 @@
 {
+  "name": "features-ramp-chemical-enrichment",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/features/ramp/chemical-enrichment/src",
@@ -6,7 +7,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/chemical-enrichment"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/features/ramp/chemical-enrichment"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/chemical-enrichment/jest.config.ts",
         "passWithNoTests": true

@@ -1,4 +1,5 @@
 {
+  "name": "models-ramp-models",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/models/ramp-models/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/models/ramp-models"],
+      "outputs": ["{workspaceRoot}/coverage/libs/models/ramp-models"],
       "options": {
         "jestConfig": "libs/models/ramp-models/jest.config.ts",
         "passWithNoTests": true
