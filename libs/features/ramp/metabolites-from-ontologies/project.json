@@ -1,4 +1,5 @@
 {
+  "name": "features-ramp-metabolites-from-ontologies",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/features/ramp/metabolites-from-ontologies/src",
@@ -6,7 +7,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/metabolites-from-ontologies"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/features/ramp/metabolites-from-ontologies"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/metabolites-from-ontologies/jest.config.ts",
         "passWithNoTests": true

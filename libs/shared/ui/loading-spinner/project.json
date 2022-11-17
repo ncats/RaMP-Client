@@ -1,4 +1,5 @@
 {
+  "name": "shared-ui-loading-spinner",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/loading-spinner/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/loading-spinner"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ui/loading-spinner"],
       "options": {
         "jestConfig": "libs/shared/ui/loading-spinner/jest.config.ts",
         "passWithNoTests": true

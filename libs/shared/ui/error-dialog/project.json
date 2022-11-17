@@ -1,4 +1,5 @@
 {
+  "name": "shared-ui-error-dialog",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/error-dialog/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/error-dialog"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ui/error-dialog"],
       "options": {
         "jestConfig": "libs/shared/ui/error-dialog/jest.config.ts",
         "passWithNoTests": true

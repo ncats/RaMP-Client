@@ -1,4 +1,5 @@
 {
+  "name": "features-ramp-analytes-from-pathways",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/features/ramp/analytes-from-pathways/src",
@@ -6,7 +7,9 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/analytes-from-pathways"],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/features/ramp/analytes-from-pathways"
+      ],
       "options": {
         "jestConfig": "libs/features/ramp/analytes-from-pathways/jest.config.ts",
         "passWithNoTests": true

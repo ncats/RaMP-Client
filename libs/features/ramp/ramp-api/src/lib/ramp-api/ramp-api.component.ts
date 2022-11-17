@@ -1,8 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-// import SwaggerUIBundle from "swagger-ui-dist";
- //ng const SwaggerUIBundle = require('swagger-ui-dist').SwaggerUIBundle
-
-declare var SwaggerUIBundle: any;
+import { isPlatformBrowser } from "@angular/common";
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
+import SwaggerUI from 'swagger-ui'
 
 @Component({
   selector: 'ramp-ramp-api',
@@ -16,8 +14,12 @@ export class RampApiComponent implements OnInit, AfterViewInit {
   @ViewChild('documentation') el!: ElementRef;
 
 
-  constructor() {
-  }
+  private isBrowser: boolean;
+
+    constructor( @Inject(PLATFORM_ID) platformId: Object) {
+      this.isBrowser = isPlatformBrowser(platformId);
+    }
+
 
   ngOnInit(): void {
   }
@@ -26,9 +28,11 @@ export class RampApiComponent implements OnInit, AfterViewInit {
    * create swagger ui viewer
    */
   ngAfterViewInit() {
-    const ui = SwaggerUIBundle({
-      url: '/assets/ramp-api/data/ramp_openapi_with_extensions.yml',
-      domNode: this.el.nativeElement
-    });
+    if (this.isBrowser) {
+      const ui = SwaggerUI({
+        url: '/assets/ramp-api/data/ramp_openapi_with_extensions.yml',
+        domNode: this.el.nativeElement
+      });
+    }
   }
 }

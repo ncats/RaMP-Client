@@ -1,4 +1,5 @@
 {
+  "name": "shared-ui-header-template",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/header-template/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ui/header-template"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ui/header-template"],
       "options": {
         "jestConfig": "libs/shared/ui/header-template/jest.config.ts",
         "passWithNoTests": true
