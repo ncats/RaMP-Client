@@ -1,4 +1,5 @@
 {
+  "name": "shared-ncats-ncats-header",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ncats/ncats-header/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/shared/ncats/ncats-header"],
+      "outputs": ["{workspaceRoot}/coverage/libs/shared/ncats/ncats-header"],
       "options": {
         "jestConfig": "libs/shared/ncats/ncats-header/jest.config.ts",
         "passWithNoTests": true

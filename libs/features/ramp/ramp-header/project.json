@@ -1,4 +1,5 @@
 {
+  "name": "features-ramp-ramp-header",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/features/ramp/ramp-header/src",
@@ -6,7 +7,7 @@
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/features/ramp/ramp-header"],
+      "outputs": ["{workspaceRoot}/coverage/libs/features/ramp/ramp-header"],
       "options": {
         "jestConfig": "libs/features/ramp/ramp-header/jest.config.ts",
         "passWithNoTests": true
