@@ -16,9 +16,9 @@ RUN apk update && apk upgrade && \
     npm i && \
     NODE_OPTIONS=--max_old_space_size=4096 nx run ramp-client:prerender:production --verbose
 
-# FROM labshare/docker-base-web
+FROM registry.ncats.nih.gov:5000/labshare/docker-base-web
 
 # Install NCATS required packages
-# RUN apt-get update && apt-get install -y net-tools
+RUN apt-get update && apt-get install -y net-tools
 
-# COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
+COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
