@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-   // this.rampFacade.dispatch(initAbout());
+    this.rampFacade.dispatch(initAbout());
     this.rampFacade.allRampStore$
       .pipe(
         takeUntil(this.ngUnsubscribe),
