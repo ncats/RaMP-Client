@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from "@angular/common";
 import { AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
-import SwaggerUI from 'swagger-ui'
+import SwaggerUI from "swagger-ui";
 
 @Component({
   selector: 'ramp-ramp-api',
@@ -14,7 +14,7 @@ export class RampApiComponent implements OnInit, AfterViewInit {
   @ViewChild('documentation') el!: ElementRef;
 
 
-  private isBrowser: boolean;
+   isBrowser: boolean;
 
     constructor( @Inject(PLATFORM_ID) platformId: Object) {
       this.isBrowser = isPlatformBrowser(platformId);
