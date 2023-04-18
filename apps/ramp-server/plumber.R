@@ -183,11 +183,13 @@ function(analytes) {
 #' Return analytes from given list of pathways as either json or a tsv
 #' @param pathway
 #' @param analyte_type
+#' @param names_or_ids
+#' @param match
 #' @post /api/analytes-from-pathways
-function(pathway, analyte_type="both") {
+function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy") {
   analyte <- analyte_type
   analytes_df <- tryCatch({
-      RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte)
+      RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte, match=match, names_or_ids=names_or_ids)
   },
     error = function(cond) {
       print(cond)
