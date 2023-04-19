@@ -1,10 +1,17 @@
 FROM node:16.10-alpine AS build
+# FROM alpine:3.15
+
+#FROM node:hydrogen-alpine3.16 AS build
 
 # Set the source folder
 ARG SOURCE_FOLDER="./"
 
 # Create app directory
 WORKDIR /var/www/app
+# WORKDIR C:/Tools/Junk
+
+# RUN pwd
+
 COPY ${SOURCE_FOLDER} .
 
 # Bundle app source
@@ -16,9 +23,12 @@ RUN apk update && apk upgrade && \
     npm i && \
     NODE_OPTIONS=--max_old_space_size=4096 nx run ramp-client:prerender:production --verbose
 
-FROM registry.ncats.nih.gov:5000/labshare/docker-base-web
+#FROM nginx:stable
+#FROM registry.ncats.nih.gov:5000/labshare/docker-base-web
+FROM labshare/docker-base-web
 
 # Install NCATS required packages
 RUN apt-get update && apt-get install -y net-tools
 
-COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
+# COPY --from=build C:/Tools/Junk/ramp-client/browser /var/www/app
+#COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
