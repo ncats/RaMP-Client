@@ -46,7 +46,7 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
       label: 'Pathway ID',
       field: 'pathwayId',
       sortable: true,
-    })
+    }),
   ];
 
   constructor(
