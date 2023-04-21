@@ -138,6 +138,7 @@ export class RampService {
       .post<string[]>(`${this.url}analytes-from-pathways`, options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
+          console.log(response);
           return {
             analytes: response.data.map((obj: any) => new Analyte(obj)),
             functionCall: response.function_call[0],

@@ -37,8 +37,7 @@
           "node_modules/swagger-ui/dist/swagger-ui.css",
           "apps/ramp-client/src/styles.scss"
         ],
-        "scripts": [
-        ]
+        "scripts": []
       },
       "configurations": {
         "production": {
@@ -135,7 +134,21 @@
           "extractLicenses": false
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "production",
+      "production": {
+        "outputHashing": "media",
+        "fileReplacements": [
+          {
+            "replace": "apps/ramp-client/src/environments/environment.ts",
+            "with": "apps/ramp-client/src/environments/environment.prod.ts"
+          }
+        ]
+      },
+      "development": {
+        "optimization": false,
+        "sourceMap": true,
+        "extractLicenses": false
+      }
     },
     "serve-ssr": {
       "executor": "@nguniversal/builders:ssr-dev-server",

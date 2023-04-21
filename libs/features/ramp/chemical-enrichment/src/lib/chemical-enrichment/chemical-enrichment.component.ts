@@ -1,8 +1,8 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { MatTabGroup } from "@angular/material/tabs";
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
+import { MatLegacyTabGroup as MatTabGroup } from "@angular/material/legacy-tabs";
 import { ActivatedRoute } from '@angular/router';
 import {
   ChemicalEnrichment,

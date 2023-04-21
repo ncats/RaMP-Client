@@ -9,7 +9,7 @@ import {
   ViewChildren
 } from "@angular/core";
 import { UntypedFormControl } from '@angular/forms';
-import { MatTabGroup } from '@angular/material/tabs';
+import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { ActivatedRoute } from '@angular/router';
 import { Metabolite, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';

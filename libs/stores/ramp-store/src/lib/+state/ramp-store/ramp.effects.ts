@@ -114,8 +114,8 @@ export class RampEffects {
               functionCall: string;
               numFoundIds: number;
               dataframe: any;
-            }) =>
-              RampActions.fetchAnalytesFromPathwaysSuccess({
+            }) => {
+              return RampActions.fetchAnalytesFromPathwaysSuccess({
                 data: ret.analytes,
                 query: {
                   functionCall: ret.functionCall,
@@ -123,6 +123,7 @@ export class RampEffects {
                 },
                 dataframe: ret.dataframe
               })
+            }
           ),
           catchError((error: ErrorEvent) =>
             of(RampActions.fetchAnalytesFromPathwaysFailure({ error }))
