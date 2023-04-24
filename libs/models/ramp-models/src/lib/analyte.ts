@@ -5,6 +5,7 @@ export class Analyte {
   pathwayName!: string;
   pathwayCategory!: string;
   pathwayType!: string;
+  pathwayId!: string;
 
   constructor(obj: any) {
     Object.assign(this, obj);

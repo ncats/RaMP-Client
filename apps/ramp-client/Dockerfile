@@ -5,6 +5,7 @@ ARG SOURCE_FOLDER="./"
 
 # Create app directory
 WORKDIR /var/www/app
+
 COPY ${SOURCE_FOLDER} .
 
 # Bundle app source
