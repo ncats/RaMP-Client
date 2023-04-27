@@ -367,7 +367,7 @@ export class NcatsDatatableComponent
    * Returns readable label for a data field
    */
   getLabel(name: string): string {
-    let ret: string = '';
+    let ret = '';
     this.displayFields.forEach((field) => {
       if (field.field === name) {
         ret = field.label ? field.label : field.field;

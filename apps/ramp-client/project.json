@@ -12,7 +12,7 @@
         "outputPath": "dist/ramp-client/browser",
         "index": "apps/ramp-client/src/index.html",
         "main": "apps/ramp-client/src/main.ts",
-        "polyfills": "apps/ramp-client/src/polyfills.ts",
+        "polyfills": ["zone.js"],
         "tsConfig": "apps/ramp-client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -33,12 +33,10 @@
           "includePaths": ["libs/styles/src/styles/"]
         },
         "styles": [
-          "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
           "node_modules/swagger-ui/dist/swagger-ui.css",
           "apps/ramp-client/src/styles.scss"
         ],
-        "scripts": [
-        ]
+        "scripts": []
       },
       "configurations": {
         "production": {
@@ -135,7 +133,21 @@
           "extractLicenses": false
         }
       },
-      "defaultConfiguration": "production"
+      "defaultConfiguration": "production",
+      "production": {
+        "outputHashing": "media",
+        "fileReplacements": [
+          {
+            "replace": "apps/ramp-client/src/environments/environment.ts",
+            "with": "apps/ramp-client/src/environments/environment.prod.ts"
+          }
+        ]
+      },
+      "development": {
+        "optimization": false,
+        "sourceMap": true,
+        "extractLicenses": false
+      }
     },
     "serve-ssr": {
       "executor": "@nguniversal/builders:ssr-dev-server",

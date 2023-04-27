@@ -42,7 +42,7 @@ export class PathwayEnrichmentComponent
   pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
   biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
   biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
-  selectedSpecimen: string = '';
+  selectedSpecimen = '';
   pathwaysLoading = false;
   enrichmentLoading = false;
   imageLoading = false;

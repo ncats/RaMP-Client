@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { select, Store, Action } from '@ngrx/store';
 
 import * as RampActions from './ramp.actions';
-import * as RampFeature from './ramp.reducer';
 import * as RampSelectors from './ramp.selectors';
 
 @Injectable()

@@ -23,7 +23,7 @@ const HTTP_OPTIONS = {
 
 const HTTP_TEXT_OPTIONS = {
   headers: new HttpHeaders(),
-  responseType: 'text' as 'text'
+  responseType: 'text' as const
 };
 
 @Injectable({
@@ -138,6 +138,7 @@ export class RampService {
       .post<string[]>(`${this.url}analytes-from-pathways`, options) // ,{responseType: 'text'})
       .pipe(
         map((response: any) => {
+          console.log(response);
           return {
             analytes: response.data.map((obj: any) => new Analyte(obj)),
             functionCall: response.function_call[0],
@@ -508,7 +509,7 @@ export class RampService {
         perc_pathway_overlap: perc_pathway_overlap,
         filename: Date.now() + '.svg'
       }
-      const options: Object = {responseType: 'text' as 'text'};
+      const options: Object = {responseType: 'text' as const};
       return this.http
         .post<string[]>(`${this.url}cluster-plot`,body, options)
         .pipe(
@@ -562,11 +563,11 @@ export class RampService {
 
   private _downloadFile(data: any, name: string, type: string = 'text/tsv') {
     const file = new Blob([data], { type:  type});
-    var link = this.dom.createElement('a');
+    const link = this.dom.createElement('a');
     if (link.download !== undefined) {
       // feature detection
       // Browsers that support HTML5 download attribute
-      var url = URL.createObjectURL(file);
+      const url = URL.createObjectURL(file);
       link.setAttribute('href', url);
       link.setAttribute('download', `${name}`);
       link.style.visibility = 'hidden';

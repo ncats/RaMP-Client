@@ -2,14 +2,14 @@
   <div fxLayout="row" fxLayoutAlign="space-around center">
     <div fxFlex="50">
       <div class="grid-list">
-        <mat-card class= "ramp-tile" >
-          <mat-card-header class="ramp-header"> <h2>Query Biological Pathways </h2></mat-card-header>
+        <mat-card appearance="outlined" class= "ramp-tile" >
+          <mat-card-title class="ramp-card-header"> Query Biological Pathways</mat-card-title>
           <mat-card-content>
-            <br>
             <p>Biological Pathways are drawn from HMDB/KEGG, Reactome, and WikiPathways</p>
+            <div class="row centered-row">
             <button mat-stroked-button
                     [color] = "'accent'"
-                    class="tile-button"
+                    class="tile-button centered"
                     [routerLink]="'/pathways-from-analytes'"
             >Pathways from Input Analytes
             </button>
@@ -19,13 +19,14 @@
                     [routerLink]="'/analytes-from-pathways'"
             >Analytes from Input Pathways
             </button>
+            </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class= "ramp-tile" >
-          <mat-card-header class="ramp-header"> <h2>Query Ontologies</h2></mat-card-header>
+        <mat-card appearance="outlined" class= "ramp-tile" >
+          <mat-card-title class="ramp-card-header">Query Ontologies</mat-card-title>
           <mat-card-content>
-            <br>
             <p>Available ontologies include health condition, organ/components, tissue, biofluid, industrial applications and others.</p>
+            <div class="row centered-row">
             <button mat-stroked-button
                     [color] = "'accent'"
                     class="tile-button"
@@ -37,14 +38,15 @@
                     class="tile-button"
                     [routerLink]="'/metabolites-from-ontologies'"
             >Metabolites from Input Ontologies</button>
+            </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class= "ramp-tile" >
-          <mat-card-header class="ramp-header"> <h2>Query Chemical Descriptions</h2></mat-card-header>
+        <mat-card appearance="outlined" class= "ramp-tile" >
+          <mat-card-title class="ramp-card-header">Query Chemical Descriptions</mat-card-title>
           <mat-card-content>
-            <br>
             <p>Classes are derived from ClassyFire and LIPIDMAPS and Properties include SMILES, InCHI-key, MW, etc.
             </p>
+            <div class="row centered-row">
             <button mat-stroked-button
                     [color] = "'accent'"
                     class="tile-button"
@@ -56,43 +58,44 @@
                     class="tile-button"
                     [routerLink]="'/properties-from-metabolites'"
             >Chemical Properties from Input Metabolites</button>
+            </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class= "ramp-tile" >
-          <mat-card-header class="ramp-header"> <h2>Query Reactions</h2></mat-card-header>
+        <mat-card appearance="outlined" class= "ramp-tile" >
+          <mat-card-title class="ramp-card-header">Query Reactions</mat-card-title>
           <mat-card-content>
-            <br>
             <p>Metabolic enzyme-metabolite reactions are sourced from HMDB.</p>
+            <div class="row centered-row">
             <button mat-stroked-button
                     [color] = "'accent'"
                     class="tile-button"
                     [routerLink]="'/common-reaction-analytes'"
             >Retrieve Analytes involved in Same Reactions</button>
+            </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class= "ramp-tile" >
-          <mat-card-header class="ramp-header"> <h2>Enrichment Analysis</h2></mat-card-header>
+        <mat-card appearance="outlined" class= "ramp-tile" >
+          <mat-card-title class="ramp-card-header">Enrichment Analysis</mat-card-title>
           <mat-card-content>
-            <br>
             <p>Identify enriched pathways or chemical classes given an input list of analytes
             </p>
+            <div class="row centered-row">
             <button mat-stroked-button
                     [color] = "'accent'"
                     class="tile-button"
                     [routerLink]="'/pathway-enrichment'"
             >Biological Pathway Enrichment</button>
-
             <button mat-stroked-button
                     [color] = "'accent'"
                     class="tile-button"
                     [routerLink]="'/chemical-enrichment'">
             Chemical Class Enrichment</button>
+            </div>
           </mat-card-content>
         </mat-card>
-        <mat-card class= "ramp-tile" >
-          <mat-card-header class="ramp-header"> <h2>Version Info</h2></mat-card-header>
+        <mat-card appearance="outlined" class= "ramp-tile" >
+          <mat-card-title class="ramp-card-header">Version Info</mat-card-title>
           <mat-card-content>
-            <br>
             <h3><span *ngIf="dbVersion">Version: {{dbVersion}}</span><span *ngIf="dbUpdated"> Last updated: {{dbUpdated}}</span></h3>
 
             <h3>Source Versions:</h3>
@@ -112,7 +115,7 @@
                 <span>{{ version.data_source_version }}</span>
               </li>
             </ul>
-
+            <div class="row centered-row">
             <a mat-stroked-button
                     [color] = "'accent'"
                     class="tile-button"
@@ -121,7 +124,7 @@
                     rel="noreferrer"
                     aria-label="Hyperlink to the RaMP-DB database download in Figshare. Link opens in a new tab."
             >Download Database Dump</a>
-
+            </div>
           </mat-card-content>
         </mat-card>
       </div>

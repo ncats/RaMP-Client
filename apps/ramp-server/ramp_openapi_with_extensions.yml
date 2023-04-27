@@ -203,9 +203,18 @@ paths:
                   type: string
                   enum: ["gene", "metabolite", "both"]
                   required: false
+                match:
+                  type: string
+                  enum:["exact", "fuzzy"]
+                  required: false
+                names_or_ids:
+                  type: string
+                  enum: ["names", "ids"]
+                  required: false
               example:
                 pathway: [ "De Novo Triacylglycerol Biosynthesis", "sphingolipid metabolism"]
                 analyte_type: "both"
+                match: "exact"
   /api/ontologies-from-metabolites:
     post:
       summary: Return ontologies from list of metabolites

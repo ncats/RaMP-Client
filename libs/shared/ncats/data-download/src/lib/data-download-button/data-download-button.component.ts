@@ -1,19 +1,17 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 
 @Component({
   selector: 'ramp-data-download-button',
   templateUrl: './data-download-button.component.html',
   styleUrls: ['./data-download-button.component.scss'],
 })
-export class DataDownloadButtonComponent implements OnInit {
+export class DataDownloadButtonComponent {
   @Input() source!: string;
   @Input() data!: any;
   file!: any;
 
   constructor(@Inject(DOCUMENT) private dom: Document) {}
-
-  ngOnInit(): void {}
 
   downloadData(): void {
     const lines: string[] = [[...Object.keys(this.data[0])].join(',')];
@@ -22,11 +20,11 @@ export class DataDownloadButtonComponent implements OnInit {
     );
     const csv = lines.join('\n');
     this.file = new Blob([csv], { type: 'text/tsv' });
-    var link = this.dom.createElement('a');
+    const link = this.dom.createElement('a');
     if (link.download !== undefined) {
       // feature detection
       // Browsers that support HTML5 download attribute
-      var url = URL.createObjectURL(this.file);
+      const url = URL.createObjectURL(this.file);
       link.setAttribute('href', url);
       link.setAttribute('download', `${this.source}-download.tsv`);
       link.style.visibility = 'hidden';

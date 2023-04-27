@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ramp-input-row',
@@ -19,8 +18,6 @@ export class InputRowComponent implements OnInit {
   inputFormCtrl: UntypedFormControl = new UntypedFormControl();
   public queryCount = 0;
   public retArr: string[] = [];
-
-  constructor() {}
 
   ngOnInit(): void {
     this.inputFormCtrl.setValue(this.examples);
@@ -43,7 +40,6 @@ export class InputRowComponent implements OnInit {
       }
     }
     this.queryCount = this.retArr.length;
-    //  this.function = this.route.snapshot.data.function.replace('###REPLACE###', this.retArr.join(', '));
   }
 
   fetchData() {

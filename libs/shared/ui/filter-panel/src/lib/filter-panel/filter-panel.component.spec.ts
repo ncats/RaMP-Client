@@ -1,4 +1,3 @@
-import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -9,7 +8,6 @@ import { MatInputModule } from "@angular/material/input";
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { FilterPanelComponent } from './filter-panel.component';

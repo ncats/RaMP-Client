@@ -1,10 +1,11 @@
-FROM node:16.10-alpine AS build
+FROM node:18-alpine AS build
 
 # Set the source folder
 ARG SOURCE_FOLDER="./"
 
 # Create app directory
 WORKDIR /var/www/app
+
 COPY ${SOURCE_FOLDER} .
 
 # Bundle app source

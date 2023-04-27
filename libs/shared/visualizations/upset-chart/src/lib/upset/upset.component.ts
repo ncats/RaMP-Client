@@ -40,8 +40,8 @@ export class UpsetComponent implements OnInit {
   @ViewChild('upsetPlotBox', { static: true }) upsetPlotElement!: ElementRef;
 
   svg: any;
-  width: number = 300;
-  height: number = 300;
+  width = 300;
+  height = 300;
   margin = { top: 5, bottom: 5, left: 5, right: 5 };
   allSetIds: string[] = [];
   /**
@@ -158,7 +158,6 @@ export class UpsetComponent implements OnInit {
       .range([0, bottomRowHeight])
       .paddingInner(0.2);
 
-    let yAxis;
     let intersectionSizeScale:
       | AxisScale<number>
       | (number[] & ScaleLinear<number, number>);
@@ -168,7 +167,7 @@ export class UpsetComponent implements OnInit {
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-      yAxis = axisLeft(intersectionSizeScale)
+       axisLeft(intersectionSizeScale)
         .scale(intersectionSizeScale)
         .tickFormat((d, i) => {
           return (i % 5 === 0 && format(',d')(Number(d))) || '';
@@ -179,7 +178,7 @@ export class UpsetComponent implements OnInit {
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-      yAxis = axisLeft(intersectionSizeScale).tickSize(5);
+      axisLeft(intersectionSizeScale).tickSize(5);
     }
 
     // Prepare the overall layout
@@ -224,7 +223,7 @@ export class UpsetComponent implements OnInit {
       );
 
     // Select all circles within each group and bind the inner array per data item
-    const circle = combinationGroup
+    combinationGroup
       .selectAll('circle')
       .data((combination) => combination.combinations)
       .join('circle')
@@ -236,7 +235,7 @@ export class UpsetComponent implements OnInit {
         //todo: fix the ts-ignore
         (d) => yCombinationScale(d.setId) + yCombinationScale.bandwidth() / 2
       )
-      .attr('r', (d) => yCombinationScale.bandwidth() / 4);
+      .attr('r', () => yCombinationScale.bandwidth() / 4);
 
     // Connect the sets with a vertical line
     const connector = combinationGroup
@@ -266,7 +265,7 @@ export class UpsetComponent implements OnInit {
      */
     svg
       .append('svg:g')
-      .attr('transform', (d) => `translate(0, ${topRowHeight})`);
+      .attr('transform', () => `translate(0, ${topRowHeight})`);
 
     setSizeChart
       .selectAll('.set-name')
@@ -303,7 +302,7 @@ export class UpsetComponent implements OnInit {
       .append('g')
       .attr(
         'transform',
-        (d) =>
+        () =>
           `translate(${-(this.margin.left + this.margin.right)}, ${
             this.margin.top + this.margin.bottom
           })`
@@ -314,7 +313,7 @@ export class UpsetComponent implements OnInit {
       .append('g')
       .attr(
         'transform',
-        (d) => `translate(0, ${this.margin.top + this.margin.bottom})`
+        () => `translate(0, ${this.margin.top + this.margin.bottom})`
       )
       .selectAll('rect')
       .data(this.data)
@@ -331,7 +330,7 @@ export class UpsetComponent implements OnInit {
       // @ts-ignore
       //todo: fix the ts-ignore
       .attr('y', (d) => intersectionSizeScale(d.size))
-      .on('mouseover', (event, d) => {
+      .on('mouseover', () => {
         //  d3.select("#tooltip").style("opacity", 1).html(d.values.join("<br/>"));
       })
       .on('mousemove', (event) => {
@@ -344,7 +343,7 @@ export class UpsetComponent implements OnInit {
       });
     intersectionSizeChart
       .append('svg:g')
-      .attr('transform', (d) => `translate(0, ${this.margin.top - 1})`)
+      .attr('transform', () => `translate(0, ${this.margin.top - 1})`)
       .attr('class', 'bar-labels')
       .selectAll('.text')
       .data(this.data)

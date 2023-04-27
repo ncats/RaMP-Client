@@ -42,7 +42,14 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
       field: 'geneOrCompound',
       sortable: true,
     }),
+    new DataProperty({
+      label: 'Pathway ID',
+      field: 'pathwayId',
+      sortable: true,
+    }),
   ];
+
+  fuzzy= true;
 
   constructor(
     private ref: ChangeDetectorRef,

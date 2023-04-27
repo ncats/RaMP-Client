@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { slideInOutAnimation } from './header-animations';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -15,7 +15,7 @@ export interface LinkTemplateProperty {
   styleUrls: ['./header-template.component.scss'],
   animations: [slideInOutAnimation],
 })
-export class HeaderTemplateComponent implements OnInit {
+export class HeaderTemplateComponent {
   /**
    * animation state changed by scrolling
    * @type {string}
@@ -27,8 +27,6 @@ export class HeaderTemplateComponent implements OnInit {
   @Input() links?: LinkTemplateProperty[] = [];
 
   constructor(private route: ActivatedRoute, private router: Router) {}
-
-  ngOnInit(): void {}
 
   /**
    * sets active section in nav
