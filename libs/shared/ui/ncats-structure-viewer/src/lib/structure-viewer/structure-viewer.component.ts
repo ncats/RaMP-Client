@@ -21,7 +21,7 @@ export class StructureViewerComponent implements OnInit {
   /**
    * image url
    */
-  url: string = '';
+  url = '';
 
   @Input() smiles!: string;
 

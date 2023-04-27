@@ -7,20 +7,20 @@ table {
   background-color: #ffffff;
 }
 
-.table-label > .mat-display-1 {
+.table-label > .mat-headline-4 {
   margin-bottom: 0;
   margin-top: 1vh;
   margin-left: 1vw;
 }
 
-td.mat-cell {
+td.mat-mdc-cell {
   margin-top: 1vh;
   vertical-align: top;
 }
 
-td.mat-cell,
-td.mat-footer-cell,
-th.mat-header-cell {
+td.mat-mdc-cell,
+td.mat-mdc-footer-cell,
+th.mat-mdc-header-cell {
   /*    padding-left: 1vw;
       padding-right: 1vw;*/
 }
@@ -29,7 +29,7 @@ th.mat-header-cell {
   display: flex;
 }
 
-.mat-paginator-range-label {
+.mat-mdc-paginator-range-label {
   margin: 0 32px 0 24px;
   width: 45vw;
 }
@@ -47,8 +47,8 @@ tr.element-row:not(.expanded-row):active {
 }*/
 
 .condensed {
-  tr.mat-row,
-  tr.mat-header-row {
+  tr.mat-mdc-row,
+  tr.mat-mdc-header-row {
     height: 36px;
   }
 

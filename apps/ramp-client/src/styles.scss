@@ -1,49 +1,5 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
+
 @use '@angular/material' as mat;
-
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
-//  The following line adds:
-//    1. Default typography styles for all components
-//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
-//  If you specify typography styles for the components you use elsewhere, you should delete this line.
-//  If you don't need the default component typographies but still want the hierarchy styles,
-//  you can delete this line and instead use:
-//    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
-@include mat.all-legacy-component-typographies();
-@include mat.legacy-core();
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$ramp-primary: mat.define-palette(mat.$indigo-palette);
-$ramp-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-$ramp-warn: mat.define-palette(mat.$red-palette);
-
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as "color" or "typography".
-$ramp-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: $ramp-primary,
-      accent: $ramp-accent,
-      warn: $ramp-warn,
-    ),
-  )
-);
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-legacy-component-themes($ramp-theme);
-
 @import 'libs/shared/ui/header-template/src/theming';
 @import 'libs/styles/src/styles/ncats-theme';
 
@@ -55,8 +11,7 @@ app-root {
 }
 
 body {
-  margin-bottom: 0;
-  margin-top: 0;
+  margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
@@ -72,6 +27,12 @@ a {
 .full-width {
   width: 95%;
 }
+
+.width-25 {
+  width:25%;
+  flex-basis: 25%;
+}
+
 .content-panel {
   margin-top: 10vh;
   padding-bottom: 5vh;
@@ -87,4 +48,39 @@ a {
   max-width: 100%;
 }
 
+.centered {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
 
+.row {
+  display: flex;
+  flex-flow: row wrap;
+  box-sizing: border-box;
+  padding-top: 2vh;
+}
+
+.centered-row {
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.ramp-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.ramp-menu-button {
+  padding: 16px !important;
+}
+
+.ramp-feedback-card {
+  padding: 16px;
+}

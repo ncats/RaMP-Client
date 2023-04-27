@@ -11,7 +11,7 @@
           </button>
           <mat-menu #dynamicMenu="matMenu">
            <span *ngFor="let child of link.children">
-            <button mat-menu-item
+            <button mat-menu-item class="ramp-menu-button"
               [routerLink]="child.link">
               {{ child.label ? child.label : child.link }}
             </button>

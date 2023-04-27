@@ -49,6 +49,8 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
     }),
   ];
 
+  fuzzy= true;
+
   constructor(
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,

@@ -12,7 +12,7 @@ describe('AutoComplete Component - Highlight pipe', () => {
         {
           provide: DomSanitizer,
           useValue: {
-            bypassSecurityTrustHtml: (v: any) => v,
+            bypassSecurityTrustHtml: (v: object) => v,
           },
         },
         HighlightPipe,

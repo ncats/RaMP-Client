@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'ramp-loading',
   templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.scss'],
 })
-export class LoadingComponent implements OnInit {
+export class LoadingComponent{
   @Input() isLoading = true;
   @Input() position: 'left' | 'right' | 'center' = 'center';
   @Input() size: 'small' | 'medium' | 'large' = 'large';
@@ -20,8 +20,4 @@ export class LoadingComponent implements OnInit {
     right: 'spinner-right',
     center: '',
   };
-
-  constructor() {}
-
-  ngOnInit() {}
 }

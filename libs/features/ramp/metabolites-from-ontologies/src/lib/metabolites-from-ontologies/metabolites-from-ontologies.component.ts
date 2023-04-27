@@ -9,7 +9,7 @@ import {
   ViewChildren
 } from "@angular/core";
 import { UntypedFormControl } from '@angular/forms';
-import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { Metabolite, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -84,7 +84,7 @@ export class MetabolitesFromOntologiesComponent
       .subscribe((term) => {
         if (term.trim() && term.trim().length > 0) {
           this.ontologies = [];
-          var matcher = new RegExp(term.trim(), 'i');
+          const matcher = new RegExp(term.trim(), 'i');
           this.allOntologies.forEach((onto) => {
             const newVal = { ...onto };
             newVal.values = newVal.values.filter((val: { value: any }) =>

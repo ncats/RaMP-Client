@@ -3,11 +3,16 @@
 <br>
 <div fxLayout="row" fxLayoutAlign="space-around center">
   <div fxFlex="25" *ngIf="dataLength && dataLength > 0">
-    <mat-card>
+    <mat-card class="ramp-feedback-card">
       <div fxLayout="row" fxLayoutAlign="space-around start">
         <div fxFlex="95">
           Found {{dataLength}} results <br>
-          Matched {{matchesLength}} of {{inputLength}} {{inputType}}
+          <span *ngIf="!fuzzy">
+            Matched {{matchesLength}} of {{inputLength}} {{inputType}}
+          </span>
+          <span *ngIf="fuzzy">
+            Fuzzy matched {{matchesLength}} {{inputType}}
+          </span>
         </div>
       </div>
       <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="noMatches && noMatches.length > 0">

@@ -1,9 +1,9 @@
 import { DOCUMENT } from "@angular/common";
 import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from '@angular/forms';
-import { MatLegacyCheckboxChange as MatCheckboxChange } from '@angular/material/legacy-checkbox';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from "@angular/material/legacy-dialog";
-import { MatLegacyTabGroup as MatTabGroup } from "@angular/material/legacy-tabs";
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatTabGroup } from "@angular/material/tabs";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -42,7 +42,7 @@ export class PathwayEnrichmentComponent
   pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
   biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
   biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
-  selectedSpecimen: string = '';
+  selectedSpecimen = '';
   pathwaysLoading = false;
   enrichmentLoading = false;
   imageLoading = false;

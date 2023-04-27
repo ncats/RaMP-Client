@@ -27,8 +27,8 @@ import {
   trigger,
 } from '@angular/animations';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatLegacyRow as MatRow, MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
+import { MatRow, MatTable, MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -367,7 +367,7 @@ export class NcatsDatatableComponent
    * Returns readable label for a data field
    */
   getLabel(name: string): string {
-    let ret: string = '';
+    let ret = '';
     this.displayFields.forEach((field) => {
       if (field.field === name) {
         ret = field.label ? field.label : field.field;

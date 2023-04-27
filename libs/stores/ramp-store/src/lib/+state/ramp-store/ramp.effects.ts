@@ -8,10 +8,8 @@ import {
   Reaction,
   SourceVersion,
 } from '@ramp/models/ramp-models';
-import {
- RampPartialState,
-  RampService
-} from "@ramp/stores/ramp-store";
+import { RampPartialState } from './ramp.reducer';
+import { RampService } from '../ramp.service';
 import { mergeMap, of, tap, withLatestFrom } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 

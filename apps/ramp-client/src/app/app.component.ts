@@ -5,7 +5,7 @@ import {
   OnInit, ViewChild,
   ViewEncapsulation
 } from "@angular/core";
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '@ramp/shared/ui/error-dialog';
 import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
 import { RampFacade } from '@ramp/stores/ramp-store';

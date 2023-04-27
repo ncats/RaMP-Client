@@ -125,7 +125,7 @@ export class PropertiesFromMetabolitesComponent
       });
       newObj.imageUrl.url = `${
         this.route.snapshot.data.renderUrl
-      }?structure=${encodeURIComponent(obj.iso_smiles)}&size=150`;
+      }(${encodeURIComponent(obj.iso_smiles)})?size=150`;
       newObj.imageUrl.label = newObj.common_name.value;
       return newObj;
     });

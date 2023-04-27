@@ -27,6 +27,7 @@ export class PageCoreComponent {
   noMatches: string[] = [];
   dataAsDataProperty: { [key: string]: DataProperty }[] = [];
   downloadQueued = false;
+  fuzzy = false;
 
   supportedIdTypes!: [{ analyteType: string, idTypes: string[]}] | undefined;
 
@@ -70,11 +71,11 @@ export class PageCoreComponent {
    _downloadFile(data: any, name: string, type: string = 'text/tsv') {
 if(this.dom) {
   const file = new Blob([data], { type: type });
-  var link = this.dom.createElement('a');
+  const link = this.dom.createElement('a');
   if (link.download !== undefined) {
     // feature detection
     // Browsers that support HTML5 download attribute
-    var url = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
     link.setAttribute('href', url);
     link.setAttribute('download', `${name}`);
     link.style.visibility = 'hidden';

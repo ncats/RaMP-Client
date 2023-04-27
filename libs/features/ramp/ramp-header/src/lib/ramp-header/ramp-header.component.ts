@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
 
 @Component({
@@ -7,9 +7,6 @@ import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
   styleUrls: ['./ramp-header.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class RampHeaderComponent implements OnInit {
+export class RampHeaderComponent {
   @Input() links!: LinkTemplateProperty[];
-  constructor() {}
-
-  ngOnInit(): void {}
 }

@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import 'ncats-theme';
+@import 'libs/styles/src/styles/ncats-theme';
 
 
 
@@ -14,11 +14,12 @@
 }
 
 .toolbar-template button {
-  color: #ffffff;
+  color: #ffffff !important;
+  padding: 0 1vw 0 1vw;
 }
 
 .toolbar-template a {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .content-wrapper {
