@@ -11,7 +11,7 @@ info:
     name: RaMP
     x-role: responsible developer
     email: NCATSRaMP@nih.gov
-    x-id: 'https://github.com/tsheils'
+    x-id: 'https://github.com/ncats'
   termsOfService: https://rampdb.nih.gov
 tags:
   - name: NCATS-API
