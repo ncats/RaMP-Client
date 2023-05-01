@@ -185,19 +185,21 @@ function(analytes) {
 #' @param analyte_type
 #' @param names_or_ids
 #' @param match
+#' @param max_pathway_size
 #' @post /api/analytes-from-pathways
-function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy") {
+function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy", max_pathway_size=1000) {
   analyte <- analyte_type
   analytes_df <- tryCatch({
-      RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte, match=match, names_or_ids=names_or_ids)
-  },
+    print(max_pathway_size)
+    RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte, match=match, names_or_ids=names_or_ids, max_pathway_size=max_pathway_size)
+    },
     error = function(cond) {
       print(cond)
       return(data.frame())
     })
   return(
       list(
-          data = analytes_df,
+          data = analytes_df[is.na(analytes_df)] <- "",
           function_call = makeFunctionCall(pathway,"getAnalyteFromPathway"),
           numFoundIds = length(unique(analytes_df$pathwayName))
       )
