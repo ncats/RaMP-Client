@@ -1,4 +1,6 @@
-FROM node:18-alpine AS build
+FROM node:18.16-alpine3.17 AS build
+
+ENV npm_config_unsafe_perm=true
 
 # Set the source folder
 ARG SOURCE_FOLDER="./"
@@ -9,13 +11,16 @@ WORKDIR /var/www/app
 COPY ${SOURCE_FOLDER} .
 
 # Bundle app source
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh && \
-    npm config set unsafe-perm true && \
-    npm i -g @angular/cli && \
-    npm install -g nx && \
-    npm i && \
-    NODE_OPTIONS=--max_old_space_size=4096 nx run ramp-client:prerender:production --verbose
+RUN apk update && apk upgrade
+RUN apk add --no-cache bash git openssh
+#RUN npm install --unsafe-perm=true
+#RUN npm config set unsafe-perm true
+RUN npm i -g @angular/cli
+RUN npm install -g nx
+RUN npm install
+RUN nx g @nrwl/workspace:fix-configuration
+RUN npm i
+RUN NODE_OPTIONS=--max_old_space_size=4096 nx run ramp-client:prerender:production --verbose
 
 FROM registry.ncats.nih.gov:5000/labshare/docker-base-web
 

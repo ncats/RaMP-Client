@@ -59,7 +59,7 @@
     "input": "metabolites",
     "supportedIdTypes": ["Metabolites"],
      "function": "analytes <- RaMP::chemicalClassEnrichment(mets=\"###REPLACE###\")",
-    "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211",
+    "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211, hmdb:HMDB0001085, hmdb:HMDB0002122, hmdb:HMDB0002685, hmdb:HMDB0004241, hmdb:HMDB0005079, hmdb:HMDB0006245",
     "description": "Perform chemical class enrichment on ClassyFire and LIPIDMAPS classes. IDs should be prepended by ID source (e.g. <strong>hmdb</strong>:HMDB0000122). See below for supported sources."
   },
   "pathway-enrichment": {
