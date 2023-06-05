@@ -64,9 +64,12 @@ pipeline {
                 configFileProvider([
                     configFile(fileId: 'ramp-api-config.yml', targetLocation: 'config.yml'),
                     configFile(fileId: 'docker-compose-api.yaml', targetLocation: 'docker-compose.yml'),
-                    configFile(fileId: 'runRampServer.R', targetLocation: 'runRamp.R')
+                    configFile(fileId: 'runRampServer.R', targetLocation: 'runRamp.R'),
+                    configFile(fileId: 'ramp-api-deploy.sh', targetLocation: 'deploy.sh') 
                 ]) {
-                    sh  """  
+                    sh  """#!/bin/bash
+                        chmod 755 config.yml runRamp.R  
+                        /bin/bash deploy.sh
                         docker-compose -p $PROJECT_NAME-$APP_TYPE down -v --rmi all | xargs echo
                         docker pull $DOCKER_REPO_NAME:$BUILD_VERSION
                         docker rmi $DOCKER_REPO_NAME:current | xargs echo
