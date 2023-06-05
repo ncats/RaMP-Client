@@ -4,7 +4,7 @@ pipeline {
         skipDefaultCheckout()
     }
     agent {
-        label 'build && jenkins && management && node'
+        label 'deploy && ci && rampdb'
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -59,9 +59,6 @@ pipeline {
             }
         }
         stage('Deploy Application') {
-            agent {
-                label 'deploy && ci && rampdb'
-            }
             steps {
                 checkout scm
                 configFileProvider([
