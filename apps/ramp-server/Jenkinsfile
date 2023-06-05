@@ -4,7 +4,7 @@ pipeline {
         skipDefaultCheckout()
     }
     agent {
-        node { label 'internal-build.ncats'}
+        label 'build && jenkins && management && node'
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -13,9 +13,9 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
     environment {
-        PROJECT_NAME = "rampdb-api"
-        PACKAGE_DIR = "apps/ramp-server"
-        DOCKER_REPO_NAME = "684150170045.dkr.ecr.us-east-1.amazonaws.com/rampdb-api"
+        PROJECT_NAME     = "rampdb"
+        DOCKER_REPO_NAME = "853771734544.dkr.ecr.us-east-1.amazonaws.com/rampdb-api"
+        APP_TYPE         = "api" 
     }
     stages {
         stage('Build Version') {
@@ -36,66 +36,53 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
+        stage('Build Docker Image') {
             when {
                 expression {
                     return !params.BUILD_VERSION
                 }
             }
             steps {
-                sshagent (credentials: ['871f96b5-9d34-449d-b6c3-3a04bbd4c0e4']) {
+                script {
                     withEnv([
-                        "IMAGE_NAME=rampdb-api",
                         "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
                         checkout scm
-                        dir(env.PACKAGE_DIR) {
-                            script {
-                                def image = docker.build("${env.IMAGE_NAME}","--no-cache .")
-                                docker.withRegistry("https://684150170045.dkr.ecr.us-east-1.amazonaws.com", "ecr:us-east-1:aws-jenkins-build") {
-                                    docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
-                                }
-                                docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
-                                    docker.image("${env.IMAGE_NAME}").push("${env.BUILD_VERSION}")
-                                }
-                            }
-                        }
+                        sh '''#!/bin/bash
+                        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 853771734544.dkr.ecr.us-east-1.amazonaws.com
+                        docker build -f apps/ramp-client/Dockerfile --no-cache --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
+                        docker tag ${DOCKER_REPO_NAME}:latest ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                        docker push ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                        '''
                     }
                 }
             }
         }
         stage('Deploy Application') {
             agent {
-                node { label 'rampdb-ci-ec2-02'}
+                label 'deploy && ci && rampdb'
             }
             steps {
-                cleanWs()
+                checkout scm
                 configFileProvider([
                     configFile(fileId: 'ramp-api-config.yml', targetLocation: 'config.yml'),
-                    configFile(fileId: 'ramp-api-docker-compose.yml', targetLocation: 'docker-compose.yml'),
+                    configFile(fileId: 'docker-compose-api.yaml', targetLocation: 'docker-compose.yml'),
                     configFile(fileId: 'runRampServer.R', targetLocation: 'runRamp.R')
                 ]) {
-                    withEnv([
-                            "IMAGE_NAME=rampdb-api",
-                            "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
-                        ]) {
-                        withAWS(credentials:'aws-jenkins-build') {
-                            sh '''
-                            chmod 755 config.yml runRamp.R
-                            export DOCKER_LOGIN="`aws ecr get-login --no-include-email --region us-east-1`"
-                            $DOCKER_LOGIN
-                            '''
-                            ecrLogin()
-                            script {
-                                def docker = new org.labshare.Docker()
-                                docker.deployDockerAPI()
-                            }
-                            sh '''
-                            sleep 30
-                            curl https://ramp-api-alpha.ncats.io/api/analyte_intersects?analytetype=mets&query_scope=global
-                            '''
-                        }
-                    }
+                    sh  """  
+                        docker-compose -p $PROJECT_NAME-$APP_TYPE down -v --rmi all | xargs echo
+                        docker pull $DOCKER_REPO_NAME:$BUILD_VERSION
+                        docker rmi $DOCKER_REPO_NAME:current | xargs echo
+                        docker tag $DOCKER_REPO_NAME:$BUILD_VERSION $DOCKER_REPO_NAME:current
+                        docker-compose -p $PROJECT_NAME-$APP_TYPE up -d
+                        docker rmi \$(docker images -aq) | xargs echo
+                    """
+                }
+            }
+            post {
+               always {
+                    echo " Clean up the workspace in deploy node!"
+                    cleanWs()
                 }
             }
         }
