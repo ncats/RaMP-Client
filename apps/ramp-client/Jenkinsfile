@@ -7,7 +7,7 @@ pipeline {
         string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
     }
     agent {
-        label 'build && jenkins && management && node'
+        label 'ci && rampdb'
     }
     triggers {
         pollSCM('H/5 * * * *')
@@ -63,9 +63,6 @@ pipeline {
             }
         }
         stage('Deploy Application') {
-            agent {
-                label 'deploy && ci && rampdb'
-            }
             steps {
                 //cleanWs()
                 checkout scm

@@ -4,7 +4,7 @@ pipeline {
         skipDefaultCheckout()
     }
     agent {
-        label 'deploy && ci && rampdb'
+        label 'ci && rampdb'
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
