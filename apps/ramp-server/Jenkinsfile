@@ -20,8 +20,14 @@ pipeline {
     stages {
         stage('Build Version') {
             when {
-                expression {
-                    return !params.BUILD_VERSION
+                allOf {
+                    expression {
+                        return !params.BUILD_VERSION
+                    }
+                    anyOf {
+                        changeset "apps/ramp-server/*"
+                        triggeredBy 'UserIdCause'
+                    }
                 }
             }
             steps{
