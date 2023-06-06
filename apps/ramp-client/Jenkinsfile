@@ -76,6 +76,12 @@ pipeline {
             }
         }
         stage('Deploy Application') {
+            when {
+                anyOf {
+                    changeset "apps/ramp-client/*"
+                    triggeredBy 'UserIdCause'
+                }
+            }
             steps {
                 //cleanWs()
                 checkout scm

@@ -72,6 +72,12 @@ pipeline {
             }
         }
         stage('Deploy Application') {
+            when {
+                anyOf {
+                    changeset "apps/ramp-server/*"
+                    triggeredBy 'UserIdCause'
+                }
+            }
             steps {
                 checkout scm
                 configFileProvider([
