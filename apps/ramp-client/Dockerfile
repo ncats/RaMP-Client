@@ -22,7 +22,7 @@ RUN nx g @nrwl/workspace:fix-configuration
 RUN npm i
 RUN NODE_OPTIONS=--max_old_space_size=4096 nx run ramp-client:prerender:production --verbose
 
-FROM 853771734544.dkr.ecr.us-east-1.amazonaws.com/labshare/docker-base-web
+FROM registry.ncats.nih.gov:5000/labshare/docker-base-web
 
 # Install NCATS required packages
 RUN apt-get update && apt-get install -y net-tools
