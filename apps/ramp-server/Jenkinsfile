@@ -8,6 +8,7 @@ pipeline {
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
+        string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
     }
     triggers {
         pollSCM('H/5 * * * *')
@@ -16,8 +17,28 @@ pipeline {
         PROJECT_NAME     = "rampdb"
         DOCKER_REPO_NAME = "853771734544.dkr.ecr.us-east-1.amazonaws.com/rampdb-api"
         APP_TYPE         = "api" 
+        INIT_TOKEN       = credentials('Vault-Access')
+        SPHINX_TOKEN     = credentials('ncatssvcdvops-sphinx')
+        ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME" 
     }
     stages {
+        stage('Docker/Apps getSecrets By Role') {
+            steps {
+                cleanWs()
+                checkout scm
+                script {
+                sh '''
+                    ### Cloning the repo from DevOps Artifacts Repository Repo ###
+                    git clone https://$SPHINX_TOKEN@github.com/Sphinx-Automation/devops-pipeline-artifacts.git
+                    
+                    ###  Running the script with Env specific to Authenticate Vault & Get Application Secrets for Docker Token###
+                    cd devops-pipeline-artifacts/application
+                    /bin/bash getNcatsDockerSecretsByRole.sh
+                    /bin/bash getAppSecretsByRole.sh
+                    '''
+                }
+            }
+        }
         stage('Build Version') {
             when {
                 allOf {
