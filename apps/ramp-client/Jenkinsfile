@@ -42,7 +42,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+        stage('Build Dev Docker Image') {
             when {
                 allOf {
                     expression {
@@ -67,7 +67,7 @@ pipeline {
                             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 853771734544.dkr.ecr.us-east-1.amazonaws.com
                             sed -e "s/registry.ncats.nih.gov:5000/853771734544.dkr.ecr.us-east-1.amazonaws.com/" apps/ramp-client/Dockerfile
                             docker build -f apps/ramp-client/Dockerfile --no-cache --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
-                            docker tag ${DOCKER_REPO_NAME}:latest ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                            docker tag ${DOCKER_REPO_NAME}:latest ${DOCKER_REPO_NAME}:${BUILD_VERSION}-ci
                             docker push ${DOCKER_REPO_NAME}:${BUILD_VERSION}
                             '''
                         }
@@ -98,10 +98,43 @@ pipeline {
                     """
                 }
             }
-            post {
-               always {
-                    echo " Clean up the workspace in deploy node!"
-                    cleanWs()
+        }
+        stage('Build Prod Docker Image') {
+            when {
+                allOf {
+                    expression {
+                        return !params.BUILD_VERSION
+                    }
+                    anyOf {
+                        changeset "apps/ramp-client/*"
+                        triggeredBy 'UserIdCause'
+                    }
+                }
+            }
+            steps {
+                configFileProvider([
+                    configFile(fileId: 'rampdb-client-environment-prod.yml', targetLocation: 'apps/ramp-client/src/environments/environment.prod.ts')
+                ]){
+                    script {
+                        withEnv([
+                            "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
+                        ]) {
+                            checkout scm
+                            sh '''#!/bin/bash
+                            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 853771734544.dkr.ecr.us-east-1.amazonaws.com
+                            sed -e "s/registry.ncats.nih.gov:5000/853771734544.dkr.ecr.us-east-1.amazonaws.com/" apps/ramp-client/Dockerfile
+                            docker build -f apps/ramp-client/Dockerfile --no-cache --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
+                            docker tag ${DOCKER_REPO_NAME}:latest ${DOCKER_REPO_NAME}:${BUILD_VERSION}-prod
+                            docker push ${DOCKER_REPO_NAME}:${BUILD_VERSION}-prod
+                            '''
+                        }
+                    }
+                }
+                post {
+                    always {
+                        echo " Clean up the workspace in deploy node!"
+                        cleanWs()
+                    }
                 }
             }
         }
