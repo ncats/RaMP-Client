@@ -29,7 +29,7 @@ pipeline {
                 script {
                 sh '''
                     ### Cloning the repo from DevOps Artifacts Repository Repo ###
-                    git clone https://$SPHINX_TOKEN@github.com/Sphinx-Automation/devops-pipeline-artifacts.git
+                    git clone -b main https://$SPHINX_TOKEN@github.com/Sphinx-Automation/devops-pipeline-artifacts.git
                     
                     ###  Running the script with Env specific to Authenticate Vault & Get Application Secrets for Docker Token###
                     cd devops-pipeline-artifacts/application
