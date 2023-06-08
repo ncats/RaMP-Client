@@ -45,7 +45,7 @@ pipeline {
                 }
             }
         }
-        stage('Apps getSecrets By Role') {
+        stage('Docker getSecrets By Role') {
             steps {
                 cleanWs()
                 checkout scm
