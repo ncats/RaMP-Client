@@ -7,7 +7,7 @@ pipeline {
         string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
     }
     agent {
-        label 'ci && rampdb'
+        label 'build && jenkins && node'
     }
     triggers {
         pollSCM('H/5 * * * *')
@@ -45,7 +45,7 @@ pipeline {
                 }
             }
         }
-        stage('Docker/Apps getSecrets By Role') {
+        stage('Apps getSecrets By Role') {
             steps {
                 cleanWs()
                 checkout scm
