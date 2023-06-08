@@ -18,7 +18,7 @@ pipeline {
         DOCKER_REPO_NAME = "registry.ncats.nih.gov:5000/rampdb-api"
         APP_TYPE         = "api" 
         INIT_TOKEN       = credentials('Vault-Access')
-        SPHINX_TOKEN     = credentials('ncatssvcdvops-sphix')
+        SPHINX_TOKEN     = credentials('ncatssvcdvops-sphinx')
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"
     }
     stages {
