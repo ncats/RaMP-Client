@@ -18,7 +18,7 @@ pipeline {
         DOCKER_REPO_NAME = "853771734544.dkr.ecr.us-east-1.amazonaws.com/rampdb-api"
         APP_TYPE         = "api" 
         INIT_TOKEN       = credentials('Vault-Access')
-        SPHINX_TOKEN     = credentials('ncatssvcdvops-sphinx')
+        SPHINX_TOKEN     = credentials('ncatssvcdvops-sphix')
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME" 
     }
     stages {
@@ -125,6 +125,6 @@ pipeline {
                     cleanWs()
                 }
             }
-        }
+        } 
     }
 }
