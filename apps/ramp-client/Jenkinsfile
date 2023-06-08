@@ -5,6 +5,7 @@ pipeline {
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
         string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
+        string(name: 'VAULT_URL', defaultValue: 'appvault.ifx.ncats.io', description: 'IFX vault host')
     }
     agent {
         label 'ci && rampdb'
