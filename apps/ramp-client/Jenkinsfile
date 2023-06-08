@@ -5,7 +5,6 @@ pipeline {
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
         string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
-        string(name: 'VAULT_URL', defaultValue: 'appvault.ifx.ncats.io', description: 'IFX vault host')
     }
     agent {
         label 'ci && rampdb'
@@ -20,6 +19,7 @@ pipeline {
         INIT_TOKEN       = credentials('Vault-Access')                                   // OIDC provider this token is Auto Generated //
         SPHINX_TOKEN     = credentials('ncatssvcdvops-sphix')                           // PatToken Read Only Access for the DevOps Artifacts Repo https://github.com/Sphinx-Automation/devops-pipeline-artifacts.git //
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"                                  // Role Name is Mandatory Variable for Vault //
+        VAULT_URL        = "https://appvault.ifx.ncats.io"
     }
     stages {
         stage('Build Version') {
