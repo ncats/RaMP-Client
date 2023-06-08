@@ -19,8 +19,7 @@ pipeline {
         APP_TYPE         = "api" 
         INIT_TOKEN       = credentials('Vault-Access')
         SPHINX_TOKEN     = credentials('ncatssvcdvops-sphix')
-        ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME" 
-        VAULT_URL        = "https://appvault.ifx.ncats.io"
+        ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"
     }
     stages {
         stage('Docker/Apps getSecrets By Role') {
