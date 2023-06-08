@@ -57,7 +57,6 @@ pipeline {
                     ###  Running the script with Env specific to Authenticate Vault & Get Application Secrets for Docker Token###
                     cd devops-pipeline-artifacts/application
                     /bin/bash getNcatsDockerSecretsByRole.sh
-                    /bin/bash getAppSecretsByRole.sh
                     '''
                 }
             }
