@@ -1,0 +1,109 @@
+pipeline {
+    options {
+        timestamps()
+        skipDefaultCheckout()
+    }
+    parameters {
+        string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
+        string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
+    }
+    agent {
+        label 'ci && rampdb'
+    }
+    triggers {
+        pollSCM('H/5 * * * *')
+    }  
+    environment {
+        PROJECT_NAME     = "rampdb"
+        DOCKER_REPO_NAME = "853771734544.dkr.ecr.us-east-1.amazonaws.com/rampdb-client"
+        APP_TYPE         = "ui"                                                          // Application Type is required to get Secret from Vault //
+    }
+    stages {
+        stage('Build Version') {
+            when {
+                allOf {
+                    expression {
+                        return !params.BUILD_VERSION
+                    }
+                    anyOf {
+                        changeset "apps/ramp-client/*"
+                        triggeredBy 'UserIdCause'
+                    }
+                }
+            }
+            steps{
+                script {
+                    BUILD_VERSION_GENERATED = VersionNumber(
+                        versionNumberString: 'v${BUILD_YEAR, XX}.${BUILD_MONTH, XX}${BUILD_DAY, XX}.${BUILDS_TODAY}',
+                        projectStartDate:    '1970-01-01',
+                        skipFailedBuilds:    true)
+                    currentBuild.displayName = BUILD_VERSION_GENERATED
+                    env.BUILD_VERSION = BUILD_VERSION_GENERATED
+                    env.BUILD = 'true'
+                }
+            }
+        }
+        stage('Build CI Docker Image') {
+            when {
+                allOf {
+                    expression {
+                        return !params.BUILD_VERSION
+                    }
+                    anyOf {
+                        changeset "apps/ramp-client/*"
+                        triggeredBy 'UserIdCause'
+                    }
+                }
+            }
+            steps {
+                 configFileProvider([
+                    configFile(fileId: 'rampdb-client-environment-ci.yml', targetLocation: 'rampdb-client-environment-ci.yml')
+                ]){
+                    script {
+                        withEnv([
+                            "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
+                        ]) {
+                            checkout scm
+                            sh '''#!/bin/bash
+                            cp rampdb-client-environment-ci.yml apps/ramp-client/src/environments/environment.prod.ts
+                            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 853771734544.dkr.ecr.us-east-1.amazonaws.com
+                            sed -i -e "s/registry.ncats.nih.gov:5000/853771734544.dkr.ecr.us-east-1.amazonaws.com/" apps/ramp-client/Dockerfile
+                            docker build -f apps/ramp-client/Dockerfile --no-cache --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
+                            docker tag ${DOCKER_REPO_NAME}:latest ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                            docker push ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy Application') {
+            when {
+                anyOf {
+                    changeset "apps/ramp-client/*"
+                    triggeredBy 'UserIdCause'
+                }
+            }
+            steps {
+                configFileProvider([
+                   configFile(fileId: 'docker-compose-ui.yaml', targetLocation: 'docker-compose.yaml')
+                ]) {
+                    sh  """  
+                        docker-compose -p $PROJECT_NAME-$APP_TYPE down -v --rmi all | xargs echo
+                        docker pull $DOCKER_REPO_NAME:$BUILD_VERSION
+                        docker rmi $DOCKER_REPO_NAME:current | xargs echo
+                        docker tag $DOCKER_REPO_NAME:$BUILD_VERSION $DOCKER_REPO_NAME:current
+                        docker-compose -p $PROJECT_NAME-$APP_TYPE up -d
+                        docker rmi \$(docker images -aq) | xargs echo
+                    """
+                }
+            }
+            post {
+               always {
+                    echo " Clean up the workspace in deploy node!"
+                    cleanWs()
+                }
+            }
+        }
+    }
+}
