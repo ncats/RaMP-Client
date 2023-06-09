@@ -56,7 +56,7 @@ pipeline {
             }
             steps {
                  configFileProvider([
-                    configFile(fileId: 'rampdb-client-environment-ci.yml', targetLocation: 'apps/ramp-client/src/environments/environment.prod.ts')
+                    configFile(fileId: 'rampdb-client-environment-ci.yml', targetLocation: 'rampdb-client-environment-ci.yml')
                 ]){
                     script {
                         withEnv([
@@ -64,7 +64,9 @@ pipeline {
                         ]) {
                             checkout scm
                             sh '''#!/bin/bash
-                            cat apps/ramp-client/src/environments/environment.prod.ts
+                            ls
+                            pwd
+                            cp rampdb-client-environment-ci.yml apps/ramp-client/src/environments/environment.prod.ts
                             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 853771734544.dkr.ecr.us-east-1.amazonaws.com
                             sed -i.bak -e "s/registry.ncats.nih.gov:5000/853771734544.dkr.ecr.us-east-1.amazonaws.com/" apps/ramp-client/Dockerfile
                             rm apps/ramp-client/Dockerfile.bak
