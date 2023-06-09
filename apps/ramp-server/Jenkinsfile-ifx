@@ -106,7 +106,6 @@ pipeline {
                     sh  """#!/bin/bash
                         chmod 755 config.yml runRamp.R  
                         /bin/bash deploy.sh
-                        cat runRamp.R
                         docker-compose -p $PROJECT_NAME-$APP_TYPE down -v --rmi all | xargs echo
                         docker pull $DOCKER_REPO_NAME:$BUILD_VERSION
                         docker rmi $DOCKER_REPO_NAME:current | xargs echo
