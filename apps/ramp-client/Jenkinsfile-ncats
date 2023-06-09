@@ -1,6 +1,7 @@
 pipeline {
     options {
         timestamps()
+        skipDefaultCheckout()
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
