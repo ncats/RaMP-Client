@@ -22,7 +22,7 @@ pipeline {
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"
     }
     stages {
-        stage('Docker/Apps getSecrets By Role') {
+        stage('Apps getSecrets By Role') {
             steps {
                 cleanWs()
                 checkout scm
