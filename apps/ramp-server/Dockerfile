@@ -14,8 +14,4 @@ COPY install.R install.R
 
 RUN Rscript install.R
 
-RUN chmod +x /usr/local/lib/R/site-library/plumber.R \
-    && chmod +x /usr/local/lib/R/site-library/db.R \
-    && chmod +x install.R
-
 CMD ["/usr/local/lib/R/site-library/runRamp.R"]
