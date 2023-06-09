@@ -4,7 +4,7 @@ pipeline {
         skipDefaultCheckout()
     }
     agent {
-        label 'build && jenkins && node'
+        label 'build && ncats'
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -79,7 +79,6 @@ pipeline {
                     withEnv([
                     "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
-                        checkout scm
                         sh '''#!/bin/bash
                         cd apps/ramp-server/
                         docker login https://registry.ncats.nih.gov:5000 -u "${DOCKERLOGIN}" -p "${DOCKERPASSWORD}"

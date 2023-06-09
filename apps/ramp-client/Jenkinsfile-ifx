@@ -84,8 +84,6 @@ pipeline {
                 }
             }
             steps {
-                cleanWs()
-                checkout scm
                 configFileProvider([
                    configFile(fileId: 'docker-compose-ui.yaml', targetLocation: 'docker-compose.yaml')
                 ]) {

@@ -7,7 +7,7 @@ pipeline {
         string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
     }
     agent {
-        label 'build && jenkins && node'
+        label 'build && ncats'
     }
     triggers {
         pollSCM('H/5 * * * *')
@@ -47,8 +47,6 @@ pipeline {
         }
         stage('Docker getSecrets By Role') {
             steps {
-                cleanWs()
-                checkout scm
                 script {
                 sh '''
                     ### Cloning the repo from DevOps Artifacts Repository Repo ###
