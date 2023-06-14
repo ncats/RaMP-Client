@@ -1,7 +1,6 @@
 pipeline {
     options {
         timestamps()
-        skipDefaultCheckout()
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -82,7 +81,6 @@ pipeline {
                         withEnv([
                             "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION),
                         ]) {
-                            checkout scm
                             sh '''#!/bin/bash
                             cp rampdb-client-environment-prod.ts apps/ramp-client/src/environments/environment.prod.ts
                             source prepare.sh
