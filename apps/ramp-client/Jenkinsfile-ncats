@@ -60,6 +60,11 @@ pipeline {
                 }
             }
         }
+        stage ('Checkout Source Code') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Build Docker Image') {
             when {
                 allOf {

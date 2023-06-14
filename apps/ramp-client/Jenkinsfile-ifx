@@ -42,6 +42,11 @@ pipeline {
                 }
             }
         }
+        stage ('Checkout Source Code') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Build CI Docker Image') {
             when {
                 allOf {
