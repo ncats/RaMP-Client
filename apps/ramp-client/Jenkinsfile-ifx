@@ -57,7 +57,7 @@ pipeline {
             }
             steps {
                  configFileProvider([
-                    configFile(fileId: 'rampdb-client-environment-ci.yml', targetLocation: 'rampdb-client-environment-ci.yml')
+                    configFile(fileId: 'rampdb-client-environment-ci.ts', targetLocation: 'rampdb-client-environment-ci.ts')
                 ]){
                     script {
                         withEnv([

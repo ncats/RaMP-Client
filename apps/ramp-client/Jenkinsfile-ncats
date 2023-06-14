@@ -75,7 +75,7 @@ pipeline {
             }
             steps {
                 configFileProvider([
-                    configFile(fileId: 'rampdb-client-environment-prod.yml', targetLocation: 'rampdb-client-environment-prod.yml'),
+                    configFile(fileId: 'rampdb-client-environment-prod.ts', targetLocation: 'rampdb-client-environment-prod.ts'),
                     configFile(fileId: 'prepare.sh', targetLocation: 'prepare.sh')
                 ]){
                     script {
@@ -84,7 +84,7 @@ pipeline {
                         ]) {
                             checkout scm
                             sh '''#!/bin/bash
-                            cp rampdb-client-environment-prod.yml apps/ramp-client/src/environments/environment.prod.ts
+                            cp rampdb-client-environment-prod.ts apps/ramp-client/src/environments/environment.prod.ts
                             source prepare.sh
                             docker login https://registry.ncats.nih.gov:5000 -u "${DOCKERLOGIN}" -p "${DOCKERPASSWORD}"
                             docker build -f apps/ramp-client/Dockerfile --no-cache --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
