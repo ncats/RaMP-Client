@@ -21,6 +21,11 @@ pipeline {
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"                                  // Role Name is Mandatory Variable for Vault //
     }
     stages {
+        stage ('Checkout Source Code') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Build Version') {
             when {
                 allOf {
@@ -58,11 +63,6 @@ pipeline {
                     /bin/bash getNcatsDockerSecretsByRole.sh
                     '''
                 }
-            }
-        }
-        stage ('Checkout Source Code') {
-            steps {
-                checkout scm
             }
         }
         stage('Build Docker Image') {

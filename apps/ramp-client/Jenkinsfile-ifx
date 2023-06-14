@@ -18,6 +18,11 @@ pipeline {
         APP_TYPE         = "ui"                                                          // Application Type is required to get Secret from Vault //
     }
     stages {
+        stage ('Checkout Source Code') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Build Version') {
             when {
                 allOf {
@@ -40,11 +45,6 @@ pipeline {
                     env.BUILD_VERSION = BUILD_VERSION_GENERATED
                     env.BUILD = 'true'
                 }
-            }
-        }
-        stage ('Checkout Source Code') {
-            steps {
-                checkout scm
             }
         }
         stage('Build CI Docker Image') {
