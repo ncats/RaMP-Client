@@ -53,7 +53,6 @@ pipeline {
         stage('Docker getSecrets By Role') {
             steps {
                 script {
-                    cleanWs()
                     sh '''
                     ### Cloning the repo from DevOps Artifacts Repository Repo ###
                     git clone https://$SPHINX_TOKEN@github.com/Sphinx-Automation/devops-pipeline-artifacts.git
