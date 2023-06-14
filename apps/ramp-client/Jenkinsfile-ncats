@@ -1,7 +1,6 @@
 pipeline {
     options {
         timestamps()
-        skipDefaultCheckout()
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -22,6 +21,12 @@ pipeline {
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"                                  // Role Name is Mandatory Variable for Vault //
     }
     stages {
+        stage ('Clean and Checkout Source Code') {
+            steps {
+                cleanWs()
+                checkout scm
+            }
+        }
         stage('Build Version') {
             when {
                 allOf {
@@ -49,7 +54,6 @@ pipeline {
         stage('Docker getSecrets By Role') {
             steps {
                 script {
-                    cleanWs()
                     sh '''
                     ### Cloning the repo from DevOps Artifacts Repository Repo ###
                     git clone https://$SPHINX_TOKEN@github.com/Sphinx-Automation/devops-pipeline-artifacts.git
@@ -75,16 +79,15 @@ pipeline {
             }
             steps {
                 configFileProvider([
-                    configFile(fileId: 'rampdb-client-environment-prod.yml', targetLocation: 'rampdb-client-environment-prod.yml'),
+                    configFile(fileId: 'rampdb-client-environment-prod.ts', targetLocation: 'rampdb-client-environment-prod.ts'),
                     configFile(fileId: 'prepare.sh', targetLocation: 'prepare.sh')
                 ]){
                     script {
                         withEnv([
                             "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION),
                         ]) {
-                            checkout scm
                             sh '''#!/bin/bash
-                            cp rampdb-client-environment-prod.yml apps/ramp-client/src/environments/environment.prod.ts
+                            cp rampdb-client-environment-prod.ts apps/ramp-client/src/environments/environment.prod.ts
                             source prepare.sh
                             docker login https://registry.ncats.nih.gov:5000 -u "${DOCKERLOGIN}" -p "${DOCKERPASSWORD}"
                             docker build -f apps/ramp-client/Dockerfile --no-cache --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .

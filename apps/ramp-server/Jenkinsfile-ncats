@@ -22,9 +22,14 @@ pipeline {
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"
     }
     stages {
-        stage('Docker getSecrets By Role') {
+        stage ('Clean and Checkout Source Code') {
             steps {
                 cleanWs()
+                checkout scm
+            }
+        }
+        stage('Docker getSecrets By Role') {
+            steps {
                 script {
                 sh '''
                     ### Cloning the repo from DevOps Artifacts Repository Repo ###
