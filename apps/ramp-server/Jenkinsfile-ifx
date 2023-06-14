@@ -22,10 +22,15 @@ pipeline {
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"
     }
     stages {
+        stage ('Clean and Checkout Source Code') {
+            steps {
+                cleanWs()
+                checkout scm
+            }
+        }
         stage('Apps getSecrets By Role') {
             steps {
                 script {
-                    cleanWs()
                     sh '''
                     ### Cloning the repo from DevOps Artifacts Repository Repo ###
                     git clone https://$SPHINX_TOKEN@github.com/Sphinx-Automation/devops-pipeline-artifacts.git
@@ -78,7 +83,6 @@ pipeline {
                     withEnv([
                     "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                     ]) {
-                        checkout scm
                         sh '''#!/bin/bash
                         cd apps/ramp-server/
                         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 853771734544.dkr.ecr.us-east-1.amazonaws.com

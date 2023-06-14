@@ -18,8 +18,9 @@ pipeline {
         APP_TYPE         = "ui"                                                          // Application Type is required to get Secret from Vault //
     }
     stages {
-        stage ('Checkout Source Code') {
+        stage ('Clean and Checkout Source Code') {
             steps {
+                cleanWs()
                 checkout scm
             }
         }

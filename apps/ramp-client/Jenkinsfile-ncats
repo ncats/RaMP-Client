@@ -21,8 +21,9 @@ pipeline {
         ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"                                  // Role Name is Mandatory Variable for Vault //
     }
     stages {
-        stage ('Checkout Source Code') {
+        stage ('Clean and Checkout Source Code') {
             steps {
+                cleanWs()
                 checkout scm
             }
         }
