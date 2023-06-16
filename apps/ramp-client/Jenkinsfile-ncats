@@ -1,0 +1,109 @@
+pipeline {
+    options {
+        timestamps()
+    }
+    parameters {
+        string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
+        string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
+    }
+    agent {
+        label 'build && ncats'
+    }
+    triggers {
+        pollSCM('H/5 * * * *')
+    }  
+    environment {
+        PROJECT_NAME     = "rampdb"
+        DOCKER_REPO_NAME = "registry.ncats.nih.gov:5000/rampdb-client"
+        APP_TYPE         = "ui"                                                          // Application Type is required to get Secret from Vault //
+        INIT_TOKEN       = credentials('Vault-Access')                                   // OIDC provider this token is Auto Generated //
+        SPHINX_TOKEN     = credentials('ncatssvcdvops-sphinx')                           // PatToken Read Only Access for the DevOps Artifacts Repo https://github.com/Sphinx-Automation/devops-pipeline-artifacts.git //
+        ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"                                  // Role Name is Mandatory Variable for Vault //
+    }
+    stages {
+        stage ('Clean and Checkout Source Code') {
+            steps {
+                cleanWs()
+                checkout scm
+            }
+        }
+        stage('Build Version') {
+            when {
+                allOf {
+                    expression {
+                        return !params.BUILD_VERSION
+                    }
+                    anyOf {
+                        changeset "apps/ramp-client/*"
+                        triggeredBy 'UserIdCause'
+                    }
+                }
+            }
+            steps{
+                script {
+                    BUILD_VERSION_GENERATED = VersionNumber(
+                        versionNumberString: 'v${BUILD_YEAR, XX}.${BUILD_MONTH, XX}${BUILD_DAY, XX}.${BUILDS_TODAY}',
+                        projectStartDate:    '1970-01-01',
+                        skipFailedBuilds:    true)
+                    currentBuild.displayName = BUILD_VERSION_GENERATED
+                    env.BUILD_VERSION = BUILD_VERSION_GENERATED
+                    env.BUILD = 'true'
+                }
+            }
+        }
+        stage('Docker getSecrets By Role') {
+            steps {
+                script {
+                    sh '''
+                    ### Cloning the repo from DevOps Artifacts Repository Repo ###
+                    git clone https://$SPHINX_TOKEN@github.com/Sphinx-Automation/devops-pipeline-artifacts.git
+                    
+                    ###  Running the script with Env specific to Authenticate Vault & Get Application Secrets for Docker Token###
+                    cd devops-pipeline-artifacts/application
+                    /bin/bash getNcatsDockerSecretsByRole.sh
+                    '''
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            when {
+                allOf {
+                    expression {
+                        return !params.BUILD_VERSION
+                    }
+                    anyOf {
+                        changeset "apps/ramp-client/*"
+                        triggeredBy 'UserIdCause'
+                    }
+                }
+            }
+            steps {
+                configFileProvider([
+                    configFile(fileId: 'rampdb-client-environment-prod.ts', targetLocation: 'rampdb-client-environment-prod.ts'),
+                    configFile(fileId: 'prepare.sh', targetLocation: 'prepare.sh')
+                ]){
+                    script {
+                        withEnv([
+                            "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION),
+                        ]) {
+                            sh '''#!/bin/bash
+                            cp rampdb-client-environment-prod.ts apps/ramp-client/src/environments/environment.prod.ts
+                            source prepare.sh
+                            docker login https://registry.ncats.nih.gov:5000 -u "${DOCKERLOGIN}" -p "${DOCKERPASSWORD}"
+                            docker build -f apps/ramp-client/Dockerfile --no-cache --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
+                            docker tag ${DOCKER_REPO_NAME}:latest ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                            docker push ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                            '''
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    echo " Clean up the workspace in deploy node!"
+                    cleanWs()
+                }
+            }
+        }
+    }
+}

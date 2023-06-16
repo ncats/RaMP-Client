@@ -1,13 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core";
 import { SourceVersion } from "@ramp/models/ramp-models";
-import { DataProperty } from "@ramp/shared/ui/ncats-datatable";
 import { initAbout, RampFacade } from "@ramp/stores/ramp-store";
 import { Subject, takeUntil, tap } from "rxjs";
 
 @Component({
   selector: 'ramp-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
 

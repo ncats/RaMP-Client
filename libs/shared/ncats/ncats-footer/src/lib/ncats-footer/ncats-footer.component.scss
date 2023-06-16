@@ -1,44 +1,106 @@
-
-
-.footer-template {
-  padding: 5vh 1vw 5vh 1vw;
-  margin: 0 auto;
-}
-
-.links-header{
-  display: block;
-  text-align: center;
-  font-size: 1.2em;
-  text-transform: uppercase;
-  color: white;
-}
-
-.link-list {
-  text-align: center;
-}
-
-.link-list > a, .link-list > span {
-  color: white;
-  display: block;
-  font-size: 1em;
-  padding: 1.5vh 0 .2vh 0
-}
-
-@media only screen and (max-width: 960px) {
+ncats-footer {
+  .footer-template {
+    padding: 5vh 1vw 5vh 1vw;
+    margin: 0 auto;
+  }
 
   .links-header{
-    font-size: 1em;
-    padding: 2vw;
-    text-align: start;
+    display: block;
+    text-align: center;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    color: white;
   }
 
-  .link-list {
+  .link-list-item {
     display: flex;
-    margin-top:1vh;
-    margin-bottom:1vh;
+    align-content: center;
+    align-items: baseline;
+    justify-content: center;
   }
-  .link-list > a {
-    font-size: .8em;
-    padding: 3vw;
+
+  .link-list-item > a {
+    color: white;
+    font-size: 1em;
+    padding: 1.5vh 0 .2vh 0
+  }
+
+
+  .centered {
+    display: flex;
+    align-items: center;
+    align-content: center;
+  }
+
+  .row {
+    display: flex;
+    flex-flow: row wrap;
+    box-sizing: border-box;
+  }
+
+  .centered-row {
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .right-justified-row {
+    align-content: center;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .space-around-row {
+    justify-content: space-around;
+    align-content: center;
+    align-items: center;
+  }
+
+  .space-between-row {
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+  }
+
+  .width-75 {
+    flex-basis: 75%;
+  }
+
+  .width-20 {
+    width: 20%;
+    flex-basis: 20%;
+  }
+
+  img.icon-image {
+    height: 1em;
+  }
+
+  .exit-disclaimer {
+    color: #ffffff;
+  }
+
+  @media only screen and (max-width: 960px) {
+
+    .links-header{
+      font-size: 1em;
+      padding: 2vw;
+      text-align: start;
+    }
+
+    .link-list {
+      display: flex;
+      margin-top:1vh;
+      margin-bottom:1vh;
+    }
+    .link-list > a {
+      font-size: .8em;
+      padding: 3vw;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .lt-sm-100 {
+      flex-basis: 100%;
+    }
   }
 }

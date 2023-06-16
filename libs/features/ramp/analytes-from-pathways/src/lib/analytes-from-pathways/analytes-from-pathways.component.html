@@ -29,12 +29,12 @@
     [inputLength]="inputList.length"
     [noMatches]="noMatches"
     [inputType]="input"
+    [fuzzy] = "fuzzy"
     [function]="query.functionCall">
   </ramp-feedback-panel>
 
   <ramp-query-page
     [dataColumns]="analyteColumns"
-    [dataAsDataProperty]="dataAsDataProperty"
-  >
+    [dataAsDataProperty]="dataAsDataProperty">
   </ramp-query-page>
 </div>

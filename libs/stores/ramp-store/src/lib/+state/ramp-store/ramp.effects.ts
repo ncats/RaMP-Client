@@ -8,10 +8,8 @@ import {
   Reaction,
   SourceVersion,
 } from '@ramp/models/ramp-models';
-import {
- RampPartialState,
-  RampService
-} from "@ramp/stores/ramp-store";
+import { RampPartialState } from './ramp.reducer';
+import { RampService } from '../ramp.service';
 import { mergeMap, of, tap, withLatestFrom } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 
@@ -114,8 +112,8 @@ export class RampEffects {
               functionCall: string;
               numFoundIds: number;
               dataframe: any;
-            }) =>
-              RampActions.fetchAnalytesFromPathwaysSuccess({
+            }) => {
+              return RampActions.fetchAnalytesFromPathwaysSuccess({
                 data: ret.analytes,
                 query: {
                   functionCall: ret.functionCall,
@@ -123,6 +121,7 @@ export class RampEffects {
                 },
                 dataframe: ret.dataframe
               })
+            }
           ),
           catchError((error: ErrorEvent) =>
             of(RampActions.fetchAnalytesFromPathwaysFailure({ error }))

@@ -2,8 +2,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'ramp-filter-panel',
@@ -52,12 +51,8 @@ export class FilterPanelComponent implements OnInit {
   // todo load selected
   fieldSelection = new SelectionModel<any>(true, []);
 
-  constructor() {}
-
   ngOnInit() {
     this._data.subscribe((data) => {
-      //   this.dataSource = new MatTableDataSource(data);
-      //  this.dataSource.data = data
       this.filteredData = data;
     });
 
@@ -67,7 +62,6 @@ export class FilterPanelComponent implements OnInit {
 
     this.filterFormCtrl.valueChanges
       .pipe(
-        // debounceTime(200),
         distinctUntilChanged()
       )
       .subscribe((term) => {
@@ -109,7 +103,7 @@ export class FilterPanelComponent implements OnInit {
       5
     ) {
       if (this.data.values.length < this.data.length) {
-        this.fetchAllFilterOptions();
+       // this.fetchAllFilterOptions();
       }
     }
   }
@@ -117,5 +111,5 @@ export class FilterPanelComponent implements OnInit {
   /**
    * fetches all the filter options for the component's facet
    */
-  fetchAllFilterOptions() {}
+ // fetchAllFilterOptions() {}
 }

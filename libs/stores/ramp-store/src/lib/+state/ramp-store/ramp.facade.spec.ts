@@ -12,10 +12,8 @@ import { RampEntity } from './ramp.models';
 import {
   RAMP_STORE_FEATURE_KEY,
   State,
-  initialState,
   reducer,
 } from './ramp.reducer';
-import * as RampSelectors from './ramp.selectors';
 
 interface TestSchema {
   rampStore: State;

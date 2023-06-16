@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
- * Pipe to highlight searcch text in results
+ * Pipe to highlight search text in results
  */
 @Pipe({
   name: 'highlight',
@@ -10,9 +10,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class HighlightPipe implements PipeTransform {
   /**
    * parses a string to return highlighted search text
-   * @param {string} text
-   * @param {string} search
    * @returns {string}
+   * @param sanitizer
    */
   constructor(private sanitizer: DomSanitizer) {}
   transform(text: string, search: string): SafeHtml | string {

@@ -14,6 +14,13 @@
         <a
           mat-list-item
           class="list-button"
+          (click)="scroll(interactRaMP)"
+          [ngClass]="{ active: isActive('interactRaMP') }"
+          >Interacting With RaMP
+        </a>
+        <a
+          mat-list-item
+          class="list-button"
           (click)="scroll(capabilities)"
           [ngClass]="{ active: isActive('capabilities') }"
           >Capabilities
@@ -360,16 +367,15 @@
             each resource.
           </p>
           <div fxLayout="row wrap" fxLayoutAlign="space-around center">
-            <div fxFlex.gt-md="63" fxFlex.lt-md="95"  *ngIf="compoundsData && compoundsData.length > 0">
+            <div fxFlex.gt-md="60" fxFlex.lt-md="95"  *ngIf="compoundsData && compoundsData.length > 0">
               <ramp-upset
                 [title]="'Metabolite Overlap'"
                 [data]="compoundsData"
                 scale="log"
-
               >
               </ramp-upset>
             </div>
-            <div fxFlex.gt-md="30" fxFlex.lt-md="95" *ngIf="genesData && genesData.length > 0">
+            <div fxFlex.gt-md="34" fxFlex.lt-md="95" *ngIf="genesData && genesData.length > 0">
               <ramp-upset
                 [title]="'Gene Overlap'"
                 [data]="genesData"

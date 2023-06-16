@@ -84,7 +84,7 @@ export class MetabolitesFromOntologiesComponent
       .subscribe((term) => {
         if (term.trim() && term.trim().length > 0) {
           this.ontologies = [];
-          var matcher = new RegExp(term.trim(), 'i');
+          const matcher = new RegExp(term.trim(), 'i');
           this.allOntologies.forEach((onto) => {
             const newVal = { ...onto };
             newVal.values = newVal.values.filter((val: { value: any }) =>
