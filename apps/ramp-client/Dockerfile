@@ -27,4 +27,9 @@ FROM registry.ncats.nih.gov:5000/labshare/docker-base-web
 # Install NCATS required packages
 RUN apt-get update && apt-get install -y net-tools
 
+# Add read permissions to all files under assets directory
+RUN chmod -R o+r ./assets/*
+RUN echo "The file permission under this folder is assets/: "
+RUN ls
+
 COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
