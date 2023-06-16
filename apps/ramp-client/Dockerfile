@@ -29,7 +29,6 @@ RUN apt-get update && apt-get install -y net-tools
 
 # Add read permissions to all files under assets directory
 RUN chmod -R o+r ./assets/*
-RUN echo "The file permission under this folder is assets/: "
-RUN ls
+RUN echo "Checkout assets file permissions" && ls -la
 
 COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
