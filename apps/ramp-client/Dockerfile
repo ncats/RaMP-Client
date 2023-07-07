@@ -31,4 +31,4 @@ COPY --from=build /var/www/app/dist/ramp-client/browser /var/www/app
 
 # Add read permissions to all files under assets directory
 RUN chmod -R o+r /var/www/app/assets/*
-RUN echo "Checkout assets file permissions" && ls -la /var/www/app/assets/*
+# RUN echo "Checkout assets file permissions" && ls -la /var/www/app/assets/*
