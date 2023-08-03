@@ -110,9 +110,16 @@ const rampReducer = createReducer(
     rampAdapter.setAll(rampStore, { ...state, loading: false })
   ),
 
-  on(
+  on (
     RampActions.init,
     RampActions.initAbout,
+    (state) => ({
+      ...state,
+      error: null,
+    })
+  ),
+
+  on(
     RampActions.fetchOntologiesFromMetabolites,
     RampActions.fetchAnalytesFromPathways,
     RampActions.fetchPathwaysFromAnalytes,

@@ -35,8 +35,8 @@ export class PathwayEnrichmentComponent
   @ViewChild('resultsTabs') resultsTabs!: MatTabGroup;
   @ViewChild('fileUpload') fileUpload!: ElementRef;
   minPathWayFormCtrl: UntypedFormControl = new UntypedFormControl(2);
-  percentPathwayFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
-  percentAnalyteFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
+  percentPathwayFormCtrl: UntypedFormControl = new UntypedFormControl(0.5);
+  percentAnalyteFormCtrl: UntypedFormControl = new UntypedFormControl(0.5);
 
   pValueFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
   pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
@@ -143,6 +143,7 @@ export class PathwayEnrichmentComponent
   pathwayDataAsDataProperty!: { [key: string]: DataProperty }[];
   image: any;
   enrichedDataframe: any;
+  tooBig = false;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -229,7 +230,10 @@ export class PathwayEnrichmentComponent
       .subscribe(
       (res: any | undefined) => {
         if (res && res.length> 0) {
-             this.image = this.sanitizer.bypassSecurityTrustHtml(res);
+          this.tooBig = false;
+          this.image = this.sanitizer.bypassSecurityTrustHtml(res);
+        } else {
+          this.tooBig = true;
         }
         this.imageLoading = false;
         this.ref.markForCheck();

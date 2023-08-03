@@ -500,23 +500,27 @@ export class RampService {
     min_pathway_tocluster?: number,
     perc_pathway_overlap?: number
   ){
+    if(!dataframe.fishresults || dataframe.fishresults.length >= 10) {
+      return ""
+    } else {
       const body = {
         fishers_results: dataframe,
         text_size: 8,
-        perc_analyte_overlap:  perc_analyte_overlap,
+        perc_analyte_overlap: perc_analyte_overlap,
         min_pathway_tocluster: min_pathway_tocluster,
         perc_pathway_overlap: perc_pathway_overlap,
         filename: Date.now() + '.svg'
       }
-      const options: Object = {responseType: 'text' as const};
+      const options: Object = { responseType: 'text' as const };
       return this.http
-        .post<string[]>(`${this.url}cluster-plot`,body, options)
+        .post<string[]>(`${this.url}cluster-plot`, body, options)
         .pipe(
           map((response: any) => {
-            return  response.toString();
+            return response.toString();
           }),
           catchError(this.handleError('chemical enrichment', []))
-        );
+        )
+    }
   }
 
   fetchClusterImageFile(data: any) {
