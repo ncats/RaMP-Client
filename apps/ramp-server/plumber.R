@@ -440,8 +440,8 @@ function(fishers_results,  pval_type = 'fdr', pval_cutoff = 0.1) {
 function(
   fishers_results,
   #analyte_source_id,
-  perc_analyte_overlap = 0.2,
-  perc_pathway_overlap = 0.2,
+  perc_analyte_overlap = 0.5,
+  perc_pathway_overlap = 0.5,
   min_pathway_tocluster=2
 ) {
   if (typeof(min_pathway_tocluster) == "character") {
@@ -475,8 +475,8 @@ function(
 #'
 function(
   fishers_results,
-  perc_analyte_overlap = 0.2,
-  perc_pathway_overlap = 0.2,
+  perc_analyte_overlap = 0.5,
+  perc_pathway_overlap = 0.5,
   min_pathway_tocluster=2,
   filename
 ) {
