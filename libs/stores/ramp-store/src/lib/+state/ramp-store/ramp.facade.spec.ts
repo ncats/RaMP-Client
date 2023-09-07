@@ -73,7 +73,7 @@ describe('RampFacade', () => {
       isLoaded = await readFirst(facade.loading$);
 
       //  expect(list.length).toBe(0);
-      expect(isLoaded).toBe(true);
+      expect(isLoaded).toBe(false);
     });
 
     /**

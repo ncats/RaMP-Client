@@ -123,9 +123,15 @@ export class PropertiesFromMetabolitesComponent
           value: value[1],
         });
       });
+
+      console.log(obj.iso_smiles)
       newObj.imageUrl.url = `${
         this.route.snapshot.data.renderUrl
       }(${encodeURIComponent(obj.iso_smiles)})?size=150`;
+      console.log(newObj.imageUrl.url)
+      console.log(`${
+        this.route.snapshot.data.renderUrl
+      }(${encodeURI(obj.iso_smiles)})?size=150`)
       newObj.imageUrl.label = newObj.common_name.value;
       return newObj;
     });

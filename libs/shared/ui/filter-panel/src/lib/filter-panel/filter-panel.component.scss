@@ -13,6 +13,7 @@
   grid-auto-rows: max-content;
   grid-template-columns: 0.2fr 2.1fr 0.7fr;
   grid-template-areas: 'checkbox label count';
+  align-items: center;
 }
 .count {
   grid-area: count;
