@@ -12,7 +12,7 @@
     .toolbar-template {
       position: fixed;
       margin-bottom: 60px;
-      background-color: mat.get-color-from-palette($primary);
+      background-color: mat.get-color-from-palette($accent) !important;
     }
   }
 }

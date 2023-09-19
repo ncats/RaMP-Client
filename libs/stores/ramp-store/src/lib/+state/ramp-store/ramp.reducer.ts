@@ -294,7 +294,7 @@ on(
     RampActions.fetchPropertiesFromMetabolitesFailure,
     filterEnrichmentFromMetabolitesFailure,
     (state, { error }) => {
-      console.log(error);
+     // console.log(error);
       return {
         ...state,
         loading: false,
