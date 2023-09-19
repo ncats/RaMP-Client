@@ -189,7 +189,15 @@ export class PathwayEnrichmentComponent
 
               }
             })
-
+            ref.afterClosed().subscribe(res => {
+              if(res) {
+                this.resultsTabs.selectedIndex = res;
+                this.ref.markForCheck();
+              }
+            })
+            this.pathwaysLoading = false;
+            this.enrichmentLoading = false;
+            this.imageLoading = false;
           }
         }
         if (res && res.query) {
