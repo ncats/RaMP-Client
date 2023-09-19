@@ -500,7 +500,7 @@ export class RampService {
     min_pathway_tocluster?: number,
     perc_pathway_overlap?: number
   ){
-    if(!dataframe.fishresults || dataframe.fishresults.length >= 10) {
+    if(!dataframe.fishresults || dataframe.fishresults.length >= 100) {
       return ""
     } else {
       const body = {
@@ -553,7 +553,7 @@ export class RampService {
       console.error(error); // log to console instead
 
       // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
+     // console.log(`${operation} failed: ${error.message}`);
 
       // Let the app keep running by returning an empty result.
       return of(result as T);

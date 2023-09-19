@@ -162,6 +162,7 @@ export class PathwayEnrichmentComponent
       .subscribe(
       (res: any | undefined) => {
         if (res && res.data) {
+          if (res.data.length) {
             this.dataAsDataProperty = res.data.map((enrichment: FisherResult) => {
               const newObj: { [key: string]: DataProperty } = {};
               Object.entries(enrichment).map((value: any, index: any) => {
@@ -173,12 +174,23 @@ export class PathwayEnrichmentComponent
               });
               return newObj;
             });
-          this.enrichmentLoading = false;
+            this.enrichmentLoading = false;
 
 
-          this.allDataAsDataProperty = this.dataAsDataProperty;
-          this.imageLoading = false;
-          this.ref.markForCheck();
+            this.allDataAsDataProperty = this.dataAsDataProperty;
+            this.imageLoading = false;
+            this.ref.markForCheck();
+          } else {
+            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(CompleteDialogComponent, {
+              data: {
+                title: 'Pathway',
+                message: "No enriched pathways found.",
+                tabs: [ 'Pathways' ]
+
+              }
+            })
+
+          }
         }
         if (res && res.query) {
       this.query = res.query;
@@ -244,6 +256,7 @@ export class PathwayEnrichmentComponent
 
   fetchEnrichment(event: string[]): void {
     this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.image = null;
     this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
     this.pathwaysLoading = true;
     this.enrichmentLoading = true;

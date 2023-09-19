@@ -103,7 +103,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.rampFacade.error$.subscribe((error) => {
       if (error) {
-        console.log(error);
+       // console.log(error);
         /* this.dialog.open(ErrorDialogComponent, {
           data: {
             error: error,
