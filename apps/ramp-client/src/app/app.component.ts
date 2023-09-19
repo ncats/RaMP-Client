@@ -1,12 +1,11 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, ElementRef,
-  OnInit, ViewChild,
+  Component,
+  OnInit,
   ViewEncapsulation
 } from "@angular/core";
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorDialogComponent } from '@ramp/shared/ui/error-dialog';
 import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
 import { RampFacade } from '@ramp/stores/ramp-store';
 
