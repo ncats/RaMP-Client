@@ -542,20 +542,6 @@ function(metabolites = '', file = '', biospecimen = '', background = "database")
       }
     }
   }
-
-#
-#$  } else {
-#    chemical_enrichment_df <- tryCatch({
-#      classes_df <- RaMP::chemicalClassEnrichment(
-#        metabolites,
-#        pop = "database"
-#      )
-#    },
-#      error = function(cond) {
-#        print(cond)
-#        return(data.frame(stringsAsFactors = FALSE))
-#      })
-#  }
     return(
       list(
         data = chemical_enrichment_df

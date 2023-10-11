@@ -264,7 +264,6 @@ export class PathwayEnrichmentComponent
 
   fetchEnrichment(event: string[]): void {
     this.inputList = event.map(item => item.toLocaleLowerCase());
-    this.image = null;
     this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
     this.pathwaysLoading = true;
     this.enrichmentLoading = true;
