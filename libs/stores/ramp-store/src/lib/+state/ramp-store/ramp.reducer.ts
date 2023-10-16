@@ -253,7 +253,9 @@ const rampReducer = createReducer(
         ...state,
         loading: false,
         pathwayEnrichments: { data, query },
-        combined_fishers_dataframe: combinedFishersDataframe
+        combined_fishers_dataframe: combinedFishersDataframe,
+        filtered_fishers_dataframe: [],
+        clusterPlot: ''
       })
     }
   ),
@@ -264,21 +266,24 @@ on(
       return ({
         ...state,
         loading: false,
-        pathwayEnrichments: { data, query, openModal: true },
+        pathwayEnrichments: { data, query, dataframe: filteredFishersDataframe.fishresults, openModal: true },
         filtered_fishers_dataframe: filteredFishersDataframe,
+        clusterPlot: ''
       })
     }
   ),
 
   on(
     RampActions.fetchClusterFromEnrichmentSuccess,
-    (state, {data, plot, query, dataframe}) => ({
+    (state, {data, plot, query, dataframe}) => {
+      return ({
         ...state,
         loading: false,
         pathwayEnrichments: { data, query, dataframe},
         clusterPlot: plot,
         openModal: true
-    })
+      })
+    }
   ),
 
   on(
@@ -294,7 +299,7 @@ on(
     RampActions.fetchPropertiesFromMetabolitesFailure,
     filterEnrichmentFromMetabolitesFailure,
     (state, { error }) => {
-      console.log(error);
+     // console.log(error);
       return {
         ...state,
         loading: false,

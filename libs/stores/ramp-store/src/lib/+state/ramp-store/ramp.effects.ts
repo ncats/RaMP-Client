@@ -93,7 +93,7 @@ export class RampEffects {
             }
           ),
           catchError((error: ErrorEvent) => {
-            console.log(error);
+         //   console.log(error);
             return of(RampActions.fetchPathwaysFromAnalytesFailure({ error }));
           })
         )

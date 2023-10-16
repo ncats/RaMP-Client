@@ -162,6 +162,7 @@ export class PathwayEnrichmentComponent
       .subscribe(
       (res: any | undefined) => {
         if (res && res.data) {
+          if (res.data.length) {
             this.dataAsDataProperty = res.data.map((enrichment: FisherResult) => {
               const newObj: { [key: string]: DataProperty } = {};
               Object.entries(enrichment).map((value: any, index: any) => {
@@ -173,12 +174,31 @@ export class PathwayEnrichmentComponent
               });
               return newObj;
             });
-          this.enrichmentLoading = false;
+            this.enrichmentLoading = false;
 
 
-          this.allDataAsDataProperty = this.dataAsDataProperty;
-          this.imageLoading = false;
-          this.ref.markForCheck();
+            this.allDataAsDataProperty = this.dataAsDataProperty;
+            this.imageLoading = false;
+            this.ref.markForCheck();
+          } else {
+            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(CompleteDialogComponent, {
+              data: {
+                title: 'Pathway',
+                message: "No enriched pathways found.",
+                tabs: [ 'Pathways' ]
+
+              }
+            })
+            ref.afterClosed().subscribe(res => {
+              if(res) {
+                this.resultsTabs.selectedIndex = res;
+                this.ref.markForCheck();
+              }
+            })
+            this.pathwaysLoading = false;
+            this.enrichmentLoading = false;
+            this.imageLoading = false;
+          }
         }
         if (res && res.query) {
       this.query = res.query;

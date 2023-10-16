@@ -2,7 +2,8 @@
   <span mat-dialog-title>Analysis Complete</span> <mat-icon matRipple (click)="close()" class="close-button">close</mat-icon>
 </div>
 <div mat-dialog-content>
-  <p>{{data.title}} analysis is now complete. Click on the tabs or below buttons to view the data.</p>
+  <p *ngIf="!data.message">{{data.title}} analysis is now complete. Click on the tabs or below buttons to view the data.</p>
+  <p *ngIf="data.message">{{data.message}}</p>
   <br>
   <br>
 
