@@ -42,7 +42,7 @@ cors <- function(req, res) {
 #* @serializer unboxedJSON
 #* @get /api/source_versions
 function() {
-  version_info <- RaMP::getCurrentRaMPSourceDBVersions()
+  version_info <- RaMP::getCurrentRaMPSourceDBVersions(db = rampDB)
 
   return(list(
     data = version_info,
@@ -55,7 +55,7 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/ramp_db_version
 function() {
-  version <- RaMP::getCurrentRaMPVersion()
+  version <- RaMP::getCurrentRaMPVersion(db = rampDB)
 
   return(list(
     data = version,
@@ -68,7 +68,7 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/current_db_file_url
 function() {
-  versionInfo <- RaMP::getCurrentRaMPVersion(justVersion = FALSE)
+  versionInfo <- RaMP::getCurrentRaMPVersion(db = rampDB, justVersion = FALSE)
   dbURL <- unlist(versionInfo$db_sql_url)
   return(list(
     data = dbURL,
@@ -83,8 +83,8 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/id-types
 function() {
-  met <- RaMP::getPrefixesFromAnalytes("metabolite")
-  gene <- RaMP::getPrefixesFromAnalytes("gene")
+  met <- RaMP::getPrefixesFromAnalytes(db = rampDB, "metabolite")
+  gene <- RaMP::getPrefixesFromAnalytes(db = rampDB, "gene")
 
   return(list(
     data = rbind(met,gene),
@@ -97,7 +97,7 @@ function() {
 #* @serializer unboxedJSON
 #* @get /api/entity_counts
 function() {
-  entity_counts <- RaMP::getEntityCountsFromSourceDBs()
+  entity_counts <- RaMP::getEntityCountsFromSourceDBs(db = rampDB)
 
   return(list(
     data = entity_counts,
@@ -114,10 +114,10 @@ function(analytetype, query_scope = 'global') {
   response <- ""
   if(!missing(analytetype)) {
     if(analytetype == 'metabolites') {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType=analytetype, format='json', scope=query_scope)
+      response <- RaMP::getRaMPAnalyteIntersections(db = rampDB, analyteType=analytetype, format='json', scope=query_scope)
       function_call <- paste0("RaMP::getRaMPAnalyteIntersections(analyteType='metabolites', format='json', scope='",query_scope,")")
     } else {
-      response <- RaMP::getRaMPAnalyteIntersections(analyteType=analytetype, format='json', scope=query_scope)
+      response <- RaMP::getRaMPAnalyteIntersections(db = rampDB, analyteType=analytetype, format='json', scope=query_scope)
       function_call <- paste0("RaMP::getRaMPAnalyteIntersections(analyteType='genes', format='json', scope='",query_scope,")")
     }
     # have to convert from JSON to avoid double serializing JSON
@@ -134,7 +134,7 @@ function(analytetype, query_scope = 'global') {
 #* @serializer unboxedJSON
 #* @get /api/ontology-types
 function() {
-  ontologies <- RaMP::getOntologies()
+  ontologies <- RaMP::getOntologies(db = rampDB)
   ontologies <- list(
     num_ontology_types = length(unique(ontologies$HMDBOntologyType)),
     uniq_ontology_types = unique(ontologies$HMDBOntologyType),
@@ -151,7 +151,7 @@ function() {
 function() {
   ##todo show these in chemical classes page
   classtypes <- tryCatch({
-    getMetabClassTypes()
+    getMetabClassTypes(db = rampDB)
   },
     error = function(cond) {
       return(data.frame(stringsAsFactors = FALSE))
@@ -165,7 +165,7 @@ function() {
 #' @param analytes:[string]
 function(analytes) {
     pathways_df <- tryCatch({
-        pathways_df <- RaMP::getPathwayFromAnalyte(analytes = analytes)
+        pathways_df <- RaMP::getPathwayFromAnalyte(db = rampDB, analytes = analytes)
     },
     error = function(cond) {
         return(data.frame(stringsAsFactors = FALSE))
@@ -190,7 +190,7 @@ function(analytes) {
 function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy", max_pathway_size=1000) {
   analyte <- analyte_type
   analytes_df <- tryCatch({
-    RaMP::getAnalyteFromPathway(pathway = pathway, analyte_type=analyte, match=match, names_or_ids=names_or_ids, max_pathway_size=max_pathway_size)
+    RaMP::getAnalyteFromPathway(db = rampDB, pathway = pathway, analyte_type=analyte, match=match, names_or_ids=names_or_ids, max_pathway_size=max_pathway_size)
   },
     error = function(cond) {
       print(cond)
@@ -213,7 +213,7 @@ function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy", max_
 #* @post /api/ontologies-from-metabolites
 function(metabolite, NameOrIds= "ids") {
     ontologies_df <-
-        RaMP::getOntoFromMeta(analytes = metabolite, NameOrIds = NameOrIds)
+        RaMP::getOntoFromMeta(db = rampDB, analytes = metabolite, NameOrIds = NameOrIds)
     if(is.null(ontologies_df)){
         ontologies_df<-data.frame()
     }
@@ -233,7 +233,7 @@ function(metabolite, NameOrIds= "ids") {
 function(ontology, format = "json", res) {
   ontologies_names <- c(ontology)
  # ontologies_names <- paste(ontologies_names, collapse = ", ")
-  ontologies <- RaMP::getMetaFromOnto(ontology = ontologies_names)
+  ontologies <- RaMP::getMetaFromOnto(db = rampDB, ontology = ontologies_names)
   if (is.null(nrow(ontologies))) {
     return(
       list(
@@ -271,6 +271,7 @@ function(ontology, format = "json", res) {
 function(metabolites="") {
     ## 4/25 - add a trycatch here
     chemical_class_df <- tryCatch({RaMP::chemicalClassSurvey(
+                                             db = rampDB,
                                              metabolites,
                                              background = NULL,
                                              background_type= "database"
@@ -300,6 +301,7 @@ function(metabolites="", property="all") {
     }
     chemical_properties_df <- tryCatch({
         analytes_df <- RaMP::getChemicalProperties(
+                                 db = rampDB,
                                  metabolites,
                                  propertyList = properties
                              )$chem_props
@@ -324,6 +326,7 @@ function(metabolites="", property="all") {
 function(analyte) {
   analytes_df_ids <- tryCatch({
     analytes_df <- RaMP::rampFastCata(
+      db = rampDB,
       analytes = analyte,
       NameOrIds = "ids"
     )
@@ -370,6 +373,7 @@ function(analytes = '', biospecimen = '', file = '', background_type= "database"
     if(biospecimen == "") {
       print("run with database background")
       fishers_results_df <- RaMP::runCombinedFisherTest(
+        db = rampDB,
         analytes,
         background = NULL,
         background_type= "database"
@@ -377,6 +381,7 @@ function(analytes = '', biospecimen = '', file = '', background_type= "database"
     } else {
       print("run with biospecimen")
       fishers_results_df <- RaMP::runCombinedFisherTest(
+        db = rampDB,
         analytes = analytes,
         background = biospecimen,
         background_type= "biospecimen"
@@ -389,6 +394,7 @@ function(analytes = '', biospecimen = '', file = '', background_type= "database"
        background <- unlist(strsplit(bg, ','))
        if(length(background) > length(analytes)) {
       fishers_results_df <- RaMP::runCombinedFisherTest(
+        db = rampDB,
         analytes = analytes,
         background = background,
         background_type= "list"
@@ -448,6 +454,7 @@ function(
     min_pathway_tocluster <- strtoi(min_pathway_tocluster, base = 0L)
   }
   clustering_results <- RaMP::findCluster(
+    db = rampDB,
     fishers_results,
     perc_analyte_overlap = perc_analyte_overlap,
     min_pathway_tocluster = min_pathway_tocluster,
@@ -485,6 +492,7 @@ function(
   }
 
   clustered_plot <- RaMP::pathwayResultsPlot(
+    db = rampDB,
     fishers_results,
     text_size = 8,
     perc_analyte_overlap = perc_analyte_overlap,
@@ -512,6 +520,7 @@ function(metabolites = '', file = '', biospecimen = '', background = "database")
     if(biospecimen == "") {
       print("run with database background")
       chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
+        db = rampDB,
         metabolites,
         background = NULL,
         background_type= "database"
@@ -519,6 +528,7 @@ function(metabolites = '', file = '', biospecimen = '', background = "database")
     } else {
       print("run with biospecimen")
       chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
+        db = rampDB,
         metabolites,
         background = biospecimen,
         background_type= "biospecimen"
@@ -531,6 +541,7 @@ function(metabolites = '', file = '', biospecimen = '', background = "database")
     background <- unlist(strsplit(bg, ','))
     if(length(background) > length(metabolites)) {
       chemical_enrichment_df <- RaMP::chemicalClassEnrichment(
+        db = rampDB,
         metabolites,
         background = background,
         background_type= "list"
