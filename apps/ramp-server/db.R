@@ -10,7 +10,7 @@ conpass <- config$db_password
 
 #pkg.globals <- setConnectionToRaMP(dbname=dbname,username=username,conpass=conpass,host = host)
 
-rampDB <<- RaMP:::.RaMP(driver = MariaDB(), dbname = dbname,
+rampDB <<- RaMP:::.RaMP(driver = RMariaDB::MariaDB(), dbname = dbname,
                     username = username, conpass = conpass,
                     host = host, port = 3606)
 
