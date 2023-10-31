@@ -12,6 +12,7 @@ conpass <- config$db_password
 
 rampDB <<- RaMP:::.RaMP(driver = RMariaDB::MariaDB(), dbname = dbname,
                     username = username, conpass = conpass,
-                    host = host, port = 3606)
+                    host = host, port = as.integer(33606))
+
 
 
