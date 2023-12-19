@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -26,6 +26,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: npm i -g @angular/cli
+    - run: npm i -g nx
     - run: npm ci
-    - run: ng lint
-    - run: ng run-many --all --target=test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+    - run: npm run lint
+    - run: npm run run-many --all --target=test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
