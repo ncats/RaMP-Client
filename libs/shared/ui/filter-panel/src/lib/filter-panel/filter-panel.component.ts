@@ -61,13 +61,11 @@ export class FilterPanelComponent implements OnInit {
     });
 
     this.filterFormCtrl.valueChanges
-      .pipe(
-        distinctUntilChanged()
-      )
+      .pipe(distinctUntilChanged())
       .subscribe((term) => {
         if (term && term.length > 0) {
           this.filteredData = this.data.filter((obj) =>
-            obj.value.toLowerCase().includes(term)
+            obj.value.toLowerCase().includes(term),
           );
         } else {
           this.filteredData = this.data;
@@ -87,7 +85,7 @@ export class FilterPanelComponent implements OnInit {
     this.isAllSelected()
       ? this.fieldSelection.clear()
       : this.dataSource.data.forEach((row) =>
-          this.fieldSelection.select(row.key)
+          this.fieldSelection.select(row.key),
         );
   }
 
@@ -103,7 +101,7 @@ export class FilterPanelComponent implements OnInit {
       5
     ) {
       if (this.data.values.length < this.data.length) {
-       // this.fetchAllFilterOptions();
+        // this.fetchAllFilterOptions();
       }
     }
   }
@@ -111,5 +109,5 @@ export class FilterPanelComponent implements OnInit {
   /**
    * fetches all the filter options for the component's facet
    */
- // fetchAllFilterOptions() {}
+  // fetchAllFilterOptions() {}
 }

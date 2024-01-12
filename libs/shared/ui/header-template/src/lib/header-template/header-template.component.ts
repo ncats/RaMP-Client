@@ -26,7 +26,10 @@ export class HeaderTemplateComponent {
 
   @Input() links?: LinkTemplateProperty[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   /**
    * sets active section in nav

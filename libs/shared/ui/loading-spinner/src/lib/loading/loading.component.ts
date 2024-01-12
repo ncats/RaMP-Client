@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.scss'],
 })
-export class LoadingComponent{
+export class LoadingComponent {
   @Input() isLoading = true;
   @Input() position: 'left' | 'right' | 'center' = 'center';
   @Input() size: 'small' | 'medium' | 'large' = 'large';

@@ -23,27 +23,27 @@ export class Classes {
           this.commonNames = level.common_names;
         }
 
-        if(level.class_level_name === "ClassyFire_super_class") {
+        if (level.class_level_name === 'ClassyFire_super_class') {
           this.classyFireSuperClass = level.class_name;
         }
-        if(level.class_level_name === "ClassyFire_class") {
+        if (level.class_level_name === 'ClassyFire_class') {
           this.classyFireClass = level.class_name;
         }
-        if(level.class_level_name === "ClassyFire_sub_class") {
+        if (level.class_level_name === 'ClassyFire_sub_class') {
           this.classyFireSubClass = level.class_name;
         }
 
-        if(level.class_level_name === "LipidMaps_category") {
+        if (level.class_level_name === 'LipidMaps_category') {
           this.lipidMapsCategory = level.class_name;
         }
-        if(level.class_level_name === "LipidMaps_main_class") {
+        if (level.class_level_name === 'LipidMaps_main_class') {
           this.lipidMapsMainClass = level.class_name;
         }
-        if(level.class_level_name === "LipidMaps_sub_class") {
+        if (level.class_level_name === 'LipidMaps_sub_class') {
           this.lipidMapsSubClass = level.class_name;
         }
 
-      //  this[class_level_name] =
+        //  this[class_level_name] =
         if (level.class_level_name.includes('LipidMaps')) {
           this._lipidMapsClasses.push(new ClassLevelNode(level));
         } else {
@@ -64,7 +64,7 @@ export class Classes {
               children: [
                 {
                   value: this._classyFireClasses.find(
-                    (node) => node.level === 2
+                    (node) => node.level === 2,
                   )?.value,
                 },
               ],

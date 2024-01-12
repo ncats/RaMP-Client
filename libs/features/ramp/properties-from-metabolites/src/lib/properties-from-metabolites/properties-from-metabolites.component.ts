@@ -1,5 +1,5 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Properties, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -8,7 +8,7 @@ import {
   fetchPropertiesFromMetabolites,
   RampFacade,
 } from '@ramp/stores/ramp-store';
-import { takeUntil } from "rxjs";
+import { takeUntil } from 'rxjs';
 import { STRUCTURE_VIEWER_COMPONENT } from '../features-ramp-properties-from-metabolites.module';
 
 @Component({
@@ -68,7 +68,7 @@ export class PropertiesFromMetabolitesComponent
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
     protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document
+    @Inject(DOCUMENT) protected dom: Document,
   ) {
     super(route, rampFacade, dom);
   }
@@ -77,39 +77,55 @@ export class PropertiesFromMetabolitesComponent
     this.rampFacade.properties$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Properties[]; query: RampQuery; dataframe: any} | undefined) => {
-        if (res && res.data) {
-          this._mapData(res.data);
-          this.matches = Array.from(new Set(res.data.map(prop => prop.chem_source_id.toLocaleLowerCase())));
-          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
-        }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        if (res && res.dataframe) {
-          this.dataframe = res.dataframe;
-          if (this.downloadQueued) {
-            this._downloadFile(this._toTSV(this.dataframe), 'fetchPropertiesFromMetabolites-download.tsv')
-            this.downloadQueued = false;
+        (
+          res:
+            | { data: Properties[]; query: RampQuery; dataframe: any }
+            | undefined,
+        ) => {
+          if (res && res.data) {
+            this._mapData(res.data);
+            this.matches = Array.from(
+              new Set(
+                res.data.map((prop) => prop.chem_source_id.toLocaleLowerCase()),
+              ),
+            );
+            this.noMatches = this.inputList.filter(
+              (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+            );
           }
-        }
-        this.ref.markForCheck();
-      }
-    );
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          if (res && res.dataframe) {
+            this.dataframe = res.dataframe;
+            if (this.downloadQueued) {
+              this._downloadFile(
+                this._toTSV(this.dataframe),
+                'fetchPropertiesFromMetabolites-download.tsv',
+              );
+              this.downloadQueued = false;
+            }
+          }
+          this.ref.markForCheck();
+        },
+      );
   }
 
   fetchProperties(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
     this.rampFacade.dispatch(
-      fetchPropertiesFromMetabolites({ metabolites: event })
+      fetchPropertiesFromMetabolites({ metabolites: event }),
     );
   }
   fetchPropertiesFile(event: string[]): void {
-    if(!this.dataframe) {
+    if (!this.dataframe) {
       this.fetchProperties(event);
       this.downloadQueued = true;
     } else {
-      this._downloadFile(this._toTSV(this.dataframe), 'fetchPropertiesFromMetabolites-download.tsv' )
+      this._downloadFile(
+        this._toTSV(this.dataframe),
+        'fetchPropertiesFromMetabolites-download.tsv',
+      );
     }
   }
 

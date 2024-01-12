@@ -9,11 +9,7 @@ import * as RampActions from './ramp.actions';
 import { RampEffects } from './ramp.effects';
 import { RampFacade } from './ramp.facade';
 import { RampEntity } from './ramp.models';
-import {
-  RAMP_STORE_FEATURE_KEY,
-  State,
-  reducer,
-} from './ramp.reducer';
+import { RAMP_STORE_FEATURE_KEY, State, reducer } from './ramp.reducer';
 
 interface TestSchema {
   rampStore: State;
@@ -91,7 +87,7 @@ describe('RampFacade', () => {
       store.dispatch(
         RampActions.loadRampSuccess({
           rampStore: [createRampEntity('AAA'), createRampEntity('BBB')],
-        })
+        }),
       );
       // @ts-ignore
       list = await readFirst(facade.allRampEntity$);

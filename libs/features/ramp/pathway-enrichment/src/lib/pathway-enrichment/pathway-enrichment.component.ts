@@ -1,27 +1,32 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, ElementRef, Inject, Input, OnInit, ViewChild } from "@angular/core";
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { MatTabGroup } from "@angular/material/tabs";
-import { DomSanitizer } from "@angular/platform-browser";
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTabGroup } from '@angular/material/tabs';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import {
-  FisherResult,
-  Pathway,
-  RampQuery
-} from "@ramp/models/ramp-models";
+import { FisherResult, Pathway, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
-import { CompleteDialogComponent } from "@ramp/shared/ui/complete-dialog";
+import { CompleteDialogComponent } from '@ramp/shared/ui/complete-dialog';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClusterFromEnrichment,
   fetchEnrichmentFromPathways,
-  fetchPathwaysFromAnalytes, filterEnrichmentFromPathways,
+  fetchPathwaysFromAnalytes,
+  filterEnrichmentFromPathways,
   fetchClusterImageFile,
-  RampFacade
-} from "@ramp/stores/ramp-store";
-import { takeUntil } from "rxjs";
+  RampFacade,
+} from '@ramp/stores/ramp-store';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ramp-pathway-enrichment',
@@ -41,69 +46,185 @@ export class PathwayEnrichmentComponent
   pValueFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
   pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
   biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
-  biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
+  biospecimens: string[] = [
+    'Blood',
+    'Adipose',
+    'Heart',
+    'Urine',
+    'Brain',
+    'Liver',
+    'Kidney',
+    'Saliva',
+    'Feces',
+  ];
   selectedSpecimen = '';
   pathwaysLoading = false;
   enrichmentLoading = false;
   imageLoading = false;
   fileName = '';
   file?: File;
+  enrichmentColumns2: {
+    metabolites: DataProperty[];
+    genes: DataProperty[];
+    both: DataProperty[];
+  } = {
+    metabolites: [
+      new DataProperty({
+        label: 'Pathway Name',
+        field: 'pathwayName',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Pathway Source',
+        field: 'pathwaySource',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Pathway Id',
+        field: 'pathwayId',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Metabolite Count',
+        field: 'metabCount',
+      }),
+      new DataProperty({
+        label: 'Metabolites',
+        field: 'analytes',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined Pval',
+        field: 'Pval_combined',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined FDR Pval',
+        field: 'Pval_combined_FDR',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined Holm Pval',
+        field: 'Pval_combined_Holm',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Cluster Assignment',
+        field: 'cluster_assignment',
+        sortable: true,
+        sorted: 'asc',
+      }),
+    ],
+    genes: [
+      new DataProperty({
+        label: 'Pathway Name',
+        field: 'pathwayName',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Pathway Source',
+        field: 'pathwaySource',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Pathway Id',
+        field: 'pathwayId',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Gene Count',
+        field: 'geneCount',
+      }),
+      /*new DataProperty({
+       label: "Path Count",
+       field: "pathCount",
+     }),*/
+      new DataProperty({
+        label: 'Genes',
+        field: 'analytes',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined Pval',
+        field: 'Pval_combined',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined FDR Pval',
+        field: 'Pval_combined_FDR',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined Holm Pval',
+        field: 'Pval_combined_Holm',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Cluster Assignment',
+        field: 'cluster_assignment',
+        sortable: true,
+        sorted: 'asc',
+      }),
+    ],
+    both: [
+      new DataProperty({
+        label: 'Pathway Name',
+        field: 'pathwayName',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Pathway Source',
+        field: 'pathwaySource',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Pathway Id',
+        field: 'pathwayId',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Metabolite Count',
+        field: 'metabCount',
+      }),
+      new DataProperty({
+        label: 'Gene Count',
+        field: 'geneCount',
+      }),
+      new DataProperty({
+        label: 'Path Count',
+        field: 'pathCount',
+      }),
+      new DataProperty({
+        label: 'Analytes',
+        field: 'analytes',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined Pval',
+        field: 'Pval_combined',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined FDR Pval',
+        field: 'Pval_combined_FDR',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Combined Holm Pval',
+        field: 'Pval_combined_Holm',
+        sortable: true,
+      }),
+      new DataProperty({
+        label: 'Cluster Assignment',
+        field: 'cluster_assignment',
+        sortable: true,
+        sorted: 'asc',
+      }),
+    ],
+  };
 
-  enrichmentColumns: DataProperty[] = [
-    new DataProperty({
-      label: 'Pathway Name',
-      field: 'pathwayName',
-      sortable: true,
-    }),
-    new DataProperty({
-      label: 'Pathway Source',
-      field: 'pathwaySource',
-      sortable: true,
-    }),
-    new DataProperty({
-      label: 'Pathway Id',
-      field: 'pathwayId',
-      sortable: true,
-    }),
-    new DataProperty({
-      label: "Metabolite Count",
-      field: "metabCount"
-    }),
-    new DataProperty({
-      label: "Gene Count",
-      field: "geneCount",
-    }),
-    new DataProperty({
-      label: "Path Count",
-      field: "pathCount",
-    }),
-    new DataProperty({
-      label: 'Analytes',
-      field: 'analytes',
-      sortable: true,
-    }),
-    new DataProperty({
-      label: 'Combined Pval',
-      field: 'Pval_combined',
-      sortable: true,
-    }),
-    new DataProperty({
-      label: 'Combined FDR Pval',
-      field: 'Pval_combined_FDR',
-      sortable: true,
-    }),
-    new DataProperty({
-      label: 'Combined Holm Pval',
-      field: 'Pval_combined_Holm',
-      sortable: true,
-    }),
-    new DataProperty({
-      label: 'Cluster Assignment',
-      field: 'cluster_assignment',
-      sortable: true,
-      sorted: 'asc',
-    })
-  ];
+  selectedEnrichmentColumns!: DataProperty[];
+
   pathwayColumns: DataProperty[] = [
     new DataProperty({
       label: 'Input ID',
@@ -129,7 +250,7 @@ export class PathwayEnrichmentComponent
       label: 'Analyte Name',
       field: 'commonName',
       sortable: true,
-    })
+    }),
   ];
 
   clusterProp = new DataProperty({
@@ -157,99 +278,115 @@ export class PathwayEnrichmentComponent
   }
 
   ngOnInit(): void {
+    this.selectedEnrichmentColumns = this.enrichmentColumns2['both'];
     this.rampFacade.pathwayEnrichment$
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-      (res: any | undefined) => {
+      .subscribe((res: any | undefined) => {
+        console.log(res);
         if (res && res.data) {
           if (res.data.length) {
-            this.dataAsDataProperty = res.data.map((enrichment: FisherResult) => {
-              const newObj: { [key: string]: DataProperty } = {};
-              Object.entries(enrichment).map((value: any, index: any) => {
-                newObj[value[0]] = new DataProperty({
-                  name: value[0],
-                  label: value[0],
-                  value: value[1],
+            this.dataAsDataProperty = res.data.map(
+              (enrichment: FisherResult) => {
+                const newObj: { [key: string]: DataProperty } = {};
+                Object.entries(enrichment).map((value: any, index: any) => {
+                  newObj[value[0]] = new DataProperty({
+                    name: value[0],
+                    label: value[0],
+                    value: value[1],
+                  });
                 });
-              });
-              return newObj;
-            });
+                return newObj;
+              },
+            );
             this.enrichmentLoading = false;
-
 
             this.allDataAsDataProperty = this.dataAsDataProperty;
             this.imageLoading = false;
             this.ref.markForCheck();
           } else {
-            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(CompleteDialogComponent, {
-              data: {
-                title: 'Pathway',
-                message: "No enriched pathways found.",
-                tabs: [ 'Pathways' ]
-
-              }
-            })
-            ref.afterClosed().subscribe(res => {
-              if(res) {
+            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(
+              CompleteDialogComponent,
+              {
+                data: {
+                  title: 'Pathway',
+                  message: 'No enriched pathways found.',
+                  tabs: ['Pathways'],
+                },
+              },
+            );
+            ref.afterClosed().subscribe((res) => {
+              if (res) {
                 this.resultsTabs.selectedIndex = res;
                 this.ref.markForCheck();
               }
-            })
+            });
             this.pathwaysLoading = false;
             this.enrichmentLoading = false;
             this.imageLoading = false;
           }
         }
         if (res && res.query) {
-      this.query = res.query;
-    }
+          this.query = res.query;
+        }
         if (res && res.dataframe) {
           this.enrichedDataframe = res.dataframe;
         }
 
         if (res && res.openModal) {
-            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(CompleteDialogComponent, {
+          const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(
+            CompleteDialogComponent,
+            {
               data: {
                 title: 'Pathway',
-                tabs: [ 'Pathways', 'Enriched Pathways', 'Clustered Pathways' ]
-              }
-            })
+                tabs: ['Pathways', 'Enriched Pathways', 'Clustered Pathways'],
+              },
+            },
+          );
 
-            ref.afterClosed().subscribe(res => {
-              if(res) {
-                this.resultsTabs.selectedIndex = res;
-                this.ref.markForCheck();
-              }
-            })
-          }
+          ref.afterClosed().subscribe((res) => {
+            if (res) {
+              this.resultsTabs.selectedIndex = res;
+              this.ref.markForCheck();
+            }
+          });
         }
-    );
+      });
 
     this.rampFacade.pathways$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Pathway[]; query: RampQuery, dataframe: any } | undefined) => {
-        if (res && res.data) {
-          this._mapPathwaysData(res.data);
-          this.matches = Array.from(new Set(res.data.map(pathway => pathway.inputId.toLocaleLowerCase())));
-          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
-        }
-        if (res && res.dataframe) {
-          this.dataframe = res.dataframe;
-        }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        this.pathwaysLoading = false;
-        this.ref.markForCheck();
-      }
-    );
+        (
+          res:
+            | { data: Pathway[]; query: RampQuery; dataframe: any }
+            | undefined,
+        ) => {
+          console.log(res);
+          if (res && res.data) {
+            this._mapPathwaysData(res.data);
+            this.matches = Array.from(
+              new Set(
+                res.data.map((pathway) => pathway.inputId.toLocaleLowerCase()),
+              ),
+            );
+            this.noMatches = this.inputList.filter(
+              (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+            );
+          }
+          if (res && res.dataframe) {
+            this.dataframe = res.dataframe;
+          }
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          this.pathwaysLoading = false;
+          this.ref.markForCheck();
+        },
+      );
 
     this.rampFacade.clusterPlot$
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-      (res: any | undefined) => {
-        if (res && res.length> 0) {
+      .subscribe((res: any | undefined) => {
+        if (res && res.length > 0) {
           this.tooBig = false;
           this.image = this.sanitizer.bypassSecurityTrustHtml(res);
         } else {
@@ -257,31 +394,29 @@ export class PathwayEnrichmentComponent
         }
         this.imageLoading = false;
         this.ref.markForCheck();
-      }
-    );
-
+      });
   }
 
   fetchEnrichment(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
     this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
     this.pathwaysLoading = true;
     this.enrichmentLoading = true;
     this.imageLoading = true;
-    if(this.file) {
+    if (this.file) {
       this.rampFacade.dispatch(
         fetchEnrichmentFromPathways({
           analytes: event,
           biospecimen: this.biospecimenCtrl.value,
-          background: this.file
-        })
+          background: this.file,
+        }),
       );
     } else {
       this.rampFacade.dispatch(
         fetchEnrichmentFromPathways({
           analytes: event,
-          biospecimen: this.biospecimenCtrl.value
-        })
+          biospecimen: this.biospecimenCtrl.value,
+        }),
       );
     }
   }
@@ -294,26 +429,24 @@ export class PathwayEnrichmentComponent
         pval_cutoff: this.pValueFormCtrl.value,
         perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
         min_pathway_tocluster: this.minPathWayFormCtrl.value,
-        perc_pathway_overlap: this.percentPathwayFormCtrl.value
-      })
+        perc_pathway_overlap: this.percentPathwayFormCtrl.value,
+      }),
     );
   }
 
-  clusterResults(){
+  clusterResults() {
     this.enrichmentLoading = true;
     this.rampFacade.dispatch(
       fetchClusterFromEnrichment({
         perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
         min_pathway_tocluster: this.minPathWayFormCtrl.value,
-        perc_pathway_overlap: this.percentPathwayFormCtrl.value
-      })
+        perc_pathway_overlap: this.percentPathwayFormCtrl.value,
+      }),
     );
   }
 
-
-
   setCluster(event: MatCheckboxChange) {
-    if (event.source.checked) {
+    /*    if (event.source.checked) {
       this.enrichmentColumns = this.enrichmentColumns.concat([
         this.clusterProp,
       ]);
@@ -321,25 +454,31 @@ export class PathwayEnrichmentComponent
       this.enrichmentColumns = this.enrichmentColumns.filter(
         (prop) => prop.field != 'cluster_assignment'
       );
-    }
+    }*/
     this.ref.detectChanges();
   }
 
   fetchPathwaysFile(): void {
-      this._downloadFile(this._toTSV(this.dataframe), 'fetchPathwaysFromAnalytes-download.tsv')
+    this._downloadFile(
+      this._toTSV(this.dataframe),
+      'fetchPathwaysFromAnalytes-download.tsv',
+    );
   }
 
   fetchEnrichedPathwaysFile(): void {
-    this._downloadFile(this._toTSV(this.enrichedDataframe), 'fetchEnrichedPathwaysFromAnalytes-download.tsv')
+    this._downloadFile(
+      this._toTSV(this.enrichedDataframe),
+      'fetchEnrichedPathwaysFromAnalytes-download.tsv',
+    );
   }
 
   fetchClusterImageFile(): void {
     this.rampFacade.dispatch(
-         fetchClusterImageFile({
-           perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
-           min_pathway_tocluster: this.minPathWayFormCtrl.value,
-           perc_pathway_overlap: this.percentPathwayFormCtrl.value
-         })
+      fetchClusterImageFile({
+        perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
+        min_pathway_tocluster: this.minPathWayFormCtrl.value,
+        perc_pathway_overlap: this.percentPathwayFormCtrl.value,
+      }),
     );
   }
 
@@ -354,7 +493,7 @@ export class PathwayEnrichmentComponent
   cancelUpload() {
     this.fileName = '';
     this.fileUpload.nativeElement.value = '';
-    this.file= undefined;
+    this.file = undefined;
     this.ref.markForCheck();
   }
 

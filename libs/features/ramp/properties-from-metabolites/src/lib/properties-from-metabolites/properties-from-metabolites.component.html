@@ -24,11 +24,12 @@
 
   <ramp-feedback-panel
     [matchesLength]="matches.length"
-    [dataLength] = dataAsDataProperty.length
+    [dataLength]="dataAsDataProperty.length"
     [inputLength]="inputList.length"
     [noMatches]="noMatches"
     [inputType]="input"
-    [function]="query.functionCall">
+    [function]="query.functionCall"
+  >
   </ramp-feedback-panel>
 
   <ramp-query-page

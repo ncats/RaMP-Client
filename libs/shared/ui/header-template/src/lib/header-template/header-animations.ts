@@ -17,14 +17,14 @@ export const slideInOutAnimation = [
       style({
         //'background-color': 'whitesmoke',
         color: 'black',
-      })
+      }),
     ),
     state(
       'out',
       style({
         'background-color': 'transparent',
         color: 'white',
-      })
+      }),
     ),
     transition('in => out', [group([animate('300ms ease-out')])]),
     transition('out => in', [group([animate('300ms ease-in')])]),

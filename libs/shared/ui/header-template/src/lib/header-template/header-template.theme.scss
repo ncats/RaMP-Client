@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '@angular/material' as mat;
 // Import library functions for theme creation.
 
@@ -13,6 +14,7 @@
       position: fixed;
       margin-bottom: 60px;
       background-color: mat.get-color-from-palette($accent) !important;
+      color: white;
     }
   }
 }

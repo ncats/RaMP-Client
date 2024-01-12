@@ -1,17 +1,17 @@
 import { InjectionToken, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule } from "@angular/material/button";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatIconModule } from "@angular/material/icon";
-import { MatSelectModule } from "@angular/material/select";
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedRampInputRowModule } from '@ramp/shared/ramp/input-row';
 import { SharedRampPageCoreModule } from '@ramp/shared/ramp/page-core';
 import { SharedRampQueryPageModule } from '@ramp/shared/ramp/query-page';
 import { SharedUiDescriptionPanelModule } from '@ramp/shared/ui/description-panel';
-import { SharedUiFeedbackPanelModule } from "@ramp/shared/ui/feedback-panel";
+import { SharedUiFeedbackPanelModule } from '@ramp/shared/ui/feedback-panel';
 import {
   ObjectTreeComponent,
   SharedUiObjectTreeModule,
@@ -19,7 +19,7 @@ import {
 import { ClassesFromMetabolitesComponent } from './classes-from-metabolites/classes-from-metabolites.component';
 
 export const TREE_VIEWER_COMPONENT = new InjectionToken<string>(
-  'ObjectTreeViewerComponent'
+  'ObjectTreeViewerComponent',
 );
 
 const ROUTES: Routes = [
@@ -44,7 +44,7 @@ const ROUTES: Routes = [
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   declarations: [ClassesFromMetabolitesComponent],
   providers: [

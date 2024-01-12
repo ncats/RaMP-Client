@@ -8,7 +8,7 @@ export class Analyte {
   pathwayId: string = '';
 
   constructor(obj: any) {
-   // Object.assign(this, obj);
+    // Object.assign(this, obj);
 
     if (obj.analyteName) {
       this.analyteName = obj.analyteName;

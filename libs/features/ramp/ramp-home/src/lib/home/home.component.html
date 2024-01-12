@@ -2,101 +2,149 @@
   <div fxLayout="row" fxLayoutAlign="space-around center">
     <div fxFlex="50">
       <div class="grid-list">
-        <mat-card appearance="outlined" class= "ramp-tile" >
-          <mat-card-title class="ramp-card-header"> Query Biological Pathways</mat-card-title>
+        <mat-card appearance="outlined" class="ramp-tile">
+          <mat-card-title class="ramp-card-header">
+            Query Biological Pathways</mat-card-title
+          >
           <mat-card-content>
-            <p>Biological Pathways are drawn from HMDB/KEGG, Reactome, and WikiPathways</p>
-            <div class="row centered-row">
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button centered"
-                    [routerLink]="'/pathways-from-analytes'"
-            >Pathways from Input Analytes
-            </button>
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/analytes-from-pathways'"
-            >Analytes from Input Pathways
-            </button>
-            </div>
-          </mat-card-content>
-        </mat-card>
-        <mat-card appearance="outlined" class= "ramp-tile" >
-          <mat-card-title class="ramp-card-header">Query Ontologies</mat-card-title>
-          <mat-card-content>
-            <p>Available ontologies include health condition, organ/components, tissue, biofluid, industrial applications and others.</p>
-            <div class="row centered-row">
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/ontologies-from-metabolites'"
-            >Ontologies from Input Metabolites</button>
-
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/metabolites-from-ontologies'"
-            >Metabolites from Input Ontologies</button>
-            </div>
-          </mat-card-content>
-        </mat-card>
-        <mat-card appearance="outlined" class= "ramp-tile" >
-          <mat-card-title class="ramp-card-header">Query Chemical Descriptions</mat-card-title>
-          <mat-card-content>
-            <p>Classes are derived from ClassyFire and LIPIDMAPS and Properties include SMILES, InCHI-key, MW, etc.
+            <p>
+              Biological Pathways are drawn from HMDB/KEGG, Reactome, and
+              WikiPathways
             </p>
             <div class="row centered-row">
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/classes-from-metabolites'"
-            >Chemical Classes from Metabolites</button>
-
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/properties-from-metabolites'"
-            >Chemical Properties from Input Metabolites</button>
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button centered"
+                [routerLink]="'/pathways-from-analytes'"
+              >
+                Pathways from Input Analytes
+              </button>
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/analytes-from-pathways'"
+              >
+                Analytes from Input Pathways
+              </button>
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card appearance="outlined" class= "ramp-tile" >
-          <mat-card-title class="ramp-card-header">Query Reactions</mat-card-title>
+        <mat-card appearance="outlined" class="ramp-tile">
+          <mat-card-title class="ramp-card-header"
+            >Query Ontologies</mat-card-title
+          >
+          <mat-card-content>
+            <p>
+              Available ontologies include health condition, organ/components,
+              tissue, biofluid, industrial applications and others.
+            </p>
+            <div class="row centered-row">
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/ontologies-from-metabolites'"
+              >
+                Ontologies from Input Metabolites
+              </button>
+
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/metabolites-from-ontologies'"
+              >
+                Metabolites from Input Ontologies
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card appearance="outlined" class="ramp-tile">
+          <mat-card-title class="ramp-card-header"
+            >Query Chemical Descriptions</mat-card-title
+          >
+          <mat-card-content>
+            <p>
+              Classes are derived from ClassyFire and LIPIDMAPS and Properties
+              include SMILES, InCHI-key, MW, etc.
+            </p>
+            <div class="row centered-row">
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/classes-from-metabolites'"
+              >
+                Chemical Classes from Metabolites
+              </button>
+
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/properties-from-metabolites'"
+              >
+                Chemical Properties from Input Metabolites
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card appearance="outlined" class="ramp-tile">
+          <mat-card-title class="ramp-card-header"
+            >Query Reactions</mat-card-title
+          >
           <mat-card-content>
             <p>Metabolic enzyme-metabolite reactions are sourced from HMDB.</p>
             <div class="row centered-row">
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/common-reaction-analytes'"
-            >Retrieve Analytes involved in Same Reactions</button>
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/common-reaction-analytes'"
+              >
+                Retrieve Analytes involved in Same Reactions
+              </button>
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card appearance="outlined" class= "ramp-tile" >
-          <mat-card-title class="ramp-card-header">Enrichment Analysis</mat-card-title>
+        <mat-card appearance="outlined" class="ramp-tile">
+          <mat-card-title class="ramp-card-header"
+            >Enrichment Analysis</mat-card-title
+          >
           <mat-card-content>
-            <p>Identify enriched pathways or chemical classes given an input list of analytes
+            <p>
+              Identify enriched pathways or chemical classes given an input list
+              of analytes
             </p>
             <div class="row centered-row">
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/pathway-enrichment'"
-            >Biological Pathway Enrichment</button>
-            <button mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    [routerLink]="'/chemical-enrichment'">
-            Chemical Class Enrichment</button>
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/pathway-enrichment'"
+              >
+                Biological Pathway Enrichment
+              </button>
+              <button
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                [routerLink]="'/chemical-enrichment'"
+              >
+                Chemical Class Enrichment
+              </button>
             </div>
           </mat-card-content>
         </mat-card>
-        <mat-card appearance="outlined" class= "ramp-tile" >
+        <mat-card appearance="outlined" class="ramp-tile">
           <mat-card-title class="ramp-card-header">Version Info</mat-card-title>
           <mat-card-content>
-            <h3><span *ngIf="dbVersion">Version: {{dbVersion}}</span><span *ngIf="dbUpdated"> Last updated: {{dbUpdated}}</span></h3>
+            <h3>
+              <span *ngIf="dbVersion">Version: {{ dbVersion }}</span
+              ><span *ngIf="dbUpdated"> Last updated: {{ dbUpdated }}</span>
+            </h3>
 
             <h3>Source Versions:</h3>
             <ul class="ramp-list">
@@ -106,8 +154,8 @@
                   target="_blank"
                   rel="noreferrer"
                   attr.aria-label="Hyperlink to the {{
-                  version.data_source_name
-                }} website. Link opens in a new tab."
+                    version.data_source_name
+                  }} website. Link opens in a new tab."
                 >
                   {{ version.data_source_name }}</a
                 >
@@ -116,20 +164,22 @@
               </li>
             </ul>
             <div class="row centered-row">
-            <a mat-stroked-button
-                    [color] = "'accent'"
-                    class="tile-button"
-                    href={{databaseUrl}}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Hyperlink to the RaMP-DB database download in Figshare. Link opens in a new tab."
-            >Download Database Dump</a>
+              <a
+                mat-stroked-button
+                [color]="'accent'"
+                class="tile-button"
+                href="{{ databaseUrl }}"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Hyperlink to the RaMP-DB database download in Figshare. Link opens in a new tab."
+                >Download Database Dump</a
+              >
             </div>
           </mat-card-content>
         </mat-card>
       </div>
-      <br>
-      <br>
+      <br />
+      <br />
     </div>
   </div>
 </div>

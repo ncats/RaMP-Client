@@ -1,15 +1,22 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
-import { UntypedFormControl } from "@angular/forms";
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Classes, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClassesFromMetabolites,
-  RampFacade
-} from "@ramp/stores/ramp-store";
-import { takeUntil } from "rxjs";
+  RampFacade,
+} from '@ramp/stores/ramp-store';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ramp-classes-from-metabolites',
@@ -25,43 +32,43 @@ export class ClassesFromMetabolitesComponent
     new DataProperty({
       label: 'Source IDs',
       field: 'sourceId',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'Names',
-      field: 'commonNames'
+      field: 'commonNames',
     }),
     new DataProperty({
       label: 'ClassyFire Super Class',
       field: 'classyFireSuperClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'ClassyFire Class',
       field: 'classyFireClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'ClassyFire Sub Class',
       field: 'classyFireSubClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'LIPIDMAPS Category',
       field: 'lipidMapsCategory',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'LIPIDMAPS Main Class',
       field: 'lipidMapsMainClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'LIPIDMAPS Sub Class',
       field: 'lipidMapsSubClass',
-      sortable: true
+      sortable: true,
     }),
-  /*  new DataProperty({
+    /*  new DataProperty({
       label: 'ClassyFire Classes',
       field: 'classyFireTree',
       customComponent: TREE_VIEWER_COMPONENT,
@@ -75,7 +82,17 @@ export class ClassesFromMetabolitesComponent
   fileName = '';
   file?: File;
   biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
-  biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
+  biospecimens: string[] = [
+    'Blood',
+    'Adipose',
+    'Heart',
+    'Urine',
+    'Brain',
+    'Liver',
+    'Kidney',
+    'Saliva',
+    'Feces',
+  ];
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -87,12 +104,16 @@ export class ClassesFromMetabolitesComponent
   }
 
   ngOnInit(): void {
-    this.rampFacade.classes$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-      (res: {
-        dataframe: any;
-        data: Classes[]; query: RampQuery } | undefined) => {
+    this.rampFacade.classes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+      (
+        res:
+          | {
+              dataframe: any;
+              data: Classes[];
+              query: RampQuery;
+            }
+          | undefined,
+      ) => {
         if (res && res.data) {
           const classGroup: Map<string, any> = new Map<string, any>();
           res.data.forEach((chclass) => {
@@ -111,8 +132,16 @@ export class ClassesFromMetabolitesComponent
             }
           });
           this._mapData(res.data);
-          this.matches = Array.from(new Set(res.data.map(chemClass => chemClass.sourceId.toLocaleLowerCase())));
-          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
+          this.matches = Array.from(
+            new Set(
+              res.data.map((chemClass) =>
+                chemClass.sourceId.toLocaleLowerCase(),
+              ),
+            ),
+          );
+          this.noMatches = this.inputList.filter(
+            (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+          );
         }
         if (res && res.query) {
           this.query = res.query;
@@ -120,41 +149,47 @@ export class ClassesFromMetabolitesComponent
         if (res && res.dataframe) {
           this.dataframe = res.dataframe;
           if (this.downloadQueued) {
-            this._downloadFile(this._toTSV(this.dataframe), 'fetchChemicalClass-download.tsv')
+            this._downloadFile(
+              this._toTSV(this.dataframe),
+              'fetchChemicalClass-download.tsv',
+            );
             this.downloadQueued = false;
           }
         }
         this.ref.markForCheck();
-      }
+      },
     );
   }
 
   fetchClasses(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
-    if(this.file) {
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
+    if (this.file) {
       this.rampFacade.dispatch(
         fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
-          background: this.file
-        })
+          background: this.file,
+        }),
       );
     } else {
       this.rampFacade.dispatch(
         fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
-        })
+        }),
       );
     }
   }
 
   fetchClassesFile(event: string[]): void {
-    if(!this.dataframe) {
+    if (!this.dataframe) {
       this.fetchClasses(event);
       this.downloadQueued = true;
     } else {
-      this._downloadFile(this._toTSV(this.dataframe), 'fetchChemicalClass-download.tsv' )
+      this._downloadFile(
+        this._toTSV(this.dataframe),
+        'fetchChemicalClass-download.tsv',
+      );
     }
   }
 

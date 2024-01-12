@@ -3,15 +3,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef, OnDestroy,
+  ElementRef,
+  OnDestroy,
   OnInit,
   QueryList,
-  ViewChildren
-} from "@angular/core";
+  ViewChildren,
+} from '@angular/core';
 import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { initAbout, RampFacade } from '@ramp/stores/ramp-store';
-import { Subject, takeUntil, tap } from "rxjs";
+import { Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'ramp-about',
@@ -83,24 +84,24 @@ export class AboutComponent implements OnInit, OnDestroy {
   constructor(
     private changeDetector: ChangeDetectorRef,
     private scrollDispatcher: ScrollDispatcher,
-    protected rampFacade: RampFacade
+    protected rampFacade: RampFacade,
   ) {}
 
   ngOnInit(): void {
     this.rampFacade.dispatch(initAbout());
     this.rampFacade.allRampStore$
       .pipe(
-      takeUntil(this.ngUnsubscribe),
-    tap((data) => {
+        takeUntil(this.ngUnsubscribe),
+        tap((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
-            if(this.sourceVersions.length >0 ){
+            if (this.sourceVersions.length > 0) {
               const first = this.sourceVersions[0];
-              if(first.ramp_db_version) {
+              if (first.ramp_db_version) {
                 this.dbVersion = first.ramp_db_version;
               }
-              if(first.db_mod_date) {
-                this.dbUpdated = first.db_mod_date
+              if (first.db_mod_date) {
+                this.dbUpdated = first.db_mod_date;
               }
             }
 
@@ -118,7 +119,7 @@ export class AboutComponent implements OnInit, OnDestroy {
                   });
                 });
                 return newObj;
-              }
+              },
             );
             this.changeDetector.markForCheck();
           }
@@ -130,33 +131,34 @@ export class AboutComponent implements OnInit, OnDestroy {
             this.compoundsData = data.metaboliteIntersects;
             this.changeDetector.markForCheck();
           }
-          if(data.databaseUrl) {
-            this.databaseUrl = data.databaseUrl
+          if (data.databaseUrl) {
+            this.databaseUrl = data.databaseUrl;
           }
-        })
+        }),
       )
       .subscribe();
 
-    this.scrollDispatcher.scrolled()
+    this.scrollDispatcher
+      .scrolled()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((data) => {
-      if (data) {
-        let scrollTop: number =
-          data.getElementRef().nativeElement.scrollTop + 100;
-        if (scrollTop === 175) {
-          this.activeElement = 'about';
-          this.changeDetector.detectChanges();
-        } else {
-          this.scrollSections.forEach((section) => {
-            scrollTop = scrollTop - section.nativeElement.scrollHeight;
-            if (scrollTop >= 0) {
-              this.activeElement = section.nativeElement.nextSibling.id;
-              this.changeDetector.detectChanges();
-            }
-          });
+        if (data) {
+          let scrollTop: number =
+            data.getElementRef().nativeElement.scrollTop + 100;
+          if (scrollTop === 175) {
+            this.activeElement = 'about';
+            this.changeDetector.detectChanges();
+          } else {
+            this.scrollSections.forEach((section) => {
+              scrollTop = scrollTop - section.nativeElement.scrollHeight;
+              if (scrollTop >= 0) {
+                this.activeElement = section.nativeElement.nextSibling.id;
+                this.changeDetector.detectChanges();
+              }
+            });
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -185,7 +187,7 @@ export class AboutComponent implements OnInit, OnDestroy {
    * clean up on leaving component
    */
   ngOnDestroy() {
-    this.ngUnsubscribe.next("bye-bye");
+    this.ngUnsubscribe.next('bye-bye');
     this.ngUnsubscribe.complete();
   }
 }

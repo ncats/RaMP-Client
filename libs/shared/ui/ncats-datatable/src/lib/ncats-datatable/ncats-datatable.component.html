@@ -6,7 +6,8 @@
   *ngIf="showPaginator && pageData"
 >
   <div fxFlex="55" fxFlexAlign="end">
-    <mat-paginator #paginatorTop
+    <mat-paginator
+      #paginatorTop
       [pageSizeOptions]="[10, 20, 50]"
       [pageSize]="pageData.skip > 0 ? pageData.skip : 10"
       [length]="pageData.total ? pageData.total : 10"
@@ -73,7 +74,7 @@
             <ncats-property-display
               [property]="value"
               [showLabel]="false"
-              [displayType] = field.displayType
+              [displayType]="field.displayType"
             ></ncats-property-display>
             <br />
           </span>
@@ -82,7 +83,7 @@
           <ncats-property-display
             [property]="row[field.field]"
             [showLabel]="false"
-            [displayType] = field.displayType
+            [displayType]="field.displayType"
           ></ncats-property-display>
         </ng-template>
       </ng-template>

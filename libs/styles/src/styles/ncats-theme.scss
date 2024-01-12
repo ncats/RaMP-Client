@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
-@import '@angular/material/theming';
-@include mat-core();
+
+@include mat.core();
 
 $ncats-primary: (
   50: #ece6ed,
@@ -74,16 +74,17 @@ $app-accent: mat.define-palette($ncats-secondary);
 // The "warn" palette is optional and defaults to red if not specified.
 $app-warn: mat.define-palette(mat.$red-palette);
 
-$app-theme: mat.define-light-theme((
-  color: (
-    primary: $app-primary,
-    accent: $app-accent,
-    warn: $app-warn,
-  ),
-  typography: mat.define-typography-config(),
-  density: 0,
-));
+$app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $app-primary,
+      accent: $app-accent,
+      warn: $app-warn,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
 
 //@include angular-material-theme($app-theme);
 @include mat.all-component-themes($app-theme);
-

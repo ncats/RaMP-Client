@@ -1,9 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input, OnChanges,
-  SimpleChange
-} from "@angular/core";
+  Input,
+  OnChanges,
+  SimpleChange,
+} from '@angular/core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 
 @Component({
@@ -12,7 +13,7 @@ import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
   styleUrls: ['./query-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class QueryPageComponent implements OnChanges{
+export class QueryPageComponent implements OnChanges {
   @Input() dataColumns!: DataProperty[];
   @Input() dataAsDataProperty!: { [key: string]: DataProperty }[];
   noDataArr = false;

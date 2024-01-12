@@ -1,5 +1,5 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RampQuery, Reaction } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -8,7 +8,7 @@ import {
   fetchCommonReactionAnalytes,
   RampFacade,
 } from '@ramp/stores/ramp-store';
-import { takeUntil } from "rxjs";
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ramp-common-reaction-analytes',
@@ -50,7 +50,7 @@ export class CommonReactionAnalytesComponent
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
     protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document
+    @Inject(DOCUMENT) protected dom: Document,
   ) {
     super(route, rampFacade, dom);
   }
@@ -59,38 +59,56 @@ export class CommonReactionAnalytesComponent
     this.rampFacade.reactions$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Reaction[]; query: RampQuery; dataframe: any; } | undefined) => {
-        if (res && res.data) {
-          this._mapData(res.data);
-          this.matches = Array.from(new Set(res.data.map(reaction => reaction.inputAnalyte.toLocaleLowerCase())));
-          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
-        }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        if (res && res.dataframe) {
-          this.dataframe = res.dataframe;
-          if (this.downloadQueued) {
-            this._downloadFile(this._toTSV(this.dataframe), 'fetchCommonReactionAnalytes-download.tsv')
-            this.downloadQueued = false;
+        (
+          res:
+            | { data: Reaction[]; query: RampQuery; dataframe: any }
+            | undefined,
+        ) => {
+          if (res && res.data) {
+            this._mapData(res.data);
+            this.matches = Array.from(
+              new Set(
+                res.data.map((reaction) =>
+                  reaction.inputAnalyte.toLocaleLowerCase(),
+                ),
+              ),
+            );
+            this.noMatches = this.inputList.filter(
+              (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+            );
           }
-        }
-        this.ref.markForCheck();
-      }
-    );
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          if (res && res.dataframe) {
+            this.dataframe = res.dataframe;
+            if (this.downloadQueued) {
+              this._downloadFile(
+                this._toTSV(this.dataframe),
+                'fetchCommonReactionAnalytes-download.tsv',
+              );
+              this.downloadQueued = false;
+            }
+          }
+          this.ref.markForCheck();
+        },
+      );
   }
 
   fetchReactions(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
     this.rampFacade.dispatch(fetchCommonReactionAnalytes({ analytes: event }));
   }
 
   fetchReactionsFile(event: string[]): void {
-    if(!this.dataframe) {
+    if (!this.dataframe) {
       this.fetchReactions(event);
       this.downloadQueued = true;
     } else {
-      this._downloadFile(this._toTSV(this.dataframe), 'fetchCommonReactionAnalytes-download.tsv' )
+      this._downloadFile(
+        this._toTSV(this.dataframe),
+        'fetchCommonReactionAnalytes-download.tsv',
+      );
     }
   }
 

@@ -10,7 +10,7 @@ describe('EntityCount', () => {
         Reactome: '-',
         WikiPathways: '-',
         status_category: 'Chemical Property Records',
-      })
+      }),
     ).toBeTruthy();
   });
 });

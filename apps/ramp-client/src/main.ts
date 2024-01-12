@@ -10,14 +10,12 @@ if (environment.production) {
 
 function bootstrap() {
   platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
-};
-
+    .bootstrapModule(AppModule)
+    .catch((err) => console.error(err));
+}
 
 if (document.readyState === 'complete') {
   bootstrap();
 } else {
   document.addEventListener('DOMContentLoaded', bootstrap);
 }
-

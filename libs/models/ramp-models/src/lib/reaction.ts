@@ -25,8 +25,7 @@ export class Reaction {
 
     if (obj.rxn_partner_ids) {
       this.rxnPartnerIdsString = obj.rxn_partner_ids;
-      this.rxnPartnerIds =
-        obj.rxn_partner_ids.split('; ');
+      this.rxnPartnerIds = obj.rxn_partner_ids.split('; ');
     }
   }
 }

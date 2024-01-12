@@ -30,7 +30,7 @@ export class InputRowComponent implements OnInit {
     if (this.inputFormCtrl.value && this.inputFormCtrl.value.length > 0) {
       if (Array.isArray(this.inputFormCtrl.value)) {
         this.retArr = this.inputFormCtrl.value.map(
-          (val: string) => (val = val.trim())
+          (val: string) => (val = val.trim()),
         );
       } else {
         this.retArr = this.inputFormCtrl.value

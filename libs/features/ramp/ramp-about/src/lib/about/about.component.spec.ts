@@ -28,7 +28,7 @@ describe('AboutComponent', () => {
               strictActionImmutability: true,
               strictStateImmutability: true,
             },
-          }
+          },
         ),
         EffectsModule.forRoot([]),
       ],

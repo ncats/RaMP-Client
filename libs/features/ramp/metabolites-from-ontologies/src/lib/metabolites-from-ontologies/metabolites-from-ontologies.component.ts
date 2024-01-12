@@ -1,13 +1,14 @@
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
-  ElementRef, Inject,
+  ElementRef,
+  Inject,
   OnInit,
   QueryList,
   ViewChild,
-  ViewChildren
-} from "@angular/core";
+  ViewChildren,
+} from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
@@ -21,7 +22,7 @@ import {
   fetchOntologies,
   RampFacade,
 } from '@ramp/stores/ramp-store';
-import { distinctUntilChanged, map, takeUntil } from "rxjs";
+import { distinctUntilChanged, map, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ramp-metabolites-from-ontologies',
@@ -70,7 +71,7 @@ export class MetabolitesFromOntologiesComponent
     private ref: ChangeDetectorRef,
     protected rampFacade: RampFacade,
     protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document
+    @Inject(DOCUMENT) protected dom: Document,
   ) {
     super(route, rampFacade, dom);
   }
@@ -78,9 +79,7 @@ export class MetabolitesFromOntologiesComponent
   ngOnInit(): void {
     this.rampFacade.dispatch(fetchOntologies());
     this.allOntoFilterCtrl.valueChanges
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        distinctUntilChanged())
+      .pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged())
       .subscribe((term) => {
         if (term.trim() && term.trim().length > 0) {
           this.ontologies = [];
@@ -88,7 +87,7 @@ export class MetabolitesFromOntologiesComponent
           this.allOntologies.forEach((onto) => {
             const newVal = { ...onto };
             newVal.values = newVal.values.filter((val: { value: any }) =>
-              matcher.test(val.value)
+              matcher.test(val.value),
             );
             if (newVal.values && newVal.values.length > 0) {
               this.ontologies.push(newVal);
@@ -103,8 +102,8 @@ export class MetabolitesFromOntologiesComponent
 
     this.rampFacade.ontologiesList$
       .pipe(
-      takeUntil(this.ngUnsubscribe),
-    map((res: any) => {
+        takeUntil(this.ngUnsubscribe),
+        map((res: any) => {
           if (res && res.data) {
             this.ontologies = res.data.map(
               (ont: { ontologyType: string; values: any[]; count: number }) => {
@@ -117,61 +116,65 @@ export class MetabolitesFromOntologiesComponent
                           value: val.ontology,
                           source: ont.ontologyType,
                           count: val.count,
-                        })
+                        }),
                     )
                     .sort((a, b) => b.count - a.count),
                 };
-              }
+              },
             );
             this.allOntologies = this.ontologies;
             this.ref.markForCheck();
           }
-        })
+        }),
       )
       .subscribe();
 
     this.rampFacade.metabolites$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Metabolite[]; query: RampQuery, dataframe: any } | undefined) => {
-        if (res && res.data) {
-          this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
-            const newObj: { [key: string]: DataProperty } = {};
-            Object.entries(metabolite).map((value: any, index: any) => {
-              newObj[value[0]] = new DataProperty({
-                name: value[0],
-                label: value[0],
-                value: value[1],
+        (
+          res:
+            | { data: Metabolite[]; query: RampQuery; dataframe: any }
+            | undefined,
+        ) => {
+          if (res && res.data) {
+            this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
+              const newObj: { [key: string]: DataProperty } = {};
+              Object.entries(metabolite).map((value: any, index: any) => {
+                newObj[value[0]] = new DataProperty({
+                  name: value[0],
+                  label: value[0],
+                  value: value[1],
+                });
               });
+              return newObj;
             });
-            return newObj;
-          });
-          this.tabIndex = 1;
-        }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        if (res && res.dataframe) {
-          this.dataframe = res.dataframe;
-        }
-        this.loading = false;
-        this.ref.markForCheck();
-      }
-    );
+            this.tabIndex = 1;
+          }
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          if (res && res.dataframe) {
+            this.dataframe = res.dataframe;
+          }
+          this.loading = false;
+          this.ref.markForCheck();
+        },
+      );
   }
 
   setValues(values: any) {
     if (values.added) {
       this.selectedOntologies = Array.from(
-        new Set(this.selectedOntologies.concat(values.added))
+        new Set(this.selectedOntologies.concat(values.added)),
       );
     }
     if (values.removed) {
       values.removed.forEach(
         (val: { value: any }) =>
           (this.selectedOntologies = this.selectedOntologies.filter(
-            (ont) => ont.value !== val.value
-          ))
+            (ont) => ont.value !== val.value,
+          )),
       );
     }
     let sum = 0;
@@ -188,19 +191,19 @@ export class MetabolitesFromOntologiesComponent
     this.tabIndex = 0;
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
     this.rampFacade.dispatch(
-      fetchMetabolitesFromOntologies({ ontologies: ontologiesList })
+      fetchMetabolitesFromOntologies({ ontologies: ontologiesList }),
     );
   }
 
   fetchMetabolitesFile(): void {
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
-    if(ontologiesList.length) {
-        this.rampFacade.dispatch(
-          fetchMetabolitesFromOntologiesFile({
-            ontologies: ontologiesList,
-            format: 'tsv',
-          })
-        );
-      }
+    if (ontologiesList.length) {
+      this.rampFacade.dispatch(
+        fetchMetabolitesFromOntologiesFile({
+          ontologies: ontologiesList,
+          format: 'tsv',
+        }),
+      );
+    }
   }
 }

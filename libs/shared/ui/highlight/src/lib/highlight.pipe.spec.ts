@@ -27,7 +27,7 @@ describe('AutoComplete Component - Highlight pipe', () => {
   it('highlights search term in the text', () => {
     const result = pipe.transform('search text', 'text');
     expect(result).toBe(
-      'search <span style="font-weight:900;" class="search-highlight">text</span>'
+      'search <span style="font-weight:900;" class="search-highlight">text</span>',
     );
   });
 

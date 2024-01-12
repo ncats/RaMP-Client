@@ -10,7 +10,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/ramp-home').then(
-        (m) => m.FeaturesRampRampHomeModule
+        (m) => m.FeaturesRampRampHomeModule,
       ),
   },
   {
@@ -19,7 +19,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/ramp-home').then(
-        (m) => m.FeaturesRampRampHomeModule
+        (m) => m.FeaturesRampRampHomeModule,
       ),
   },
   {
@@ -28,7 +28,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/ramp-about').then(
-        (m) => m.FeaturesRampRampAboutModule
+        (m) => m.FeaturesRampRampAboutModule,
       ),
   },
   {
@@ -37,7 +37,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/ramp-api').then(
-        (m) => m.FeaturesRampRampApiModule
+        (m) => m.FeaturesRampRampApiModule,
       ),
   },
   {
@@ -46,7 +46,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/ontologies-from-metabolites').then(
-        (m) => m.FeaturesRampOntologiesModule
+        (m) => m.FeaturesRampOntologiesModule,
       ),
     data: {
       ...rFunctions['ontologies-from-analytes'],
@@ -58,7 +58,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/metabolites-from-ontologies').then(
-        (m) => m.FeaturesRampMetabolitesFromOntologiesModule
+        (m) => m.FeaturesRampMetabolitesFromOntologiesModule,
       ),
     data: {
       ...rFunctions['metabolites-from-ontologies'],
@@ -70,7 +70,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/analytes-from-pathways').then(
-        (m) => m.FeaturesRampAnalytesFromPathwaysModule
+        (m) => m.FeaturesRampAnalytesFromPathwaysModule,
       ),
     data: {
       ...rFunctions['analytes-from-pathways'],
@@ -82,7 +82,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/pathways-from-analytes').then(
-        (m) => m.FeaturesRampPathwaysFromAnalytesModule
+        (m) => m.FeaturesRampPathwaysFromAnalytesModule,
       ),
     data: {
       ...rFunctions['pathways-from-analytes'],
@@ -94,7 +94,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/common-reaction-analytes').then(
-        (m) => m.FeaturesRampCommonReactionAnalytesModule
+        (m) => m.FeaturesRampCommonReactionAnalytesModule,
       ),
     data: {
       ...rFunctions['common-reaction-analytes'],
@@ -106,7 +106,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/classes-from-metabolites').then(
-        (m) => m.FeaturesRampClassesFromMetabolitesModule
+        (m) => m.FeaturesRampClassesFromMetabolitesModule,
       ),
     data: {
       ...rFunctions['classes-from-metabolites'],
@@ -118,7 +118,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/properties-from-metabolites').then(
-        (m) => m.FeaturesRampPropertiesFromMetabolitesModule
+        (m) => m.FeaturesRampPropertiesFromMetabolitesModule,
       ),
     data: {
       ...rFunctions['properties-from-metabolites'],
@@ -131,7 +131,7 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/chemical-enrichment').then(
-        (m) => m.FeaturesRampChemicalEnrichmentModule
+        (m) => m.FeaturesRampChemicalEnrichmentModule,
       ),
     data: {
       ...rFunctions['chemical-enrichment'],
@@ -143,18 +143,20 @@ const routes: Routes = [
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadChildren: () =>
       import('@ramp/features/ramp/pathway-enrichment').then(
-        (m) => m.FeaturesRampPathwayEnrichmentModule
+        (m) => m.FeaturesRampPathwayEnrichmentModule,
       ),
     data: {
       ...rFunctions['pathway-enrichment'],
     },
-  }
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    initialNavigation: 'enabledBlocking'
-})],
+  imports: [
+    RouterModule.forRoot(routes, {
+      initialNavigation: 'enabledBlocking',
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

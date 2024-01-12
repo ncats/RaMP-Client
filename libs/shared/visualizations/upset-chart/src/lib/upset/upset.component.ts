@@ -105,7 +105,7 @@ export class UpsetComponent implements OnInit {
             // Determine which sets (circles in the combination matrix) should be connected with a line
             if (combination.sets.length > 1) {
               combination.connectorIndices = extent(combination.sets, (d) =>
-                this.allSetIds.indexOf(d)
+                this.allSetIds.indexOf(d),
               );
             } else {
               combination.connectorIndices = [0, 0];
@@ -113,7 +113,7 @@ export class UpsetComponent implements OnInit {
           });
           this.allSetIds = [...new Set(this.allSetIds)];
           return data;
-        })
+        }),
       )
       .subscribe((data) => {
         if (isPlatformBrowser(this.platformID)) {
@@ -167,7 +167,7 @@ export class UpsetComponent implements OnInit {
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-       axisLeft(intersectionSizeScale)
+      axisLeft(intersectionSizeScale)
         .scale(intersectionSizeScale)
         .tickFormat((d, i) => {
           return (i % 5 === 0 && format(',d')(Number(d))) || '';
@@ -202,7 +202,7 @@ export class UpsetComponent implements OnInit {
       .append('svg:g')
       .attr(
         'transform',
-        `translate(${leftColWidth}, ${topRowHeight + innerMargin})`
+        `translate(${leftColWidth}, ${topRowHeight + innerMargin})`,
       );
 
     /*
@@ -219,7 +219,7 @@ export class UpsetComponent implements OnInit {
         'transform',
         // @ts-ignore
         //todo: fix the ts-ignore
-        (d) => `translate(${xScale(d.id) + xScale.bandwidth() / 2}, 0)`
+        (d) => `translate(${xScale(d.id) + xScale.bandwidth() / 2}, 0)`,
       );
 
     // Select all circles within each group and bind the inner array per data item
@@ -233,7 +233,7 @@ export class UpsetComponent implements OnInit {
         'cy',
         // @ts-ignore
         //todo: fix the ts-ignore
-        (d) => yCombinationScale(d.setId) + yCombinationScale.bandwidth() / 2
+        (d) => yCombinationScale(d.setId) + yCombinationScale.bandwidth() / 2,
       )
       .attr('r', () => yCombinationScale.bandwidth() / 4);
 
@@ -249,7 +249,7 @@ export class UpsetComponent implements OnInit {
           // @ts-ignore
           //todo: fix the ts-ignore
           yCombinationScale(this.allSetIds[d.connectorIndices[0]]) +
-          yCombinationScale.bandwidth() / 2
+          yCombinationScale.bandwidth() / 2,
       )
       .attr(
         'y2',
@@ -257,7 +257,7 @@ export class UpsetComponent implements OnInit {
           // @ts-ignore
           //todo: fix the ts-ignore
           yCombinationScale(this.allSetIds[d.connectorIndices[1]]) +
-          yCombinationScale.bandwidth() / 2
+          yCombinationScale.bandwidth() / 2,
       );
 
     /*
@@ -279,7 +279,7 @@ export class UpsetComponent implements OnInit {
         'y',
         // @ts-ignore
         //todo: fix the ts-ignore
-        (d) => yCombinationScale(d) + yCombinationScale.bandwidth() / 2
+        (d) => yCombinationScale(d) + yCombinationScale.bandwidth() / 2,
       )
       .attr('dy', '0.35em')
       .text((d) => d);
@@ -305,7 +305,7 @@ export class UpsetComponent implements OnInit {
         () =>
           `translate(${-(this.margin.left + this.margin.right)}, ${
             this.margin.top + this.margin.bottom
-          })`
+          })`,
       )
       .call(intersectionSizeAxis);
 
@@ -313,7 +313,7 @@ export class UpsetComponent implements OnInit {
       .append('g')
       .attr(
         'transform',
-        () => `translate(0, ${this.margin.top + this.margin.bottom})`
+        () => `translate(0, ${this.margin.top + this.margin.bottom})`,
       )
       .selectAll('rect')
       .data(this.data)
@@ -362,7 +362,7 @@ export class UpsetComponent implements OnInit {
             intersectionSizeScale(d.size) + this.margin.top
           : // @ts-ignore
             //todo: fix the ts-ignore
-            intersectionSizeScale(1) + this.margin.top
+            intersectionSizeScale(1) + this.margin.top,
       )
       .text((d: { size: number }) => format(',d')(Number(d.size)));
   }

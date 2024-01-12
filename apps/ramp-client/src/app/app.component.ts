@@ -3,12 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-  ViewEncapsulation
-} from "@angular/core";
+  ViewEncapsulation,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
 import { RampFacade } from '@ramp/stores/ramp-store';
-
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'ramp-root',
@@ -20,6 +20,7 @@ import { RampFacade } from '@ramp/stores/ramp-store';
 export class AppComponent implements OnInit {
   title = 'ramp-client';
   loading = true;
+  showBanner = false;
   links: LinkTemplateProperty[] = [
     {
       link: 'Biological Pathways',
@@ -31,7 +32,7 @@ export class AppComponent implements OnInit {
         {
           link: 'analytes-from-pathways',
           label: 'Analytes from Input Pathways',
-        }
+        },
       ],
     },
     {
@@ -65,9 +66,10 @@ export class AppComponent implements OnInit {
       children: [
         {
           link: 'common-reaction-analytes',
-          label: 'Retrieve Analytes involved in Same Reactions as input Analytes\n',
-        }
-        ]
+          label:
+            'Retrieve Analytes involved in Same Reactions as input Analytes\n',
+        },
+      ],
     },
     {
       link: 'Enrichment Analyses',
@@ -96,13 +98,14 @@ export class AppComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private changeRef: ChangeDetectorRef,
-    protected rampFacade: RampFacade
+    protected rampFacade: RampFacade,
   ) {}
 
   ngOnInit() {
+    this.showBanner = !environment.production;
     this.rampFacade.error$.subscribe((error) => {
       if (error) {
-       // console.log(error);
+        // console.log(error);
         /* this.dialog.open(ErrorDialogComponent, {
           data: {
             error: error,

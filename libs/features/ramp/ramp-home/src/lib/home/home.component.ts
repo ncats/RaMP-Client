@@ -1,15 +1,20 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from "@angular/core";
-import { SourceVersion } from "@ramp/models/ramp-models";
-import { initAbout, RampFacade } from "@ramp/stores/ramp-store";
-import { Subject, takeUntil, tap } from "rxjs";
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import { SourceVersion } from '@ramp/models/ramp-models';
+import { initAbout, RampFacade } from '@ramp/stores/ramp-store';
+import { Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'ramp-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-
   /**
    * Behaviour subject to allow extending class to unsubscribe on destroy
    * @type {Subject<any>}
@@ -21,10 +26,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   dbUpdated!: string;
   databaseUrl!: string;
 
-
   constructor(
     private changeDetector: ChangeDetectorRef,
-    protected rampFacade: RampFacade
+    protected rampFacade: RampFacade,
   ) {}
 
   ngOnInit(): void {
@@ -35,22 +39,22 @@ export class HomeComponent implements OnInit, OnDestroy {
         tap((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
-            if(this.sourceVersions.length >0 ){
+            if (this.sourceVersions.length > 0) {
               const first = this.sourceVersions[0];
-              if(first.ramp_db_version) {
+              if (first.ramp_db_version) {
                 this.dbVersion = first.ramp_db_version;
               }
-              if(first.db_mod_date) {
-                this.dbUpdated = first.db_mod_date
+              if (first.db_mod_date) {
+                this.dbUpdated = first.db_mod_date;
               }
             }
 
             this.changeDetector.markForCheck();
           }
-          if(data.databaseUrl) {
-            this.databaseUrl = data.databaseUrl
+          if (data.databaseUrl) {
+            this.databaseUrl = data.databaseUrl;
           }
-        })
+        }),
       )
       .subscribe();
   }
@@ -59,7 +63,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * clean up on leaving component
    */
   ngOnDestroy() {
-    this.ngUnsubscribe.next("bye-bye");
+    this.ngUnsubscribe.next('bye-bye');
     this.ngUnsubscribe.complete();
   }
 }

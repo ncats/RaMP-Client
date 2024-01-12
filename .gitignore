@@ -34,6 +34,12 @@ yarn-error.log
 testem.log
 /typings
 
+apps/ramp-client/src/environments/environment*
+apps/ramp-client/src/environments/environment.ts
+apps/ramp-client/src/environments/environment-prod.ts
+apps/ramp-client/src/environments/environment-prod.ts
+
+
 # System Files
 .DS_Store
 Thumbs.db
@@ -42,3 +48,5 @@ Thumbs.db
 .Rproj.user
 RaMP-Client.iml
 
+
+.nx/cache

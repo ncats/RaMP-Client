@@ -1,32 +1,36 @@
-<br>
-<br>
-<br>
+<br />
+<br />
+<br />
 <div fxLayout="row" fxLayoutAlign="space-around center">
   <div fxFlex="25" *ngIf="dataLength && dataLength > 0">
     <mat-card class="ramp-feedback-card">
       <div fxLayout="row" fxLayoutAlign="space-around start">
         <div fxFlex="95">
-          Found {{dataLength}} results <br>
+          Found {{ dataLength }} results <br />
           <span *ngIf="!fuzzy">
-            Matched {{matchesLength}} of {{inputLength}} {{inputType}}
+            Matched {{ matchesLength }} of {{ inputLength }} {{ inputType }}
           </span>
           <span *ngIf="fuzzy">
-            Fuzzy matched {{matchesLength}} {{inputType}}
+            Fuzzy matched {{ matchesLength }} {{ inputType }}
           </span>
         </div>
       </div>
-      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="noMatches && noMatches.length > 0">
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-around start"
+        *ngIf="noMatches && noMatches.length > 0"
+      >
         <div fxFlex="95">
-          There were no matches for the following {{inputType}}:
-          {{noMatches.join(", ")}}
+          There were no matches for the following {{ inputType }}:
+          {{ noMatches.join(', ') }}
         </div>
       </div>
     </mat-card>
   </div>
-  <div fxFlex = "70">
+  <div fxFlex="70">
     <div *ngIf="function">
-      <div >The following R function was called:</div>
-      <pre class="code-block">{{function}}</pre>
+      <div>The following R function was called:</div>
+      <pre class="code-block">{{ function }}</pre>
     </div>
   </div>
 </div>

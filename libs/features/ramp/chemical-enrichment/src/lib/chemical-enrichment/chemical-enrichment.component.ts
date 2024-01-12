@@ -1,8 +1,15 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
-import { UntypedFormControl } from "@angular/forms";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { MatTabGroup } from "@angular/material/tabs";
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import {
   ChemicalEnrichment,
@@ -10,16 +17,16 @@ import {
   RampQuery,
 } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
-import { CompleteDialogComponent } from "@ramp/shared/ui/complete-dialog";
+import { CompleteDialogComponent } from '@ramp/shared/ui/complete-dialog';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   fetchClassesFromMetabolites,
   fetchEnrichmentFromMetabolites,
   fetchEnrichmentFromMetabolitesFile,
   filterEnrichmentFromMetabolites,
-  RampFacade
-} from "@ramp/stores/ramp-store";
-import { takeUntil } from "rxjs";
+  RampFacade,
+} from '@ramp/stores/ramp-store';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ramp-chemical-enrichment',
@@ -35,14 +42,24 @@ export class ChemicalEnrichmentComponent
   pValueFormCtrl: UntypedFormControl = new UntypedFormControl(0.2);
   pValueTypeFormCtrl: UntypedFormControl = new UntypedFormControl('fdr');
   biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
-  biospecimens: string [] = ["Blood", "Adipose", "Heart", "Urine", "Brain", "Liver", "Kidney", "Saliva", "Feces"];
+  biospecimens: string[] = [
+    'Blood',
+    'Adipose',
+    'Heart',
+    'Urine',
+    'Brain',
+    'Liver',
+    'Kidney',
+    'Saliva',
+    'Feces',
+  ];
 
   enrichmentColumns: DataProperty[] = [
     new DataProperty({
       label: 'Category',
       field: 'category',
       sortable: true,
-      sorted: 'asc'
+      sorted: 'asc',
     }),
     new DataProperty({
       label: 'Class Name',
@@ -73,54 +90,54 @@ export class ChemicalEnrichmentComponent
       label: 'P Value',
       field: 'p_value',
       sortable: true,
-      displayType: 'string'
+      displayType: 'string',
     }),
     new DataProperty({
       label: 'adjP_BH',
       field: 'adjP_BH',
       sortable: true,
-      displayType: 'string'
-    })
+      displayType: 'string',
+    }),
   ];
   classesColumns: DataProperty[] = [
     new DataProperty({
       label: 'Source IDs',
       field: 'sourceId',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'Names',
-      field: 'commonNames'
+      field: 'commonNames',
     }),
     new DataProperty({
       label: 'ClassyFire Super Class',
       field: 'classyFireSuperClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'ClassyFire Class',
       field: 'classyFireClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'ClassyFire Sub Class',
       field: 'classyFireSubClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'LIPIDMAPS Category',
       field: 'lipidMapsCategory',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'LIPIDMAPS Main Class',
       field: 'lipidMapsMainClass',
-      sortable: true
+      sortable: true,
     }),
     new DataProperty({
       label: 'LIPIDMAPS Sub Class',
       field: 'lipidMapsSubClass',
-      sortable: true
+      sortable: true,
     }),
   ];
   classesLoading = false;
@@ -145,108 +162,128 @@ export class ChemicalEnrichmentComponent
     this.rampFacade.chemicalEnrichment$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: {data: ChemicalEnrichment[], openModal?: boolean}| undefined) => {
-        if (res && res.data) {
-          this.dataAsDataProperty = res.data.map(
-            (enrichment: ChemicalEnrichment) => {
-              const newObj: { [key: string]: DataProperty } = {};
-              Object.entries(enrichment).map((value: any, index: any) => {
-                newObj[value[0]] = new DataProperty({
-                  name: value[0],
-                  label: value[0],
-                  value: value[1]
+        (
+          res: { data: ChemicalEnrichment[]; openModal?: boolean } | undefined,
+        ) => {
+          if (res && res.data) {
+            this.dataAsDataProperty = res.data.map(
+              (enrichment: ChemicalEnrichment) => {
+                const newObj: { [key: string]: DataProperty } = {};
+                Object.entries(enrichment).map((value: any, index: any) => {
+                  newObj[value[0]] = new DataProperty({
+                    name: value[0],
+                    label: value[0],
+                    value: value[1],
+                  });
                 });
+                return newObj;
+              },
+            );
+            this.enrichmentLoading = false;
+
+            if (res.openModal) {
+              const ref: MatDialogRef<CompleteDialogComponent> =
+                this.dialog.open(CompleteDialogComponent, {
+                  data: {
+                    title: 'Chemical Class',
+                    tabs: ['Chemical Classes', 'Enriched Chemical Classes'],
+                  },
+                });
+
+              ref.afterClosed().subscribe((res) => {
+                if (res) {
+                  this.resultsTabs.selectedIndex = res;
+                  this.ref.markForCheck();
+                }
               });
-              return newObj;
             }
-          );
-          this.enrichmentLoading = false;
-
-          if(res.openModal) {
-            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(CompleteDialogComponent, {
-              data: {
-                title: 'Chemical Class',
-                tabs: [ 'Chemical Classes', 'Enriched Chemical Classes']
-              }
-            })
-
-            ref.afterClosed().subscribe(res => {
-              if(res) {
-                this.resultsTabs.selectedIndex = res;
-                this.ref.markForCheck();
-              }
-            })
+            this.ref.markForCheck();
           }
-          this.ref.markForCheck();
-        }
-        /*if (res && res.dataframe) {
+          /*if (res && res.dataframe) {
           this.enrichmentDataFrame = res.dataframe;
         }*/
-      }
-    );
+        },
+      );
 
     this.rampFacade.classes$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-      (res: { data: Classes[]; query: RampQuery, dataframe: any } | undefined) => {
-        if (res && res.data) {
-          this._mapClasses(res.data);
-          this.matches = Array.from(new Set(res.data.map(classes => classes.sourceId.toLocaleLowerCase())));
-          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
-        }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        if (res && res.dataframe) {
-          this.dataframe = res.dataframe;
-        }
-        this.classesLoading = false;
-        this.ref.markForCheck();
-      }
-    );
+        (
+          res:
+            | { data: Classes[]; query: RampQuery; dataframe: any }
+            | undefined,
+        ) => {
+          if (res && res.data) {
+            this._mapClasses(res.data);
+            this.matches = Array.from(
+              new Set(
+                res.data.map((classes) => classes.sourceId.toLocaleLowerCase()),
+              ),
+            );
+            this.noMatches = this.inputList.filter(
+              (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+            );
+          }
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          if (res && res.dataframe) {
+            this.dataframe = res.dataframe;
+          }
+          this.classesLoading = false;
+          this.ref.markForCheck();
+        },
+      );
   }
 
   fetchEnrichment(event: string[]): void {
     this.classesLoading = true;
-    this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
     this.enrichmentLoading = true;
-    if(this.file) {
+    if (this.file) {
       this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({ metabolites: event,
+        fetchClassesFromMetabolites({
+          metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
-          background: this.file
-        })
+          background: this.file,
+        }),
       );
       this.rampFacade.dispatch(
         fetchEnrichmentFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
-          background: this.file
-        })
+          background: this.file,
+        }),
       );
     } else {
       this.rampFacade.dispatch(
         fetchClassesFromMetabolites({
           metabolites: event,
-          biospecimen: this.biospecimenCtrl.value
-        })
+          biospecimen: this.biospecimenCtrl.value,
+        }),
       );
       this.rampFacade.dispatch(
         fetchEnrichmentFromMetabolites({
           metabolites: event,
-          biospecimen: this.biospecimenCtrl.value
-        })
+          biospecimen: this.biospecimenCtrl.value,
+        }),
       );
     }
   }
 
   fetchClassesFile(): void {
-    this._downloadFile(this._toTSV(this.dataframe), 'fetchChemicalClass-download.tsv' )
+    this._downloadFile(
+      this._toTSV(this.dataframe),
+      'fetchChemicalClass-download.tsv',
+    );
   }
 
   fetchEnrichedClassesFile(): void {
     this.rampFacade.dispatch(
-      fetchEnrichmentFromMetabolitesFile({ metabolites: this.inputList, format: 'tsv' })
+      fetchEnrichmentFromMetabolitesFile({
+        metabolites: this.inputList,
+        format: 'tsv',
+      }),
     );
   }
 
@@ -255,9 +292,9 @@ export class ChemicalEnrichmentComponent
     this.rampFacade.dispatch(
       filterEnrichmentFromMetabolites({
         pval_cutoff: this.pValueFormCtrl.value,
-        pval_type: this.pValueTypeFormCtrl.value
-      })
-    )
+        pval_type: this.pValueTypeFormCtrl.value,
+      }),
+    );
   }
 
   private _mapClasses(data: any): void {

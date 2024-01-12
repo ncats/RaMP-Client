@@ -6,7 +6,7 @@
     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
     "description": "Enter a list of metabolites. IDs should be prepended by ID source (e.g. <strong>kegg</strong>:C00412). See below for supported sources."
   },
-  "metabolites-from-ontologies" : {
+  "metabolites-from-ontologies": {
     "title": "Retrieve Analytes (Metabolites) from Ontologies",
     "input": "ontology",
     "supportedIdTypes": [],
@@ -27,9 +27,9 @@
     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
     "description": "Retrieve pathway(s) for a given analyte(s). IDs should be prepended by ID source (e.g. <strong>hmdb</strong>:HMDB0000122). See below for supported sources."
   },
-   "analyteid-types" : {
+  "analyteid-types": {
     "title": "Retrieve Analyte ID types",
-     "function": "idtypes <- RaMP::getPrefixesFromAnalytes(\"metabolite\"); RaMP::getPrefixesFromAnalytes(\"gene\"))",
+    "function": "idtypes <- RaMP::getPrefixesFromAnalytes(\"metabolite\"); RaMP::getPrefixesFromAnalytes(\"gene\"))",
     "description": "Retrieve analyte ID types to be used as prefixes for other RaMP function calls."
   },
   "common-reaction-analytes": {
@@ -48,8 +48,8 @@
   },
   "properties-from-metabolites": {
     "title": "Retrieve Chemical Properties from Input Metabolites",
-     "input": "metabolites",
-     "function": "analytes <- RaMP::getChemicalProperties(mets=\"###REPLACE###\")",
+    "input": "metabolites",
+    "function": "analytes <- RaMP::getChemicalProperties(mets=\"###REPLACE###\")",
     "supportedIdTypes": ["Metabolites"],
     "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211",
     "description": "Retrieve chemical properties (smiles, inchi_key, inchi_key_prefix, inchi, mw, monoisotop_mass, formula, common_name) from input metabolites. IDs should be prepended by ID source (e.g. <strong>hmdb</strong>:HMDB0000122). See below for supported sources."
@@ -58,14 +58,14 @@
     "title": "Perform Chemical Class Enrichment",
     "input": "metabolites",
     "supportedIdTypes": ["Metabolites"],
-     "function": "analytes <- RaMP::chemicalClassEnrichment(mets=\"###REPLACE###\")",
+    "function": "analytes <- RaMP::chemicalClassEnrichment(mets=\"###REPLACE###\")",
     "examples": "hmdb:HMDB0000056, hmdb:HMDB0000439, hmdb:HMDB0000479, hmdb:HMDB0000532, hmdb:HMDB0001015, hmdb:HMDB0001138, hmdb:HMDB0029159, hmdb:HMDB0029412, hmdb:HMDB0034365, hmdb:HMDB0035227, hmdb:HMDB0007973, hmdb:HMDB0008057, hmdb:HMDB0011211, hmdb:HMDB0001085, hmdb:HMDB0002122, hmdb:HMDB0002685, hmdb:HMDB0004241, hmdb:HMDB0005079, hmdb:HMDB0006245",
     "description": "Perform chemical class enrichment on ClassyFire and LIPIDMAPS classes. IDs should be prepended by ID source (e.g. <strong>hmdb</strong>:HMDB0000122). See below for supported sources."
   },
   "pathway-enrichment": {
     "title": "Perform Pathway Enrichment",
-     "input": "analytes",
-     "function": "analytes <- RaMP::runCombinedFisherTest(analytes=\"###REPLACE###\")",
+    "input": "analytes",
+    "function": "analytes <- RaMP::runCombinedFisherTest(analytes=\"###REPLACE###\")",
     "supportedIdTypes": ["Metabolites", "Genes/Proteins"],
     "examples": "hmdb:HMDB0000033, hmdb:HMDB0000052, hmdb:HMDB0000094, hmdb:HMDB0000161, hmdb:HMDB0000168, hmdb:HMDB0000191, hmdb:HMDB0000201, chemspider:10026, hmdb:HMDB0006059, Chemspider:6405,CAS:5657-19-2,hmdb:HMDB0002511, chemspider:20171375, CAS:133-32-4, CAS:5746-90-7, CAS:477251-67-5, hmdb:HMDB0000695, chebi:15934, CAS:838-07-3, hmdb:HMDBP00789, hmdb:HMDBP00283, hmdb:HMDBP00284,hmdb:HMDBP00850",
     "description": "Perform Pathway Enrichment. IDs should be prepended by ID source (e.g. <strong>hmdb</strong>:HMDB0000122). Input analyte IDs can be a mix of genes/proteins or metabolites. See below for supported sources."

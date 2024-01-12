@@ -1,21 +1,27 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, Input, OnInit } from "@angular/core";
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Analyte, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import {
-  fetchAnalytesFromPathways,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { takeUntil } from "rxjs";
+import { fetchAnalytesFromPathways, RampFacade } from '@ramp/stores/ramp-store';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ramp-analytes-from-pathways',
   templateUrl: './analytes-from-pathways.component.html',
   styleUrls: ['./analytes-from-pathways.component.scss'],
 })
-export class AnalytesFromPathwaysComponent extends PageCoreComponent implements OnInit {
+export class AnalytesFromPathwaysComponent
+  extends PageCoreComponent
+  implements OnInit
+{
   analyteColumns: DataProperty[] = [
     new DataProperty({
       label: 'Pathway Name',
@@ -49,7 +55,7 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
     }),
   ];
 
-  fuzzy= true;
+  fuzzy = true;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -64,11 +70,23 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
     this.rampFacade.analytes$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
-        (res: { data: Analyte[]; query: RampQuery, dataframe: any } | undefined) => {
+        (
+          res:
+            | { data: Analyte[]; query: RampQuery; dataframe: any }
+            | undefined,
+        ) => {
           if (res && res.data) {
             this._mapData(res.data);
-            this.matches = Array.from(new Set(res.data.map(pathway => pathway.pathwayName.toLocaleLowerCase())));
-            this.noMatches = this.inputList.filter((p: string) => !this.matches.includes(p.toLocaleLowerCase()));
+            this.matches = Array.from(
+              new Set(
+                res.data.map((pathway) =>
+                  pathway.pathwayName.toLocaleLowerCase(),
+                ),
+              ),
+            );
+            this.noMatches = this.inputList.filter(
+              (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+            );
           }
           if (res && res.query) {
             this.query = res.query;
@@ -76,26 +94,32 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
           if (res && res.dataframe) {
             this.dataframe = res.dataframe;
             if (this.downloadQueued) {
-              this._downloadFile(this._toTSV(this.dataframe), 'fetchAnalytesFromPathways-download.tsv')
+              this._downloadFile(
+                this._toTSV(this.dataframe),
+                'fetchAnalytesFromPathways-download.tsv',
+              );
               this.downloadQueued = false;
             }
           }
           this.ref.markForCheck();
-        }
+        },
       );
   }
 
   fetchAnalytes(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
     this.rampFacade.dispatch(fetchAnalytesFromPathways({ pathways: event }));
   }
 
   fetchAnalytesFile(event: string[]): void {
-    if(!this.dataframe) {
+    if (!this.dataframe) {
       this.fetchAnalytes(event);
       this.downloadQueued = true;
     } else {
-      this._downloadFile(this._toTSV(this.dataframe), 'fetchAnalytesFromPathways-download.tsv')
+      this._downloadFile(
+        this._toTSV(this.dataframe),
+        'fetchAnalytesFromPathways-download.tsv',
+      );
     }
   }
 

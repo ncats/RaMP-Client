@@ -1,5 +1,6 @@
 {
   "name": "shared-ui-complete-dialog",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/complete-dialog/src",
   "prefix": "ramp",

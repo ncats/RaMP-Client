@@ -10,7 +10,7 @@ describe('Pathway', () => {
         pathwayCategory: 'tim',
         pathwayType: 'tim',
         analyteName: 'tim',
-      })
+      }),
     ).toBeTruthy();
   });
 });

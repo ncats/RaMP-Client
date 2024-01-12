@@ -27,10 +27,10 @@ export class RampFacade {
   properties$ = this.store.pipe(select(RampSelectors.getProperties));
   clusterPlot$ = this.store.pipe(select(RampSelectors.getClusterPlot));
   chemicalEnrichment$ = this.store.pipe(
-    select(RampSelectors.getChemicalEnrichment)
+    select(RampSelectors.getChemicalEnrichment),
   );
   pathwayEnrichment$ = this.store.pipe(
-    select(RampSelectors.getPathwayEnrichment)
+    select(RampSelectors.getPathwayEnrichment),
   );
 
   constructor(private readonly store: Store) {}

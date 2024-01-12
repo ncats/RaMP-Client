@@ -3,121 +3,120 @@ import { RAMP_STORE_FEATURE_KEY, State, rampAdapter } from './ramp.reducer';
 
 // Lookup the 'Ramp' feature state managed by NgRx
 export const getRampState = createFeatureSelector<State>(
-  RAMP_STORE_FEATURE_KEY
+  RAMP_STORE_FEATURE_KEY,
 );
 
 const { selectAll, selectEntities } = rampAdapter.getSelectors();
 
 export const getRampLoaded = createSelector(
   getRampState,
-  (state: State) => state.loading
+  (state: State) => state.loading,
 );
 
 export const getRampError = createSelector(
   getRampState,
-  (state: State) => state.error
+  (state: State) => state.error,
 );
 
 export const getAllRampEntity = createSelector(getRampState, (state: State) =>
-  selectAll(state)
+  selectAll(state),
 );
 
 export const getAllRamp = createSelector(getRampState, (state: State) => state);
 
 export const getRampEntities = createSelector(getRampState, (state: State) =>
-  selectEntities(state)
+  selectEntities(state),
 );
 
 export const getSelectedId = createSelector(
   getRampState,
-  (state: State) => state.selectedId
+  (state: State) => state.selectedId,
 );
 
 export const getSelected = createSelector(
   getRampState,
   getSelectedId,
   // @ts-ignore
-  (entities, selectedId) => (selectedId ? entities[selectedId] : undefined)
+  (entities, selectedId) => (selectedId ? entities[selectedId] : undefined),
 );
 
 export const getSourceVersions = createSelector(
   getRampState,
   (state: State) => {
     return state.sourceVersions;
-  }
+  },
 );
 
 export const getSupportedIds = createSelector(
   getRampState,
-  (state: State) => state.supportedIds
+  (state: State) => state.supportedIds,
 );
 
 export const getEntityCounts = createSelector(
   getRampState,
-  (state: State) => state.entityCounts
+  (state: State) => state.entityCounts,
 );
 
 export const getMetaboliteIntersects = createSelector(
   getRampState,
-  (state: State) => state.metaboliteIntersects
+  (state: State) => state.metaboliteIntersects,
 );
 export const getGeneIntersects = createSelector(
   getRampState,
-  (state: State) => state.geneIntersects
+  (state: State) => state.geneIntersects,
 );
 
 export const getOntologies = createSelector(
   getRampState,
-  (state: State) => state.ontologies
+  (state: State) => state.ontologies,
 );
 
 export const getontologiesList = createSelector(
   getRampState,
-  (state: State) => state.ontologiesList
+  (state: State) => state.ontologiesList,
 );
 
 export const getAnalytes = createSelector(
   getRampState,
-  (state: State) => state.analytes
+  (state: State) => state.analytes,
 );
 
 export const getPathways = createSelector(
   getRampState,
-  (state: State) => state.pathways
+  (state: State) => state.pathways,
 );
 
 export const getMetabolites = createSelector(
   getRampState,
-  (state: State) => state.metabolites
+  (state: State) => state.metabolites,
 );
 
 export const getCommonReactions = createSelector(
   getRampState,
-  (state: State) => state.reactions
+  (state: State) => state.reactions,
 );
 
 export const getClasses = createSelector(
   getRampState,
-  (state: State) => state.metClasses
+  (state: State) => state.metClasses,
 );
 
 export const getProperties = createSelector(
   getRampState,
-  (state: State) => state.properties
+  (state: State) => state.properties,
 );
 
 export const getChemicalEnrichment = createSelector(
   getRampState,
-  (state: State) => state.chemicalEnrichments
+  (state: State) => state.chemicalEnrichments,
 );
 
 export const getPathwayEnrichment = createSelector(
   getRampState,
-  (state: State) => state.pathwayEnrichments
+  (state: State) => state.pathwayEnrichments,
 );
 
 export const getClusterPlot = createSelector(
   getRampState,
-  (state: State) => state.clusterPlot
-
+  (state: State) => state.clusterPlot,
 );

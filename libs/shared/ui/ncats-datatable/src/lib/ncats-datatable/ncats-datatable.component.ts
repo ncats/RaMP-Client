@@ -38,7 +38,7 @@ import { DataProperty } from './models/data-property';
 
 const _sortingDataAccessor = (
   item: { [key: string]: DataProperty },
-  property: string
+  property: string,
 ) => {
   if (item[property]) {
     if (!isNaN(item[property].value)) {
@@ -64,12 +64,12 @@ const _sortingDataAccessor = (
     trigger('detailExpand', [
       state(
         'collapsed',
-        style({ height: '0px', minHeight: '0', display: 'none' })
+        style({ height: '0px', minHeight: '0', display: 'none' }),
       ),
       state('expanded', style({ height: '*' })),
       transition(
         'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
       ),
     ]),
   ],
@@ -264,7 +264,7 @@ export class NcatsDatatableComponent
   @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
     this.dataSource.paginator = paginator;
   }
-/*
+  /*
   @ViewChild('paginatorTop') paginatorTop!: MatPaginator;
   @ViewChild('paginatorBottom') paginatorBottom!: MatPaginator;
 
@@ -273,7 +273,10 @@ export class NcatsDatatableComponent
   /**
    * injector for custom data
    */
-  constructor(private ref: ChangeDetectorRef, private _injector: Injector) {}
+  constructor(
+    private ref: ChangeDetectorRef,
+    private _injector: Injector,
+  ) {}
   /**
    * Init: get the columns to be displayed.
    * Table data is tracked by the data getter and setter
@@ -287,7 +290,7 @@ export class NcatsDatatableComponent
         if (res) {
           if (this.useInternalPaginator) {
             this.dataSource = new MatTableDataSource<DataProperty>(
-              res.map((val: any) => new DataProperty(val))
+              res.map((val: any) => new DataProperty(val)),
             );
             this.pageData = new PageData({ total: res.length });
           } else {
@@ -318,8 +321,7 @@ export class NcatsDatatableComponent
       });
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   /**
    * used to track data changes
@@ -346,7 +348,7 @@ export class NcatsDatatableComponent
    * @param $event
    */
   changePage($event: PageEvent): void {
- /*
+    /*
     if(this.dataSource) {
       const previous: number = $event.previousPageIndex ? $event.previousPageIndex * $event.pageSize : 0;
       const page: number = $event.pageIndex * $event.pageSize;
@@ -407,7 +409,7 @@ export class NcatsDatatableComponent
     }
     if (this.selectableRows) {
       this.displayColumns = ['select'].concat(
-        this.displayFields.map((field) => field.field)
+        this.displayFields.map((field) => field.field),
       );
       this.ref.detectChanges();
     } else {
@@ -415,7 +417,7 @@ export class NcatsDatatableComponent
       this.ref.detectChanges();
     }
     const defaultSort: DataProperty[] = this.fieldsConfig.filter(
-      (field) => field.sorted
+      (field) => field.sorted,
     );
     if (defaultSort.length > 0 && this.data) {
       this._sort.sort({
@@ -455,7 +457,7 @@ export class NcatsDatatableComponent
   getCustomComponent(
     field: DataProperty,
     row: MatRow,
-    index: number
+    index: number,
   ): ComponentPortal<any> | null {
     if (this.rowOutlet && field.customComponent) {
       const comp = this._injector.get<Type<any>>(field.customComponent);

@@ -77,9 +77,9 @@
         </div>
       </div>
     </mat-tab>
-    <mat-tab  [disabled]="!dataAsDataProperty">
+    <mat-tab [disabled]="!dataAsDataProperty">
       <ng-template mat-tab-label>
-      Ontologies
+        Ontologies
         <ramp-loading
           [isLoading]="loading"
           [size]="'small'"
@@ -87,14 +87,14 @@
         ></ramp-loading>
       </ng-template>
       <ng-template matTabContent>
-
         <ramp-feedback-panel
           [matchesLength]="selectedOntologies.length"
-          [dataLength] = dataAsDataProperty.length
+          [dataLength]="dataAsDataProperty.length"
           [inputLength]="selectedOntologies.length"
           [noMatches]="noMatches"
-          [inputType]= "selectedOntologies.length === 1 ? input : 'ontologies'"
-          [function]="query.functionCall">
+          [inputType]="selectedOntologies.length === 1 ? input : 'ontologies'"
+          [function]="query.functionCall"
+        >
         </ramp-feedback-panel>
 
         <ramp-query-page

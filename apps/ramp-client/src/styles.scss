@@ -1,7 +1,7 @@
-
 @use '@angular/material' as mat;
+@use '_utils' as utils;
 @import 'libs/shared/ui/header-template/src/theming';
-@import 'libs/styles/src/styles/ncats-theme';
+@import 'ncats-theme';
 
 @include header-theme($app-theme);
 
@@ -29,7 +29,7 @@ a {
 }
 
 .width-25 {
-  width:25%;
+  width: 25%;
   flex-basis: 25%;
 }
 
@@ -83,4 +83,8 @@ a {
 
 .ramp-feedback-card {
   padding: 16px;
+}
+
+.footer-template {
+  color: mat.get-color-from-palette($app-primary);
 }

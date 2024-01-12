@@ -16,7 +16,7 @@ export class DataDownloadButtonComponent {
   downloadData(): void {
     const lines: string[] = [[...Object.keys(this.data[0])].join(',')];
     this.data.forEach((data: any) =>
-      lines.push([...Object.values(data)].join('\t'))
+      lines.push([...Object.values(data)].join('\t')),
     );
     const csv = lines.join('\n');
     this.file = new Blob([csv], { type: 'text/tsv' });

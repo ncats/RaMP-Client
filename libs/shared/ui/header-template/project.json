@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/header-template/src",
-  "prefix": ["ramp","ncats-frontend-library"],
+  "prefix": ["ramp", "ncats-frontend-library"],
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",

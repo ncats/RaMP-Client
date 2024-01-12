@@ -14,7 +14,7 @@ describe('FisherResult', () => {
         pathwayName: 'Glycine, serine and threonine metabolism',
         pathwaysource: 'kegg',
         pathwaysourceId: 'map00260',
-      })
+      }),
     ).toBeTruthy();
   });
 });

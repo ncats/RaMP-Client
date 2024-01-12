@@ -1,17 +1,19 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
 import {
-  Analyte, ChemicalEnrichment,
-  Classes, FisherResult,
+  Analyte,
+  ChemicalEnrichment,
+  Classes,
+  FisherResult,
   Metabolite,
   Ontology,
   Pathway,
   Properties,
   RampQuery,
   Reaction,
-  SourceVersion
-} from "@ramp/models/ramp-models";
-import { filterEnrichmentFromMetabolitesFailure } from "./ramp.actions";
+  SourceVersion,
+} from '@ramp/models/ramp-models';
+import { filterEnrichmentFromMetabolitesFailure } from './ramp.actions';
 
 import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
@@ -22,7 +24,7 @@ export interface State extends EntityState<RampEntity> {
   selectedId?: string | number; // which RampStore record has been selected
   loading: boolean; // has the RampStore list been loaded
   error?: string | null; // last known error (if any)
-  supportedIds?: [{ analyteType: string, idTypes: string[]}];
+  supportedIds?: [{ analyteType: string; idTypes: string[] }];
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
   metaboliteIntersects?: [];
@@ -107,17 +109,13 @@ const rampReducer = createReducer(
     error: null,
   })),
   on(RampActions.loadRampSuccess, (state, { rampStore }) =>
-    rampAdapter.setAll(rampStore, { ...state, loading: false })
+    rampAdapter.setAll(rampStore, { ...state, loading: false }),
   ),
 
-  on (
-    RampActions.init,
-    RampActions.initAbout,
-    (state) => ({
-      ...state,
-      error: null,
-    })
-  ),
+  on(RampActions.init, RampActions.initAbout, (state) => ({
+    ...state,
+    error: null,
+  })),
 
   on(
     RampActions.fetchOntologiesFromMetabolites,
@@ -133,7 +131,7 @@ const rampReducer = createReducer(
       ...state,
       loading: true,
       error: null,
-    })
+    }),
   ),
 
   on(RampActions.loadRampAboutSuccess, (state, { data }) => ({
@@ -143,13 +141,13 @@ const rampReducer = createReducer(
     entityCounts: data.entityCounts,
     metaboliteIntersects: data.metaboliteIntersects,
     geneIntersects: data.geneIntersects,
-    databaseUrl: data.databaseUrl
+    databaseUrl: data.databaseUrl,
   })),
 
   on(RampActions.initSuccess, (state, { data }) => ({
     ...state,
     loading: false,
-    supportedIds: data ,
+    supportedIds: data,
   })),
 
   on(RampActions.loadSourceVersionsSuccess, (state, { versions }) => ({
@@ -163,8 +161,8 @@ const rampReducer = createReducer(
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      ontologies: { data, query , dataframe},
-    })
+      ontologies: { data, query, dataframe },
+    }),
   ),
 
   on(
@@ -173,7 +171,7 @@ const rampReducer = createReducer(
       ...state,
       loading: false,
       analytes: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(
@@ -182,7 +180,7 @@ const rampReducer = createReducer(
       ...state,
       loading: false,
       pathways: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(
@@ -191,7 +189,7 @@ const rampReducer = createReducer(
       ...state,
       loading: false,
       reactions: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(
@@ -200,7 +198,7 @@ const rampReducer = createReducer(
       ...state,
       loading: false,
       metabolites: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(RampActions.fetchOntologiesSuccess, (state, { ontologies }) => ({
@@ -214,8 +212,8 @@ const rampReducer = createReducer(
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      metClasses: { data, query, dataframe}
-    })
+      metClasses: { data, query, dataframe },
+    }),
   ),
 
   on(
@@ -224,7 +222,7 @@ const rampReducer = createReducer(
       ...state,
       loading: false,
       properties: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(
@@ -232,58 +230,63 @@ const rampReducer = createReducer(
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
-      chemicalEnrichments: {data, enriched_chemical_class},
-      enriched_chemical_class: enriched_chemical_class
-    })
+      chemicalEnrichments: { data, enriched_chemical_class },
+      enriched_chemical_class: enriched_chemical_class,
+    }),
   ),
   on(
     RampActions.filterEnrichmentFromMetabolitesSuccess,
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
-      chemicalEnrichments: {data, enriched_chemical_class, openModal: true},
+      chemicalEnrichments: { data, enriched_chemical_class, openModal: true },
       enriched_chemical_class: enriched_chemical_class,
-    })
+    }),
   ),
 
   on(
     RampActions.fetchEnrichmentFromPathwaysSuccess,
-    (state, { data, query, combinedFishersDataframe }) =>  {
-      return ({
+    (state, { data, query, combinedFishersDataframe }) => {
+      return {
         ...state,
         loading: false,
         pathwayEnrichments: { data, query },
         combined_fishers_dataframe: combinedFishersDataframe,
         filtered_fishers_dataframe: [],
-        clusterPlot: ''
-      })
-    }
+        clusterPlot: '',
+      };
+    },
   ),
 
-on(
+  on(
     RampActions.filterEnrichmentFromPathwaysSuccess,
-    (state, { data, query, filteredFishersDataframe }) =>  {
-      return ({
+    (state, { data, query, filteredFishersDataframe }) => {
+      return {
         ...state,
         loading: false,
-        pathwayEnrichments: { data, query, dataframe: filteredFishersDataframe.fishresults, openModal: true },
+        pathwayEnrichments: {
+          data,
+          query,
+          dataframe: filteredFishersDataframe.fishresults,
+          openModal: true,
+        },
         filtered_fishers_dataframe: filteredFishersDataframe,
-        clusterPlot: ''
-      })
-    }
+        clusterPlot: '',
+      };
+    },
   ),
 
   on(
     RampActions.fetchClusterFromEnrichmentSuccess,
-    (state, {data, plot, query, dataframe}) => {
-      return ({
+    (state, { data, plot, query, dataframe }) => {
+      return {
         ...state,
         loading: false,
-        pathwayEnrichments: { data, query, dataframe},
+        pathwayEnrichments: { data, query, dataframe },
         clusterPlot: plot,
-        openModal: true
-      })
-    }
+        openModal: true,
+      };
+    },
   ),
 
   on(
@@ -299,14 +302,14 @@ on(
     RampActions.fetchPropertiesFromMetabolitesFailure,
     filterEnrichmentFromMetabolitesFailure,
     (state, { error }) => {
-     // console.log(error);
+      // console.log(error);
       return {
         ...state,
         loading: false,
         error,
       };
-    }
-  )
+    },
+  ),
 );
 
 export function reducer(state: State | undefined, action: Action) {

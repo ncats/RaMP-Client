@@ -9,7 +9,7 @@ describe('Ramp Selectors', () => {
     ({
       id,
       name: name || `name-${id}`,
-    } as RampEntity);
+    }) as RampEntity;
 
   let state: RampPartialState;
 
@@ -26,7 +26,7 @@ describe('Ramp Selectors', () => {
           selectedId: 'PRODUCT-BBB',
           error: ERROR_MSG,
           loading: false,
-        }
+        },
       ),
     };
   });

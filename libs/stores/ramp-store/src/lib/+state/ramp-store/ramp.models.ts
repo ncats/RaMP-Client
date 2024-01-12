@@ -7,8 +7,9 @@ import {
   Properties,
   Reaction,
   SourceVersion,
-  RampQuery, FisherResult
-} from "@ramp/models/ramp-models";
+  RampQuery,
+  FisherResult,
+} from '@ramp/models/ramp-models';
 
 /**
  * Interface for the 'RampStore' data
@@ -16,7 +17,7 @@ import {
 export interface RampEntity {
   id: string | number; // Primary ID
   name: string;
-  supportedIds?: [{ analyteType: string, idTypes: string[]}];
+  supportedIds?: [{ analyteType: string; idTypes: string[] }];
   sourceVersions?: SourceVersion[];
   entityCounts?: any;
   metaboliteIntersects?: [];

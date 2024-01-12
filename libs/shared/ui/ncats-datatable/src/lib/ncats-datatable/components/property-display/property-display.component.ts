@@ -16,7 +16,12 @@ export class PropertyDisplayComponent {
    */
   @Input() showLabel = true;
 
-  @Input() displayType?: 'string' | 'number' | 'externalLink' | 'internalLink' | 'date'
+  @Input() displayType?:
+    | 'string'
+    | 'number'
+    | 'externalLink'
+    | 'internalLink'
+    | 'date';
   /**
    * property object being shown
    */
@@ -24,7 +29,7 @@ export class PropertyDisplayComponent {
 
   fetchDisplayType(): string {
     let ret = 'string';
-    if(this.displayType) {
+    if (this.displayType) {
       ret = this.displayType;
     } else {
       if (this.property) {
@@ -35,7 +40,10 @@ export class PropertyDisplayComponent {
             ret = 'externalLink';
           }
         }
-        if (Number.isNaN(this.property.value) || Number.isInteger(this.property.value)) {
+        if (
+          Number.isNaN(this.property.value) ||
+          Number.isInteger(this.property.value)
+        ) {
           ret = 'number';
         }
       }

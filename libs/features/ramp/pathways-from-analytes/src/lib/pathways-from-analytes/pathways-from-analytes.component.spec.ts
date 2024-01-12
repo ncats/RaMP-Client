@@ -35,7 +35,7 @@ describe('PathwaysFromAnalytesComponent', () => {
               strictActionImmutability: true,
               strictStateImmutability: true,
             },
-          }
+          },
         ),
         EffectsModule.forRoot([]),
       ],

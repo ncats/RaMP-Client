@@ -1,26 +1,26 @@
-<div class = "content-wrapper">
-<header>
-<ramp-header [links]="links"></ramp-header>
-</header>
-<main role ="ncats-main">
-<div class="main-content">
-  <ramp-loading [isLoading]="loading"></ramp-loading>
-  <router-outlet></router-outlet>
-</div>
-</main>
-<footer>
-<ncats-footer>
-  <div class="app-description">
-    <a href="/" title="RaMP home page">
-      <img
-        src="./assets/images/RaMPLogoNCATS.png"
-        alt="RaMP logo"
-        class="ramp-logo-footer"
-        id="logo"
-      />
-    </a>
-
-  </div>
-</ncats-footer>
-</footer>
+<div class="content-wrapper">
+  <header>
+    <ramp-header [links]="links"></ramp-header>
+  </header>
+  <main role="ncats-main">
+    <div class="main-content">
+      <div class="" *ngIf="showBanner"><h1>This is a test</h1></div>
+      <ramp-loading [isLoading]="loading"></ramp-loading>
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+  <footer>
+    <ncats-footer>
+      <div class="app-description">
+        <a href="/" title="RaMP home page">
+          <img
+            src="./assets/images/RaMPLogoNCATS.png"
+            alt="RaMP logo"
+            class="ramp-logo-footer"
+            id="logo"
+          />
+        </a>
+      </div>
+    </ncats-footer>
+  </footer>
 </div>
