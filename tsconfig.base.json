@@ -91,7 +91,6 @@
       "@ramp/shared/ui/header-template": [
         "libs/shared/ui/header-template/src/index.ts"
       ],
-      "@ramp/shared/ui/highlight": ["libs/shared/ui/highlight/src/index.ts"],
       "@ramp/shared/ui/loading-spinner": [
         "libs/shared/ui/loading-spinner/src/index.ts"
       ],
