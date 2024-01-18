@@ -7,14 +7,13 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Actions } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
 import { SourceVersion } from '@ramp/models/ramp-models';
-import { LoadRampActions } from "@ramp/stores/ramp-store";
+import { LoadRampActions, RampSelectors } from "@ramp/stores/ramp-store";
 import { map, tap } from "rxjs";
 import { NgIf, NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FlexModule } from '@angular/flex-layout/flex';
-import * as RampSelectors from '@ramp/stores/ramp-store';
 
 
 @Component({

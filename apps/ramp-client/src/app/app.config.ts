@@ -20,7 +20,14 @@ import { EffectsModule, provideEffects } from "@ngrx/effects";
 import { provideRouterStore, routerReducer, StoreRouterConnectingModule } from "@ngrx/router-store";
 import { provideState, provideStore, Store, StoreModule } from "@ngrx/store";
 import { provideStoreDevtools, StoreDevtoolsModule } from "@ngrx/store-devtools";
-import { LoadRampActions, RAMP_STORE_FEATURE_KEY, rampReducer, RampService, RampEffects } from "@ramp/stores/ramp-store";
+import {
+  LoadRampActions,
+  RampSelectors,
+  RampService,
+  RampEffects,
+  rampReducer,
+  RAMP_STORE_FEATURE_KEY
+} from "@ramp/stores/ramp-store";
 import { environment } from '../environments/environment';
 
 import { routes } from './app.routes';

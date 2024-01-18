@@ -3,7 +3,6 @@ import { Routes } from '@angular/router';
 import { EffectsModule, provideEffects } from "@ngrx/effects";
 import { provideState, provideStore, StoreModule } from "@ngrx/store";
 import { StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
-import { RAMP_STORE_FEATURE_KEY, rampReducer, RampEffects } from "@ramp/stores/ramp-store";
 import rFunctions from "../assets/data/rFunctions.json";
 import { environment } from '../environments/environment';
 

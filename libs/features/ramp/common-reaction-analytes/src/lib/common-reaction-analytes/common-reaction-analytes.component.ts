@@ -10,12 +10,11 @@ import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
 import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  CommonReactionAnalyteActions
+  CommonReactionAnalyteActions, RampSelectors
 } from "@ramp/stores/ramp-store";
 import { map } from "rxjs";
 
 import { FlexModule } from '@angular/flex-layout/flex';
-import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
     selector: 'ramp-common-reaction-analytes',

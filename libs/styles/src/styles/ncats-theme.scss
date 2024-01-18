@@ -86,5 +86,4 @@ $app-theme: mat.define-light-theme(
   )
 );
 
-//@include angular-material-theme($app-theme);
 @include mat.all-component-themes($app-theme);

@@ -13,7 +13,9 @@ import { select, Store } from "@ngrx/store";
 import { RampQuery } from "@ramp/models/ramp-models";
 import { DataProperty } from "@ramp/shared/ui/ncats-datatable";
 import { map } from "rxjs";
-import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
+import {
+  RampSelectors
+} from "@ramp/stores/ramp-store";
 
 @Component({
     selector: 'ramp-page-core',

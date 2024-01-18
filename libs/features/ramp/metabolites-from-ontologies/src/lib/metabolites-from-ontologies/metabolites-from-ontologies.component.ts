@@ -22,7 +22,7 @@ import { FilterPanelComponent } from '@ramp/shared/ui/filter-panel';
 import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-FetchOntologiesActions, MetaboliteFromOntologyActions
+FetchOntologiesActions, MetaboliteFromOntologyActions, RampSelectors
 } from "@ramp/stores/ramp-store";
 import { distinctUntilChanged, map } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -32,7 +32,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FlexModule } from '@angular/flex-layout/flex';
-import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
     selector: 'ramp-metabolites-from-ontologies',

@@ -9,10 +9,9 @@ import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
 import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
 import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { PathwayFromAnalyteActions } from "@ramp/stores/ramp-store";
+import { PathwayFromAnalyteActions, RampSelectors } from "@ramp/stores/ramp-store";
 import { map } from "rxjs";
 import { FlexModule } from '@angular/flex-layout/flex';
-import * as RampSelectors from '@ramp/stores/ramp-store';
 
 @Component({
     selector: 'ramp-pathways-from-analytes',

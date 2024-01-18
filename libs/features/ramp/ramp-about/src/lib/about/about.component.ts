@@ -13,14 +13,13 @@ import { select, Store } from "@ngrx/store";
 import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
 import { DataProperty, NcatsDatatableComponent } from "@ramp/shared/ui/ncats-datatable";
 import { UpsetComponent } from "@ramp/shared/visualizations/upset-chart";
-import { LoadRampActions } from "@ramp/stores/ramp-store";
+import { LoadRampActions, RampSelectors } from "@ramp/stores/ramp-store";
 import {tap } from "rxjs";
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { ExtendedModule } from '@angular/flex-layout/extended';
 import { FlexModule } from '@angular/flex-layout/flex';
-import * as RampSelectors from '@ramp/stores/ramp-store';
 
 
 @Component({

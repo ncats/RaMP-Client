@@ -11,11 +11,10 @@ import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
 import {
-  PropertiesFromMetaboliteActions
+  PropertiesFromMetaboliteActions, RampSelectors
 } from "@ramp/stores/ramp-store";
 import { map, takeUntil } from "rxjs";
 import { FlexModule } from '@angular/flex-layout/flex';
-import * as RampSelectors from '@ramp/stores/ramp-store';
 
 
 @Component({

@@ -8,15 +8,14 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from '@angular/material/dialog';
 import { select, Store } from "@ngrx/store";
-import { RampHeaderComponent } from "@ramp/features/ramp/ramp-header";
+import { LinkTemplateProperty, RampHeaderComponent } from "@ramp/features/ramp/ramp-header";
 import { NcatsFooterComponent } from "@ramp/shared/ncats/ncats-footer";
-import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
 import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
 import { map } from "rxjs";
-import * as RampSelectors from "../../../../libs/stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 import { environment } from '../environments/environment';
 import { RouterOutlet } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { RampSelectors } from "@ramp/stores/ramp-store";
 
 @Component({
     selector: 'ramp-root',

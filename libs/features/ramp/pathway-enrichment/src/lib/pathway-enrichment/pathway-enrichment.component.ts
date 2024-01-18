@@ -24,7 +24,7 @@ import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
- PathwayEnrichmentsActions
+ PathwayEnrichmentsActions, RampSelectors
 } from "@ramp/stores/ramp-store";
 import { map, takeUntil } from "rxjs";
 import { MatRadioModule } from '@angular/material/radio';
@@ -37,7 +37,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexModule } from '@angular/flex-layout/flex';
-import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
     selector: 'ramp-pathway-enrichment',
