@@ -1,27 +1,42 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component,
-  ElementRef,
+  Component, DestroyRef,
+  ElementRef, inject,
   Inject,
   OnInit,
-  ViewChild,
-} from '@angular/core';
+  ViewChild
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { UntypedFormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { select, Store } from "@ngrx/store";
 import { Classes, RampQuery } from '@ramp/models/ramp-models';
+import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchClassesFromMetabolites,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { takeUntil } from 'rxjs';
+  ClassesFromMetabolitesActions
+} from "@ramp/stores/ramp-store";
+import { map, takeUntil } from "rxjs";
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
-  selector: 'ramp-classes-from-metabolites',
-  templateUrl: './classes-from-metabolites.component.html',
-  styleUrls: ['./classes-from-metabolites.component.scss'],
+    selector: 'ramp-classes-from-metabolites',
+    templateUrl: './classes-from-metabolites.component.html',
+    styleUrls: ['./classes-from-metabolites.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        InputRowComponent,
+        FeedbackPanelComponent,
+        QueryPageComponent,
+        TitleCasePipe,
+    ],
 })
 export class ClassesFromMetabolitesComponent
   extends PageCoreComponent
@@ -96,17 +111,18 @@ export class ClassesFromMetabolitesComponent
 
   constructor(
     private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
-    this.rampFacade.classes$.pipe(takeUntil(this.ngUnsubscribe)).subscribe(
-      (
-        res:
+    this.store
+      .pipe(
+        select(RampSelectors.getClasses),
+        takeUntilDestroyed(this.destroyRef),
+        map(
+          (res:
           | {
               dataframe: any;
               data: Classes[];
@@ -158,22 +174,22 @@ export class ClassesFromMetabolitesComponent
         }
         this.ref.markForCheck();
       },
-    );
+    )).subscribe();
   }
 
   fetchClasses(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
     if (this.file) {
-      this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({
+      this.store.dispatch(
+        ClassesFromMetabolitesActions.fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
           background: this.file,
         }),
       );
     } else {
-      this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({
+      this.store.dispatch(
+        ClassesFromMetabolitesActions.fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
         }),

@@ -2,32 +2,50 @@ import { ScrollDispatcher } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnDestroy,
+  Component, DestroyRef,
+  ElementRef, inject,
   OnInit,
   QueryList,
-  ViewChildren,
-} from '@angular/core';
+  ViewChildren
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { select, Store } from "@ngrx/store";
 import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
-import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { initAbout, RampFacade } from '@ramp/stores/ramp-store';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { DataProperty, NcatsDatatableComponent } from "@ramp/shared/ui/ncats-datatable";
+import { UpsetComponent } from "@ramp/shared/visualizations/upset-chart";
+import { LoadRampActions } from "@ramp/stores/ramp-store";
+import {tap } from "rxjs";
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgClass, NgIf, NgFor } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from '@ramp/stores/ramp-store';
+
 
 @Component({
-  selector: 'ramp-about',
-  templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'ramp-about',
+    templateUrl: './about.component.html',
+    styleUrls: ['./about.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FlexModule,
+        ExtendedModule,
+        MatListModule,
+        NgClass,
+        NgIf,
+        CdkScrollable,
+        NgFor,
+        NcatsDatatableComponent,
+        UpsetComponent,
+    ],
 })
-export class AboutComponent implements OnInit, OnDestroy {
-  @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
+export class AboutComponent implements OnInit {
+  private readonly store = inject(Store);
+  destroyRef = inject(DestroyRef);
 
-  /**
-   * Behaviour subject to allow extending class to unsubscribe on destroy
-   * @type {Subject<any>}
-   */
-  protected ngUnsubscribe: Subject<any> = new Subject();
+  @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
 
   /**
    * default active element for menu highlighting, will be replaced on scroll
@@ -84,14 +102,13 @@ export class AboutComponent implements OnInit, OnDestroy {
   constructor(
     private changeDetector: ChangeDetectorRef,
     private scrollDispatcher: ScrollDispatcher,
-    protected rampFacade: RampFacade,
   ) {}
 
   ngOnInit(): void {
-    this.rampFacade.dispatch(initAbout());
-    this.rampFacade.allRampStore$
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
+    this.store.dispatch(LoadRampActions.loadRampStats())
+    this.store.pipe(
+      select(RampSelectors.getAllRamp),
+      takeUntilDestroyed(this.destroyRef),
         tap((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
@@ -140,7 +157,9 @@ export class AboutComponent implements OnInit, OnDestroy {
 
     this.scrollDispatcher
       .scrolled()
-      .pipe(takeUntil(this.ngUnsubscribe))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((data) => {
         if (data) {
           let scrollTop: number =
@@ -181,13 +200,5 @@ export class AboutComponent implements OnInit, OnDestroy {
    */
   isActive(check: string): boolean {
     return this.activeElement === check;
-  }
-
-  /**
-   * clean up on leaving component
-   */
-  ngOnDestroy() {
-    this.ngUnsubscribe.next('bye-bye');
-    this.ngUnsubscribe.complete();
   }
 }

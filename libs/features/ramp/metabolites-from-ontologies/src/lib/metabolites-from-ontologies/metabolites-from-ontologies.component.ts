@@ -1,33 +1,63 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component,
-  ElementRef,
+  Component, DestroyRef,
+  ElementRef, inject,
   Inject,
   OnInit,
   QueryList,
   ViewChild,
-  ViewChildren,
-} from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute } from '@angular/router';
+  ViewChildren
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { select, Store } from "@ngrx/store";
 import { Metabolite, RampQuery } from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { FilterPanelComponent } from '@ramp/shared/ui/filter-panel';
+import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchMetabolitesFromOntologies,
-  fetchMetabolitesFromOntologiesFile,
-  fetchOntologies,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs';
+FetchOntologiesActions, MetaboliteFromOntologyActions
+} from "@ramp/stores/ramp-store";
+import { distinctUntilChanged, map } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
-  selector: 'ramp-metabolites-from-ontologies',
-  templateUrl: './metabolites-from-ontologies.component.html',
-  styleUrls: ['./metabolites-from-ontologies.component.scss'],
+    selector: 'ramp-metabolites-from-ontologies',
+    templateUrl: './metabolites-from-ontologies.component.html',
+    styleUrls: ['./metabolites-from-ontologies.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        MatTabsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        NgFor,
+        NgIf,
+        FilterPanelComponent,
+        MatButtonModule,
+        ExtendedModule,
+        MatIconModule,
+        MatTooltipModule,
+        LoadingComponent,
+        FeedbackPanelComponent,
+        QueryPageComponent,
+        TitleCasePipe,
+    ],
 })
 export class MetabolitesFromOntologiesComponent
   extends PageCoreComponent
@@ -69,17 +99,17 @@ export class MetabolitesFromOntologiesComponent
 
   constructor(
     private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
-    this.rampFacade.dispatch(fetchOntologies());
+    this.store.dispatch(FetchOntologiesActions.fetchOntologies());
     this.allOntoFilterCtrl.valueChanges
-      .pipe(takeUntil(this.ngUnsubscribe), distinctUntilChanged())
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        distinctUntilChanged())
       .subscribe((term) => {
         if (term.trim() && term.trim().length > 0) {
           this.ontologies = [];
@@ -100,9 +130,11 @@ export class MetabolitesFromOntologiesComponent
         }
       });
 
-    this.rampFacade.ontologiesList$
+
+    this.store
       .pipe(
-        takeUntil(this.ngUnsubscribe),
+        select(RampSelectors.getontologiesList),
+        takeUntilDestroyed(this.destroyRef),
         map((res: any) => {
           if (res && res.data) {
             this.ontologies = res.data.map(
@@ -129,9 +161,11 @@ export class MetabolitesFromOntologiesComponent
       )
       .subscribe();
 
-    this.rampFacade.metabolites$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store
+      .pipe(
+        select(RampSelectors.getMetabolites),
+        takeUntilDestroyed(this.destroyRef),
+        map(
         (
           res:
             | { data: Metabolite[]; query: RampQuery; dataframe: any }
@@ -160,7 +194,7 @@ export class MetabolitesFromOntologiesComponent
           this.loading = false;
           this.ref.markForCheck();
         },
-      );
+      )).subscribe();
   }
 
   setValues(values: any) {
@@ -190,16 +224,16 @@ export class MetabolitesFromOntologiesComponent
     this.loading = true;
     this.tabIndex = 0;
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
-    this.rampFacade.dispatch(
-      fetchMetabolitesFromOntologies({ ontologies: ontologiesList }),
+    this.store.dispatch(
+      MetaboliteFromOntologyActions.fetchMetabolitesFromOntologies({ ontologies: ontologiesList }),
     );
   }
 
   fetchMetabolitesFile(): void {
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
     if (ontologiesList.length) {
-      this.rampFacade.dispatch(
-        fetchMetabolitesFromOntologiesFile({
+      this.store.dispatch(
+        MetaboliteFromOntologyActions.fetchMetabolitesFromOntologiesFile({
           ontologies: ontologiesList,
           format: 'tsv',
         }),

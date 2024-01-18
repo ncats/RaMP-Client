@@ -1,28 +1,44 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
   OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+  ViewEncapsulation
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { select, Store } from "@ngrx/store";
 import { Ontology, RampQuery } from '@ramp/models/ramp-models';
+import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchOntologiesFromMetabolites,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { takeUntil } from 'rxjs';
+  OntologyFromMetaboliteActions
+} from "@ramp/stores/ramp-store";
+import { map, takeUntil } from "rxjs";
+
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
-  selector: 'ramp-ontologies-from-metabolites',
-  templateUrl: './ontologies-from-metabolites.component.html',
-  styleUrls: ['./ontologies-from-metabolites.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'ramp-ontologies-from-metabolites',
+    templateUrl: './ontologies-from-metabolites.component.html',
+    styleUrls: ['./ontologies-from-metabolites.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        InputRowComponent,
+        FeedbackPanelComponent,
+        QueryPageComponent,
+        TitleCasePipe,
+    ],
 })
 export class OntologiesFromMetabolitesComponent
   extends PageCoreComponent
@@ -53,17 +69,17 @@ export class OntologiesFromMetabolitesComponent
 
   constructor(
     private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
-    this.rampFacade.ontologies$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store
+      .pipe(
+        select(RampSelectors.getOntologies),
+        takeUntilDestroyed(this.destroyRef),
+        map(
         (
           res:
             | { data: Ontology[]; query: RampQuery; dataframe: any }
@@ -95,13 +111,13 @@ export class OntologiesFromMetabolitesComponent
           }
           this.ref.markForCheck();
         },
-      );
+      )).subscribe();
   }
 
   fetchOntologies(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(
-      fetchOntologiesFromMetabolites({ analytes: event }),
+    this.store.dispatch(
+      OntologyFromMetaboliteActions.fetchOntologiesFromMetabolites({ metabolites: event }),
     );
   }
 

@@ -1,9 +1,17 @@
 import { Component, Input } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'ramp-loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss'],
+    selector: 'ramp-loading',
+    templateUrl: './loading.component.html',
+    styleUrls: ['./loading.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        NgClass,
+        MatProgressSpinnerModule,
+    ],
 })
 export class LoadingComponent {
   @Input() isLoading = true;

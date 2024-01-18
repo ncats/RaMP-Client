@@ -1,21 +1,39 @@
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { DOCUMENT, TitleCasePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, DestroyRef, inject, Inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { select, Store } from "@ngrx/store";
 import { Pathway, RampQuery } from '@ramp/models/ramp-models';
+import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { fetchPathwaysFromAnalytes, RampFacade } from '@ramp/stores/ramp-store';
-import { takeUntil } from 'rxjs';
+import { PathwayFromAnalyteActions } from "@ramp/stores/ramp-store";
+import { map } from "rxjs";
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from '@ramp/stores/ramp-store';
 
 @Component({
-  selector: 'ramp-pathways-from-analytes',
-  templateUrl: './pathways-from-analytes.component.html',
-  styleUrls: ['./pathways-from-analytes.component.scss'],
+    selector: 'ramp-pathways-from-analytes',
+    templateUrl: './pathways-from-analytes.component.html',
+    styleUrls: ['./pathways-from-analytes.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        InputRowComponent,
+        FeedbackPanelComponent,
+        QueryPageComponent,
+        TitleCasePipe,
+    ],
 })
 export class PathwaysFromAnalytesComponent
   extends PageCoreComponent
   implements OnInit
 {
+ // private changeRef = inject(ChangeDetectorRef);
+
   pathwayColumns: DataProperty[] = [
     new DataProperty({
       label: 'Input ID',
@@ -45,18 +63,16 @@ export class PathwaysFromAnalytesComponent
   ];
 
   constructor(
-    private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
-    this.rampFacade.pathways$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store.pipe(
+      select(RampSelectors.getPathways),
+      takeUntilDestroyed(this.destroyRef),
+      map(
         (
           res:
             | { data: Pathway[]; query: RampQuery; dataframe: any }
@@ -86,14 +102,14 @@ export class PathwaysFromAnalytesComponent
               this.downloadQueued = false;
             }
           }
-          this.ref.markForCheck();
         },
-      );
+      )).subscribe();
+    this.changeRef.detectChanges()
   }
 
   fetchPathways(event: string[]): void {
     this.inputList = event.map((item) => (item = item.toLocaleLowerCase()));
-    this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
+    this.store.dispatch(PathwayFromAnalyteActions.fetchPathwaysFromAnalytes({ analytes: event }));
   }
 
   fetchPathwaysFile(event: string[]): void {

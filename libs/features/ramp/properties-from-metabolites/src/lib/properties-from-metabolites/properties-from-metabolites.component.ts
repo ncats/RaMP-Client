@@ -1,25 +1,43 @@
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { DOCUMENT, TitleCasePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, DestroyRef, inject, Inject, Input, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { select, Store } from "@ngrx/store";
 import { Properties, RampQuery } from '@ramp/models/ramp-models';
+import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
+import { StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
 import {
-  fetchPropertiesFromMetabolites,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { takeUntil } from 'rxjs';
-import { STRUCTURE_VIEWER_COMPONENT } from '../features-ramp-properties-from-metabolites.module';
+  PropertiesFromMetaboliteActions
+} from "@ramp/stores/ramp-store";
+import { map, takeUntil } from "rxjs";
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from '@ramp/stores/ramp-store';
+
 
 @Component({
-  selector: 'ramp-properties-from',
-  templateUrl: './properties-from-metabolites.component.html',
-  styleUrls: ['./properties-from-metabolites.component.scss'],
+    selector: 'ramp-properties-from',
+    templateUrl: './properties-from-metabolites.component.html',
+    styleUrls: ['./properties-from-metabolites.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        InputRowComponent,
+        FeedbackPanelComponent,
+        QueryPageComponent,
+        TitleCasePipe,
+    ],
 })
 export class PropertiesFromMetabolitesComponent
   extends PageCoreComponent
   implements OnInit
 {
+  @Input() renderUrl!: string;
+
   propertiesColumns: DataProperty[] = [
     new DataProperty({
       label: 'Source ID',
@@ -34,7 +52,7 @@ export class PropertiesFromMetabolitesComponent
     new DataProperty({
       label: 'Metabolite',
       field: 'imageUrl',
-      customComponent: STRUCTURE_VIEWER_COMPONENT,
+      customComponent: StructureViewerComponent,
     }),
     /*    new DataProperty({
       label: "Smiles",
@@ -66,17 +84,16 @@ export class PropertiesFromMetabolitesComponent
 
   constructor(
     private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
-    this.rampFacade.properties$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store.pipe(
+      select(RampSelectors.getProperties),
+      takeUntilDestroyed(this.destroyRef),
+      map(
         (
           res:
             | { data: Properties[]; query: RampQuery; dataframe: any }
@@ -108,13 +125,13 @@ export class PropertiesFromMetabolitesComponent
           }
           this.ref.markForCheck();
         },
-      );
+      )).subscribe();
   }
 
   fetchProperties(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(
-      fetchPropertiesFromMetabolites({ metabolites: event }),
+    this.store.dispatch(
+      PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolites({ metabolites: event }),
     );
   }
   fetchPropertiesFile(event: string[]): void {
@@ -139,10 +156,10 @@ export class PropertiesFromMetabolitesComponent
           value: value[1],
         });
       });
-      newObj.imageUrl.url = `${
-        this.route.snapshot.data.renderUrl
+      newObj['imageUrl'].url = `${
+        this.renderUrl
       }(${encodeURIComponent(obj.iso_smiles)})?size=150`;
-      newObj.imageUrl.label = newObj.common_name.value;
+      newObj['imageUrl'].label = newObj['common_name'].value;
       return newObj;
     });
   }

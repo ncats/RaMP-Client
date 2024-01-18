@@ -2,16 +2,16 @@
   "name": "ramp-client",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "apps/ramp-client/src",
   "prefix": "ramp-client",
+  "sourceRoot": "apps/ramp-client/src",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/ramp-client/browser",
         "index": "apps/ramp-client/src/index.html",
-        "main": "apps/ramp-client/src/main.ts",
+        "browser": "apps/ramp-client/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/ramp-client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
@@ -36,7 +36,12 @@
           "node_modules/swagger-ui/dist/swagger-ui.css",
           "apps/ramp-client/src/styles.scss"
         ],
-        "scripts": []
+        "scripts": [],
+        "server": "apps/ramp-client/src/main.server.ts",
+        "prerender": true,
+        "ssr": {
+          "entry": "apps/ramp-client/server.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -61,12 +66,9 @@
           "outputHashing": "all"
         },
         "development": {
-          "buildOptimizer": false,
           "optimization": false,
-          "vendorChunk": true,
           "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true
+          "sourceMap": true
         }
       },
       "defaultConfiguration": "production"
@@ -128,9 +130,11 @@
           ]
         },
         "development": {
+          "buildOptimizer": false,
           "optimization": false,
           "sourceMap": true,
-          "extractLicenses": false
+          "extractLicenses": false,
+          "vendorChunk": true
         }
       },
       "defaultConfiguration": "production",

@@ -13,7 +13,19 @@ import {
   Reaction,
   SourceVersion,
 } from '@ramp/models/ramp-models';
-import { filterEnrichmentFromMetabolitesFailure } from './ramp.actions';
+import {
+  AnalyteFromPathwayActions,
+  ClassesFromMetabolitesActions,
+  CommonReactionAnalyteActions,
+  FetchOntologiesActions,
+  LoadRampActions,
+  MetaboliteEnrichmentsActions,
+  MetaboliteFromOntologyActions,
+  OntologyFromMetaboliteActions,
+  PathwayEnrichmentsActions,
+  PathwayFromAnalyteActions,
+  PropertiesFromMetaboliteActions
+} from "./ramp.actions";
 
 import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
@@ -101,32 +113,31 @@ export const initialState: State = rampAdapter.getInitialState({
   loading: false,
 });
 
-const rampReducer = createReducer(
+export const rampReducer = createReducer(
   initialState,
-  on(RampActions.init, (state) => ({
+
+  on(LoadRampActions.loadRamp, (state) => ({
     ...state,
     loading: false,
     error: null,
   })),
-  on(RampActions.loadRampSuccess, (state, { rampStore }) =>
-    rampAdapter.setAll(rampStore, { ...state, loading: false }),
-  ),
 
-  on(RampActions.init, RampActions.initAbout, (state) => ({
+  on(LoadRampActions.loadRampStats, (state) => ({
     ...state,
     error: null,
   })),
 
   on(
-    RampActions.fetchOntologiesFromMetabolites,
-    RampActions.fetchAnalytesFromPathways,
-    RampActions.fetchPathwaysFromAnalytes,
-    RampActions.fetchMetabolitesFromOntologies,
-    RampActions.fetchCommonReactionAnalytes,
-    RampActions.fetchClassesFromMetabolites,
-    RampActions.fetchPropertiesFromMetabolites,
-    RampActions.fetchEnrichmentFromMetabolites,
-    RampActions.fetchEnrichmentFromPathways,
+    OntologyFromMetaboliteActions.fetchOntologiesFromMetabolites,
+    AnalyteFromPathwayActions.fetchAnalytesFromPathways,
+    PathwayEnrichmentsActions.fetchPathwaysFromAnalytes,
+    PathwayFromAnalyteActions.fetchPathwaysFromAnalytes,
+    MetaboliteFromOntologyActions.fetchMetabolitesFromOntologies,
+    CommonReactionAnalyteActions.fetchCommonReactionAnalytes,
+    ClassesFromMetabolitesActions.fetchClassesFromMetabolites,
+    PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolites,
+    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolites,
+    PathwayEnrichmentsActions.fetchEnrichmentFromPathways,
     (state) => ({
       ...state,
       loading: true,
@@ -134,7 +145,7 @@ const rampReducer = createReducer(
     }),
   ),
 
-  on(RampActions.loadRampAboutSuccess, (state, { data }) => ({
+  on(LoadRampActions.loadRampStatsSuccess, (state, { data }) => ({
     ...state,
     loading: false,
     sourceVersions: data.sourceVersions,
@@ -144,20 +155,29 @@ const rampReducer = createReducer(
     databaseUrl: data.databaseUrl,
   })),
 
-  on(RampActions.initSuccess, (state, { data }) => ({
+/*
+
+  on(LoadRampActions.loadRampSuccess, (state, { data }) => ({
+    ...state,
+    loading: false,
+    supportedIds: data,
+  })),
+*/
+
+  on(LoadRampActions.loadRampSuccess, (state, { data }) => ({
     ...state,
     loading: false,
     supportedIds: data,
   })),
 
-  on(RampActions.loadSourceVersionsSuccess, (state, { versions }) => ({
+  on(LoadRampActions.loadSourceVersionsSuccess, (state, { versions }) => ({
     ...state,
     loading: false,
     sourceVersions: versions,
   })),
 
   on(
-    RampActions.fetchOntologiesFromMetabolitesSuccess,
+    OntologyFromMetaboliteActions.fetchOntologiesFromMetabolitesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -166,7 +186,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchAnalytesFromPathwaysSuccess,
+    AnalyteFromPathwayActions.fetchAnalytesFromPathwaysSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -175,7 +195,8 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchPathwaysFromAnalytesSuccess,
+    PathwayEnrichmentsActions.fetchPathwaysFromAnalytesSuccess,
+    PathwayFromAnalyteActions.fetchPathwaysFromAnalytesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -184,7 +205,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchCommonReactionAnalytesSuccess,
+    CommonReactionAnalyteActions.fetchCommonReactionAnalytesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -193,7 +214,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchMetabolitesFromOntologiesSuccess,
+    MetaboliteFromOntologyActions.fetchMetabolitesFromOntologiesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -201,14 +222,14 @@ const rampReducer = createReducer(
     }),
   ),
 
-  on(RampActions.fetchOntologiesSuccess, (state, { ontologies }) => ({
+  on(FetchOntologiesActions.fetchOntologiesSuccess, (state, { data }) => ({
     ...state,
     loading: false,
-    ontologiesList: ontologies,
+    ontologiesList: data,
   })),
 
   on(
-    RampActions.fetchClassesFromMetabolitesSuccess,
+    ClassesFromMetabolitesActions.fetchClassesFromMetabolitesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -217,7 +238,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchPropertiesFromMetabolitesSuccess,
+    PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolitesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -226,7 +247,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchEnrichmentFromMetabolitesSuccess,
+    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess,
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
@@ -235,7 +256,7 @@ const rampReducer = createReducer(
     }),
   ),
   on(
-    RampActions.filterEnrichmentFromMetabolitesSuccess,
+    MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesSuccess,
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
@@ -245,7 +266,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchEnrichmentFromPathwaysSuccess,
+    PathwayEnrichmentsActions.fetchEnrichmentFromPathwaysSuccess,
     (state, { data, query, combinedFishersDataframe }) => {
       return {
         ...state,
@@ -259,7 +280,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.filterEnrichmentFromPathwaysSuccess,
+    PathwayEnrichmentsActions.filterEnrichmentFromPathwaysSuccess,
     (state, { data, query, filteredFishersDataframe }) => {
       return {
         ...state,
@@ -277,7 +298,7 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.fetchClusterFromEnrichmentSuccess,
+    PathwayEnrichmentsActions.fetchClusterFromEnrichmentSuccess,
     (state, { data, plot, query, dataframe }) => {
       return {
         ...state,
@@ -290,17 +311,22 @@ const rampReducer = createReducer(
   ),
 
   on(
-    RampActions.loadRampFailure,
-    RampActions.loadRampAboutFailure,
-    RampActions.loadSourceVersionsFailure,
-    RampActions.fetchPathwaysFromAnalytesFailure,
-    RampActions.fetchOntologiesFromMetabolitesFailure,
-    RampActions.fetchMetaboliteFromOntologiesFailure,
-    RampActions.fetchOntologiesFailure,
-    RampActions.fetchCommonReactionAnalytesFailure,
-    RampActions.fetchClassesFromMetabolitesFailure,
-    RampActions.fetchPropertiesFromMetabolitesFailure,
-    filterEnrichmentFromMetabolitesFailure,
+    LoadRampActions.loadRampFailure,
+    LoadRampActions.loadRampStatsFailure,
+    LoadRampActions.loadSourceVersionsFailure,
+    PathwayFromAnalyteActions.fetchPathwaysFromAnalytesFailure,
+    OntologyFromMetaboliteActions.fetchOntologiesFromMetabolitesFailure,
+    MetaboliteFromOntologyActions.fetchMetaboliteFromOntologiesFailure,
+    FetchOntologiesActions.fetchOntologiesFailure,
+    CommonReactionAnalyteActions.fetchCommonReactionAnalytesFailure,
+    ClassesFromMetabolitesActions.fetchClassesFromMetabolitesFailure,
+    PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolitesFailure,
+    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesFailure,
+    MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesFailure,
+    PathwayEnrichmentsActions.fetchPathwaysFromAnalytesFailure,
+    PathwayEnrichmentsActions.fetchClusterFromEnrichmentFailure,
+    PathwayEnrichmentsActions.fetchEnrichmentFromPathwaysFailure,
+    PathwayEnrichmentsActions.filterEnrichmentFromPathwaysFailure,
     (state, { error }) => {
       // console.log(error);
       return {

@@ -1,19 +1,35 @@
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { DOCUMENT, TitleCasePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { select } from "@ngrx/store";
 import { RampQuery, Reaction } from '@ramp/models/ramp-models';
+import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchCommonReactionAnalytes,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { takeUntil } from 'rxjs';
+  CommonReactionAnalyteActions
+} from "@ramp/stores/ramp-store";
+import { map } from "rxjs";
+
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
-  selector: 'ramp-common-reaction-analytes',
-  templateUrl: './common-reaction-analytes.component.html',
-  styleUrls: ['./common-reaction-analytes.component.scss'],
+    selector: 'ramp-common-reaction-analytes',
+    templateUrl: './common-reaction-analytes.component.html',
+    styleUrls: ['./common-reaction-analytes.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        InputRowComponent,
+        FeedbackPanelComponent,
+        QueryPageComponent,
+        TitleCasePipe,
+    ],
 })
 export class CommonReactionAnalytesComponent
   extends PageCoreComponent
@@ -48,17 +64,17 @@ export class CommonReactionAnalytesComponent
 
   constructor(
     private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
-    this.rampFacade.reactions$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store
+      .pipe(
+        select(RampSelectors.getCommonReactions),
+        takeUntilDestroyed(this.destroyRef),
+        map(
         (
           res:
             | { data: Reaction[]; query: RampQuery; dataframe: any }
@@ -92,12 +108,12 @@ export class CommonReactionAnalytesComponent
           }
           this.ref.markForCheck();
         },
-      );
+      )).subscribe();
   }
 
   fetchReactions(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(fetchCommonReactionAnalytes({ analytes: event }));
+    this.store.dispatch(CommonReactionAnalyteActions.fetchCommonReactionAnalytes({ analytes: event }));
   }
 
   fetchReactionsFile(event: string[]): void {

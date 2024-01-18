@@ -1,1 +1,1 @@
-export * from './lib/features-ramp-chemical-enrichment.module';
+export * from './lib/chemical-enrichment/chemical-enrichment.component';

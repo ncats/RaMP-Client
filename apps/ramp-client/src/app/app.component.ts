@@ -1,23 +1,42 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, DestroyRef, inject,
   OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+  ViewEncapsulation
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from '@angular/material/dialog';
+import { select, Store } from "@ngrx/store";
+import { RampHeaderComponent } from "@ramp/features/ramp/ramp-header";
+import { NcatsFooterComponent } from "@ramp/shared/ncats/ncats-footer";
 import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
-import { RampFacade } from '@ramp/stores/ramp-store';
+import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
+import { map } from "rxjs";
+import * as RampSelectors from "../../../../libs/stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 import { environment } from '../environments/environment';
+import { RouterOutlet } from '@angular/router';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'ramp-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'ramp-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+      NgIf,
+      RouterOutlet,
+      NcatsFooterComponent,
+      LoadingComponent,
+      RampHeaderComponent
+    ],
 })
 export class AppComponent implements OnInit {
+  private readonly store = inject(Store);
+  destroyRef = inject(DestroyRef);
+
   title = 'ramp-client';
   loading = true;
   showBanner = false;
@@ -98,25 +117,29 @@ export class AppComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private changeRef: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
   ) {}
 
   ngOnInit() {
     this.showBanner = !environment.production;
-    this.rampFacade.error$.subscribe((error) => {
+/*    this.error$.subscribe((error) => {
       if (error) {
         // console.log(error);
-        /* this.dialog.open(ErrorDialogComponent, {
+        /!* this.dialog.open(ErrorDialogComponent, {
           data: {
             error: error,
           },
-        });*/
+        });*!/
       }
-    });
+    });*/
 
-    this.rampFacade.loading$.subscribe((res) => {
+    this.store
+      .pipe(
+        select(RampSelectors.getRampLoaded),
+        takeUntilDestroyed(this.destroyRef),
+      map((res: boolean) => {
       this.loading = res;
       this.changeRef.markForCheck();
-    });
+    })
+      ).subscribe();
   }
 }

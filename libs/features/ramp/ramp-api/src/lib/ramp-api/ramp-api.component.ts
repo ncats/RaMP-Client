@@ -8,11 +8,14 @@ import {
   ViewChild,
 } from '@angular/core';
 import SwaggerUI from 'swagger-ui';
+import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-  selector: 'ramp-ramp-api',
-  templateUrl: './ramp-api.component.html',
-  styleUrls: ['./ramp-api.component.scss'],
+    selector: 'ramp-ramp-api',
+    templateUrl: './ramp-api.component.html',
+    styleUrls: ['./ramp-api.component.scss'],
+    standalone: true,
+    imports: [FlexModule],
 })
 export class RampApiComponent implements AfterViewInit {
   /**

@@ -12,7 +12,6 @@ const ROUTES: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FlexLayoutModule, RouterModule.forChild(ROUTES)],
-  declarations: [RampApiComponent],
+    imports: [CommonModule, FlexLayoutModule, RouterModule.forChild(ROUTES), RampApiComponent],
 })
 export class FeaturesRampRampApiModule {}

@@ -1,9 +1,9 @@
 @use '@angular/material' as mat;
 @use '_utils' as utils;
-@import 'libs/shared/ui/header-template/src/theming';
+// @import 'libs/shared/ui/header-template/src/theming';
 @import 'ncats-theme';
 
-@include header-theme($app-theme);
+// @include header-theme($app-theme);
 
 html,
 app-root {
@@ -87,4 +87,16 @@ a {
 
 .footer-template {
   color: mat.get-color-from-palette($app-primary);
+}
+
+.ramp-tile {
+  border: 1px solid;
+  border-color: mat.get-color-from-palette($app-accent);
+  padding: 0;
+}
+
+.ramp-card-header {
+  background-color: mat.get-color-from-palette($app-accent);
+  color: #ffffff;
+  padding: 20px;
 }

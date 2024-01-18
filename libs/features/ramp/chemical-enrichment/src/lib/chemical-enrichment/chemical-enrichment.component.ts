@@ -1,37 +1,73 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgIf, NgFor, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component,
-  ElementRef,
+  Component, DestroyRef,
+  ElementRef, inject,
   Inject,
   OnInit,
-  ViewChild,
-} from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+  ViewChild
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute } from '@angular/router';
+import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { select, Store } from "@ngrx/store";
 import {
   ChemicalEnrichment,
   Classes,
   RampQuery,
 } from '@ramp/models/ramp-models';
+import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
 import { CompleteDialogComponent } from '@ramp/shared/ui/complete-dialog';
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
+import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchClassesFromMetabolites,
-  fetchEnrichmentFromMetabolites,
-  fetchEnrichmentFromMetabolitesFile,
-  filterEnrichmentFromMetabolites,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { takeUntil } from 'rxjs';
+  ClassesFromMetabolitesActions, MetaboliteEnrichmentsActions
+} from "@ramp/stores/ramp-store";
+import { map, takeUntil } from "rxjs";
+import { MatRadioModule } from '@angular/material/radio';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
-  selector: 'ramp-chemical-enrichment',
-  templateUrl: './chemical-enrichment.component.html',
-  styleUrls: ['./chemical-enrichment.component.scss'],
+    selector: 'ramp-chemical-enrichment',
+    templateUrl: './chemical-enrichment.component.html',
+    styleUrls: ['./chemical-enrichment.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        MatTabsModule,
+        InputRowComponent,
+        NgIf,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        MatOptionModule,
+        NgFor,
+        LoadingComponent,
+        FeedbackPanelComponent,
+        MatTooltipModule,
+        ExtendedModule,
+        QueryPageComponent,
+        MatInputModule,
+        MatRadioModule,
+        TitleCasePipe,
+    ],
 })
 export class ChemicalEnrichmentComponent
   extends PageCoreComponent
@@ -150,18 +186,18 @@ export class ChemicalEnrichmentComponent
 
   constructor(
     private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
     public dialog: MatDialog,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
-    this.rampFacade.chemicalEnrichment$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store
+      .pipe(
+        select(RampSelectors.getChemicalEnrichment),
+        takeUntilDestroyed(this.destroyRef),
+        map(
         (
           res: { data: ChemicalEnrichment[]; openModal?: boolean } | undefined,
         ) => {
@@ -203,11 +239,13 @@ export class ChemicalEnrichmentComponent
           this.enrichmentDataFrame = res.dataframe;
         }*/
         },
-      );
+      )).subscribe();
 
-    this.rampFacade.classes$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store
+      .pipe(
+        select(RampSelectors.getClasses),
+        takeUntilDestroyed(this.destroyRef),
+        map(
         (
           res:
             | { data: Classes[]; query: RampQuery; dataframe: any }
@@ -233,7 +271,7 @@ export class ChemicalEnrichmentComponent
           this.classesLoading = false;
           this.ref.markForCheck();
         },
-      );
+      )).subscribe();
   }
 
   fetchEnrichment(event: string[]): void {
@@ -241,29 +279,29 @@ export class ChemicalEnrichmentComponent
     this.inputList = event.map((item) => item.toLocaleLowerCase());
     this.enrichmentLoading = true;
     if (this.file) {
-      this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({
+      this.store.dispatch(
+        ClassesFromMetabolitesActions.fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
           background: this.file,
         }),
       );
-      this.rampFacade.dispatch(
-        fetchEnrichmentFromMetabolites({
+      this.store.dispatch(
+       MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
           background: this.file,
         }),
       );
     } else {
-      this.rampFacade.dispatch(
-        fetchClassesFromMetabolites({
+      this.store.dispatch(
+        ClassesFromMetabolitesActions.fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
         }),
       );
-      this.rampFacade.dispatch(
-        fetchEnrichmentFromMetabolites({
+      this.store.dispatch(
+        MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
         }),
@@ -279,8 +317,8 @@ export class ChemicalEnrichmentComponent
   }
 
   fetchEnrichedClassesFile(): void {
-    this.rampFacade.dispatch(
-      fetchEnrichmentFromMetabolitesFile({
+    this.store.dispatch(
+      MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesFile({
         metabolites: this.inputList,
         format: 'tsv',
       }),
@@ -289,8 +327,8 @@ export class ChemicalEnrichmentComponent
 
   filterEnrichments() {
     this.enrichmentLoading = true;
-    this.rampFacade.dispatch(
-      filterEnrichmentFromMetabolites({
+    this.store.dispatch(
+      MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolites({
         pval_cutoff: this.pValueFormCtrl.value,
         pval_type: this.pValueTypeFormCtrl.value,
       }),

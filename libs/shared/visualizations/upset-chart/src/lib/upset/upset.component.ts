@@ -28,10 +28,11 @@ import { extent, max } from 'd3-array';
 import { UpsetData } from '../upset-data';
 
 @Component({
-  selector: 'ramp-upset',
-  templateUrl: './upset.component.html',
-  styleUrls: ['./upset.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'ramp-upset',
+    templateUrl: './upset.component.html',
+    styleUrls: ['./upset.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: true,
 })
 export class UpsetComponent implements OnInit {
   @Input() scale: 'linear' | 'log' = 'linear';

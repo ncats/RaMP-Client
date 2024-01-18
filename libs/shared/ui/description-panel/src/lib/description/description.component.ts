@@ -1,12 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'ramp-description',
-  templateUrl: './description.component.html',
-  styleUrls: ['./description.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'ramp-description',
+    templateUrl: './description.component.html',
+    styleUrls: ['./description.component.scss'],
+   // changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, NgFor],
 })
 export class DescriptionComponent {
   @Input() function!: string | undefined;

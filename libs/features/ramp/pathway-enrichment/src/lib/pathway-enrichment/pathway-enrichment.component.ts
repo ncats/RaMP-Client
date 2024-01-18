@@ -1,37 +1,72 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgIf, NgFor, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component,
-  ElementRef,
+  Component, DestroyRef,
+  ElementRef, inject,
   Inject,
-  Input,
   OnInit,
-  ViewChild,
-} from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+  ViewChild
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatTabGroup } from '@angular/material/tabs';
+import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { select, Store } from "@ngrx/store";
 import { FisherResult, Pathway, RampQuery } from '@ramp/models/ramp-models';
+import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
 import { CompleteDialogComponent } from '@ramp/shared/ui/complete-dialog';
+import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
+import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
+import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchClusterFromEnrichment,
-  fetchEnrichmentFromPathways,
-  fetchPathwaysFromAnalytes,
-  filterEnrichmentFromPathways,
-  fetchClusterImageFile,
-  RampFacade,
-} from '@ramp/stores/ramp-store';
-import { takeUntil } from 'rxjs';
+ PathwayEnrichmentsActions
+} from "@ramp/stores/ramp-store";
+import { map, takeUntil } from "rxjs";
+import { MatRadioModule } from '@angular/material/radio';
+import { MatInputModule } from '@angular/material/input';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from "../../../../../../stores/ramp-store/src/lib/+state/ramp-store/ramp.selectors";
 
 @Component({
-  selector: 'ramp-pathway-enrichment',
-  templateUrl: './pathway-enrichment.component.html',
-  styleUrls: ['./pathway-enrichment.component.scss'],
+    selector: 'ramp-pathway-enrichment',
+    templateUrl: './pathway-enrichment.component.html',
+    styleUrls: ['./pathway-enrichment.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        DescriptionComponent,
+        MatTabsModule,
+        InputRowComponent,
+        NgIf,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        MatOptionModule,
+        NgFor,
+        LoadingComponent,
+        FeedbackPanelComponent,
+        MatTooltipModule,
+        ExtendedModule,
+        QueryPageComponent,
+        MatInputModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        TitleCasePipe,
+    ],
 })
 export class PathwayEnrichmentComponent
   extends PageCoreComponent
@@ -269,20 +304,20 @@ export class PathwayEnrichmentComponent
   constructor(
     private ref: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
     public dialog: MatDialog,
-    @Inject(DOCUMENT) protected dom: Document,
+    @Inject(DOCUMENT) protected override dom: Document,
   ) {
-    super(route, rampFacade, dom);
+    super(dom);
   }
 
   ngOnInit(): void {
     this.selectedEnrichmentColumns = this.enrichmentColumns2['both'];
-    this.rampFacade.pathwayEnrichment$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((res: any | undefined) => {
-        console.log(res);
+    this.store
+      .pipe(
+        select(RampSelectors.getPathwayEnrichment),
+        takeUntilDestroyed(this.destroyRef),
+        map(
+          (res: any | undefined) => {
         if (res && res.data) {
           if (res.data.length) {
             this.dataAsDataProperty = res.data.map(
@@ -350,17 +385,18 @@ export class PathwayEnrichmentComponent
             }
           });
         }
-      });
+      })).subscribe();
 
-    this.rampFacade.pathways$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
+    this.store
+      .pipe(
+        select(RampSelectors.getPathways),
+        takeUntilDestroyed(this.destroyRef),
+        map(
         (
           res:
             | { data: Pathway[]; query: RampQuery; dataframe: any }
             | undefined,
         ) => {
-          console.log(res);
           if (res && res.data) {
             this._mapPathwaysData(res.data);
             this.matches = Array.from(
@@ -381,11 +417,14 @@ export class PathwayEnrichmentComponent
           this.pathwaysLoading = false;
           this.ref.markForCheck();
         },
-      );
+      )).subscribe();
 
-    this.rampFacade.clusterPlot$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((res: any | undefined) => {
+    this.store
+      .pipe(
+        select(RampSelectors.getClusterPlot),
+        takeUntilDestroyed(this.destroyRef),
+        map(
+        (res: any | undefined) => {
         if (res && res.length > 0) {
           this.tooBig = false;
           this.image = this.sanitizer.bypassSecurityTrustHtml(res);
@@ -394,26 +433,26 @@ export class PathwayEnrichmentComponent
         }
         this.imageLoading = false;
         this.ref.markForCheck();
-      });
+      })).subscribe();
   }
 
   fetchEnrichment(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(fetchPathwaysFromAnalytes({ analytes: event }));
+    this.store.dispatch(PathwayEnrichmentsActions.fetchPathwaysFromAnalytes({ analytes: event }));
     this.pathwaysLoading = true;
     this.enrichmentLoading = true;
     this.imageLoading = true;
     if (this.file) {
-      this.rampFacade.dispatch(
-        fetchEnrichmentFromPathways({
+      this.store.dispatch(
+        PathwayEnrichmentsActions.fetchEnrichmentFromPathways({
           analytes: event,
           biospecimen: this.biospecimenCtrl.value,
           background: this.file,
         }),
       );
     } else {
-      this.rampFacade.dispatch(
-        fetchEnrichmentFromPathways({
+      this.store.dispatch(
+        PathwayEnrichmentsActions.fetchEnrichmentFromPathways({
           analytes: event,
           biospecimen: this.biospecimenCtrl.value,
         }),
@@ -423,8 +462,8 @@ export class PathwayEnrichmentComponent
 
   filterPathways() {
     this.enrichmentLoading = true;
-    this.rampFacade.dispatch(
-      filterEnrichmentFromPathways({
+    this.store.dispatch(
+      PathwayEnrichmentsActions.filterEnrichmentFromPathways({
         pval_type: this.pValueTypeFormCtrl.value,
         pval_cutoff: this.pValueFormCtrl.value,
         perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
@@ -436,8 +475,8 @@ export class PathwayEnrichmentComponent
 
   clusterResults() {
     this.enrichmentLoading = true;
-    this.rampFacade.dispatch(
-      fetchClusterFromEnrichment({
+    this.store.dispatch(
+      PathwayEnrichmentsActions.fetchClusterFromEnrichment({
         perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
         min_pathway_tocluster: this.minPathWayFormCtrl.value,
         perc_pathway_overlap: this.percentPathwayFormCtrl.value,
@@ -473,8 +512,8 @@ export class PathwayEnrichmentComponent
   }
 
   fetchClusterImageFile(): void {
-    this.rampFacade.dispatch(
-      fetchClusterImageFile({
+    this.store.dispatch(
+      PathwayEnrichmentsActions.fetchClusterImageFile({
         perc_analyte_overlap: this.percentAnalyteFormCtrl.value,
         min_pathway_tocluster: this.minPathWayFormCtrl.value,
         perc_pathway_overlap: this.percentPathwayFormCtrl.value,

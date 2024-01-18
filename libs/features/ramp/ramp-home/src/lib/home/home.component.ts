@@ -1,25 +1,41 @@
 import {
   ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+  Component, DestroyRef, inject,
+  OnInit
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Actions } from "@ngrx/effects";
+import { select, Store } from "@ngrx/store";
 import { SourceVersion } from '@ramp/models/ramp-models';
-import { initAbout, RampFacade } from '@ramp/stores/ramp-store';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { LoadRampActions } from "@ramp/stores/ramp-store";
+import { map, tap } from "rxjs";
+import { NgIf, NgFor } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { FlexModule } from '@angular/flex-layout/flex';
+import * as RampSelectors from '@ramp/stores/ramp-store';
+
 
 @Component({
-  selector: 'ramp-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+    selector: 'ramp-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        MatCardModule,
+        MatButtonModule,
+        RouterLink,
+        NgIf,
+        NgFor,
+    ],
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  /**
-   * Behaviour subject to allow extending class to unsubscribe on destroy
-   * @type {Subject<any>}
-   */
-  protected ngUnsubscribe: Subject<any> = new Subject();
+export class HomeComponent implements OnInit {
+  private readonly store = inject(Store);
+  private actions$ = inject(Actions);
+
+  destroyRef = inject(DestroyRef);
 
   sourceVersions!: Array<SourceVersion>;
   dbVersion!: string;
@@ -27,16 +43,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   databaseUrl!: string;
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.rampFacade.dispatch(initAbout());
-    this.rampFacade.allRampStore$
+    this.store.dispatch(LoadRampActions.loadRampStats())
+    this.store
       .pipe(
-        takeUntil(this.ngUnsubscribe),
-        tap((data) => {
+        select(RampSelectors.getAllRamp),
+        takeUntilDestroyed(this.destroyRef),
+        map((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
             if (this.sourceVersions.length > 0) {
@@ -57,13 +73,5 @@ export class HomeComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe();
-  }
-
-  /**
-   * clean up on leaving component
-   */
-  ngOnDestroy() {
-    this.ngUnsubscribe.next('bye-bye');
-    this.ngUnsubscribe.complete();
   }
 }

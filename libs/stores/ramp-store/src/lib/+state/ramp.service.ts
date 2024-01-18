@@ -11,8 +11,8 @@ import {
   Pathway,
   Properties,
   Reaction,
-  SourceVersion,
-} from '@ramp/models/ramp-models';
+  SourceVersion, Stats
+} from "@ramp/models/ramp-models";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { forkJoin, Observable, of, tap } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
@@ -67,8 +67,8 @@ export class RampService {
       );
   }
 
-  fetchSupportedIds() {
-    return this.http.get<{ data: any[] }>(`${this.url}id-types`);
+  fetchSupportedIds(): Observable<[{ analyteType: string; idTypes: string[] }] > {
+    return this.http.get<[{ analyteType: string; idTypes: string[] }]>(`${this.url}id-types`);
   }
 
   fetchDatabaseUrl() {

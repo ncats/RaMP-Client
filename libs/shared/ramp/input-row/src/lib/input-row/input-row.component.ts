@@ -1,10 +1,33 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatButtonModule } from '@angular/material/button';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, TitleCasePipe } from '@angular/common';
+import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-  selector: 'ramp-input-row',
-  templateUrl: './input-row.component.html',
-  styleUrls: ['./input-row.component.scss'],
+    selector: 'ramp-input-row',
+    templateUrl: './input-row.component.html',
+    styleUrls: ['./input-row.component.scss'],
+    standalone: true,
+    imports: [
+        FlexModule,
+        NgIf,
+        MatFormFieldModule,
+        MatInputModule,
+        TextFieldModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        ExtendedModule,
+        MatIconModule,
+        MatTooltipModule,
+        TitleCasePipe,
+    ],
 })
 export class InputRowComponent implements OnInit {
   @Input() showInput = true;

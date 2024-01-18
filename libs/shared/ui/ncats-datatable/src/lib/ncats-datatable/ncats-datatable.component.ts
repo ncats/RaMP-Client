@@ -27,14 +27,19 @@ import {
   trigger,
 } from '@angular/animations';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatRow, MatTable, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
-import { ComponentPortal } from '@angular/cdk/portal';
+import { MatRow, MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+import { ComponentPortal, PortalModule } from '@angular/cdk/portal';
 import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs/operators';
 import { PageData } from './models/page-data';
 import { DataProperty } from './models/data-property';
+import { PropertyDisplayComponent } from './components/property-display/property-display.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { FlexModule } from '@angular/flex-layout/flex';
+import { NgIf, NgClass, NgFor } from '@angular/common';
 
 const _sortingDataAccessor = (
   item: { [key: string]: DataProperty },
@@ -56,23 +61,31 @@ const _sortingDataAccessor = (
  * also handles standard table operations, primarily with event emitters for the end user to react to
  */
 @Component({
-  selector: 'ncats-frontend-library-ncats-datatable',
-  templateUrl: './ncats-datatable.component.html',
-  styleUrls: ['./ncats-datatable.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('detailExpand', [
-      state(
-        'collapsed',
-        style({ height: '0px', minHeight: '0', display: 'none' }),
-      ),
-      state('expanded', style({ height: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ),
-    ]),
-  ],
+    selector: 'ncats-frontend-library-ncats-datatable',
+    templateUrl: './ncats-datatable.component.html',
+    styleUrls: ['./ncats-datatable.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    standalone: true,
+    imports: [
+        NgIf,
+        FlexModule,
+        MatPaginatorModule,
+        MatTableModule,
+        MatSortModule,
+        NgClass,
+        ExtendedModule,
+        MatCheckboxModule,
+        NgFor,
+        PropertyDisplayComponent,
+        PortalModule,
+    ],
 })
 
 /**

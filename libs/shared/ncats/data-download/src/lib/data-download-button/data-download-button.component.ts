@@ -1,10 +1,21 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, Input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'ramp-data-download-button',
-  templateUrl: './data-download-button.component.html',
-  styleUrls: ['./data-download-button.component.scss'],
+    selector: 'ramp-data-download-button',
+    templateUrl: './data-download-button.component.html',
+    styleUrls: ['./data-download-button.component.scss'],
+    standalone: true,
+    imports: [
+        MatButtonModule,
+        MatTooltipModule,
+        ExtendedModule,
+        MatIconModule,
+    ],
 })
 export class DataDownloadButtonComponent {
   @Input() source!: string;
