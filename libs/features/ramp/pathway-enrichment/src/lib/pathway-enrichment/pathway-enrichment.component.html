@@ -1,13 +1,13 @@
 <div class="content-panel">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class = "row space-around-row">
+    <div class="full-width">
       <h1 class="page-title">
         {{ title | titlecase }}
       </h1>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class = "row space-around-row">
+    <div class="full-width">
       <ramp-description
         [supportedIds]="supportedIds"
         [description]="description"
@@ -110,8 +110,8 @@
       >
       </ramp-feedback-panel>
       <br />
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div fxFlex="10">
+      <div class="row right-justified-row centered-row">
+        <div class="width-10">
           <button
             mat-stroked-button
             class="tool-button list-download"
@@ -119,7 +119,7 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download </span><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>
@@ -141,14 +141,12 @@
         ></ramp-loading>
       </ng-template>
       <div
-        fxLayout="row"
-        fxLayoutAlign="space-around start"
-        class="additional-params"
+        class="row space-around-row additional-params"
       >
-        <div fxFlex="40">
+        <div class="width-40">
           <h3>Filter Results</h3>
-          <div fxLayout="row" fxLayoutAlign="start center">
-            <div fxFlex="40">
+          <div class="row centered-row">
+            <div class="width-40">
               <mat-form-field
                 appearance="outline"
                 color="accent"
@@ -158,7 +156,7 @@
                 <input matInput type="number" [formControl]="pValueFormCtrl" />
               </mat-form-field>
             </div>
-            <div fxFlex="40">
+            <div class="width-40">
               <mat-radio-group [formControl]="pValueTypeFormCtrl">
                 <mat-radio-button [value]="'fdr'" [color]="'accent'"
                   >FDR</mat-radio-button
@@ -174,8 +172,8 @@
               </mat-radio-group>
             </div>
           </div>
-          <div fxLayout="row" fxLayoutAlign="start start">
-            <div fxFlex="20">
+          <div class="row">
+            <div class="width-20">
               <button
                 mat-flat-button
                 (click)="filterPathways()"
@@ -186,10 +184,10 @@
             </div>
           </div>
         </div>
-        <div fxFlex="55">
+        <div class="width-55">
           <h3>Cluster Results</h3>
-          <div fxLayout="row" fxLayoutAlign="space-around center">
-            <div fxFlex="90">
+          <div class="row centered-row">
+            <div class="width-90">
               <mat-checkbox
                 color="accent"
                 [checked]="true"
@@ -231,8 +229,8 @@
               </mat-form-field>
             </div>
           </div>
-          <div fxLayout="row" fxLayoutAlign="start start">
-            <div fxFlex="20">
+          <div class="row" >
+            <div class="width-20">
               <button
                 mat-flat-button
                 (click)="clusterResults()"
@@ -245,8 +243,8 @@
         </div>
       </div>
       <br />
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div fxFlex="10">
+      <div class="row right-justified-row centered-row">
+        <div class="width-10">
           <button
             mat-stroked-button
             class="tool-button list-download"
@@ -254,7 +252,7 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download </span><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>
@@ -277,8 +275,8 @@
       <br />
       <br />
       <br />
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div fxFlex="10" *ngIf="!tooBig">
+      <div class="row right-justified-row centered-row">
+        <div class="width-10" *ngIf="!tooBig">
           <button
             mat-stroked-button
             class="tool-button list-download"
@@ -286,7 +284,7 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span fxHide.lt-lg>Save Image</span><mat-icon>download</mat-icon>
+            <span class="hide-small">Save Image</span><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>

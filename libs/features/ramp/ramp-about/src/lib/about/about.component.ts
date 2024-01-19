@@ -1,4 +1,5 @@
-import { ScrollDispatcher } from '@angular/cdk/overlay';
+import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
+import { OverlayModule, ScrollDispatcher } from "@angular/cdk/overlay";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,31 +7,31 @@ import {
   ElementRef, inject,
   OnInit,
   QueryList,
-  ViewChildren
+  ViewChildren, ViewEncapsulation
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSidenavModule } from "@angular/material/sidenav";
 import { select, Store } from "@ngrx/store";
 import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
 import { DataProperty, NcatsDatatableComponent } from "@ramp/shared/ui/ncats-datatable";
 import { UpsetComponent } from "@ramp/shared/visualizations/upset-chart";
 import { LoadRampActions, RampSelectors } from "@ramp/stores/ramp-store";
 import {tap } from "rxjs";
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { NgClass, NgIf, NgFor } from '@angular/common';
+import { CdkScrollable, ScrollingModule } from "@angular/cdk/scrolling";
+import { NgClass, NgIf, NgFor, ViewportScroller } from "@angular/common";
 import { MatListModule } from '@angular/material/list';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { FlexModule } from '@angular/flex-layout/flex';
-
 
 @Component({
     selector: 'ramp-about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
-        FlexModule,
-        ExtendedModule,
         MatListModule,
         NgClass,
         NgIf,
@@ -38,6 +39,12 @@ import { FlexModule } from '@angular/flex-layout/flex';
         NgFor,
         NcatsDatatableComponent,
         UpsetComponent,
+      ScrollingModule,
+      OverlayModule,
+      MatMenuModule,
+      MatIconModule,
+      MatSidenavModule,
+      MatButtonModule
     ],
 })
 export class AboutComponent implements OnInit {
@@ -45,6 +52,7 @@ export class AboutComponent implements OnInit {
   destroyRef = inject(DestroyRef);
 
   @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
+  mobile = false;
 
   /**
    * default active element for menu highlighting, will be replaced on scroll
@@ -99,16 +107,28 @@ export class AboutComponent implements OnInit {
   dbUpdated!: string;
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
+    private changeRef: ChangeDetectorRef,
     private scrollDispatcher: ScrollDispatcher,
+    public scroller: ViewportScroller,
+    private breakpointObserver: BreakpointObserver,
   ) {}
 
   ngOnInit(): void {
+    this.breakpointObserver
+      .observe([Breakpoints.XSmall, Breakpoints.Small])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        this.mobile = result.matches;
+        this.changeRef.markForCheck();
+      });
+
     this.store.dispatch(LoadRampActions.loadRampStats())
+
     this.store.pipe(
       select(RampSelectors.getAllRamp),
       takeUntilDestroyed(this.destroyRef),
         tap((data) => {
+          console.log(data);
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
             if (this.sourceVersions.length > 0) {
@@ -121,7 +141,7 @@ export class AboutComponent implements OnInit {
               }
             }
 
-            this.changeDetector.markForCheck();
+            this.changeRef.markForCheck();
           }
           if (data.entityCounts) {
             this.entityCounts = data.entityCounts.map(
@@ -137,15 +157,15 @@ export class AboutComponent implements OnInit {
                 return newObj;
               },
             );
-            this.changeDetector.markForCheck();
+            this.changeRef.markForCheck();
           }
           if (data.geneIntersects) {
             this.genesData = data.geneIntersects;
-            this.changeDetector.markForCheck();
+            this.changeRef.markForCheck();
           }
           if (data.metaboliteIntersects) {
             this.compoundsData = data.metaboliteIntersects;
-            this.changeDetector.markForCheck();
+            this.changeRef.markForCheck();
           }
           if (data.databaseUrl) {
             this.databaseUrl = data.databaseUrl;
@@ -154,27 +174,22 @@ export class AboutComponent implements OnInit {
       )
       .subscribe();
 
-    this.scrollDispatcher
-      .scrolled()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((data) => {
-        if (data) {
-          let scrollTop: number =
-            data.getElementRef().nativeElement.scrollTop + 100;
-          if (scrollTop === 175) {
-            this.activeElement = 'about';
-            this.changeDetector.detectChanges();
-          } else {
-            this.scrollSections.forEach((section) => {
-              scrollTop = scrollTop - section.nativeElement.scrollHeight;
-              if (scrollTop >= 0) {
-                this.activeElement = section.nativeElement.nextSibling.id;
-                this.changeDetector.detectChanges();
-              }
-            });
-          }
+
+    this.scrollDispatcher.scrolled()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        let scrollTop: number = this.scroller.getScrollPosition()[1]
+        if (scrollTop === 0) {
+          this.activeElement = 'about';
+          this.changeRef.detectChanges();
+        } else {
+          this.scrollSections.forEach((section) => {
+            scrollTop = scrollTop - section.nativeElement?.scrollHeight;
+            if (scrollTop >= 0) {
+              this.activeElement = section.nativeElement.nextSibling.id;
+              this.changeRef.detectChanges();
+            }
+          })
         }
       });
   }
@@ -183,13 +198,15 @@ export class AboutComponent implements OnInit {
    * scroll to section
    * @param el
    */
-  public scroll(el: any): void {
+  public scroll(el: HTMLElement): void {
+    console.log(el);
     //  el.scrollIntoView(true);
     el.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
       inline: 'nearest',
     });
+    this.activeElement = el.id;
   }
 
   /**

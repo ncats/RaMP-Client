@@ -143,7 +143,7 @@ export class UpsetComponent implements OnInit {
     //  const height = this.height - margin.top - margin.left;
 
     const leftColWidth = this.width * 0.25;
-    const rightColWidth = this.width - leftColWidth;
+    const rightColWidth = this.width - leftColWidth - innerMargin;
 
     const topRowHeight = this.height * 0.66;
     const bottomRowHeight = this.height - topRowHeight - innerMargin;
@@ -186,10 +186,10 @@ export class UpsetComponent implements OnInit {
     const svg = select(element)
       .append('svg:svg')
       .attr('width', this.width)
-      .attr('height', this.height);
-    /* .append("svg:g")
-     .attr("transform", `translate(0, ${this.margin.top})`);
-*/
+      .attr('height', this.height)
+     .append("svg:g")
+     .attr("transform", `translate(-${leftColWidth/2},0)`);
+
     const setSizeChart = svg
       .append('svg:g')
       .attr('transform', `translate(0, ${topRowHeight + innerMargin})`);

@@ -1,13 +1,13 @@
 <div class="content-panel">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class = "row space-around-row">
+    <div class="full-width">
       <h1 class="page-title">
         {{ title | titlecase }}
       </h1>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class = "row space-around-row">
+    <div class="full-width">
       <ramp-description
         [supportedIds]="supportedIds"
         [description]="description"
@@ -17,8 +17,7 @@
 
   <mat-tab-group [selectedIndex]="tabIndex" [color]="'accent'">
     <mat-tab [label]="'Input'">
-      <div fxLayout="row" fxLayoutAlign="space-around start">
-        <div fxFlex="95">
+      <div class="row space-around-row">
           <mat-form-field class="full-width" appearance="outline">
             <input
               matInput
@@ -27,7 +26,6 @@
             />
           </mat-form-field>
         </div>
-      </div>
       <div class="grid-list">
         <div *ngFor="let ontology of ontologies">
           <ramp-filter-panel
@@ -50,7 +48,7 @@
             (click)="fetchMetabolites()"
             class="bottom-align"
           >
-            <span fxHide.lt-lg>Search</span> <mat-icon>search</mat-icon>
+            <span class="hide-small">Search</span> <mat-icon>search</mat-icon>
           </button>
           &nbsp;&nbsp;&nbsp;
           <button
@@ -60,7 +58,7 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download </span><mat-icon>download</mat-icon>
           </button>
           <br />
           <br />
@@ -71,7 +69,7 @@
             matTooltip="Clear All Selections"
             color="warn"
           >
-            <span fxHide.lt-lg>Clear All Selections</span
+            <span class="hide-small">Clear All Selections</span
             ><mat-icon>delete</mat-icon>
           </button>
         </div>

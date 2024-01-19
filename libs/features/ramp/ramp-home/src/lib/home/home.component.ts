@@ -8,12 +8,11 @@ import { Actions } from "@ngrx/effects";
 import { select, Store } from "@ngrx/store";
 import { SourceVersion } from '@ramp/models/ramp-models';
 import { LoadRampActions, RampSelectors } from "@ramp/stores/ramp-store";
-import { map, tap } from "rxjs";
+import { map } from "rxjs";
 import { NgIf, NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { FlexModule } from '@angular/flex-layout/flex';
 
 
 @Component({
@@ -22,7 +21,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./home.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         MatCardModule,
         MatButtonModule,
         RouterLink,
@@ -52,6 +50,7 @@ export class HomeComponent implements OnInit {
         select(RampSelectors.getAllRamp),
         takeUntilDestroyed(this.destroyRef),
         map((data) => {
+          console.log(data)
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
             if (this.sourceVersions.length > 0) {

@@ -1,8 +1,8 @@
 import { DOCUMENT, NgIf, NgFor, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component, DestroyRef,
-  ElementRef, inject,
+  Component,
+  ElementRef,
   Inject,
   OnInit,
   ViewChild
@@ -13,7 +13,7 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { DomSanitizer } from '@angular/platform-browser';
-import { select, Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
 import { FisherResult, Pathway, RampQuery } from '@ramp/models/ramp-models';
 import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -26,17 +26,15 @@ import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
  PathwayEnrichmentsActions, RampSelectors
 } from "@ramp/stores/ramp-store";
-import { map, takeUntil } from "rxjs";
+import { map } from "rxjs";
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
     selector: 'ramp-pathway-enrichment',
@@ -44,7 +42,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./pathway-enrichment.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         MatTabsModule,
         InputRowComponent,
@@ -59,7 +56,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
         LoadingComponent,
         FeedbackPanelComponent,
         MatTooltipModule,
-        ExtendedModule,
         QueryPageComponent,
         MatInputModule,
         MatRadioModule,

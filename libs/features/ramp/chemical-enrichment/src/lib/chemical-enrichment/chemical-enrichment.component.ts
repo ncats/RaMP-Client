@@ -1,8 +1,8 @@
 import { DOCUMENT, NgIf, NgFor, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component, DestroyRef,
-  ElementRef, inject,
+  Component,
+  ElementRef,
   Inject,
   OnInit,
   ViewChild
@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
-import { select, Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
 import {
   ChemicalEnrichment,
   Classes,
@@ -28,17 +28,15 @@ import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   ClassesFromMetabolitesActions, MetaboliteEnrichmentsActions, RampSelectors
 } from "@ramp/stores/ramp-store";
-import { map, takeUntil } from "rxjs";
+import { map } from "rxjs";
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
     selector: 'ramp-chemical-enrichment',
@@ -46,7 +44,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./chemical-enrichment.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         MatTabsModule,
         InputRowComponent,
@@ -61,7 +58,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
         LoadingComponent,
         FeedbackPanelComponent,
         MatTooltipModule,
-        ExtendedModule,
         QueryPageComponent,
         MatInputModule,
         MatRadioModule,
@@ -204,7 +200,7 @@ export class ChemicalEnrichmentComponent
             this.dataAsDataProperty = res.data.map(
               (enrichment: ChemicalEnrichment) => {
                 const newObj: { [key: string]: DataProperty } = {};
-                Object.entries(enrichment).map((value: any, index: any) => {
+                Object.entries(enrichment).map((value: any) => {
                   newObj[value[0]] = new DataProperty({
                     name: value[0],
                     label: value[0],

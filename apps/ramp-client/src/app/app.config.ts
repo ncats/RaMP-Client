@@ -2,9 +2,8 @@ import {
   provideHttpClient, withFetch,
   withInterceptorsFromDi
 } from "@angular/common/http";
-import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, inject } from "@angular/core";
+import { APP_INITIALIZER, ApplicationConfig, inject } from "@angular/core";
 import {
-  BrowserModule,
   provideClientHydration,
 } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -16,13 +15,11 @@ import {
   withInMemoryScrolling,
   withPreloading, withViewTransitions
 } from "@angular/router";
-import { EffectsModule, provideEffects } from "@ngrx/effects";
-import { provideRouterStore, routerReducer, StoreRouterConnectingModule } from "@ngrx/router-store";
-import { provideState, provideStore, Store, StoreModule } from "@ngrx/store";
-import { provideStoreDevtools, StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { provideEffects } from "@ngrx/effects";
+import { provideState, provideStore, Store } from "@ngrx/store";
+import { provideStoreDevtools } from "@ngrx/store-devtools";
 import {
   LoadRampActions,
-  RampSelectors,
   RampService,
   RampEffects,
   rampReducer,
@@ -76,6 +73,7 @@ export const appConfig: ApplicationConfig = {
     provideState(RAMP_STORE_FEATURE_KEY, rampReducer),
     provideAnimations(),
     provideAnimationsAsync(),
-    provideHttpClient(withInterceptorsFromDi(), withFetch())
+    provideHttpClient(withInterceptorsFromDi(), withFetch()),
+    provideClientHydration()
   ]
 };

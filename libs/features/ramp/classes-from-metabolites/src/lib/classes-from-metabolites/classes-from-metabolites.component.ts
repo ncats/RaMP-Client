@@ -1,15 +1,15 @@
 import { DOCUMENT, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component, DestroyRef,
-  ElementRef, inject,
+  Component,
+  ElementRef,
   Inject,
   OnInit,
   ViewChild
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { UntypedFormControl } from '@angular/forms';
-import { select, Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
 import { Classes, RampQuery } from '@ramp/models/ramp-models';
 import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -20,8 +20,7 @@ import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   ClassesFromMetabolitesActions, RampSelectors
 } from "@ramp/stores/ramp-store";
-import { map, takeUntil } from "rxjs";
-import { FlexModule } from '@angular/flex-layout/flex';
+import { map } from "rxjs";
 
 @Component({
     selector: 'ramp-classes-from-metabolites',
@@ -29,7 +28,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./classes-from-metabolites.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         InputRowComponent,
         FeedbackPanelComponent,
@@ -211,7 +209,7 @@ export class ClassesFromMetabolitesComponent
   private _mapData(data: any): void {
     this.dataAsDataProperty = data.map((obj: Classes) => {
       const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(obj).map((value: any, index: any) => {
+      Object.entries(obj).map((value: any) => {
         newObj[value[0]] = new DataProperty({
           name: value[0],
           label: value[0],

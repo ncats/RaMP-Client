@@ -1,4 +1,4 @@
-<div matDialogTitle fxLayout="row" fxLayoutAlign="space-between start">
+<div matDialogTitle class="row space-around-row">
   <span mat-dialog-title>Analysis Complete</span>
   <mat-icon matRipple (click)="close()" class="close-button">close</mat-icon>
 </div>
@@ -11,7 +11,7 @@
   <br />
   <br />
 </div>
-<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-around start">
+<div mat-dialog-actions class="row space-around-row">
   <button
     *ngFor="let tab of data.tabs; index as i"
     mat-flat-button

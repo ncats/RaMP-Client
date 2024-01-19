@@ -1,13 +1,29 @@
-<div fxLayout="row" class="about-content">
-  <div fxFlex="5" fxShow.lt-sm></div>
-  <div fxFlex="20" fxHide.lt-sm class="toc-wrapper">
-    <div class="toc">
+<mat-sidenav-container class="about-page" >
+  <mat-sidenav
+    #navigationsidenav
+    class="navigation-menu-panel"
+    [opened]="true"
+    [mode]="'side'"
+  >
+    <div class="toc-wrapper" cdkScrollable>
+      <div class="toc">
+        <!--<div class="row right-justified-row">
+          <button
+            [color]="'accent'"
+            mat-icon-button
+            class="close-button"
+            aria-label="close filters"
+            (click)="navigationsidenav.toggle()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>-->
       <mat-nav-list>
         <a
           mat-list-item
           class="list-button"
           (click)="scroll(about)"
-          [ngClass]="{ active: isActive('about') }"
+          [ngClass]="{ 'active-sidemenu': isActive('about') }"
         >
           About
         </a>
@@ -15,14 +31,14 @@
           mat-list-item
           class="list-button"
           (click)="scroll(interactRaMP)"
-          [ngClass]="{ active: isActive('interactRaMP') }"
+          [ngClass]="{ 'active-sidemenu': isActive('interactRaMP') }"
           >Interacting With RaMP
         </a>
         <a
           mat-list-item
           class="list-button"
           (click)="scroll(capabilities)"
-          [ngClass]="{ active: isActive('capabilities') }"
+          [ngClass]="{ 'active-sidemenu': isActive('capabilities') }"
           >Capabilities
         </a>
         <a
@@ -30,29 +46,28 @@
           *ngIf="entityCounts"
           class="list-button"
           (click)="scroll(dataSources)"
-          [ngClass]="{ active: isActive('dataSources') }"
+          [ngClass]="{ 'active-sidemenu': isActive('dataSources') }"
           >Data Sources
         </a>
         <a
           mat-list-item
           class="list-button"
           (click)="scroll(dataDownload)"
-          [ngClass]="{ active: isActive('dataDownload') }"
+          [ngClass]="{ 'active-sidemenu': isActive('dataDownload') }"
           >Data Download
         </a>
         <a
           mat-list-item
-          *ngIf="compoundsData?.length || genesData?.length"
           class="list-button"
           (click)="scroll(summaryStatistics)"
-          [ngClass]="{ active: isActive('summaryStatistics') }"
+          [ngClass]="{ 'active-sidemenu': isActive('summaryStatistics') }"
           >Summary Statistics
         </a>
         <a
           mat-list-item
           class="list-button"
           (click)="scroll(citation)"
-          [ngClass]="{ active: isActive('citation') }"
+          [ngClass]="{ 'active-sidemenu': isActive('citation') }"
         >
           Citation
         </a>
@@ -60,7 +75,7 @@
           mat-list-item
           class="list-button"
           (click)="scroll(contact)"
-          [ngClass]="{ active: isActive('contact') }"
+          [ngClass]="{ 'active-sidemenu': isActive('contact') }"
         >
           RaMP Team and Contact
         </a>
@@ -68,7 +83,7 @@
           mat-list-item
           class="list-button"
           (click)="scroll(code)"
-          [ngClass]="{ active: isActive('code') }"
+          [ngClass]="{ 'active-sidemenu': isActive('code') }"
         >
           Code
         </a>
@@ -76,30 +91,39 @@
           mat-list-item
           class="list-button"
           (click)="scroll(license)"
-          [ngClass]="{ active: isActive('license') }"
+          [ngClass]="{ 'active-sidemenu': isActive('license') }"
         >
           License
         </a>
       </mat-nav-list>
-    </div>
-  </div>
-  <div
-    fxFlex="80"
-    fxFlex.lt-sm="90"
-    id="scroller-wrapper"
-    class="about-wrapper"
-    cdkScrollable
-  >
-    <div fxLayout="row" fxLayoutAlign="space-around center">
-      <div fxFlex="100">
-        <h1 class="ramp-title">
-          <b>RaMP</b>: Relational Database of Metabolomics Pathways
-        </h1>
       </div>
     </div>
-    <div fxLayout="row" id="about" #about #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{ active: isActive('about') }">
+  </mat-sidenav>
+  <mat-sidenav-content class="drawer-container-content">
+    @if (!navigationsidenav.opened) {
+    <div class="row">
+      <button
+        [color]="'accent'"
+        mat-stroked-button
+        class="menu-button"
+        aria-label="menu button"
+        (click)="navigationsidenav.toggle()"
+      >
+        Jump to...<mat-icon>bookmark</mat-icon>
+      </button>
+    </div>
+    }
+    <div class="row centered-row">
+      <div [ngClass]="{ 'full-width': navigationsidenav.opened, 'width-70': !navigationsidenav.opened }">
+        <div class="row">
+          <div>
+            <h1 class="ramp-title">
+              <b>RaMP</b>: Relational Database of Metabolomics Pathways
+            </h1>
+          </div>
+        </div>
+    <div class="row" id="about" #about #scrollSection>
+        <div class="section-header" [ngClass]="{ 'active-sidemenu': isActive('about') }">
           About RaMP
         </div>
         <div class="section-content">
@@ -179,18 +203,16 @@
           </ul>
         </div>
       </div>
-    </div>
 
     <div
-      fxLayout="row"
-      id="Interacting with RaMP-DB"
+      class="row"
+      id="interactRaMP"
       #interactRaMP
       #scrollSection
     >
-      <div fxFlex="75" fxFlex.lt-md="100">
         <div
           class="section-header"
-          [ngClass]="{ active: isActive('interactRaMP') }"
+          [ngClass]="{ 'active-sidemenu': isActive('interactRaMP') }"
         >
           Interacting with RaMP-DB
         </div>
@@ -235,13 +257,11 @@
           </ul>
         </div>
       </div>
-    </div>
 
-    <div fxLayout="row" id="capabilities" #capabilities #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
+    <div class="row" id="capabilities" #capabilities #scrollSection>
         <div
           class="section-header"
-          [ngClass]="{ active: isActive('capabilities') }"
+          [ngClass]="{ 'active-sidemenu': isActive('capabilities') }"
         >
           Capabilities
         </div>
@@ -337,12 +357,10 @@
           </picture>
         </div>
       </div>
-    </div>
-    <div fxLayout="row" id="dataSources" #dataSources #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100" *ngIf="entityCounts">
+    <div class="" id="dataSources" #dataSources #scrollSection>
         <div
           class="section-header"
-          [ngClass]="{ active: isActive('dataSources') }"
+          [ngClass]="{ 'active-sidemenu': isActive('dataSources') }"
         >
           Data Sources
         </div>
@@ -354,12 +372,10 @@
           ></ncats-frontend-library-ncats-datatable>
         </div>
       </div>
-    </div>
-    <div fxLayout="row" id="dataDownload" #dataDownload #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
+    <div class="row" id="dataDownload" #dataDownload #scrollSection>
         <div
           class="section-header"
-          [ngClass]="{ active: isActive('dataDownload') }"
+          [ngClass]="{ 'active-sidemenu': isActive('dataDownload') }"
         >
           Data Download
         </div>
@@ -374,22 +390,15 @@
           >.
         </div>
       </div>
-    </div>
     <div
-      fxLayout="row"
-      fxLayout.lt-md="column"
+      class="row"
       id="summaryStatistics"
       #summaryStatistics
       #scrollSection
     >
-      <div
-        fxFlex="75"
-        fxFlex.lt-md="100"
-        *ngIf="compoundsData?.length || genesData?.length"
-      >
         <div
           class="section-header"
-          [ngClass]="{ active: isActive('summaryStatistics') }"
+          [ngClass]="{ 'active-sidemenu': isActive('summaryStatistics') }"
         >
           Summary Statistics
         </div>
@@ -400,12 +409,11 @@
             highlight the common and unique metabolites and genes covered for
             each resource.
           </p>
-          <div fxLayout="row wrap" fxLayoutAlign="space-around center">
-            <div
-              fxFlex.gt-md="60"
-              fxFlex.lt-md="95"
+          <div class="row">
+            <div class="width-75 width-md-90 width-sm-100"
               *ngIf="compoundsData && compoundsData.length > 0"
             >
+              <h3>Metabolite Overlap</h3>
               <ramp-upset
                 [title]="'Metabolite Overlap'"
                 [data]="compoundsData"
@@ -413,11 +421,12 @@
               >
               </ramp-upset>
             </div>
-            <div
-              fxFlex.gt-md="34"
-              fxFlex.lt-md="95"
+          </div>
+          <div class="row">
+            <div class="width-50 width-md-90 width-sm-100"
               *ngIf="genesData && genesData.length > 0"
             >
+              <h3>Gene Overlap</h3>
               <ramp-upset
                 [title]="'Gene Overlap'"
                 [data]="genesData"
@@ -428,12 +437,10 @@
           </div>
         </div>
       </div>
-    </div>
-    <div fxLayout="row" id="citation" #citation #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
+    <div class="row" id="citation" #citation #scrollSection>
         <div
           class="section-header"
-          [ngClass]="{ active: isActive('citation') }"
+          [ngClass]="{ 'active-sidemenu': isActive('citation') }"
         >
           Citation
         </div>
@@ -481,19 +488,14 @@
           </p>
         </div>
       </div>
-    </div>
-    <div fxLayout="row" id="contact" #contact #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{ active: isActive('contact') }">
+    <div class="" id="contact" #contact #scrollSection>
+        <div class="section-header" [ngClass]="{ 'active-sidemenu': isActive('contact') }">
           RaMP Team and Contact
         </div>
         <div class="section-content">
-          <br />
-          <br />
-          <br />
           <h2 class="contributor-header">Current Contributors</h2>
-          <div fxLayout="row" fxLayoutAlign="space-around start">
-            <div fxFlex="20" class="portrait-holder">
+          <div class="row space-around-row">
+            <div class="portrait-holder width-20 width-sm-50">
               <picture>
                 <source
                   srcset="/assets/ramp-about/images/team/john_braisted.webp"
@@ -519,7 +521,7 @@
                 <h2>John Braisted</h2>
               </a>
             </div>
-            <div fxFlex="20" class="portrait-holder">
+            <div class="portrait-holder width-20 width-sm-50">
               <picture>
                 <source
                   srcset="/assets/ramp-about/images/team/tara_eicher.webp"
@@ -544,8 +546,7 @@
                 <h2>Tara Eicher</h2>
               </a>
             </div>
-
-            <div fxFlex="20" class="portrait-holder">
+            <div class="portrait-holder width-20 width-sm-50">
               <picture>
                 <source
                   srcset="./assets/ramp-about/images/team/ewy_mathe.webp"
@@ -571,8 +572,8 @@
               </a>
             </div>
           </div>
-          <div fxLayout="row" fxLayoutAlign="space-around center">
-            <div fxFlex="20" class="portrait-holder">
+          <div class="row space-around-row">
+            <div class="portrait-holder width-20 width-sm-50">
               <picture>
                 <source
                   srcset="/assets/ramp-about/images/team/andrew_patt.webp"
@@ -597,7 +598,7 @@
                 <h2>Andrew Patt</h2>
               </a>
             </div>
-            <div fxFlex="20" class="portrait-holder">
+            <div class="portrait-holder width-20 width-sm-50">
               <picture>
                 <source
                   srcset="/assets/ramp-about/images/team/timothy_sheils.webp"
@@ -622,7 +623,7 @@
                 <h2>Timothy Sheils</h2>
               </a>
             </div>
-            <div fxFlex="20" class="portrait-holder">
+            <div class="portrait-holder width-20 width-sm-50">
               <picture>
                 <source
                   srcset="/assets/ramp-about/images/team/kyle_spencer.webp"
@@ -699,15 +700,15 @@
           </p>
         </div>
       </div>
-    </div>
 
-    <div fxLayout="row" id="code" #code #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{ active: isActive('code') }">
+    <div class="" id="code" #code #scrollSection>
+        <div class="section-header" [ngClass]="{ 'active-sidemenu': isActive('code') }">
           Code
         </div>
         <div class="section-content">
+          <p>
           RaMP code is freely available via our GitHub pages:
+          </p>
           <mat-list>
             <mat-list-item
               ><a
@@ -743,10 +744,9 @@
           </mat-list>
         </div>
       </div>
-    </div>
-    <div fxLayout="row" id="license" #license #scrollSection>
-      <div fxFlex="75" fxFlex.lt-md="100">
-        <div class="section-header" [ngClass]="{ active: isActive('license') }">
+
+    <div class="" id="license" #license #scrollSection>
+        <div class="section-header" [ngClass]="{ 'active-sidemenu': isActive('license') }">
           License
         </div>
         <div class="section-content">
@@ -763,7 +763,8 @@
           </p>
         </div>
       </div>
-    </div>
     <div class="spacer"></div>
   </div>
 </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

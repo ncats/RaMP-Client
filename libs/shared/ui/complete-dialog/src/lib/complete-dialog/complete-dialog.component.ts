@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgIf, NgFor } from '@angular/common';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
     selector: 'ramp-complete-dialog',
@@ -13,7 +12,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     standalone: true,
     imports: [
         MatDialogTitle,
-        FlexModule,
         MatIconModule,
         MatRippleModule,
         MatDialogContent,

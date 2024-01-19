@@ -61,9 +61,6 @@
       "@ramp/shared/ncats/ncats-footer": [
         "libs/shared/ncats/ncats-footer/src/index.ts"
       ],
-      "@ramp/shared/ncats/ncats-header": [
-        "libs/shared/ncats/ncats-header/src/index.ts"
-      ],
       "@ramp/shared/ramp/input-row": [
         "libs/shared/ramp/input-row/src/index.ts"
       ],

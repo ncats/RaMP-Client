@@ -6,8 +6,7 @@ import {
   SimpleChange,
 } from '@angular/core';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { NcatsDatatableComponent } from '../../../../../ui/ncats-datatable/src/lib/ncats-datatable/ncats-datatable.component';
-import { FlexModule } from '@angular/flex-layout/flex';
+import { NcatsDatatableComponent } from '@ramp/shared/ui/ncats-datatable';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -18,7 +17,6 @@ import { NgIf } from '@angular/common';
     standalone: true,
     imports: [
         NgIf,
-        FlexModule,
         NcatsDatatableComponent,
     ],
 })

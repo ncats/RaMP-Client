@@ -37,8 +37,6 @@ import { PageData } from './models/page-data';
 import { DataProperty } from './models/data-property';
 import { PropertyDisplayComponent } from './components/property-display/property-display.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ExtendedModule } from '@angular/flex-layout/extended';
-import { FlexModule } from '@angular/flex-layout/flex';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 
 const _sortingDataAccessor = (
@@ -75,12 +73,10 @@ const _sortingDataAccessor = (
     standalone: true,
     imports: [
         NgIf,
-        FlexModule,
         MatPaginatorModule,
         MatTableModule,
         MatSortModule,
         NgClass,
-        ExtendedModule,
         MatCheckboxModule,
         NgFor,
         PropertyDisplayComponent,

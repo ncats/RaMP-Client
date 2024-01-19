@@ -2,6 +2,8 @@ ncats-footer {
   .footer-template {
     padding: 5vh 1vw 5vh 1vw;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
   .links-header {

@@ -1,7 +1,7 @@
 import { DOCUMENT, TitleCasePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, DestroyRef, inject, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { select, Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
 import { Pathway, RampQuery } from '@ramp/models/ramp-models';
 import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -11,7 +11,6 @@ import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { PathwayFromAnalyteActions, RampSelectors } from "@ramp/stores/ramp-store";
 import { map } from "rxjs";
-import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
     selector: 'ramp-pathways-from-analytes',
@@ -19,7 +18,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./pathways-from-analytes.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         InputRowComponent,
         FeedbackPanelComponent,
@@ -31,8 +29,6 @@ export class PathwaysFromAnalytesComponent
   extends PageCoreComponent
   implements OnInit
 {
- // private changeRef = inject(ChangeDetectorRef);
-
   pathwayColumns: DataProperty[] = [
     new DataProperty({
       label: 'Input ID',

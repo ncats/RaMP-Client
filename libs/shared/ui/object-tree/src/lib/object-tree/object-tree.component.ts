@@ -9,7 +9,6 @@ import {
   OnInit,
   Output,
   ViewChild,
-  ViewEncapsulation,
 } from '@angular/core';
 import { MatTree, MatTreeNestedDataSource, MatTreeModule } from '@angular/material/tree';
 import { BehaviorSubject } from 'rxjs';

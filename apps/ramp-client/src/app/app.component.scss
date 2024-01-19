@@ -17,3 +17,13 @@
 .ramp-logo-footer {
   max-width: 100%;
 }
+
+.right-options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  align-content: center;
+  align-items: center;
+  justify-content: flex-start;
+}

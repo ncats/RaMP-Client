@@ -1,13 +1,12 @@
 import { DOCUMENT, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component, DestroyRef, inject,
+  Component,
   Inject,
-  Input,
   OnInit
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { select, Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
 import { Analyte, RampQuery } from '@ramp/models/ramp-models';
 import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -16,9 +15,7 @@ import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
 import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { AnalyteFromPathwayActions, RampSelectors} from "@ramp/stores/ramp-store";
-import { map, takeUntil } from "rxjs";
-
-import { FlexModule } from '@angular/flex-layout/flex';
+import { map } from "rxjs";
 
 @Component({
     selector: 'ramp-analytes-from-pathways',
@@ -26,7 +23,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./analytes-from-pathways.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         InputRowComponent,
         FeedbackPanelComponent,

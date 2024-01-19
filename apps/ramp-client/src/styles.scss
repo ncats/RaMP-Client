@@ -3,13 +3,11 @@
 @import 'ncats-theme';
 
 html,
-app-root {
-  height: 100%;
-}
-
 body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  height: 100%;
+  margin: 0 !important;
+  font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
+  Lucida Grande, sans-serif;
 }
 
 a {
@@ -17,17 +15,22 @@ a {
   font-weight: bold;
 }
 
-.ramp-list {
-  list-style: none;
+.main {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.mat-drawer-content {
+  overflow: visible !important;
 }
 
 .full-width {
   width: 95%;
 }
 
-.width-25 {
-  width: 25%;
-  flex-basis: 25%;
+.ramp-list {
+  list-style: none;
 }
 
 .content-panel {
@@ -43,25 +46,6 @@ a {
   border-radius: 5px;
   padding: 10px;
   max-width: 100%;
-}
-
-.centered {
-  display: flex;
-  align-items: center;
-  align-content: center;
-}
-
-.row {
-  display: flex;
-  flex-flow: row wrap;
-  box-sizing: border-box;
-  padding-top: 2vh;
-}
-
-.centered-row {
-  align-content: center;
-  align-items: center;
-  justify-content: center;
 }
 
 .ramp-column {
@@ -82,6 +66,18 @@ a {
   padding: 16px;
 }
 
+.active-sidemenu {
+  border-left: 8px solid mat.get-color-from-palette($app-accent);
+}
+
+.primary-color-font {
+  color: mat.get-color-from-palette($app-primary);
+}
+
+.accent-color-font {
+  color: mat.get-color-from-palette($app-accent);
+}
+
 .toolbar-template {
   background-color: mat.get-color-from-palette($app-accent) !important;
   z-index: 666;
@@ -95,7 +91,7 @@ a {
 
 .ramp-tile {
   border: 1px solid;
-  border-color: mat.get-color-from-palette($app-accent);
+  border-color: mat.get-color-from-palette($app-accent) !important;
   padding: 0;
 }
 
@@ -103,4 +99,141 @@ a {
   background-color: mat.get-color-from-palette($app-accent);
   color: #ffffff;
   padding: 20px;
+}
+
+.centered {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+.row {
+  display: flex;
+  flex-flow: row wrap;
+  box-sizing: border-box;
+  padding-top: 1vh;
+}
+
+.centered-row {
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.right-justified-row {
+  align-content: center;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.space-around-row {
+  justify-content: space-around;
+  align-content: center;
+  align-items: center;
+}
+
+.space-between-row {
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+}
+
+.top-align {
+  align-items: start;
+  align-content: start;
+}
+
+.bottom-align {
+  align-items: end;
+  align-content: end;
+}
+
+.right-text {
+  text-align: end;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+@include utils.width-sm(50);
+@include utils.width-sm(90);
+@include utils.width-sm(95);
+@include utils.width-sm(100);
+
+@include utils.width-md(80);
+@include utils.width-md(90);
+@include utils.width-sm(75);
+@include utils.width-md(100);
+
+@include utils.width(90);
+@include utils.width(80);
+@include utils.width(75);
+@include utils.width(70);
+@include utils.width(66);
+@include utils.width(60);
+@include utils.width(50);
+@include utils.width(45);
+@include utils.width(40);
+@include utils.width(33);
+@include utils.width(30);
+@include utils.width(25);
+@include utils.width(20);
+@include utils.width(10);
+@include utils.width(5);
+@include utils.horizontalpadding(2vw);
+@include utils.text-align(center);
+@include utils.text-align(left);
+@include utils.text-align(right);
+
+.fill-container {
+  width: 100%;
+}
+
+
+.navigation-menu-panel {
+  width: 25%;
+  position: fixed !important;
+  top: calc(60px + 17vh) !important
+}
+
+@media only screen and (max-width: 1024px) {
+  .navigation-menu-panel {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .navigation-menu-panel {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .grid-list {
+    grid-template-columns: repeat(auto-fill, minmax(90%, 1fr));
+  }
+
+  .width-50 {
+    width: 75vw;
+    flex-basis: 75vw;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .width-50 {
+    width: 75vw;
+    flex-basis: 75vw;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .width-50 {
+    width: 90vw;
+    flex-basis: 90vw;
+  }
+
+  .hide-small {
+    display: none;
+  }
 }

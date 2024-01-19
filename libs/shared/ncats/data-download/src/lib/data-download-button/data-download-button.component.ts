@@ -1,7 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -13,7 +12,6 @@ import { MatButtonModule } from '@angular/material/button';
     imports: [
         MatButtonModule,
         MatTooltipModule,
-        ExtendedModule,
         MatIconModule,
     ],
 })

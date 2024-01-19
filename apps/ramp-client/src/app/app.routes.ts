@@ -1,7 +1,4 @@
-import { importProvidersFrom } from "@angular/core";
 import { Routes } from '@angular/router';
-import { EffectsModule, provideEffects } from "@ngrx/effects";
-import { provideState, provideStore, StoreModule } from "@ngrx/store";
 import { StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
 import rFunctions from "../assets/data/rFunctions.json";
 import { environment } from '../environments/environment';

@@ -14,15 +14,12 @@ import {
 } from "@ramp/stores/ramp-store";
 import { map } from "rxjs";
 
-import { FlexModule } from '@angular/flex-layout/flex';
-
 @Component({
     selector: 'ramp-common-reaction-analytes',
     templateUrl: './common-reaction-analytes.component.html',
     styleUrls: ['./common-reaction-analytes.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         InputRowComponent,
         FeedbackPanelComponent,

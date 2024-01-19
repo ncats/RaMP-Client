@@ -8,7 +8,7 @@ import {
   ViewEncapsulation
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { select, Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
 import { Ontology, RampQuery } from '@ramp/models/ramp-models';
 import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -19,9 +19,7 @@ import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
   OntologyFromMetaboliteActions, RampSelectors
 } from "@ramp/stores/ramp-store";
-import { map, takeUntil } from "rxjs";
-
-import { FlexModule } from '@angular/flex-layout/flex';
+import { map } from "rxjs";
 
 @Component({
     selector: 'ramp-ontologies-from-metabolites',
@@ -31,7 +29,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         InputRowComponent,
         FeedbackPanelComponent,

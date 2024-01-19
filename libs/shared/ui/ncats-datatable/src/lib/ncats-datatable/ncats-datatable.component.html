@@ -1,11 +1,9 @@
 <div
-  fxLayout="row"
-  fxLayout.xs="column"
-  fxLayoutAlign="end center"
+  class="row right-justified-row centered-row"
   class="body-row paginator-row"
   *ngIf="showPaginator && pageData"
 >
-  <div fxFlex="55" fxFlexAlign="end">
+  <div class="width-55">
     <mat-paginator
       #paginatorTop
       [pageSizeOptions]="[10, 20, 50]"
@@ -120,13 +118,11 @@
 </table>
 <!--
 <div
-  fxLayout="row"
-  fxLayout.xs="column"
-  fxLayoutAlign="end center"
+  class="row"
   class="body-row paginator-row"
   *ngIf="showPaginator && pageData"
 >
-  <div fxFlex="55" fxFlexAlign="end">
+  <div class="width-55" fxFlexAlign="end">
     <mat-paginator #paginatorBottom
       [pageSizeOptions]="[10, 20, 50]"
       [pageSize]="pageData.skip > 0 ? pageData.skip : 10"

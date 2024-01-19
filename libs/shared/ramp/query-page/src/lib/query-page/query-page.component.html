@@ -8,11 +8,10 @@
 </ng-container>
 <ng-template #dataTable>
   <div
-    fxLayout="row"
-    fxLayoutAlign="space-around start"
+    class="row space-around-row"
     *ngIf="dataAsDataProperty"
   >
-    <div fxFlex="90">
+    <div class="width-90">
       <ncats-frontend-library-ncats-datatable
         [fieldsConfig]="dataColumns"
         [data]="dataAsDataProperty"
@@ -25,8 +24,8 @@
 </ng-template>
 
 <ng-template #noData>
-  <div *ngIf="noDataArr" fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="90">
+  <div *ngIf="noDataArr" class="row space-around-row">
+    <div class="width-90">
       <h1>no data found!</h1>
     </div>
   </div>

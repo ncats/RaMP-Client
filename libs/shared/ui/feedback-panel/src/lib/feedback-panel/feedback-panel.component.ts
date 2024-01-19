@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { NgIf } from '@angular/common';
-import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
     selector: 'ramp-feedback-panel',
@@ -9,7 +8,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./feedback-panel.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         NgIf,
         MatCardModule,
     ],

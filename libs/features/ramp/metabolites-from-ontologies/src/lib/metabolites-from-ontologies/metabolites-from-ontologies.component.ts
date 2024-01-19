@@ -27,11 +27,9 @@ FetchOntologiesActions, MetaboliteFromOntologyActions, RampSelectors
 import { distinctUntilChanged, map } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
-import { ExtendedModule } from '@angular/flex-layout/extended';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
     selector: 'ramp-metabolites-from-ontologies',
@@ -39,7 +37,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./metabolites-from-ontologies.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         MatTabsModule,
         MatFormFieldModule,
@@ -49,7 +46,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
         NgIf,
         FilterPanelComponent,
         MatButtonModule,
-        ExtendedModule,
         MatIconModule,
         MatTooltipModule,
         LoadingComponent,

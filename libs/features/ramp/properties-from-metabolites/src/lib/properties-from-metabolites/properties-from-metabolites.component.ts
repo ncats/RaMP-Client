@@ -1,7 +1,7 @@
 import { DOCUMENT, TitleCasePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, DestroyRef, inject, Inject, Input, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, Input, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { select, Store } from "@ngrx/store";
+import { select } from "@ngrx/store";
 import { Properties, RampQuery } from '@ramp/models/ramp-models';
 import { InputRowComponent } from "@ramp/shared/ramp/input-row";
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
@@ -13,9 +13,7 @@ import { StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer
 import {
   PropertiesFromMetaboliteActions, RampSelectors
 } from "@ramp/stores/ramp-store";
-import { map, takeUntil } from "rxjs";
-import { FlexModule } from '@angular/flex-layout/flex';
-
+import { map } from "rxjs";
 
 @Component({
     selector: 'ramp-properties-from',
@@ -23,7 +21,6 @@ import { FlexModule } from '@angular/flex-layout/flex';
     styleUrls: ['./properties-from-metabolites.component.scss'],
     standalone: true,
     imports: [
-        FlexModule,
         DescriptionComponent,
         InputRowComponent,
         FeedbackPanelComponent,

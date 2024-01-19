@@ -76,6 +76,7 @@ export class RampService {
       .get<{ data: any[] }>(`${this.url}current_db_file_url`)
       .pipe(
         map((response) => {
+          console.log(response);
           return response.data;
         }),
         catchError(this.handleError('fetchAnalyteIntersects', [])),

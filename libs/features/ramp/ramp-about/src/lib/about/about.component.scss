@@ -1,27 +1,17 @@
-.about-content {
-  display: flex;
-  height: 100vh;
-  padding-top: 64px;
-}
-
-.title-row {
-  position: fixed;
-  width: 100vw;
-  background-color: white;
+.about-page {
+  margin-top: 60px;
 }
 
 .toc-wrapper {
-  padding-left: 0.3vw;
-  margin-top: 2vh;
+  padding-left: 0.2vw;
+}
+
+.navigation-menu-panel {
+  top: calc(60px + 1vh) !important
 }
 
 .ramp-list {
   list-style: none;
-}
-
-.about-wrapper {
-  flex: 1 1 auto;
-  overflow: auto;
 }
 
 .section-content {
@@ -51,10 +41,6 @@
   margin-bottom: 2vh;
 }
 
-.active {
-  border-left: 8px solid #265668;
-}
-
 .spacer {
   height: 20vh;
 }
@@ -72,6 +58,11 @@
 .portrait-holder {
   text-align: center;
   align-self: center;
+}
+
+.drawer-container-content {
+  padding-left: 1vw;
+  min-height: 70vh;
 }
 
 @media only screen and (max-width: 768px) {

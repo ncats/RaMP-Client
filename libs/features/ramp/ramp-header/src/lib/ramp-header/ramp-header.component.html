@@ -15,7 +15,7 @@
         <mat-menu #dynamicMenu="matMenu">
           @for (child of link.children; track child) {
           <span>
-            <button mat-menu-item [routerLink]="child.link">
+            <button class= "ramp-menu-button" mat-menu-item [routerLink]="child.link">
           {{ child.label ? child.label : child.link }}
           </button>
         </span>
