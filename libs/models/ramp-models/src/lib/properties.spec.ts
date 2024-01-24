@@ -5,7 +5,7 @@ describe('Properties', () => {
     expect(
       new Properties({
         iso_smiles: 'dsfdsfsfsdfsf',
-      })
+      }),
     ).toBeTruthy();
   });
 });

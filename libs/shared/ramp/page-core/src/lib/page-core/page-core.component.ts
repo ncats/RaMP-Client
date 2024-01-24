@@ -1,97 +1,125 @@
-import { DOCUMENT } from "@angular/common";
-import { Component, Inject, Optional } from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
-import { RampQuery } from "@ramp/models/ramp-models";
-import { DataProperty } from "@ramp/shared/ui/ncats-datatable";
-import { RampFacade } from "@ramp/stores/ramp-store";
-import { Subject } from "rxjs";
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { select, Store } from '@ngrx/store';
+import {
+  FisherResult,
+  FishersDataframe,
+  RampDataGeneric,
+  RampQuery,
+} from '@ramp/models/ramp-models';
+import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
+import { RampSelectors } from '@ramp/stores/ramp-store';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ramp-page-core',
   template: '',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageCoreComponent {
-  supportedIds!: [{ analyteType: string, idTypes: string[]}];
+  protected readonly store = inject(Store);
+  destroyRef = inject(DestroyRef);
+  changeRef = inject(ChangeDetectorRef);
+  protected dom = inject(DOCUMENT);
+
+  @Input()
+  supportedIdTypes!: string[];
+
+  supportedIds!: { analyteType: string; idTypes: string[] }[];
+
+  @Input()
   function!: string;
+
+  @Input()
   input!: string;
+
+  @Input()
   examples!: string;
+
+  @Input()
   title!: string;
+
+  @Input()
   description!: string;
-  dataframe!: any;
+
+  dataframe!: FishersDataframe;
+
   query: RampQuery = {
     functionCall: '',
-    numFoundIds: 0
+    numFoundIds: 0,
   };
-  matches: any[] = [];
+
+  matches: string[] = [];
   inputList: string[] = [];
   noMatches: string[] = [];
   dataAsDataProperty: { [key: string]: DataProperty }[] = [];
   downloadQueued = false;
   fuzzy = false;
 
-  supportedIdTypes!: [{ analyteType: string, idTypes: string[]}] | undefined;
+  _toTSV<T extends RampDataGeneric>(data: any): string {
+    if (data) {
+      // grab the column headings (separated by tabs)
+      const headings: string = Object.keys(data[0]).join('\t');
+      // iterate over the data
+      const rows: any = data.reduce(
+        (acc: string[], c: T) => {
+          // for each row object get its values and add tabs between them
+          // then add them as a new array to the outgoing array
+          return acc.concat([Object.values(c).join('\t')]);
 
-  /**
-   * Behaviour subject to allow extending class to unsubscribe on destroy
-   * @type {Subject<any>}
-   */
-  protected ngUnsubscribe: Subject<any> = new Subject();
-
-   _toTSV(data: any[]): any[] {
-// grab the column headings (separated by tabs)
-    const headings: string  = Object.keys(data[0]).join('\t');
-// iterate over the data
-    const rows: string[] = data.reduce((acc, c) => {
-
-      // for each row object get its values and add tabs between them
-      // then add them as a new array to the outgoing array
-      return acc.concat([Object.values(c).join('\t')]);
-
-// finally joining each row with a line break
-    }, [headings]).join('\n');
-    return rows;
+          // finally joining each row with a line break
+        },
+        [headings],
+      );
+      return rows.join('\n');
+    } else return '';
   }
 
-  constructor(
-    protected route: ActivatedRoute,
-    @Optional() protected rampFacade?: RampFacade,
-    @Inject(DOCUMENT) protected dom?: Document,
-  ) {
-    this.title = this.route.snapshot.data.title;
-    this.description = this.route.snapshot.data.description;
-    this.examples = this.route.snapshot.data.examples;
-    this.input = this.route.snapshot.data.input;
-    this.rampFacade?.supportedIds$.subscribe((res: any) => {
-      if(res && res.data) {
-        this.supportedIds = res.data.filter((type: { analyteType: any; }) => this.route.snapshot.data.supportedIdTypes.includes(type.analyteType));
+  constructor() {
+    this.store
+      .pipe(
+        select(RampSelectors.getSupportedIds),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: any) => {
+          if (res && res.data) {
+            this.supportedIds = res.data;
+          }
+        }),
+      )
+      .subscribe();
+  }
+
+  _downloadFile(data: any, name: string, type: string = 'text/tsv') {
+    if (this.dom) {
+      const file = new Blob([data], { type: type });
+      const link = this.dom.createElement('a');
+      if (link.download !== undefined) {
+        // feature detection
+        // Browsers that support HTML5 download attribute
+        const url = URL.createObjectURL(file);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${name}`);
+        link.style.visibility = 'hidden';
+        this.dom.body.appendChild(link);
+        link.click();
+        this.dom.body.removeChild(link);
       }
-    })
+    }
   }
 
-   _downloadFile(data: any, name: string, type: string = 'text/tsv') {
-if(this.dom) {
-  const file = new Blob([data], { type: type });
-  const link = this.dom.createElement('a');
-  if (link.download !== undefined) {
-    // feature detection
-    // Browsers that support HTML5 download attribute
-    const url = URL.createObjectURL(file);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${name}`);
-    link.style.visibility = 'hidden';
-    this.dom.body.appendChild(link);
-    link.click();
-    this.dom.body.removeChild(link);
-  }
-}
-  }
-
-
-  /**
-   * clean up on leaving component
-   */
-  ngOnDestroy() {
-    this.ngUnsubscribe.next("bye-bye");
-    this.ngUnsubscribe.complete();
+  _getSupportedIds() {
+    this.supportedIds = this.supportedIds?.filter(
+      (type: { analyteType: string }) =>
+        this.supportedIdTypes?.includes(type.analyteType),
+    );
   }
 }

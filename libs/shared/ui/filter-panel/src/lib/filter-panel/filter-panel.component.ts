@@ -1,13 +1,35 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import {
+  CdkVirtualScrollViewport,
+  CdkFixedSizeVirtualScroll,
+  CdkVirtualForOf,
+} from '@angular/cdk/scrolling';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { HighlightPipe } from '../../../../highlight/src';
 
 @Component({
   selector: 'ramp-filter-panel',
   templateUrl: './filter-panel.component.html',
   styleUrls: ['./filter-panel.component.scss'],
+  standalone: true,
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    MatCheckboxModule,
+    HighlightPipe,
+  ],
 })
 export class FilterPanelComponent implements OnInit {
   @Input() displayColumns = ['select', 'value', 'count'];
@@ -61,13 +83,11 @@ export class FilterPanelComponent implements OnInit {
     });
 
     this.filterFormCtrl.valueChanges
-      .pipe(
-        distinctUntilChanged()
-      )
+      .pipe(distinctUntilChanged())
       .subscribe((term) => {
         if (term && term.length > 0) {
           this.filteredData = this.data.filter((obj) =>
-            obj.value.toLowerCase().includes(term)
+            obj.value.toLowerCase().includes(term),
           );
         } else {
           this.filteredData = this.data;
@@ -87,7 +107,7 @@ export class FilterPanelComponent implements OnInit {
     this.isAllSelected()
       ? this.fieldSelection.clear()
       : this.dataSource.data.forEach((row) =>
-          this.fieldSelection.select(row.key)
+          this.fieldSelection.select(row.key),
         );
   }
 
@@ -103,7 +123,7 @@ export class FilterPanelComponent implements OnInit {
       5
     ) {
       if (this.data.values.length < this.data.length) {
-       // this.fetchAllFilterOptions();
+        // this.fetchAllFilterOptions();
       }
     }
   }
@@ -111,5 +131,5 @@ export class FilterPanelComponent implements OnInit {
   /**
    * fetches all the filter options for the component's facet
    */
- // fetchAllFilterOptions() {}
+  // fetchAllFilterOptions() {}
 }

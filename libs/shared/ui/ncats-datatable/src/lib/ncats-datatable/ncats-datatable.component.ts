@@ -6,14 +6,10 @@ import {
   EventEmitter,
   Injector,
   Input,
-  IterableDiffer,
-  IterableDiffers,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
   QueryList,
-  SimpleChanges,
   Type,
   ViewChild,
   ViewChildren,
@@ -27,21 +23,33 @@ import {
   trigger,
 } from '@angular/animations';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatRow, MatTable, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
-import { ComponentPortal } from '@angular/cdk/portal';
+import {
+  MatRow,
+  MatTable,
+  MatTableDataSource,
+  MatTableModule,
+} from '@angular/material/table';
+import {
+  MatPaginator,
+  PageEvent,
+  MatPaginatorModule,
+} from '@angular/material/paginator';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
+import { ComponentPortal, PortalModule } from '@angular/cdk/portal';
 import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs/operators';
 import { PageData } from './models/page-data';
 import { DataProperty } from './models/data-property';
+import { PropertyDisplayComponent } from './components/property-display/property-display.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgClass } from '@angular/common';
 
 const _sortingDataAccessor = (
   item: { [key: string]: DataProperty },
-  property: string
+  property: string,
 ) => {
-  if (item[property]) {
-    if (!isNaN(item[property].value)) {
+  if (item[property] && item[property].value) {
+    if (!isNaN(Number(item[property].value))) {
       return item[property].value;
     } else {
       return item[property].value.toLocaleUpperCase();
@@ -64,14 +72,24 @@ const _sortingDataAccessor = (
     trigger('detailExpand', [
       state(
         'collapsed',
-        style({ height: '0px', minHeight: '0', display: 'none' })
+        style({ height: '0px', minHeight: '0', display: 'none' }),
       ),
       state('expanded', style({ height: '*' })),
       transition(
         'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
       ),
     ]),
+  ],
+  standalone: true,
+  imports: [
+    MatPaginatorModule,
+    MatTableModule,
+    MatSortModule,
+    NgClass,
+    MatCheckboxModule,
+    PropertyDisplayComponent,
+    PortalModule,
   ],
 })
 
@@ -126,6 +144,7 @@ export class NcatsDatatableComponent
    */
   @Input()
   set fieldsConfig(value: DataProperty[]) {
+    console.log(value);
     this._fieldsConfig.next(value);
   }
 
@@ -264,7 +283,7 @@ export class NcatsDatatableComponent
   @ViewChild(MatPaginator) set paginator(paginator: MatPaginator) {
     this.dataSource.paginator = paginator;
   }
-/*
+  /*
   @ViewChild('paginatorTop') paginatorTop!: MatPaginator;
   @ViewChild('paginatorBottom') paginatorBottom!: MatPaginator;
 
@@ -273,7 +292,10 @@ export class NcatsDatatableComponent
   /**
    * injector for custom data
    */
-  constructor(private ref: ChangeDetectorRef, private _injector: Injector) {}
+  constructor(
+    private ref: ChangeDetectorRef,
+    private _injector: Injector,
+  ) {}
   /**
    * Init: get the columns to be displayed.
    * Table data is tracked by the data getter and setter
@@ -287,7 +309,7 @@ export class NcatsDatatableComponent
         if (res) {
           if (this.useInternalPaginator) {
             this.dataSource = new MatTableDataSource<DataProperty>(
-              res.map((val: any) => new DataProperty(val))
+              res.map((val: any) => new DataProperty(val)),
             );
             this.pageData = new PageData({ total: res.length });
           } else {
@@ -318,8 +340,7 @@ export class NcatsDatatableComponent
       });
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   /**
    * used to track data changes
@@ -346,7 +367,7 @@ export class NcatsDatatableComponent
    * @param $event
    */
   changePage($event: PageEvent): void {
- /*
+    /*
     if(this.dataSource) {
       const previous: number = $event.previousPageIndex ? $event.previousPageIndex * $event.pageSize : 0;
       const page: number = $event.pageIndex * $event.pageSize;
@@ -407,7 +428,7 @@ export class NcatsDatatableComponent
     }
     if (this.selectableRows) {
       this.displayColumns = ['select'].concat(
-        this.displayFields.map((field) => field.field)
+        this.displayFields.map((field) => field.field),
       );
       this.ref.detectChanges();
     } else {
@@ -415,7 +436,7 @@ export class NcatsDatatableComponent
       this.ref.detectChanges();
     }
     const defaultSort: DataProperty[] = this.fieldsConfig.filter(
-      (field) => field.sorted
+      (field) => field.sorted,
     );
     if (defaultSort.length > 0 && this.data) {
       this._sort.sort({
@@ -455,7 +476,7 @@ export class NcatsDatatableComponent
   getCustomComponent(
     field: DataProperty,
     row: MatRow,
-    index: number
+    index: number,
   ): ComponentPortal<any> | null {
     if (this.rowOutlet && field.customComponent) {
       const comp = this._injector.get<Type<any>>(field.customComponent);

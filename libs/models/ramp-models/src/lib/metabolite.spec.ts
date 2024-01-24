@@ -5,7 +5,7 @@ describe('Metabolite', () => {
     expect(
       new Metabolite({
         pathwayName: 'tim',
-      })
+      }),
     ).toBeTruthy();
   });
 });

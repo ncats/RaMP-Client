@@ -1,32 +1,61 @@
-import { DOCUMENT } from "@angular/common";
+import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
-  ElementRef, Inject,
+  ElementRef,
   OnInit,
   QueryList,
   ViewChild,
-  ViewChildren
-} from "@angular/core";
-import { UntypedFormControl } from '@angular/forms';
-import { MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute } from '@angular/router';
-import { Metabolite, RampQuery } from '@ramp/models/ramp-models';
+  ViewChildren,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
+import { select } from '@ngrx/store';
+import {
+  Metabolite,
+  Ontology,
+  OntologyList,
+  RampResponse,
+} from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
+import { DescriptionComponent } from '@ramp/shared/ui/description-panel';
+import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { FilterPanelComponent } from '@ramp/shared/ui/filter-panel';
+import { LoadingComponent } from '@ramp/shared/ui/loading-spinner';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchMetabolitesFromOntologies,
-  fetchMetabolitesFromOntologiesFile,
-  fetchOntologies,
-  RampFacade,
+  MetaboliteFromOntologyActions,
+  RampSelectors,
 } from '@ramp/stores/ramp-store';
-import { distinctUntilChanged, map, takeUntil } from "rxjs";
+import { distinctUntilChanged, map } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'ramp-metabolites-from-ontologies',
   templateUrl: './metabolites-from-ontologies.component.html',
   styleUrls: ['./metabolites-from-ontologies.component.scss'],
+  standalone: true,
+  imports: [
+    DescriptionComponent,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    FilterPanelComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    LoadingComponent,
+    FeedbackPanelComponent,
+    QueryPageComponent,
+    TitleCasePipe,
+  ],
 })
 export class MetabolitesFromOntologiesComponent
   extends PageCoreComponent
@@ -59,36 +88,31 @@ export class MetabolitesFromOntologiesComponent
       sortable: true,
     }),
   ];
-  ontologies!: any[];
-  allOntologies!: any[];
+  ontologies!: OntologyList[];
+  allOntologies!: OntologyList[];
   selectedOntologies: any[] = [];
   globalFilter?: string;
   disableSearch = false;
   loading = false;
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document
-  ) {
-    super(route, rampFacade, dom);
+  constructor(private ref: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit(): void {
-    this.rampFacade.dispatch(fetchOntologies());
+    this._getSupportedIds();
+    this.store.dispatch(MetaboliteFromOntologyActions.fetchOntologies());
+
     this.allOntoFilterCtrl.valueChanges
-      .pipe(
-        takeUntil(this.ngUnsubscribe),
-        distinctUntilChanged())
+      .pipe(takeUntilDestroyed(this.destroyRef), distinctUntilChanged())
       .subscribe((term) => {
         if (term.trim() && term.trim().length > 0) {
           this.ontologies = [];
           const matcher = new RegExp(term.trim(), 'i');
-          this.allOntologies.forEach((onto) => {
-            const newVal = { ...onto };
-            newVal.values = newVal.values.filter((val: { value: any }) =>
-              matcher.test(val.value)
+          this.allOntologies.forEach((onto: OntologyList) => {
+            const newVal: OntologyList = { ...onto };
+            newVal.values = newVal.values.filter((val: Ontology) =>
+              matcher.test(<string>val.value),
             );
             if (newVal.values && newVal.values.length > 0) {
               this.ontologies.push(newVal);
@@ -101,77 +125,64 @@ export class MetabolitesFromOntologiesComponent
         }
       });
 
-    this.rampFacade.ontologiesList$
+    this.store
       .pipe(
-      takeUntil(this.ngUnsubscribe),
-    map((res: any) => {
-          if (res && res.data) {
-            this.ontologies = res.data.map(
-              (ont: { ontologyType: string; values: any[]; count: number }) => {
-                return {
-                  ontologyType: ont.ontologyType,
-                  values: ont.values
-                    .map(
-                      (val) =>
-                        (val = {
-                          value: val.ontology,
-                          source: ont.ontologyType,
-                          count: val.count,
-                        })
-                    )
-                    .sort((a, b) => b.count - a.count),
-                };
-              }
-            );
-            this.allOntologies = this.ontologies;
+        select(RampSelectors.getontologiesList),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: any) => {
+          if (res && res.length) {
+            this.ontologies = res;
+            this.allOntologies = res;
             this.ref.markForCheck();
           }
-        })
+        }),
       )
       .subscribe();
 
-    this.rampFacade.metabolites$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-      (res: { data: Metabolite[]; query: RampQuery, dataframe: any } | undefined) => {
-        if (res && res.data) {
-          this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
-            const newObj: { [key: string]: DataProperty } = {};
-            Object.entries(metabolite).map((value: any, index: any) => {
-              newObj[value[0]] = new DataProperty({
-                name: value[0],
-                label: value[0],
-                value: value[1],
+    this.store
+      .pipe(
+        select(RampSelectors.getMetabolites),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: RampResponse<Metabolite> | undefined) => {
+          if (res && res.data) {
+            this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
+              const newObj: { [key: string]: DataProperty } = {};
+              Object.entries(metabolite).map((value: any, index: any) => {
+                newObj[value[0]] = new DataProperty({
+                  name: value[0],
+                  label: value[0],
+                  value: value[1],
+                });
               });
+              return newObj;
             });
-            return newObj;
-          });
-          this.tabIndex = 1;
-        }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        if (res && res.dataframe) {
-          this.dataframe = res.dataframe;
-        }
-        this.loading = false;
-        this.ref.markForCheck();
-      }
-    );
+            this.tabIndex = 1;
+          }
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          if (res && res.dataframe) {
+            this.dataframe = res.dataframe;
+          }
+          this.loading = false;
+          this.ref.markForCheck();
+        }),
+      )
+      .subscribe();
   }
 
   setValues(values: any) {
     if (values.added) {
       this.selectedOntologies = Array.from(
-        new Set(this.selectedOntologies.concat(values.added))
+        new Set(this.selectedOntologies.concat(values.added)),
       );
     }
     if (values.removed) {
       values.removed.forEach(
         (val: { value: any }) =>
           (this.selectedOntologies = this.selectedOntologies.filter(
-            (ont) => ont.value !== val.value
-          ))
+            (ont) => ont.value !== val.value,
+          )),
       );
     }
     let sum = 0;
@@ -187,20 +198,22 @@ export class MetabolitesFromOntologiesComponent
     this.loading = true;
     this.tabIndex = 0;
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
-    this.rampFacade.dispatch(
-      fetchMetabolitesFromOntologies({ ontologies: ontologiesList })
+    this.store.dispatch(
+      MetaboliteFromOntologyActions.fetchMetabolitesFromOntologies({
+        ontologies: ontologiesList,
+      }),
     );
   }
 
   fetchMetabolitesFile(): void {
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
-    if(ontologiesList.length) {
-        this.rampFacade.dispatch(
-          fetchMetabolitesFromOntologiesFile({
-            ontologies: ontologiesList,
-            format: 'tsv',
-          })
-        );
-      }
+    if (ontologiesList.length) {
+      this.store.dispatch(
+        MetaboliteFromOntologyActions.fetchMetabolitesFromOntologiesFile({
+          ontologies: ontologiesList,
+          format: 'tsv',
+        }),
+      );
+    }
   }
 }

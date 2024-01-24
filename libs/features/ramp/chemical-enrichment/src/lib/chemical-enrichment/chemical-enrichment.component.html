@@ -1,13 +1,13 @@
 <div class="content-panel">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <h1 class="page-title">
         {{ title | titlecase }}
       </h1>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <ramp-description
         [supportedIds]="supportedIds"
         [description]="description"
@@ -23,43 +23,70 @@
       <ramp-input-row
         [input]="input"
         [examples]="examples"
-        [showDownload] = false
+        [showDownload]="false"
         (dataSearch)="fetchEnrichment($event)"
       >
-        <div class ="additional-params">
-          <br>
-          <br>
+        <div class="additional-params">
+          <br />
+          <br />
           <span class="mat-h3">Optional Background Parameters</span>
-          <br>
-          <br>
-          <input type="file" class="file-input"
-                 accept="text/tab-separated-values, .txt"
-                 (change)="onFileSelected($event)" #fileUpload>
+          <br />
+          <br />
+          <input
+            type="file"
+            class="file-input"
+            accept="text/tab-separated-values, .txt"
+            (change)="onFileSelected($event)"
+            #fileUpload
+          />
           <div class="file-upload">
-            <div *ngIf="fileName">
-              <span>{{fileName}}</span>&nbsp;
-              <button mat-mini-fab color="accent" class="upload-btn"
-                      (click)="cancelUpload()">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </div>
-            <div *ngIf="!fileName">
-              <span class="mat-h4">Upload backgound ids</span> &nbsp;
-              <button *ngIf="!fileName" mat-mini-fab color="accent" class="upload-btn"
-                      (click)="fileUpload.click()">
-                <mat-icon>attach_file</mat-icon>
-              </button>
-            </div>
+            @if (fileName) {
+              <div>
+                <span>{{ fileName }}</span
+                >&nbsp;
+                <button
+                  mat-mini-fab
+                  color="accent"
+                  class="upload-btn"
+                  (click)="cancelUpload()"
+                >
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </div>
+            }
+            @if (!fileName) {
+              <div>
+                <span class="mat-h4">Upload backgound ids</span> &nbsp;
+                @if (!fileName) {
+                  <button
+                    mat-mini-fab
+                    color="accent"
+                    class="upload-btn"
+                    (click)="fileUpload.click()"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+                }
+              </div>
+            }
           </div>
-          <div> - or - </div>
+          <div>- or -</div>
           <div>
-            <mat-form-field class="full-width" [color]="'accent'" appearance="outline">
-              <mat-select [formControl]="biospecimenCtrl"
-                          placeholder="select biospecimen" >
+            <mat-form-field
+              class="full-width"
+              [color]="'accent'"
+              appearance="outline"
+            >
+              <mat-select
+                [formControl]="biospecimenCtrl"
+                placeholder="select biospecimen"
+              >
                 <mat-option [value]=""></mat-option>
-                <mat-option *ngFor="let specimen of biospecimens" [value]="specimen" >
-                  {{specimen}}
-                </mat-option>
+                @for (specimen of biospecimens; track specimen) {
+                  <mat-option [value]="specimen">
+                    {{ specimen }}
+                  </mat-option>
+                }
               </mat-select>
             </mat-form-field>
           </div>
@@ -77,13 +104,14 @@
       </ng-template>
       <ramp-feedback-panel
         [matchesLength]="matches.length"
-        [dataLength] = classesAsDataProperty.length
+        [dataLength]="classesAsDataProperty.length"
         [inputLength]="inputList.length"
         [noMatches]="noMatches"
-        [inputType]="input">
+        [inputType]="input"
+      >
       </ramp-feedback-panel>
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div fxFlex="10">
+      <div class="row right-justified-row centered-row">
+        <div class="width-10">
           <button
             mat-stroked-button
             class="tool-button list-download"
@@ -91,14 +119,16 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span fxHide.lt-lg>Download</span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download</span
+            ><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>
 
       <ramp-query-page
         [dataColumns]="classesColumns"
-        [dataAsDataProperty]="classesAsDataProperty">
+        [dataAsDataProperty]="classesAsDataProperty"
+      >
       </ramp-query-page>
     </mat-tab>
     <mat-tab [disabled]="dataAsDataProperty.length === 0">
@@ -110,43 +140,50 @@
           [position]="'right'"
         ></ramp-loading>
       </ng-template>
-      <div
-        fxLayout="row"
-        fxLayoutAlign="space-around start"
-        class="additional-params"
-      >
-        <div fxFlex="40">
+      <div class="row space-around-row" class="additional-params">
+        <div class="width-40">
           <h3>Filter Results</h3>
-          <div fxLayout="row" fxLayoutAlign="start center">
-            <div fxFlex="30">
+          <div class="row centered-row">
+            <div class="width-30">
               <mat-form-field
                 appearance="outline"
                 color="accent"
-                class="p-val-input">
+                class="p-val-input"
+              >
                 <mat-label>P-Value Cutoff</mat-label>
                 <input matInput type="number" [formControl]="pValueFormCtrl" />
               </mat-form-field>
             </div>
-            <div fxFlex="40">
+            <div class="width-40">
               <mat-radio-group [formControl]="pValueTypeFormCtrl">
-                <mat-radio-button [value]="'fdr'" [color]="'accent'">FDR</mat-radio-button> <br>
-                <mat-radio-button [value]="'pval'" [color]="'accent'">Pval Combined</mat-radio-button>
+                <mat-radio-button [value]="'fdr'" [color]="'accent'"
+                  >FDR</mat-radio-button
+                >
+                <br />
+                <mat-radio-button [value]="'pval'" [color]="'accent'"
+                  >Pval Combined</mat-radio-button
+                >
               </mat-radio-group>
             </div>
           </div>
-          <div fxLayout="row" fxLayoutAlign="start start">
-            <div fxFlex="20">
-              <button mat-flat-button (click)="filterEnrichments()" [color]="'accent'">Filter</button>
+          <div class="row">
+            <div class="width-20">
+              <button
+                mat-flat-button
+                (click)="filterEnrichments()"
+                [color]="'accent'"
+              >
+                Filter
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <br>
-      <ramp-feedback-panel
-        [function]="query.functionCall">
+      <br />
+      <ramp-feedback-panel [function]="query.functionCall">
       </ramp-feedback-panel>
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div fxFlex="10">
+      <div class="row right-justified-row centered-row">
+        <div class="width-10">
           <button
             mat-stroked-button
             class="tool-button list-download"
@@ -154,12 +191,12 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span fxHide.lt-lg>Download</span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download</span
+            ><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>
-      <ramp-loading
-        [isLoading]="enrichmentLoading"></ramp-loading>
+      <ramp-loading [isLoading]="enrichmentLoading"></ramp-loading>
       <ramp-query-page
         [dataColumns]="enrichmentColumns"
         [dataAsDataProperty]="dataAsDataProperty"

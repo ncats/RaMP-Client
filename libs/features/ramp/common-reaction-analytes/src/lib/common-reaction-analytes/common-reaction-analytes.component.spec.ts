@@ -33,7 +33,7 @@ describe('CommonReactionAnalytesComponent', () => {
               strictActionImmutability: true,
               strictStateImmutability: true,
             },
-          }
+          },
         ),
         EffectsModule.forRoot([]),
       ],

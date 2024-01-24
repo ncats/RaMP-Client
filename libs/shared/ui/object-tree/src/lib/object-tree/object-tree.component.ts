@@ -9,10 +9,15 @@ import {
   OnInit,
   Output,
   ViewChild,
-  ViewEncapsulation,
 } from '@angular/core';
-import { MatTree, MatTreeNestedDataSource } from '@angular/material/tree';
+import {
+  MatTree,
+  MatTreeNestedDataSource,
+  MatTreeModule,
+} from '@angular/material/tree';
 import { BehaviorSubject } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 /** Flat tree item node with expandable and level information */
 export class FlatNode {
@@ -32,6 +37,8 @@ export class NestedNode {
   templateUrl: './object-tree.component.html',
   styleUrls: ['./object-tree.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatTreeModule, MatButtonModule, MatIconModule],
 })
 export class ObjectTreeComponent implements OnInit {
   @ViewChild(MatTree) objectTree!: MatTree<any>;

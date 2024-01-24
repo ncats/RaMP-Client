@@ -1,32 +1,62 @@
-import { ScrollDispatcher } from '@angular/cdk/overlay';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { OverlayModule, ScrollDispatcher } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef, OnDestroy,
+  DestroyRef,
+  ElementRef,
+  inject,
   OnInit,
   QueryList,
-  ViewChildren
-} from "@angular/core";
+  ViewChildren,
+  ViewEncapsulation,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { select, Store } from '@ngrx/store';
 import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
-import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { initAbout, RampFacade } from '@ramp/stores/ramp-store';
-import { Subject, takeUntil, tap } from "rxjs";
+import {
+  DataProperty,
+  NcatsDatatableComponent,
+} from '@ramp/shared/ui/ncats-datatable';
+import { UpsetComponent } from '@ramp/shared/visualizations/upset-chart';
+import { LoadRampActions, RampSelectors } from '@ramp/stores/ramp-store';
+import { tap } from 'rxjs';
+import { CdkScrollable, ScrollingModule } from '@angular/cdk/scrolling';
+import { NgClass, ViewportScroller } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'ramp-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    MatListModule,
+    NgClass,
+    CdkScrollable,
+    NcatsDatatableComponent,
+    UpsetComponent,
+    ScrollingModule,
+    OverlayModule,
+    MatMenuModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatButtonModule,
+  ],
 })
-export class AboutComponent implements OnInit, OnDestroy {
-  @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
+export class AboutComponent implements OnInit {
+  private readonly store = inject(Store);
+  destroyRef = inject(DestroyRef);
 
-  /**
-   * Behaviour subject to allow extending class to unsubscribe on destroy
-   * @type {Subject<any>}
-   */
-  protected ngUnsubscribe: Subject<any> = new Subject();
+  @ViewChildren('scrollSection') scrollSections!: QueryList<ElementRef>;
+  mobile = false;
 
   /**
    * default active element for menu highlighting, will be replaced on scroll
@@ -34,10 +64,10 @@ export class AboutComponent implements OnInit, OnDestroy {
    */
   activeElement = 'about';
 
-  genesData!: any[];
-  compoundsData!: any[];
+  genesData!: { id: string; sets: string[]; size: number }[];
+  compoundsData!: { id: string; sets: string[]; size: number }[];
   sourceVersions!: Array<SourceVersion>;
-  entityCounts!: EntityCount[];
+  entityCounts!: { [key: string]: DataProperty }[];
   databaseUrl!: string;
   entityCountsColumns: DataProperty[] = [
     new DataProperty({
@@ -81,95 +111,103 @@ export class AboutComponent implements OnInit, OnDestroy {
   dbUpdated!: string;
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
+    private changeRef: ChangeDetectorRef,
     private scrollDispatcher: ScrollDispatcher,
-    protected rampFacade: RampFacade
+    public scroller: ViewportScroller,
+    private breakpointObserver: BreakpointObserver,
   ) {}
 
   ngOnInit(): void {
-    this.rampFacade.dispatch(initAbout());
-    this.rampFacade.allRampStore$
+    this.breakpointObserver
+      .observe([Breakpoints.XSmall, Breakpoints.Small])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        this.mobile = result.matches;
+        this.changeRef.markForCheck();
+      });
+
+    this.store.dispatch(LoadRampActions.loadRampStats());
+
+    this.store
       .pipe(
-      takeUntil(this.ngUnsubscribe),
-    tap((data) => {
+        select(RampSelectors.getAllRamp),
+        takeUntilDestroyed(this.destroyRef),
+        tap((data) => {
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
-            if(this.sourceVersions.length >0 ){
+            if (this.sourceVersions.length > 0) {
               const first = this.sourceVersions[0];
-              if(first.ramp_db_version) {
+              if (first.ramp_db_version) {
                 this.dbVersion = first.ramp_db_version;
               }
-              if(first.db_mod_date) {
-                this.dbUpdated = first.db_mod_date
+              if (first.db_mod_date) {
+                this.dbUpdated = first.db_mod_date;
               }
             }
 
-            this.changeDetector.markForCheck();
+            this.changeRef.markForCheck();
           }
           if (data.entityCounts) {
-            this.entityCounts = data.entityCounts.map(
-              (count: { [s: string]: unknown } | ArrayLike<unknown>) => {
-                const newObj: { [key: string]: DataProperty } = {};
-                Object.entries(count).map((value: any) => {
-                  newObj[value[0]] = new DataProperty({
-                    name: value[0],
-                    label: value[0],
-                    value: value[1],
-                  });
+            this.entityCounts = data.entityCounts.map((count: EntityCount) => {
+              const newObj: { [key: string]: DataProperty } = {};
+              Object.entries(count).map((value: unknown[]) => {
+                newObj[<string>value[0]] = new DataProperty({
+                  name: value[0],
+                  label: value[0],
+                  value: value[1],
                 });
-                return newObj;
-              }
-            );
-            this.changeDetector.markForCheck();
+              });
+              return newObj;
+            });
+            this.changeRef.markForCheck();
           }
           if (data.geneIntersects) {
             this.genesData = data.geneIntersects;
-            this.changeDetector.markForCheck();
+            this.changeRef.markForCheck();
           }
           if (data.metaboliteIntersects) {
             this.compoundsData = data.metaboliteIntersects;
-            this.changeDetector.markForCheck();
+            this.changeRef.markForCheck();
           }
-          if(data.databaseUrl) {
-            this.databaseUrl = data.databaseUrl
+          if (data.databaseUrl) {
+            this.databaseUrl = data.databaseUrl;
           }
-        })
+        }),
       )
       .subscribe();
 
-    this.scrollDispatcher.scrolled()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((data) => {
-      if (data) {
-        let scrollTop: number =
-          data.getElementRef().nativeElement.scrollTop + 100;
-        if (scrollTop === 175) {
+    this.scrollDispatcher
+      .scrolled()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        let scrollTop: number = this.scroller.getScrollPosition()[1];
+        if (scrollTop === 0) {
           this.activeElement = 'about';
-          this.changeDetector.detectChanges();
+          this.changeRef.detectChanges();
         } else {
           this.scrollSections.forEach((section) => {
-            scrollTop = scrollTop - section.nativeElement.scrollHeight;
+            scrollTop = scrollTop - section.nativeElement?.scrollHeight;
             if (scrollTop >= 0) {
               this.activeElement = section.nativeElement.nextSibling.id;
-              this.changeDetector.detectChanges();
+              this.changeRef.detectChanges();
             }
           });
         }
-      }
-    });
+      });
   }
 
   /**
    * scroll to section
    * @param el
    */
-  public scroll(el: any): void {
+  public scroll(el: HTMLElement): void {
     //  el.scrollIntoView(true);
     el.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
       inline: 'nearest',
     });
+    this.activeElement = el.id;
   }
 
   /**
@@ -179,13 +217,5 @@ export class AboutComponent implements OnInit, OnDestroy {
    */
   isActive(check: string): boolean {
     return this.activeElement === check;
-  }
-
-  /**
-   * clean up on leaving component
-   */
-  ngOnDestroy() {
-    this.ngUnsubscribe.next("bye-bye");
-    this.ngUnsubscribe.complete();
   }
 }

@@ -1,50 +1,44 @@
-
-.about-content {
-  display: flex;
-  height: 100vh;
-  padding-top: 64px;
-}
-
-.title-row {
-  position: fixed;
-  width: 100vw;
-  background-color: white;
+.about-page {
+  margin-top: 60px;
 }
 
 .toc-wrapper {
-  padding-left: 0.3vw;
-  margin-top: 2vh;
+  padding-left: 0.2vw;
+}
+
+.navigation-menu-panel {
+  top: calc(60px + 1vh) !important;
 }
 
 .ramp-list {
   list-style: none;
 }
 
-.about-wrapper {
-  flex: 1 1 auto;
-  overflow: auto;
-}
-
 .section-content {
-  font: 400 1rem/1.5rem Roboto, 'Helvetica Neue', sans-serif;
+  font:
+    400 1rem/1.5rem Roboto,
+    'Helvetica Neue',
+    sans-serif;
 }
 
 .ramp-title {
-  font: 300 3rem Roboto, 'Helvetica Neue', sans-serif;
+  font:
+    300 3rem Roboto,
+    'Helvetica Neue',
+    sans-serif;
   padding-left: 1vw;
   margin-top: 2vh;
   margin-bottom: 0;
 }
 
 .section-header {
-  font: 300 2.5rem Roboto, 'Helvetica Neue', sans-serif;
+  font:
+    300 2.5rem Roboto,
+    'Helvetica Neue',
+    sans-serif;
   padding-left: 1vw;
   margin-top: 5vh;
   margin-bottom: 2vh;
-}
-
-.active {
-  border-left: 8px solid #265668;
 }
 
 .spacer {
@@ -66,6 +60,11 @@
   align-self: center;
 }
 
+.drawer-container-content {
+  padding-left: 1vw;
+  min-height: 70vh;
+}
+
 @media only screen and (max-width: 768px) {
   .about-wrapper {
     flex: 1;
@@ -73,7 +72,10 @@
   }
 
   .ramp-title {
-    font: 300 2rem Roboto, 'Helvetica Neue', sans-serif;
+    font:
+      300 2rem Roboto,
+      'Helvetica Neue',
+      sans-serif;
     margin-top: 2vh;
   }
 }
@@ -84,4 +86,3 @@
   height: 8vw;
   width: 8vw;
 }
-

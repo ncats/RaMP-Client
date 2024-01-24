@@ -1,22 +1,22 @@
-<div
-  fxLayout="row"
-  fxLayout.xs="column"
-  fxLayoutAlign="end center"
-  class="body-row paginator-row"
-  *ngIf="showPaginator && pageData"
->
-  <div fxFlex="55" fxFlexAlign="end">
-    <mat-paginator #paginatorTop
-      [pageSizeOptions]="[10, 20, 50]"
-      [pageSize]="pageData.skip > 0 ? pageData.skip : 10"
-      [length]="pageData.total ? pageData.total : 10"
-      [showFirstLastButtons]="true"
-      (page)="changePage($event)"
-      [hidePageSize]="hidePageSize"
-    >
-    </mat-paginator>
+@if (showPaginator && pageData) {
+  <div
+    class="row right-justified-row centered-row"
+    class="body-row paginator-row"
+  >
+    <div class="width-55">
+      <mat-paginator
+        #paginatorTop
+        [pageSizeOptions]="[10, 20, 50]"
+        [pageSize]="pageData.skip > 0 ? pageData.skip : 10"
+        [length]="pageData.total ? pageData.total : 10"
+        [showFirstLastButtons]="true"
+        (page)="changePage($event)"
+        [hidePageSize]="hidePageSize"
+      >
+      </mat-paginator>
+    </div>
   </div>
-</div>
+}
 <table
   mat-table
   matSort
@@ -45,60 +45,53 @@
       </mat-checkbox>
     </td>
   </ng-container>
-  <ng-container
-    matColumnDef="{{ field.field }}"
-    *ngFor="let field of displayFields"
-  >
-    <th
-      mat-header-cell
-      *matHeaderCellDef
-      mat-sort-header
-      [disabled]="!field.sortable"
-      [style.width]="field.width"
-    >
-      {{ field.label ? field.label : field.field }}
-    </th>
-    <td
-      mat-cell
-      *matCellDef="let row; let i = dataIndex"
-      [style.max-width]="field.width"
-    >
-      <ng-container
-        *ngIf="checkCustomComponent(field); then customOutlet; else properties"
+  @for (field of displayFields; track field) {
+    <ng-container matColumnDef="{{ field.field }}">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        [disabled]="!field.sortable"
+        [style.width]="field.width"
       >
-      </ng-container>
-      <ng-template #properties>
-        <div *ngIf="row[field.field] && isArray(row[field.field]); else single">
-          <span *ngFor="let value of row[field.field]">
+        {{ field.label ? field.label : field.field }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let row; let i = dataIndex"
+        [style.max-width]="field.width"
+      >
+        @if (checkCustomComponent(field)) {
+        } @else {
+          @if (row[field.field] && isArray(row[field.field])) {
+            <div>
+              @for (value of row[field.field]; track value) {
+                <span>
+                  <ncats-property-display
+                    [property]="value"
+                    [showLabel]="false"
+                    [displayType]="field.displayType"
+                  ></ncats-property-display>
+                  <br />
+                </span>
+              }
+            </div>
+          } @else {
             <ncats-property-display
-              [property]="value"
+              [property]="row[field.field]"
               [showLabel]="false"
-              [displayType] = field.displayType
+              [displayType]="field.displayType"
             ></ncats-property-display>
-            <br />
-          </span>
-        </div>
-        <ng-template #single>
-          <ncats-property-display
-            [property]="row[field.field]"
-            [showLabel]="false"
-            [displayType] = field.displayType
-          ></ncats-property-display>
-        </ng-template>
-      </ng-template>
-      <ng-template
-        #customOutlet
-        [cdkPortalOutlet]="getCustomComponent(field, row, i)"
-        (attached)="componentAttached($event, i, field)"
-      >
-      </ng-template>
-    </td>
-  </ng-container>
+          }
+        }
+      </td>
+    </ng-container>
+  }
 
   <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
   <ng-container matColumnDef="expandedDetail">
     <td mat-cell *matCellDef="let row" [attr.colspan]="getColSpan()">
-      <div [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
+      <div [@detailExpand]="row === expandedElement ? 'expanded' : 'collapsed'">
         <ng-template #expandedRowOutlet></ng-template>
       </div>
     </td>
@@ -119,13 +112,11 @@
 </table>
 <!--
 <div
-  fxLayout="row"
-  fxLayout.xs="column"
-  fxLayoutAlign="end center"
+  class="row"
   class="body-row paginator-row"
   *ngIf="showPaginator && pageData"
->
-  <div fxFlex="55" fxFlexAlign="end">
+  >
+  <div class="width-55" fxFlexAlign="end">
     <mat-paginator #paginatorBottom
       [pageSizeOptions]="[10, 20, 50]"
       [pageSize]="pageData.skip > 0 ? pageData.skip : 10"
@@ -133,7 +124,7 @@
       [showFirstLastButtons]="true"
       (page)="changePage($event); paginatorTop.pageIndex = $event.pageIndex"
       [hidePageSize]="hidePageSize"
-    >
+      >
     </mat-paginator>
   </div>
 </div>

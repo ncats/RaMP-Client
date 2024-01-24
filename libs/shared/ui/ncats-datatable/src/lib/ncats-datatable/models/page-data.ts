@@ -26,7 +26,7 @@ export class PageData {
    * deonstruct object into class
    * @param obj
    */
-  constructor(obj: any) {
+  constructor(obj: Partial<PageData>) {
     this.total = obj.total ? obj.total : 0;
     this.count = obj.count ? obj.count : 0;
     this.skip = obj.skip ? obj.skip : 0;

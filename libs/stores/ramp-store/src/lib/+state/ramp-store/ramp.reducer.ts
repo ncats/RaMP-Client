@@ -1,19 +1,35 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
 import {
-  Analyte, ChemicalEnrichment,
-  Classes, FisherResult,
+  Analyte,
+  ChemicalEnrichment,
+  Classes,
+  EntityCount,
+  FisherResult,
+  FishersDataframe,
   Metabolite,
   Ontology,
+  OntologyList,
   Pathway,
   Properties,
+  RampResponse,
   RampQuery,
   Reaction,
-  SourceVersion
-} from "@ramp/models/ramp-models";
-import { filterEnrichmentFromMetabolitesFailure } from "./ramp.actions";
+  SourceVersion,
+} from '@ramp/models/ramp-models';
+import {
+  AnalyteFromPathwayActions,
+  ClassesFromMetabolitesActions,
+  CommonReactionAnalyteActions,
+  LoadRampActions,
+  MetaboliteEnrichmentsActions,
+  MetaboliteFromOntologyActions,
+  OntologyFromMetaboliteActions,
+  PathwayEnrichmentsActions,
+  PathwayFromAnalyteActions,
+  PropertiesFromMetaboliteActions,
+} from './ramp.actions';
 
-import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
 
 export const RAMP_STORE_FEATURE_KEY = 'rampStore';
@@ -22,52 +38,22 @@ export interface State extends EntityState<RampEntity> {
   selectedId?: string | number; // which RampStore record has been selected
   loading: boolean; // has the RampStore list been loaded
   error?: string | null; // last known error (if any)
-  supportedIds?: [{ analyteType: string, idTypes: string[]}];
+  supportedIds?: [{ analyteType: string; idTypes: string[] }];
   sourceVersions?: SourceVersion[];
-  entityCounts?: any;
+  entityCounts?: EntityCount[];
   metaboliteIntersects?: [];
   geneIntersects?: [];
   databaseUrl?: string;
-  ontologies?: {
-    data: Ontology[];
-    query: RampQuery;
-    dataframe: any;
-  };
-  analytes?: {
-    data: Analyte[];
-    query: RampQuery;
-    dataframe: any;
-  };
-  pathways?: {
-    data: Pathway[];
-    query: RampQuery;
-    dataframe: any;
-  };
-  reactions?: {
-    data: Reaction[];
-    query: RampQuery;
-    dataframe: any;
-  };
+  ontologies?: RampResponse<Ontology>;
+  analytes?: RampResponse<Analyte>;
+  pathways?: RampResponse<Pathway>;
+  reactions?: RampResponse<Reaction>;
+  metabolites?: RampResponse<Metabolite>;
+  ontologiesList?: OntologyList[];
 
-  metabolites?: {
-    data: Metabolite[];
-    query: RampQuery;
-    dataframe: any;
-  };
+  metClasses?: RampResponse<Classes>;
 
-  ontologiesList?: any[];
-
-  metClasses?: {
-    data: Classes[];
-    query: RampQuery;
-    dataframe: any;
-  };
-
-  properties?: {
-    data: Properties[];
-    query: RampQuery;
-    dataframe: any;
-  };
+  properties?: RampResponse<Properties>;
 
   chemicalEnrichments?: {
     data: ChemicalEnrichment[];
@@ -76,14 +62,19 @@ export interface State extends EntityState<RampEntity> {
 
   pathwayEnrichments?: {
     data: FisherResult[];
-    query: RampQuery;
+    plot?: string[];
+    query?: RampQuery;
+    dataframe?: FishersDataframe;
     openModal?: boolean;
   };
 
-  enriched_chemical_class?: any;
-  combined_fishers_dataframe?: any;
-  filtered_fishers_dataframe?: any;
-  clusterPlot?: any;
+  enriched_chemical_class?: { [key: string]: string[] };
+
+  filteredFishersDataframe?: FishersDataframe;
+
+  combinedFishersDataframe?: FishersDataframe;
+
+  clusterPlot?: string;
   openModal?: boolean;
 }
 
@@ -99,214 +90,234 @@ export const initialState: State = rampAdapter.getInitialState({
   loading: false,
 });
 
-const rampReducer = createReducer(
+export const rampReducer = createReducer(
   initialState,
-  on(RampActions.init, (state) => ({
+
+  on(LoadRampActions.loadRamp, (state) => ({
     ...state,
     loading: false,
     error: null,
   })),
-  on(RampActions.loadRampSuccess, (state, { rampStore }) =>
-    rampAdapter.setAll(rampStore, { ...state, loading: false })
-  ),
 
-  on (
-    RampActions.init,
-    RampActions.initAbout,
-    (state) => ({
-      ...state,
-      error: null,
-    })
-  ),
+  on(LoadRampActions.loadRampStats, (state) => ({
+    ...state,
+    error: null,
+  })),
 
   on(
-    RampActions.fetchOntologiesFromMetabolites,
-    RampActions.fetchAnalytesFromPathways,
-    RampActions.fetchPathwaysFromAnalytes,
-    RampActions.fetchMetabolitesFromOntologies,
-    RampActions.fetchCommonReactionAnalytes,
-    RampActions.fetchClassesFromMetabolites,
-    RampActions.fetchPropertiesFromMetabolites,
-    RampActions.fetchEnrichmentFromMetabolites,
-    RampActions.fetchEnrichmentFromPathways,
+    OntologyFromMetaboliteActions.fetchOntologiesFromMetabolites,
+    AnalyteFromPathwayActions.fetchAnalytesFromPathways,
+    PathwayEnrichmentsActions.fetchPathwaysFromAnalytes,
+    PathwayFromAnalyteActions.fetchPathwaysFromAnalytes,
+    MetaboliteFromOntologyActions.fetchMetabolitesFromOntologies,
+    CommonReactionAnalyteActions.fetchCommonReactionAnalytes,
+    ClassesFromMetabolitesActions.fetchClassesFromMetabolites,
+    PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolites,
+    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolites,
+    PathwayEnrichmentsActions.fetchEnrichmentFromPathways,
     (state) => ({
       ...state,
       loading: true,
       error: null,
-    })
+    }),
   ),
 
-  on(RampActions.loadRampAboutSuccess, (state, { data }) => ({
+  on(LoadRampActions.loadRampStatsSuccess, (state, { data }) => ({
     ...state,
     loading: false,
     sourceVersions: data.sourceVersions,
     entityCounts: data.entityCounts,
     metaboliteIntersects: data.metaboliteIntersects,
     geneIntersects: data.geneIntersects,
-    databaseUrl: data.databaseUrl
+    databaseUrl: data.databaseUrl,
   })),
 
-  on(RampActions.initSuccess, (state, { data }) => ({
+  /*
+
+  on(LoadRampActions.loadRampSuccess, (state, { data }) => ({
     ...state,
     loading: false,
-    supportedIds: data ,
+    supportedIds: data,
+  })),
+*/
+
+  on(LoadRampActions.loadRampSuccess, (state, { data }) => ({
+    ...state,
+    loading: false,
+    supportedIds: data,
   })),
 
-  on(RampActions.loadSourceVersionsSuccess, (state, { versions }) => ({
+  on(LoadRampActions.loadSourceVersionsSuccess, (state, { versions }) => ({
     ...state,
     loading: false,
     sourceVersions: versions,
   })),
 
   on(
-    RampActions.fetchOntologiesFromMetabolitesSuccess,
+    OntologyFromMetaboliteActions.fetchOntologiesFromMetabolitesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      ontologies: { data, query , dataframe},
-    })
+      ontologies: { data, query, dataframe },
+    }),
   ),
 
   on(
-    RampActions.fetchAnalytesFromPathwaysSuccess,
+    AnalyteFromPathwayActions.fetchAnalytesFromPathwaysSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
       analytes: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(
-    RampActions.fetchPathwaysFromAnalytesSuccess,
-    (state, { data, query, dataframe }) => ({
-      ...state,
-      loading: false,
-      pathways: { data, query, dataframe },
-    })
+    PathwayEnrichmentsActions.fetchPathwaysFromAnalytesSuccess,
+    PathwayFromAnalyteActions.fetchPathwaysFromAnalytesSuccess,
+    (state, { data, query, dataframe }) => {
+      return {
+        ...state,
+        loading: false,
+        pathways: { data, query, dataframe },
+      };
+    },
   ),
 
   on(
-    RampActions.fetchCommonReactionAnalytesSuccess,
+    CommonReactionAnalyteActions.fetchCommonReactionAnalytesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
       reactions: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(
-    RampActions.fetchMetabolitesFromOntologiesSuccess,
+    MetaboliteFromOntologyActions.fetchMetabolitesFromOntologiesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
       metabolites: { data, query, dataframe },
-    })
+    }),
   ),
 
-  on(RampActions.fetchOntologiesSuccess, (state, { ontologies }) => ({
-    ...state,
-    loading: false,
-    ontologiesList: ontologies,
-  })),
+  on(
+    MetaboliteFromOntologyActions.fetchOntologiesSuccess,
+    (state, { data }) => ({
+      ...state,
+      loading: false,
+      ontologiesList: data,
+    }),
+  ),
 
   on(
-    RampActions.fetchClassesFromMetabolitesSuccess,
+    ClassesFromMetabolitesActions.fetchClassesFromMetabolitesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
-      metClasses: { data, query, dataframe}
-    })
+      metClasses: { data, query, dataframe },
+    }),
   ),
 
   on(
-    RampActions.fetchPropertiesFromMetabolitesSuccess,
+    PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolitesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
       properties: { data, query, dataframe },
-    })
+    }),
   ),
 
   on(
-    RampActions.fetchEnrichmentFromMetabolitesSuccess,
+    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess,
     (state, { data, enriched_chemical_class }) => ({
       ...state,
       loading: false,
-      chemicalEnrichments: {data, enriched_chemical_class},
-      enriched_chemical_class: enriched_chemical_class
-    })
-  ),
-  on(
-    RampActions.filterEnrichmentFromMetabolitesSuccess,
-    (state, { data, enriched_chemical_class }) => ({
-      ...state,
-      loading: false,
-      chemicalEnrichments: {data, enriched_chemical_class, openModal: true},
+      chemicalEnrichments: { data, enriched_chemical_class },
       enriched_chemical_class: enriched_chemical_class,
-    })
+    }),
+  ),
+  on(
+    MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesSuccess,
+    (state, { data, enriched_chemical_class }) => ({
+      ...state,
+      loading: false,
+      chemicalEnrichments: { data, enriched_chemical_class, openModal: true },
+      enriched_chemical_class: enriched_chemical_class,
+    }),
   ),
 
   on(
-    RampActions.fetchEnrichmentFromPathwaysSuccess,
-    (state, { data, query, combinedFishersDataframe }) =>  {
-      return ({
+    PathwayEnrichmentsActions.fetchEnrichmentFromPathwaysSuccess,
+    (state, { data, query, combinedFishersDataframe }) => {
+      return {
         ...state,
         loading: false,
         pathwayEnrichments: { data, query },
-        combined_fishers_dataframe: combinedFishersDataframe,
-        filtered_fishers_dataframe: [],
-        clusterPlot: ''
-      })
-    }
-  ),
-
-on(
-    RampActions.filterEnrichmentFromPathwaysSuccess,
-    (state, { data, query, filteredFishersDataframe }) =>  {
-      return ({
-        ...state,
-        loading: false,
-        pathwayEnrichments: { data, query, dataframe: filteredFishersDataframe.fishresults, openModal: true },
-        filtered_fishers_dataframe: filteredFishersDataframe,
-        clusterPlot: ''
-      })
-    }
+        combinedFishersDataframe: combinedFishersDataframe,
+        filteredFishersDataframe: undefined,
+        clusterPlot: '',
+      };
+    },
   ),
 
   on(
-    RampActions.fetchClusterFromEnrichmentSuccess,
-    (state, {data, plot, query, dataframe}) => {
-      return ({
+    PathwayEnrichmentsActions.filterEnrichmentFromPathwaysSuccess,
+    (state, { data, query, filteredFishersDataframe }) => {
+      return {
         ...state,
         loading: false,
-        pathwayEnrichments: { data, query, dataframe},
+        pathwayEnrichments: {
+          data,
+          query,
+          dataframe: filteredFishersDataframe,
+          openModal: true,
+        },
+        filteredFishersDataframe: filteredFishersDataframe,
+        clusterPlot: '',
+      };
+    },
+  ),
+
+  on(
+    PathwayEnrichmentsActions.fetchClusterFromEnrichmentSuccess,
+    (state, { data, plot, query, dataframe }) => {
+      return {
+        ...state,
+        loading: false,
+        pathwayEnrichments: { data, query, dataframe },
         clusterPlot: plot,
-        openModal: true
-      })
-    }
+        openModal: true,
+      };
+    },
   ),
 
   on(
-    RampActions.loadRampFailure,
-    RampActions.loadRampAboutFailure,
-    RampActions.loadSourceVersionsFailure,
-    RampActions.fetchPathwaysFromAnalytesFailure,
-    RampActions.fetchOntologiesFromMetabolitesFailure,
-    RampActions.fetchMetaboliteFromOntologiesFailure,
-    RampActions.fetchOntologiesFailure,
-    RampActions.fetchCommonReactionAnalytesFailure,
-    RampActions.fetchClassesFromMetabolitesFailure,
-    RampActions.fetchPropertiesFromMetabolitesFailure,
-    filterEnrichmentFromMetabolitesFailure,
+    LoadRampActions.loadRampFailure,
+    LoadRampActions.loadRampStatsFailure,
+    LoadRampActions.loadSourceVersionsFailure,
+    PathwayFromAnalyteActions.fetchPathwaysFromAnalytesFailure,
+    OntologyFromMetaboliteActions.fetchOntologiesFromMetabolitesFailure,
+    MetaboliteFromOntologyActions.fetchMetaboliteFromOntologiesFailure,
+    MetaboliteFromOntologyActions.fetchOntologiesFailure,
+    CommonReactionAnalyteActions.fetchCommonReactionAnalytesFailure,
+    ClassesFromMetabolitesActions.fetchClassesFromMetabolitesFailure,
+    PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolitesFailure,
+    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesFailure,
+    MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesFailure,
+    PathwayEnrichmentsActions.fetchPathwaysFromAnalytesFailure,
+    PathwayEnrichmentsActions.fetchClusterFromEnrichmentFailure,
+    PathwayEnrichmentsActions.fetchEnrichmentFromPathwaysFailure,
+    PathwayEnrichmentsActions.filterEnrichmentFromPathwaysFailure,
     (state, { error }) => {
-     // console.log(error);
+      // console.log(error);
       return {
         ...state,
         loading: false,
         error,
       };
-    }
-  )
+    },
+  ),
 );
 
 export function reducer(state: State | undefined, action: Action) {

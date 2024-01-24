@@ -2,16 +2,16 @@
   "name": "ramp-client",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "apps/ramp-client/src",
   "prefix": "ramp-client",
+  "sourceRoot": "apps/ramp-client/src",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/ramp-client/browser",
         "index": "apps/ramp-client/src/index.html",
-        "main": "apps/ramp-client/src/main.ts",
+        "browser": "apps/ramp-client/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/ramp-client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
@@ -36,7 +36,12 @@
           "node_modules/swagger-ui/dist/swagger-ui.css",
           "apps/ramp-client/src/styles.scss"
         ],
-        "scripts": []
+        "scripts": [],
+        "server": "apps/ramp-client/src/main.server.ts",
+        "prerender": true,
+        "ssr": {
+          "entry": "apps/ramp-client/server.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -61,12 +66,9 @@
           "outputHashing": "all"
         },
         "development": {
-          "buildOptimizer": false,
           "optimization": false,
-          "vendorChunk": true,
           "extractLicenses": false,
-          "sourceMap": true,
-          "namedChunks": true
+          "sourceMap": true
         }
       },
       "defaultConfiguration": "production"
@@ -75,10 +77,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "ramp-client:build:production"
+          "buildTarget": "ramp-client:build:production"
         },
         "development": {
-          "browserTarget": "ramp-client:build:development"
+          "buildTarget": "ramp-client:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -86,11 +88,11 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "ramp-client:build"
+        "buildTarget": "ramp-client:build"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "apps/ramp-client/src/**/*.ts",
@@ -99,7 +101,7 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/ramp-client"],
       "options": {
         "jestConfig": "apps/ramp-client/jest.config.ts",
@@ -128,9 +130,11 @@
           ]
         },
         "development": {
+          "buildOptimizer": false,
           "optimization": false,
           "sourceMap": true,
-          "extractLicenses": false
+          "extractLicenses": false,
+          "vendorChunk": true
         }
       },
       "defaultConfiguration": "production",
@@ -150,7 +154,7 @@
       }
     },
     "serve-ssr": {
-      "executor": "@nguniversal/builders:ssr-dev-server",
+      "executor": "@angular-devkit/build-angular:ssr-dev-server",
       "configurations": {
         "development": {
           "browserTarget": "ramp-client:build:development",
@@ -164,10 +168,10 @@
       "defaultConfiguration": "development"
     },
     "prerender": {
-      "executor": "@nguniversal/builders:prerender",
+      "executor": "@angular-devkit/build-angular:prerender",
       "options": {
-        "guessRoutes": false,
-        "routesFile": "./apps/ramp-client/routes.txt"
+        "routesFile": "./apps/ramp-client/routes.txt",
+        "discoverRoutes": false
       },
       "configurations": {
         "production": {

@@ -1,10 +1,15 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, Input } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'ramp-data-download-button',
   templateUrl: './data-download-button.component.html',
   styleUrls: ['./data-download-button.component.scss'],
+  standalone: true,
+  imports: [MatButtonModule, MatTooltipModule, MatIconModule],
 })
 export class DataDownloadButtonComponent {
   @Input() source!: string;
@@ -16,7 +21,7 @@ export class DataDownloadButtonComponent {
   downloadData(): void {
     const lines: string[] = [[...Object.keys(this.data[0])].join(',')];
     this.data.forEach((data: any) =>
-      lines.push([...Object.values(data)].join('\t'))
+      lines.push([...Object.values(data)].join('\t')),
     );
     const csv = lines.join('\n');
     this.file = new Blob([csv], { type: 'text/tsv' });

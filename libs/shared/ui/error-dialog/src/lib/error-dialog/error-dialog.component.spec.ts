@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FlexLayoutModule } from "@angular/flex-layout";
-import { MatButtonModule } from "@angular/material/button";
-import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
-import { MatIconModule } from "@angular/material/icon";
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 
 import { ErrorDialogComponent } from './error-dialog.component';
 
@@ -17,7 +17,7 @@ describe('ErrorDialogComponent', () => {
         MatDialogModule,
         FlexLayoutModule,
         MatButtonModule,
-        MatIconModule
+        MatIconModule,
       ],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
     }).compileComponents();

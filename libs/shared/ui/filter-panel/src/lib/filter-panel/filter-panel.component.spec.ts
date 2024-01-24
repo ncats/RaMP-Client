@@ -1,14 +1,14 @@
-import { ScrollingModule } from "@angular/cdk/scrolling";
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatInputModule } from "@angular/material/input";
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FilterPanelComponent } from './filter-panel.component';
 
@@ -30,7 +30,7 @@ describe('FilterPanelComponent', () => {
         MatCheckboxModule,
         ScrollingModule,
         MatInputModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
       ],
     }).compileComponents();
   });

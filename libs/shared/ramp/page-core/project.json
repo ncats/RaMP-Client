@@ -6,7 +6,7 @@
   "prefix": "ramp",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/shared/ramp/page-core"],
       "options": {
         "jestConfig": "libs/shared/ramp/page-core/jest.config.ts",
@@ -14,7 +14,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "libs/shared/ramp/page-core/src/**/*.ts",

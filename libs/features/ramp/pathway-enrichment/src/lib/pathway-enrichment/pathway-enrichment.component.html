@@ -1,13 +1,13 @@
 <div class="content-panel">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <h1 class="page-title">
         {{ title | titlecase }}
       </h1>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <ramp-description
         [supportedIds]="supportedIds"
         [description]="description"
@@ -26,40 +26,67 @@
         [showDownload]="false"
         (dataSearch)="fetchEnrichment($event)"
       >
-        <div class ="additional-params">
-          <br>
-          <br>
+        <div class="additional-params">
+          <br />
+          <br />
           <span class="mat-h3">Optional Background Parameters</span>
-          <br>
-          <br>
-          <input type="file" class="file-input"
-                 accept="text/tab-separated-values, .txt"
-                 (change)="onFileSelected($event)" #fileUpload>
+          <br />
+          <br />
+          <input
+            type="file"
+            class="file-input"
+            accept="text/tab-separated-values, .txt"
+            (change)="onFileSelected($event)"
+            #fileUpload
+          />
           <div class="file-upload">
-            <div *ngIf="fileName">
-              <span>{{fileName}}</span>&nbsp;
-              <button mat-mini-fab color="accent" class="upload-btn"
-                      (click)="cancelUpload()">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </div>
-            <div *ngIf="!fileName">
-              <span class="mat-h4">Upload backgound ids</span> &nbsp;
-              <button *ngIf="!fileName" mat-mini-fab color="accent" class="upload-btn"
-                      (click)="fileUpload.click()">
-                <mat-icon>attach_file</mat-icon>
-              </button>
-            </div>
+            @if (fileName) {
+              <div>
+                <span>{{ fileName }}</span
+                >&nbsp;
+                <button
+                  mat-mini-fab
+                  color="accent"
+                  class="upload-btn"
+                  (click)="cancelUpload()"
+                >
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </div>
+            }
+            @if (!fileName) {
+              <div>
+                <span class="mat-h4">Upload backgound ids</span> &nbsp;
+                @if (!fileName) {
+                  <button
+                    mat-mini-fab
+                    color="accent"
+                    class="upload-btn"
+                    (click)="fileUpload.click()"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+                }
+              </div>
+            }
           </div>
-          <div> - or - </div>
+          <div>- or -</div>
           <div>
-            <mat-form-field class="full-width" [color]="'accent'" appearance="outline">
-              <mat-select [formControl]="biospecimenCtrl"
-              placeholder="select biospecimen" >
+            <mat-form-field
+              class="full-width"
+              [color]="'accent'"
+              appearance="outline"
+            >
+              <mat-select
+                [formControl]="biospecimenCtrl"
+                placeholder="select biospecimen"
+              >
                 <mat-option [value]=""></mat-option>
-                <mat-option *ngFor="let specimen of biospecimens" [value]="specimen" >
-                  {{specimen}}
-                </mat-option>
+                @for (specimen of biospecimens; track specimen) {
+                  <mat-option [value]="specimen">
+                    {{ specimen }}
+                  </mat-option>
+                }
               </mat-select>
             </mat-form-field>
           </div>
@@ -75,28 +102,31 @@
           [position]="'right'"
         ></ramp-loading>
       </ng-template>
-<br>
-<br>
-      <ramp-feedback-panel
-        *ngIf="matches && matches.length > 0"
-        [matchesLength]="matches.length"
-        [dataLength] = pathwayDataAsDataProperty.length
-        [inputLength]="inputList.length"
-        [noMatches]="noMatches"
-        [inputType]="'pathways'">
-      </ramp-feedback-panel>
-      <br>
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div fxFlex="10">
-      <button
-        mat-stroked-button
-        class="tool-button list-download"
-        (click)="fetchPathwaysFile()"
-        matTooltip="Download Data"
-        color="accent"
-      >
-        <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
-      </button>
+      <br />
+      <br />
+      @if (matches && matches.length > 0) {
+        <ramp-feedback-panel
+          [matchesLength]="matches.length"
+          [dataLength]="pathwayDataAsDataProperty.length"
+          [inputLength]="inputList.length"
+          [noMatches]="noMatches"
+          [inputType]="'pathways'"
+        >
+        </ramp-feedback-panel>
+      }
+      <br />
+      <div class="row right-justified-row centered-row">
+        <div class="width-10">
+          <button
+            mat-stroked-button
+            class="tool-button list-download"
+            (click)="fetchPathwaysFile()"
+            matTooltip="Download Data"
+            color="accent"
+          >
+            <span class="hide-small">Download </span
+            ><mat-icon>download</mat-icon>
+          </button>
         </div>
       </div>
       <ramp-query-page
@@ -105,7 +135,9 @@
       >
       </ramp-query-page>
     </mat-tab>
-    <mat-tab [disabled]="!dataAsDataProperty || dataAsDataProperty.length === 0">
+    <mat-tab
+      [disabled]="!dataAsDataProperty || dataAsDataProperty.length === 0"
+    >
       <ng-template mat-tab-label>
         Enriched Pathways
         <ramp-loading
@@ -114,49 +146,61 @@
           [position]="'right'"
         ></ramp-loading>
       </ng-template>
-      <div
-        fxLayout="row"
-        fxLayoutAlign="space-around start"
-        class="additional-params"
-      >
-        <div fxFlex="40">
+      <div class="row space-around-row additional-params">
+        <div class="width-40">
           <h3>Filter Results</h3>
-          <div fxLayout="row" fxLayoutAlign="start center">
-            <div fxFlex="40">
+          <div class="row centered-row">
+            <div class="width-40">
               <mat-form-field
                 appearance="outline"
                 color="accent"
-                class="p-val-input">
+                class="p-val-input"
+              >
                 <mat-label>P-Value Cutoff</mat-label>
                 <input matInput type="number" [formControl]="pValueFormCtrl" />
               </mat-form-field>
             </div>
-            <div fxFlex="40">
-             <mat-radio-group [formControl]="pValueTypeFormCtrl">
-               <mat-radio-button [value]="'fdr'" [color]="'accent'">FDR</mat-radio-button> <br>
-               <mat-radio-button [value]="'holm'" [color]="'accent'">Holm</mat-radio-button> <br>
-               <mat-radio-button [value]="'pval'" [color]="'accent'">Pval Combined</mat-radio-button>
-             </mat-radio-group>
+            <div class="width-40">
+              <mat-radio-group [formControl]="pValueTypeFormCtrl">
+                <mat-radio-button [value]="'fdr'" [color]="'accent'"
+                  >FDR</mat-radio-button
+                >
+                <br />
+                <mat-radio-button [value]="'holm'" [color]="'accent'"
+                  >Holm</mat-radio-button
+                >
+                <br />
+                <mat-radio-button [value]="'pval'" [color]="'accent'"
+                  >Pval Combined</mat-radio-button
+                >
+              </mat-radio-group>
             </div>
           </div>
-            <div fxLayout="row" fxLayoutAlign="start start">
-              <div fxFlex="20">
-              <button mat-flat-button (click)="filterPathways()" [color]="'accent'">Filter</button>
-                </div>
+          <div class="row">
+            <div class="width-20">
+              <button
+                mat-flat-button
+                (click)="filterPathways()"
+                [color]="'accent'"
+              >
+                Filter
+              </button>
             </div>
+          </div>
         </div>
-        <div fxFlex="55">
+        <div class="width-55">
           <h3>Cluster Results</h3>
-          <div fxLayout="row" fxLayoutAlign="space-around center">
-            <div fxFlex="90">
+          {{ analyteType }}
+          <div class="row centered-row">
+            <div class="width-90">
               <mat-checkbox
                 color="accent"
-                [checked] = true
+                [checked]="true"
                 (change)="setCluster($event)"
                 >Show Cluster Assignment</mat-checkbox
               >
-              <br>
-              <br>
+              <br />
+              <br />
               <mat-form-field appearance="outline" color="accent">
                 <mat-label>Percent Analyte Overlap</mat-label>
                 <input
@@ -164,7 +208,7 @@
                   type="number"
                   step="0.01"
                   min=".5"
-                  max ="1"
+                  max="1"
                   [formControl]="percentAnalyteFormCtrl"
                 />
               </mat-form-field>
@@ -175,7 +219,7 @@
                   type="number"
                   step="0.01"
                   min=".5"
-                  max ="1"
+                  max="1"
                   [formControl]="percentPathwayFormCtrl"
                 />
               </mat-form-field>
@@ -190,16 +234,22 @@
               </mat-form-field>
             </div>
           </div>
-          <div fxLayout="row" fxLayoutAlign="start start">
-            <div fxFlex="20">
-              <button mat-flat-button (click)="clusterResults()" [color]="'accent'">Recompute Clusters</button>
+          <div class="row">
+            <div class="width-20">
+              <button
+                mat-flat-button
+                (click)="clusterResults()"
+                [color]="'accent'"
+              >
+                Recompute Clusters
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <br>
-      <div fxLayout="row" fxLayoutAlign="end center">
-        <div fxFlex="10">
+      <br />
+      <div class="row right-justified-row centered-row">
+        <div class="width-10">
           <button
             mat-stroked-button
             class="tool-button list-download"
@@ -207,44 +257,54 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span fxHide.lt-lg>Download </span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download </span
+            ><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>
-      <ramp-loading
-        [isLoading]="enrichmentLoading"></ramp-loading>
+      <ramp-loading [isLoading]="enrichmentLoading"></ramp-loading>
       <ramp-query-page
-        [dataColumns]="enrichmentColumns"
+        [dataColumns]="selectedEnrichmentColumns"
         [dataAsDataProperty]="dataAsDataProperty"
       >
       </ramp-query-page>
     </mat-tab>
-     <mat-tab [disabled]="!image">
-       <ng-template mat-tab-label>
-         Clustered Pathways
-         <ramp-loading
-           [isLoading]="imageLoading"
-           [size]="'small'"
-           [position]="'right'"
-         ></ramp-loading>
-       </ng-template>
-       <br>
-       <br>
-       <br>
-       <div fxLayout="row" fxLayoutAlign="end center">
-         <div fxFlex="10" *ngIf="!tooBig">
-           <button mat-stroked-button
-             class="tool-button list-download"
-             (click)="fetchClusterImageFile()"
-             matTooltip="Download Data"
-             color="accent"
-           >
-             <span fxHide.lt-lg>Save Image</span><mat-icon>download</mat-icon>
-           </button>
-         </div>
-       </div>
-       <div *ngIf="tooBig">This website currently does not support clustering over 100 pathways.</div>
-       <div *ngIf="!tooBig" [innerHTML]="image"></div>
+    <mat-tab [disabled]="!image">
+      <ng-template mat-tab-label>
+        Clustered Pathways
+        <ramp-loading
+          [isLoading]="imageLoading"
+          [size]="'small'"
+          [position]="'right'"
+        ></ramp-loading>
+      </ng-template>
+      <br />
+      <br />
+      <br />
+      <div class="row right-justified-row centered-row">
+        @if (!tooBig) {
+          <div class="width-10">
+            <button
+              mat-stroked-button
+              class="tool-button list-download"
+              (click)="fetchClusterImageFile()"
+              matTooltip="Download Data"
+              color="accent"
+            >
+              <span class="hide-small">Save Image</span
+              ><mat-icon>download</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+      @if (tooBig) {
+        <div>
+          This website currently does not support clustering over 100 pathways.
+        </div>
+      }
+      @if (!tooBig) {
+        <div [innerHTML]="image"></div>
+      }
     </mat-tab>
   </mat-tab-group>
 </div>

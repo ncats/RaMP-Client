@@ -33,7 +33,7 @@ describe('MetabolitesFromOntologiesComponent', () => {
               strictActionImmutability: true,
               strictStateImmutability: true,
             },
-          }
+          },
         ),
         EffectsModule.forRoot([]),
       ],

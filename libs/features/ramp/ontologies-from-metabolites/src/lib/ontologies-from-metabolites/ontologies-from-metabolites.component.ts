@@ -1,20 +1,25 @@
-import { DOCUMENT } from "@angular/common";
+import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, Inject,
+  Component,
   OnInit,
-  ViewEncapsulation
-} from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
-import { Ontology, RampQuery } from '@ramp/models/ramp-models';
+  ViewEncapsulation,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { select } from '@ngrx/store';
+import { Ontology, RampResponse } from '@ramp/models/ramp-models';
+import { InputRowComponent } from '@ramp/shared/ramp/input-row';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
+import { DescriptionComponent } from '@ramp/shared/ui/description-panel';
+import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchOntologiesFromMetabolites,
-  RampFacade,
+  OntologyFromMetaboliteActions,
+  RampSelectors,
 } from '@ramp/stores/ramp-store';
-import { takeUntil } from "rxjs";
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ramp-ontologies-from-metabolites',
@@ -22,6 +27,14 @@ import { takeUntil } from "rxjs";
   styleUrls: ['./ontologies-from-metabolites.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    DescriptionComponent,
+    InputRowComponent,
+    FeedbackPanelComponent,
+    QueryPageComponent,
+    TitleCasePipe,
+  ],
 })
 export class OntologiesFromMetabolitesComponent
   extends PageCoreComponent
@@ -50,53 +63,65 @@ export class OntologiesFromMetabolitesComponent
     }),
   ];
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
-  ) {
-    super(route, rampFacade, dom);
+  constructor(private ref: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit(): void {
-    this.rampFacade.ontologies$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-      (res: { data: Ontology[]; query: RampQuery, dataframe: any } | undefined) => {
-        if (res && res.data) {
-          this._mapData(res.data);
-          this.matches = Array.from(new Set(res.data.map(onto => onto.sourceId.toLocaleLowerCase())));
-          this.noMatches = this.inputList.filter((p:string) => !this.matches.includes(p.toLocaleLowerCase()));
-        }
-        if (res && res.query) {
-          this.query = res.query;
-        }
-        if (res && res.dataframe) {
-          this.dataframe = res.dataframe;
-          if (this.downloadQueued) {
-            this._downloadFile(this._toTSV(this.dataframe), 'fetchOntologiesFromMetabolitesFile-download.tsv')
-            this.downloadQueued = false;
+    this._getSupportedIds();
+    this.store
+      .pipe(
+        select(RampSelectors.getOntologies),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: RampResponse<Ontology> | undefined) => {
+          if (res && res.data) {
+            this._mapData(res.data);
+            this.matches = Array.from(
+              new Set(
+                res.data.map((onto) => onto.sourceId.toLocaleLowerCase()),
+              ),
+            );
+            this.noMatches = this.inputList.filter(
+              (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+            );
           }
-        }
-        this.ref.markForCheck();
-      }
-    );
+          if (res && res.query) {
+            this.query = res.query;
+          }
+          if (res && res.dataframe) {
+            this.dataframe = res.dataframe;
+            if (this.downloadQueued) {
+              this._downloadFile(
+                this._toTSV(this.dataframe),
+                'fetchOntologiesFromMetabolitesFile-download.tsv',
+              );
+              this.downloadQueued = false;
+            }
+          }
+          this.ref.markForCheck();
+        }),
+      )
+      .subscribe();
   }
 
   fetchOntologies(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(
-      fetchOntologiesFromMetabolites({ analytes: event })
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
+    this.store.dispatch(
+      OntologyFromMetaboliteActions.fetchOntologiesFromMetabolites({
+        metabolites: event,
+      }),
     );
   }
 
   fetchOntologiesFile(event: string[]): void {
-    if(!this.dataframe) {
+    if (!this.dataframe) {
       this.fetchOntologies(event);
       this.downloadQueued = true;
     } else {
-      this._downloadFile(this._toTSV(this.dataframe), 'fetchOntologiesFromMetabolitesFile-download.tsv')
+      this._downloadFile(
+        this._toTSV(this.dataframe),
+        'fetchOntologiesFromMetabolitesFile-download.tsv',
+      );
     }
   }
 

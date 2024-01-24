@@ -22,7 +22,7 @@ export class DataProperty {
   /**
    * object data property
    */
-  value!: any;
+  value!: string;
   /**
    * optional url
    */
@@ -80,7 +80,7 @@ export class DataProperty {
    */
   description?: string;
 
-  displayType?: 'string' | 'number' | 'externalLink' | 'internalLink' | 'date'
+  displayType?: 'string' | 'number' | 'externalLink' | 'internalLink' | 'date';
 
   /**
    * deconstruct json as dataproperty object

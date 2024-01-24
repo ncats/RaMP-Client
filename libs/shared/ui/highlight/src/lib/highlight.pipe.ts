@@ -6,6 +6,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
  */
 @Pipe({
   name: 'highlight',
+  standalone: true,
 })
 export class HighlightPipe implements PipeTransform {
   /**
@@ -18,7 +19,7 @@ export class HighlightPipe implements PipeTransform {
     if (search && text) {
       let pattern = search.replace(
         /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
-        '\\$&'
+        '\\$&',
       );
       pattern = pattern
         .split(' ')
@@ -31,8 +32,8 @@ export class HighlightPipe implements PipeTransform {
         text.replace(
           regex,
           (match) =>
-            `<span style="font-weight:900;" class="search-highlight">${match}</span>`
-        )
+            `<span style="font-weight:900;" class="search-highlight">${match}</span>`,
+        ),
       );
     } else {
       return text;
