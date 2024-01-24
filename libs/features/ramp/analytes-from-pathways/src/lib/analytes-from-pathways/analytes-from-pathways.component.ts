@@ -1,34 +1,32 @@
-import { DOCUMENT, TitleCasePipe } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit
-} from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { select } from "@ngrx/store";
-import { Analyte, RampQuery } from '@ramp/models/ramp-models';
-import { InputRowComponent } from "@ramp/shared/ramp/input-row";
+import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { select } from '@ngrx/store';
+import { Analyte, RampResponse } from '@ramp/models/ramp-models';
+import { InputRowComponent } from '@ramp/shared/ramp/input-row';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
-import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
-import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
-import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
+import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
+import { DescriptionComponent } from '@ramp/shared/ui/description-panel';
+import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { AnalyteFromPathwayActions, RampSelectors} from "@ramp/stores/ramp-store";
-import { map } from "rxjs";
+import {
+  AnalyteFromPathwayActions,
+  RampSelectors,
+} from '@ramp/stores/ramp-store';
+import { map } from 'rxjs';
 
 @Component({
-    selector: 'ramp-analytes-from-pathways',
-    templateUrl: './analytes-from-pathways.component.html',
-    styleUrls: ['./analytes-from-pathways.component.scss'],
-    standalone: true,
-    imports: [
-        DescriptionComponent,
-        InputRowComponent,
-        FeedbackPanelComponent,
-        QueryPageComponent,
-        TitleCasePipe,
-    ],
+  selector: 'ramp-analytes-from-pathways',
+  templateUrl: './analytes-from-pathways.component.html',
+  styleUrls: ['./analytes-from-pathways.component.scss'],
+  standalone: true,
+  imports: [
+    DescriptionComponent,
+    InputRowComponent,
+    FeedbackPanelComponent,
+    QueryPageComponent,
+    TitleCasePipe,
+  ],
 })
 export class AnalytesFromPathwaysComponent
   extends PageCoreComponent
@@ -69,25 +67,23 @@ export class AnalytesFromPathwaysComponent
 
   override fuzzy = true;
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    @Inject(DOCUMENT) protected override dom: Document,
-  ) {
-    super(dom);
+  constructor(private ref: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit(): void {
+    this._getSupportedIds();
     this.store
       .pipe(
         select(RampSelectors.getAnalytes),
         takeUntilDestroyed(this.destroyRef),
-        map((res: { data: Analyte[]; query: RampQuery; dataframe: any }| undefined) => {
+        map((res: RampResponse<Analyte> | undefined) => {
           if (res && res.data) {
             this._mapData(res.data);
             this.matches = Array.from(
               new Set(
-                res.data.map((pathway) =>
-                  pathway.pathwayName.toLocaleLowerCase(),
+                res.data.map((analyte: Analyte) =>
+                  analyte.pathwayName.toLocaleLowerCase(),
                 ),
               ),
             );
@@ -109,13 +105,16 @@ export class AnalytesFromPathwaysComponent
             }
           }
           this.ref.markForCheck();
-        })
-  ).subscribe()
+        }),
+      )
+      .subscribe();
   }
 
   fetchAnalytes(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
-    this.store.dispatch(AnalyteFromPathwayActions.fetchAnalytesFromPathways({ pathways: event }));
+    this.store.dispatch(
+      AnalyteFromPathwayActions.fetchAnalytesFromPathways({ pathways: event }),
+    );
   }
 
   fetchAnalytesFile(event: string[]): void {

@@ -1,38 +1,40 @@
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
-  Inject,
-  Input
-} from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { select, Store } from "@ngrx/store";
-import { RampQuery } from "@ramp/models/ramp-models";
-import { DataProperty } from "@ramp/shared/ui/ncats-datatable";
-import { map } from "rxjs";
+  Input,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { select, Store } from '@ngrx/store';
 import {
-  RampSelectors
-} from "@ramp/stores/ramp-store";
+  FisherResult,
+  FishersDataframe,
+  RampDataGeneric,
+  RampQuery,
+} from '@ramp/models/ramp-models';
+import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
+import { RampSelectors } from '@ramp/stores/ramp-store';
+import { map } from 'rxjs';
 
 @Component({
-    selector: 'ramp-page-core',
-    template: '',
-    standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'ramp-page-core',
+  template: '',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageCoreComponent {
-
   protected readonly store = inject(Store);
   destroyRef = inject(DestroyRef);
-   changeRef = inject(ChangeDetectorRef);
+  changeRef = inject(ChangeDetectorRef);
+  protected dom = inject(DOCUMENT);
 
   @Input()
-  supportedIdTypes!: [{ analyteType: string; idTypes: string[] }] | undefined;
+  supportedIdTypes!: string[];
 
-  supportedIds!: [{ analyteType: string; idTypes: string[] }];
+  supportedIds!: { analyteType: string; idTypes: string[] }[];
 
   @Input()
   function!: string;
@@ -49,27 +51,27 @@ export class PageCoreComponent {
   @Input()
   description!: string;
 
-  dataframe!: any;
+  dataframe!: FishersDataframe;
 
   query: RampQuery = {
     functionCall: '',
     numFoundIds: 0,
   };
 
-  matches: any[] = [];
+  matches: string[] = [];
   inputList: string[] = [];
   noMatches: string[] = [];
   dataAsDataProperty: { [key: string]: DataProperty }[] = [];
   downloadQueued = false;
   fuzzy = false;
 
-  _toTSV(data: any[]): any[] {
-    // grab the column headings (separated by tabs)
-    const headings: string = Object.keys(data[0]).join('\t');
-    // iterate over the data
-    const rows: string[] = data
-      .reduce(
-        (acc, c) => {
+  _toTSV<T extends RampDataGeneric>(data: any): string {
+    if (data) {
+      // grab the column headings (separated by tabs)
+      const headings: string = Object.keys(data[0]).join('\t');
+      // iterate over the data
+      const rows: any = data.reduce(
+        (acc: string[], c: T) => {
           // for each row object get its values and add tabs between them
           // then add them as a new array to the outgoing array
           return acc.concat([Object.values(c).join('\t')]);
@@ -77,32 +79,23 @@ export class PageCoreComponent {
           // finally joining each row with a line break
         },
         [headings],
-      )
-      .join('\n');
-    return rows;
+      );
+      return rows.join('\n');
+    } else return '';
   }
 
-  constructor(
-  //  protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom?: Document
-  ) {
- //   this.title = this.route.snapshot.data.title;
- //   this.description = this.route.snapshot.data.description;
- //   this.examples = this.route.snapshot.data.examples;
-//    this.input = this.route.snapshot.data.input;
-
+  constructor() {
     this.store
       .pipe(
         select(RampSelectors.getSupportedIds),
         takeUntilDestroyed(this.destroyRef),
         map((res: any) => {
-      if (res && res.data) {
-        this.supportedIds = res.data.filter((type: { analyteType: any }) =>
-          this.supportedIdTypes?.includes(type.analyteType)
-        );
-      }
-    })
-      ).subscribe();
+          if (res && res.data) {
+            this.supportedIds = res.data;
+          }
+        }),
+      )
+      .subscribe();
   }
 
   _downloadFile(data: any, name: string, type: string = 'text/tsv') {
@@ -121,5 +114,12 @@ export class PageCoreComponent {
         this.dom.body.removeChild(link);
       }
     }
+  }
+
+  _getSupportedIds() {
+    this.supportedIds = this.supportedIds?.filter(
+      (type: { analyteType: string }) =>
+        this.supportedIdTypes?.includes(type.analyteType),
+    );
   }
 }

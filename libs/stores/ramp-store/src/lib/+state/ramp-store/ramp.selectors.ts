@@ -118,12 +118,12 @@ export const getPathwayEnrichment = createSelector(
 
 export const getCombinedFishersDataframe = createSelector(
   getRampState,
-  (state: State) => state.combined_fishers_dataframe,
+  (state: State) => state.combinedFishersDataframe,
 );
 
 export const getFilteredFishersDataframe = createSelector(
   getRampState,
-  (state: State) => state.filtered_fishers_dataframe,
+  (state: State) => state.filteredFishersDataframe,
 );
 
 export const getEnrichedChemicalClass = createSelector(

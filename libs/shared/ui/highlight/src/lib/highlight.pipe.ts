@@ -5,8 +5,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
  * Pipe to highlight search text in results
  */
 @Pipe({
-    name: 'highlight',
-    standalone: true,
+  name: 'highlight',
+  standalone: true,
 })
 export class HighlightPipe implements PipeTransform {
   /**

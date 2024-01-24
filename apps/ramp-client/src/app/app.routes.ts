@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
-import rFunctions from "../assets/data/rFunctions.json";
+import { StructureViewerComponent } from '@ramp/shared/ui/ncats-structure-viewer';
+import rFunctions from '../assets/data/rFunctions.json';
 import { environment } from '../environments/environment';
 
 export const routes: Routes = [
@@ -9,38 +9,32 @@ export const routes: Routes = [
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadComponent: () =>
-      import('@ramp/features/ramp/ramp-home').then(
-        (m) => m.HomeComponent)
+      import('@ramp/features/ramp/ramp-home').then((m) => m.HomeComponent),
   },
   {
     path: 'home',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadComponent: () =>
-      import('@ramp/features/ramp/ramp-home').then(
-        (m) => m.HomeComponent)
+      import('@ramp/features/ramp/ramp-home').then((m) => m.HomeComponent),
   },
   {
     path: 'about',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     providers: [
-  //    provideEffects([RampEffects]),
-  //    provideState(RAMP_STORE_FEATURE_KEY, rampReducer)
+      //    provideEffects([RampEffects]),
+      //    provideState(RAMP_STORE_FEATURE_KEY, rampReducer)
     ],
     loadComponent: () =>
-      import('@ramp/features/ramp/ramp-about').then(
-        (m) => m.AboutComponent,
-      ),
+      import('@ramp/features/ramp/ramp-about').then((m) => m.AboutComponent),
   },
   {
     path: 'api',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     loadComponent: () =>
-      import('@ramp/features/ramp/ramp-api').then(
-        (m) => m.RampApiComponent,
-      ),
+      import('@ramp/features/ramp/ramp-api').then((m) => m.RampApiComponent),
   },
   {
     path: 'ontologies-from-metabolites',
@@ -70,10 +64,6 @@ export const routes: Routes = [
     path: 'analytes-from-pathways',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-    providers: [
-    //  provideEffects([RampEffects]),
-    //  provideState(RAMP_STORE_FEATURE_KEY, rampReducer)
-    ],
     loadComponent: () =>
       import('@ramp/features/ramp/analytes-from-pathways').then(
         (m) => m.AnalytesFromPathwaysComponent,
@@ -86,10 +76,6 @@ export const routes: Routes = [
     path: 'pathways-from-analytes',
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
-    providers: [
-    //  provideEffects([RampEffects]),
-    //  provideState(RAMP_STORE_FEATURE_KEY, rampReducer)
-    ],
     loadComponent: () =>
       import('@ramp/features/ramp/pathways-from-analytes').then(
         (m) => m.PathwaysFromAnalytesComponent,

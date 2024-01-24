@@ -3,23 +3,24 @@
   <mat-icon matRipple (click)="close()" class="close-button">close</mat-icon>
 </div>
 <div mat-dialog-content>
-  <p *ngIf="!data.message">
-    {{ data.title }} analysis is now complete. Click on the tabs or below
-    buttons to view the data.
-  </p>
-  <p *ngIf="data.message">{{ data.message }}</p>
+  @if (!data.message) {
+    <p>
+      {{ data.title }} analysis is now complete. Click on the tabs or below
+      buttons to view the data.
+    </p>
+  }
+  @if (data.message) {
+    <p>{{ data.message }}</p>
+  }
   <br />
   <br />
 </div>
 <div mat-dialog-actions class="row space-around-row">
-  <button
-    *ngFor="let tab of data.tabs; index as i"
-    mat-flat-button
-    (click)="close(i + 1)"
-    [color]="'accent'"
-  >
-    {{ tab }}
-  </button>
+  @for (tab of data.tabs; track tab; let i = $index) {
+    <button mat-flat-button (click)="close(i + 1)" [color]="'accent'">
+      {{ tab }}
+    </button>
+  }
 </div>
 <br />
 <br />

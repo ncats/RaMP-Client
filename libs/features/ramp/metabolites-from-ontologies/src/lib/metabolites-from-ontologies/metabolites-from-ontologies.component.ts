@@ -1,29 +1,34 @@
-import { DOCUMENT, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
-  Component, DestroyRef,
-  ElementRef, inject,
-  Inject,
+  Component,
+  ElementRef,
   OnInit,
   QueryList,
   ViewChild,
-  ViewChildren
-} from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+  ViewChildren,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
-import { select, Store } from "@ngrx/store";
-import { Metabolite, RampQuery } from '@ramp/models/ramp-models';
+import { select } from '@ngrx/store';
+import {
+  Metabolite,
+  Ontology,
+  OntologyList,
+  RampResponse,
+} from '@ramp/models/ramp-models';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
-import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
-import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
-import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
+import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
+import { DescriptionComponent } from '@ramp/shared/ui/description-panel';
+import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { FilterPanelComponent } from '@ramp/shared/ui/filter-panel';
-import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
+import { LoadingComponent } from '@ramp/shared/ui/loading-spinner';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-FetchOntologiesActions, MetaboliteFromOntologyActions, RampSelectors
-} from "@ramp/stores/ramp-store";
+  MetaboliteFromOntologyActions,
+  RampSelectors,
+} from '@ramp/stores/ramp-store';
 import { distinctUntilChanged, map } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,27 +37,25 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-    selector: 'ramp-metabolites-from-ontologies',
-    templateUrl: './metabolites-from-ontologies.component.html',
-    styleUrls: ['./metabolites-from-ontologies.component.scss'],
-    standalone: true,
-    imports: [
-        DescriptionComponent,
-        MatTabsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        NgFor,
-        NgIf,
-        FilterPanelComponent,
-        MatButtonModule,
-        MatIconModule,
-        MatTooltipModule,
-        LoadingComponent,
-        FeedbackPanelComponent,
-        QueryPageComponent,
-        TitleCasePipe,
-    ],
+  selector: 'ramp-metabolites-from-ontologies',
+  templateUrl: './metabolites-from-ontologies.component.html',
+  styleUrls: ['./metabolites-from-ontologies.component.scss'],
+  standalone: true,
+  imports: [
+    DescriptionComponent,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    FilterPanelComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    LoadingComponent,
+    FeedbackPanelComponent,
+    QueryPageComponent,
+    TitleCasePipe,
+  ],
 })
 export class MetabolitesFromOntologiesComponent
   extends PageCoreComponent
@@ -85,34 +88,31 @@ export class MetabolitesFromOntologiesComponent
       sortable: true,
     }),
   ];
-  ontologies!: any[];
-  allOntologies!: any[];
+  ontologies!: OntologyList[];
+  allOntologies!: OntologyList[];
   selectedOntologies: any[] = [];
   globalFilter?: string;
   disableSearch = false;
   loading = false;
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    @Inject(DOCUMENT) protected override dom: Document,
-  ) {
-    super(dom);
+  constructor(private ref: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit(): void {
-    this.store.dispatch(FetchOntologiesActions.fetchOntologies());
+    this._getSupportedIds();
+    this.store.dispatch(MetaboliteFromOntologyActions.fetchOntologies());
+
     this.allOntoFilterCtrl.valueChanges
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        distinctUntilChanged())
+      .pipe(takeUntilDestroyed(this.destroyRef), distinctUntilChanged())
       .subscribe((term) => {
         if (term.trim() && term.trim().length > 0) {
           this.ontologies = [];
           const matcher = new RegExp(term.trim(), 'i');
-          this.allOntologies.forEach((onto) => {
-            const newVal = { ...onto };
-            newVal.values = newVal.values.filter((val: { value: any }) =>
-              matcher.test(val.value),
+          this.allOntologies.forEach((onto: OntologyList) => {
+            const newVal: OntologyList = { ...onto };
+            newVal.values = newVal.values.filter((val: Ontology) =>
+              matcher.test(<string>val.value),
             );
             if (newVal.values && newVal.values.length > 0) {
               this.ontologies.push(newVal);
@@ -125,31 +125,14 @@ export class MetabolitesFromOntologiesComponent
         }
       });
 
-
     this.store
       .pipe(
         select(RampSelectors.getontologiesList),
         takeUntilDestroyed(this.destroyRef),
         map((res: any) => {
-          if (res && res.data) {
-            this.ontologies = res.data.map(
-              (ont: { ontologyType: string; values: any[]; count: number }) => {
-                return {
-                  ontologyType: ont.ontologyType,
-                  values: ont.values
-                    .map(
-                      (val) =>
-                        (val = {
-                          value: val.ontology,
-                          source: ont.ontologyType,
-                          count: val.count,
-                        }),
-                    )
-                    .sort((a, b) => b.count - a.count),
-                };
-              },
-            );
-            this.allOntologies = this.ontologies;
+          if (res && res.length) {
+            this.ontologies = res;
+            this.allOntologies = res;
             this.ref.markForCheck();
           }
         }),
@@ -160,12 +143,7 @@ export class MetabolitesFromOntologiesComponent
       .pipe(
         select(RampSelectors.getMetabolites),
         takeUntilDestroyed(this.destroyRef),
-        map(
-        (
-          res:
-            | { data: Metabolite[]; query: RampQuery; dataframe: any }
-            | undefined,
-        ) => {
+        map((res: RampResponse<Metabolite> | undefined) => {
           if (res && res.data) {
             this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
               const newObj: { [key: string]: DataProperty } = {};
@@ -188,8 +166,9 @@ export class MetabolitesFromOntologiesComponent
           }
           this.loading = false;
           this.ref.markForCheck();
-        },
-      )).subscribe();
+        }),
+      )
+      .subscribe();
   }
 
   setValues(values: any) {
@@ -220,7 +199,9 @@ export class MetabolitesFromOntologiesComponent
     this.tabIndex = 0;
     const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
     this.store.dispatch(
-      MetaboliteFromOntologyActions.fetchMetabolitesFromOntologies({ ontologies: ontologiesList }),
+      MetaboliteFromOntologyActions.fetchMetabolitesFromOntologies({
+        ontologies: ontologiesList,
+      }),
     );
   }
 

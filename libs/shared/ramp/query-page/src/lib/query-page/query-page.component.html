@@ -1,32 +1,23 @@
-<ng-container
-  *ngIf="
-    dataAsDataProperty && dataAsDataProperty.length > 0;
-    then dataTable;
-    else noData
-  "
->
-</ng-container>
-<ng-template #dataTable>
-  <div
-    class="row space-around-row"
-    *ngIf="dataAsDataProperty"
-  >
-    <div class="width-90">
-      <ncats-frontend-library-ncats-datatable
-        [fieldsConfig]="dataColumns"
-        [data]="dataAsDataProperty"
-        [asDataSource]="true"
-        [internalSort]="true"
-        [useInternalPaginator]="true"
-      ></ncats-frontend-library-ncats-datatable>
+@if (dataAsDataProperty && dataAsDataProperty.length > 0) {
+  @if (dataAsDataProperty) {
+    <div class="row space-around-row">
+      <div class="width-90">
+        <ncats-frontend-library-ncats-datatable
+          [fieldsConfig]="dataColumns"
+          [data]="dataAsDataProperty"
+          [asDataSource]="true"
+          [internalSort]="true"
+          [useInternalPaginator]="true"
+        ></ncats-frontend-library-ncats-datatable>
+      </div>
     </div>
-  </div>
-</ng-template>
-
-<ng-template #noData>
-  <div *ngIf="noDataArr" class="row space-around-row">
-    <div class="width-90">
-      <h1>no data found!</h1>
+  }
+} @else {
+  @if (noDataArr) {
+    <div class="row space-around-row">
+      <div class="width-90">
+        <h1>no data found!</h1>
+      </div>
     </div>
-  </div>
-</ng-template>
+  }
+}

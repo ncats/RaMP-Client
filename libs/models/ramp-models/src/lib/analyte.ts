@@ -7,7 +7,7 @@ export class Analyte {
   pathwayType: string = '';
   pathwayId: string = '';
 
-  constructor(obj: any) {
+  constructor(obj: Partial<Analyte>) {
     // Object.assign(this, obj);
 
     if (obj.analyteName) {
@@ -16,7 +16,7 @@ export class Analyte {
     if (obj.sourceAnalyteIDs) {
       this.sourceAnalyteIDs = obj.sourceAnalyteIDs
         .split('; ')
-        .sort((a: string, b: any) => a.localeCompare(b))
+        .sort((a: string, b: string) => a.localeCompare(b))
         .join('; ');
     }
     if (obj.geneOrCompound) {

@@ -13,12 +13,17 @@
       </div>
       <div class="right-options"></div>
     </ramp-header>
-<!--
+    <!--
     <ramp-header [links]="links"></ramp-header>
 -->
   </header>
   <main role="ncats-main">
     <div class="main-content">
+      <div class="row space-around-row">
+        <div class="width-95">
+          <ramp-full-banner [showBanner]="isProd"></ramp-full-banner>
+        </div>
+      </div>
       <ramp-loading [isLoading]="loading"></ramp-loading>
       <router-outlet></router-outlet>
     </div>

@@ -6,14 +6,10 @@ import {
   EventEmitter,
   Injector,
   Input,
-  IterableDiffer,
-  IterableDiffers,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
   QueryList,
-  SimpleChanges,
   Type,
   ViewChild,
   ViewChildren,
@@ -27,8 +23,17 @@ import {
   trigger,
 } from '@angular/animations';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { MatRow, MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator, PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+import {
+  MatRow,
+  MatTable,
+  MatTableDataSource,
+  MatTableModule,
+} from '@angular/material/table';
+import {
+  MatPaginator,
+  PageEvent,
+  MatPaginatorModule,
+} from '@angular/material/paginator';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { ComponentPortal, PortalModule } from '@angular/cdk/portal';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -37,14 +42,14 @@ import { PageData } from './models/page-data';
 import { DataProperty } from './models/data-property';
 import { PropertyDisplayComponent } from './components/property-display/property-display.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { NgIf, NgClass, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 const _sortingDataAccessor = (
   item: { [key: string]: DataProperty },
   property: string,
 ) => {
-  if (item[property]) {
-    if (!isNaN(item[property].value)) {
+  if (item[property] && item[property].value) {
+    if (!isNaN(Number(item[property].value))) {
       return item[property].value;
     } else {
       return item[property].value.toLocaleUpperCase();
@@ -59,29 +64,33 @@ const _sortingDataAccessor = (
  * also handles standard table operations, primarily with event emitters for the end user to react to
  */
 @Component({
-    selector: 'ncats-frontend-library-ncats-datatable',
-    templateUrl: './ncats-datatable.component.html',
-    styleUrls: ['./ncats-datatable.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: [
-        trigger('detailExpand', [
-            state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
-            state('expanded', style({ height: '*' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-        ]),
-    ],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatPaginatorModule,
-        MatTableModule,
-        MatSortModule,
-        NgClass,
-        MatCheckboxModule,
-        NgFor,
-        PropertyDisplayComponent,
-        PortalModule,
-    ],
+  selector: 'ncats-frontend-library-ncats-datatable',
+  templateUrl: './ncats-datatable.component.html',
+  styleUrls: ['./ncats-datatable.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('detailExpand', [
+      state(
+        'collapsed',
+        style({ height: '0px', minHeight: '0', display: 'none' }),
+      ),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
+      ),
+    ]),
+  ],
+  standalone: true,
+  imports: [
+    MatPaginatorModule,
+    MatTableModule,
+    MatSortModule,
+    NgClass,
+    MatCheckboxModule,
+    PropertyDisplayComponent,
+    PortalModule,
+  ],
 })
 
 /**
@@ -135,6 +144,7 @@ export class NcatsDatatableComponent
    */
   @Input()
   set fieldsConfig(value: DataProperty[]) {
+    console.log(value);
     this._fieldsConfig.next(value);
   }
 

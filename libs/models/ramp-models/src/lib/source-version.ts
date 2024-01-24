@@ -1,5 +1,4 @@
-import { Observable } from "rxjs";
-import { EntityCount } from "./entity-count";
+import { EntityCount } from './entity-count';
 
 export interface SourceVersion {
   ramp_db_version: string;
@@ -11,12 +10,11 @@ export interface SourceVersion {
   data_source_version: string;
 }
 
-
 export interface Stats {
-  entityCounts: EntityCount[],
-  supportedIds: [{analyteType: string, idTypes: string[]}],
-  metaboliteIntersects: any[],
-  geneIntersects: any[],
-  sourceVersions: SourceVersion[],
-  databaseUrl: string[]
+  entityCounts: EntityCount[];
+  supportedIds: [{ analyteType: string; idTypes: string[] }];
+  metaboliteIntersects: any[];
+  geneIntersects: { id: string; sets: string[]; size: number }[];
+  sourceVersions: SourceVersion[];
+  databaseUrl: string[];
 }

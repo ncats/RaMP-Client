@@ -37,7 +37,7 @@
     "input": "analytes",
     "supportedIdTypes": ["Metabolites", "Genes/Proteins"],
     "examples": "ensembl:ENSG00000135679, hmdb:HMDB0000064, hmdb:HMDB0000148, ensembl:ENSG00000141510",
-    "description": "Retrieve Analytes Involved in the Same Reaction. IDs should be prepended by ID source (e.g. <strong>hmdb</strong>:HMDB0000122). See below for supported sources.."
+    "description": "Retrieve Analytes Involved in the Same Reaction. IDs should be prepended by ID source (e.g. <strong>hmdb</strong>:HMDB0000122). See below for supported sources."
   },
   "classes-from-metabolites": {
     "title": "Retrieve Chemical Classes from Input Metabolites",

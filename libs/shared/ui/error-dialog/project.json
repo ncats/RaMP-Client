@@ -14,7 +14,7 @@
       }
     },
     "lint": {
-          "executor": "@nx/eslint:lint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "libs/shared/ui/error-dialog/src/**/*.ts",

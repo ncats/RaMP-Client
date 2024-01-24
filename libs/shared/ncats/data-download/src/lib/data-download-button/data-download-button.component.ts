@@ -5,15 +5,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-    selector: 'ramp-data-download-button',
-    templateUrl: './data-download-button.component.html',
-    styleUrls: ['./data-download-button.component.scss'],
-    standalone: true,
-    imports: [
-        MatButtonModule,
-        MatTooltipModule,
-        MatIconModule,
-    ],
+  selector: 'ramp-data-download-button',
+  templateUrl: './data-download-button.component.html',
+  styleUrls: ['./data-download-button.component.scss'],
+  standalone: true,
+  imports: [MatButtonModule, MatTooltipModule, MatIconModule],
 })
 export class DataDownloadButtonComponent {
   @Input() source!: string;

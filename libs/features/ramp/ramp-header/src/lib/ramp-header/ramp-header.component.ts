@@ -1,12 +1,18 @@
-import { NgClass } from "@angular/common";
-import { Component, DestroyRef, inject, Input, ViewEncapsulation } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatSidenavModule } from "@angular/material/sidenav";
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { Router, RouterLink } from "@angular/router";
-import { slideInOutAnimation } from "./header-animations";
+import { NgClass } from '@angular/common';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  ViewEncapsulation,
+} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { Router, RouterLink } from '@angular/router';
+import { slideInOutAnimation } from './header-animations';
 
 export interface LinkTemplateProperty {
   link?: string;
@@ -16,9 +22,9 @@ export interface LinkTemplateProperty {
 }
 
 @Component({
-    selector: 'ramp-header',
-    templateUrl: './ramp-header.component.html',
-    styleUrls: ['./ramp-header.component.scss'],
+  selector: 'ramp-header',
+  templateUrl: './ramp-header.component.html',
+  styleUrls: ['./ramp-header.component.scss'],
   animations: [slideInOutAnimation],
   encapsulation: ViewEncapsulation.None,
   standalone: true,

@@ -1,12 +1,12 @@
 <div class="content-panel">
-  <div class = "row space-around-row">
+  <div class="row space-around-row">
     <div class="full-width">
       <h1 class="page-title">
         {{ title | titlecase }}
       </h1>
     </div>
   </div>
-  <div class = "row space-around-row">
+  <div class="row space-around-row">
     <div class="full-width">
       <ramp-description
         [supportedIds]="supportedIds"
@@ -40,30 +40,35 @@
             #fileUpload
           />
           <div class="file-upload">
-            <div *ngIf="fileName">
-              <span>{{ fileName }}</span
-              >&nbsp;
-              <button
-                mat-mini-fab
-                color="accent"
-                class="upload-btn"
-                (click)="cancelUpload()"
-              >
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </div>
-            <div *ngIf="!fileName">
-              <span class="mat-h4">Upload backgound ids</span> &nbsp;
-              <button
-                *ngIf="!fileName"
-                mat-mini-fab
-                color="accent"
-                class="upload-btn"
-                (click)="fileUpload.click()"
-              >
-                <mat-icon>attach_file</mat-icon>
-              </button>
-            </div>
+            @if (fileName) {
+              <div>
+                <span>{{ fileName }}</span
+                >&nbsp;
+                <button
+                  mat-mini-fab
+                  color="accent"
+                  class="upload-btn"
+                  (click)="cancelUpload()"
+                >
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </div>
+            }
+            @if (!fileName) {
+              <div>
+                <span class="mat-h4">Upload backgound ids</span> &nbsp;
+                @if (!fileName) {
+                  <button
+                    mat-mini-fab
+                    color="accent"
+                    class="upload-btn"
+                    (click)="fileUpload.click()"
+                  >
+                    <mat-icon>attach_file</mat-icon>
+                  </button>
+                }
+              </div>
+            }
           </div>
           <div>- or -</div>
           <div>
@@ -77,12 +82,11 @@
                 placeholder="select biospecimen"
               >
                 <mat-option [value]=""></mat-option>
-                <mat-option
-                  *ngFor="let specimen of biospecimens"
-                  [value]="specimen"
-                >
-                  {{ specimen }}
-                </mat-option>
+                @for (specimen of biospecimens; track specimen) {
+                  <mat-option [value]="specimen">
+                    {{ specimen }}
+                  </mat-option>
+                }
               </mat-select>
             </mat-form-field>
           </div>
@@ -100,15 +104,16 @@
       </ng-template>
       <br />
       <br />
-      <ramp-feedback-panel
-        *ngIf="matches && matches.length > 0"
-        [matchesLength]="matches.length"
-        [dataLength]="pathwayDataAsDataProperty.length"
-        [inputLength]="inputList.length"
-        [noMatches]="noMatches"
-        [inputType]="'pathways'"
-      >
-      </ramp-feedback-panel>
+      @if (matches && matches.length > 0) {
+        <ramp-feedback-panel
+          [matchesLength]="matches.length"
+          [dataLength]="pathwayDataAsDataProperty.length"
+          [inputLength]="inputList.length"
+          [noMatches]="noMatches"
+          [inputType]="'pathways'"
+        >
+        </ramp-feedback-panel>
+      }
       <br />
       <div class="row right-justified-row centered-row">
         <div class="width-10">
@@ -119,7 +124,8 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span class="hide-small">Download </span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download </span
+            ><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>
@@ -140,9 +146,7 @@
           [position]="'right'"
         ></ramp-loading>
       </ng-template>
-      <div
-        class="row space-around-row additional-params"
-      >
+      <div class="row space-around-row additional-params">
         <div class="width-40">
           <h3>Filter Results</h3>
           <div class="row centered-row">
@@ -186,6 +190,7 @@
         </div>
         <div class="width-55">
           <h3>Cluster Results</h3>
+          {{ analyteType }}
           <div class="row centered-row">
             <div class="width-90">
               <mat-checkbox
@@ -229,7 +234,7 @@
               </mat-form-field>
             </div>
           </div>
-          <div class="row" >
+          <div class="row">
             <div class="width-20">
               <button
                 mat-flat-button
@@ -252,7 +257,8 @@
             matTooltip="Download Data"
             color="accent"
           >
-            <span class="hide-small">Download </span><mat-icon>download</mat-icon>
+            <span class="hide-small">Download </span
+            ><mat-icon>download</mat-icon>
           </button>
         </div>
       </div>
@@ -276,22 +282,29 @@
       <br />
       <br />
       <div class="row right-justified-row centered-row">
-        <div class="width-10" *ngIf="!tooBig">
-          <button
-            mat-stroked-button
-            class="tool-button list-download"
-            (click)="fetchClusterImageFile()"
-            matTooltip="Download Data"
-            color="accent"
-          >
-            <span class="hide-small">Save Image</span><mat-icon>download</mat-icon>
-          </button>
+        @if (!tooBig) {
+          <div class="width-10">
+            <button
+              mat-stroked-button
+              class="tool-button list-download"
+              (click)="fetchClusterImageFile()"
+              matTooltip="Download Data"
+              color="accent"
+            >
+              <span class="hide-small">Save Image</span
+              ><mat-icon>download</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+      @if (tooBig) {
+        <div>
+          This website currently does not support clustering over 100 pathways.
         </div>
-      </div>
-      <div *ngIf="tooBig">
-        This website currently does not support clustering over 100 pathways.
-      </div>
-      <div *ngIf="!tooBig" [innerHTML]="image"></div>
+      }
+      @if (!tooBig) {
+        <div [innerHTML]="image"></div>
+      }
     </mat-tab>
   </mat-tab-group>
 </div>

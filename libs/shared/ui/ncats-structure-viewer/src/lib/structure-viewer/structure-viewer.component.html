@@ -1,14 +1,22 @@
 <div class="image-holder">
-  <div *ngIf="url; else placeholder">
-    <h3>{{ data?.label }}</h3>
+  @if (url) {
+    <div>
+      <h3>{{ data?.label }}</h3>
+      <img
+        [src]="url"
+        [alt]="'Rendered image for ' + ligandName"
+        class="ligand-image"
+        [ngClass]="{ roundCorners: rounded }"
+      />
+      <p>{{ data?.value }}</p>
+    </div>
+  } @else {
     <img
-      [src]="url"
-      [alt]="'Rendered image for ' + ligandName"
-      class="ligand-image"
-      [ngClass]="{ roundCorners: rounded }"
+      [src]="'assets/images/benzene.svg'"
+      alt="no chemical structure image available"
+      class="placeholder-thumb"
     />
-    <p>{{ data?.value }}</p>
-  </div>
+  }
   <ng-template #placeholder>
     <img
       [src]="'assets/images/benzene.svg'"

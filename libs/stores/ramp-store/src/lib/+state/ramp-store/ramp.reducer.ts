@@ -4,11 +4,15 @@ import {
   Analyte,
   ChemicalEnrichment,
   Classes,
+  EntityCount,
   FisherResult,
+  FishersDataframe,
   Metabolite,
   Ontology,
+  OntologyList,
   Pathway,
   Properties,
+  RampResponse,
   RampQuery,
   Reaction,
   SourceVersion,
@@ -17,17 +21,15 @@ import {
   AnalyteFromPathwayActions,
   ClassesFromMetabolitesActions,
   CommonReactionAnalyteActions,
-  FetchOntologiesActions,
   LoadRampActions,
   MetaboliteEnrichmentsActions,
   MetaboliteFromOntologyActions,
   OntologyFromMetaboliteActions,
   PathwayEnrichmentsActions,
   PathwayFromAnalyteActions,
-  PropertiesFromMetaboliteActions
-} from "./ramp.actions";
+  PropertiesFromMetaboliteActions,
+} from './ramp.actions';
 
-import * as RampActions from './ramp.actions';
 import { RampEntity } from './ramp.models';
 
 export const RAMP_STORE_FEATURE_KEY = 'rampStore';
@@ -38,50 +40,20 @@ export interface State extends EntityState<RampEntity> {
   error?: string | null; // last known error (if any)
   supportedIds?: [{ analyteType: string; idTypes: string[] }];
   sourceVersions?: SourceVersion[];
-  entityCounts?: any;
+  entityCounts?: EntityCount[];
   metaboliteIntersects?: [];
   geneIntersects?: [];
   databaseUrl?: string;
-  ontologies?: {
-    data: Ontology[];
-    query: RampQuery;
-    dataframe: any;
-  };
-  analytes?: {
-    data: Analyte[];
-    query: RampQuery;
-    dataframe: any;
-  };
-  pathways?: {
-    data: Pathway[];
-    query: RampQuery;
-    dataframe: any;
-  };
-  reactions?: {
-    data: Reaction[];
-    query: RampQuery;
-    dataframe: any;
-  };
+  ontologies?: RampResponse<Ontology>;
+  analytes?: RampResponse<Analyte>;
+  pathways?: RampResponse<Pathway>;
+  reactions?: RampResponse<Reaction>;
+  metabolites?: RampResponse<Metabolite>;
+  ontologiesList?: OntologyList[];
 
-  metabolites?: {
-    data: Metabolite[];
-    query: RampQuery;
-    dataframe: any;
-  };
+  metClasses?: RampResponse<Classes>;
 
-  ontologiesList?: any[];
-
-  metClasses?: {
-    data: Classes[];
-    query: RampQuery;
-    dataframe: any;
-  };
-
-  properties?: {
-    data: Properties[];
-    query: RampQuery;
-    dataframe: any;
-  };
+  properties?: RampResponse<Properties>;
 
   chemicalEnrichments?: {
     data: ChemicalEnrichment[];
@@ -90,14 +62,19 @@ export interface State extends EntityState<RampEntity> {
 
   pathwayEnrichments?: {
     data: FisherResult[];
-    query: RampQuery;
+    plot?: string[];
+    query?: RampQuery;
+    dataframe?: FishersDataframe;
     openModal?: boolean;
   };
 
-  enriched_chemical_class?: any;
-  combined_fishers_dataframe?: any;
-  filtered_fishers_dataframe?: any;
-  clusterPlot?: any;
+  enriched_chemical_class?: { [key: string]: string[] };
+
+  filteredFishersDataframe?: FishersDataframe;
+
+  combinedFishersDataframe?: FishersDataframe;
+
+  clusterPlot?: string;
   openModal?: boolean;
 }
 
@@ -155,7 +132,7 @@ export const rampReducer = createReducer(
     databaseUrl: data.databaseUrl,
   })),
 
-/*
+  /*
 
   on(LoadRampActions.loadRampSuccess, (state, { data }) => ({
     ...state,
@@ -197,11 +174,13 @@ export const rampReducer = createReducer(
   on(
     PathwayEnrichmentsActions.fetchPathwaysFromAnalytesSuccess,
     PathwayFromAnalyteActions.fetchPathwaysFromAnalytesSuccess,
-    (state, { data, query, dataframe }) => ({
-      ...state,
-      loading: false,
-      pathways: { data, query, dataframe },
-    }),
+    (state, { data, query, dataframe }) => {
+      return {
+        ...state,
+        loading: false,
+        pathways: { data, query, dataframe },
+      };
+    },
   ),
 
   on(
@@ -222,11 +201,14 @@ export const rampReducer = createReducer(
     }),
   ),
 
-  on(FetchOntologiesActions.fetchOntologiesSuccess, (state, { data }) => ({
-    ...state,
-    loading: false,
-    ontologiesList: data,
-  })),
+  on(
+    MetaboliteFromOntologyActions.fetchOntologiesSuccess,
+    (state, { data }) => ({
+      ...state,
+      loading: false,
+      ontologiesList: data,
+    }),
+  ),
 
   on(
     ClassesFromMetabolitesActions.fetchClassesFromMetabolitesSuccess,
@@ -272,8 +254,8 @@ export const rampReducer = createReducer(
         ...state,
         loading: false,
         pathwayEnrichments: { data, query },
-        combined_fishers_dataframe: combinedFishersDataframe,
-        filtered_fishers_dataframe: [],
+        combinedFishersDataframe: combinedFishersDataframe,
+        filteredFishersDataframe: undefined,
         clusterPlot: '',
       };
     },
@@ -288,10 +270,10 @@ export const rampReducer = createReducer(
         pathwayEnrichments: {
           data,
           query,
-          dataframe: filteredFishersDataframe.fishresults,
+          dataframe: filteredFishersDataframe,
           openModal: true,
         },
-        filtered_fishers_dataframe: filteredFishersDataframe,
+        filteredFishersDataframe: filteredFishersDataframe,
         clusterPlot: '',
       };
     },
@@ -317,7 +299,7 @@ export const rampReducer = createReducer(
     PathwayFromAnalyteActions.fetchPathwaysFromAnalytesFailure,
     OntologyFromMetaboliteActions.fetchOntologiesFromMetabolitesFailure,
     MetaboliteFromOntologyActions.fetchMetaboliteFromOntologiesFailure,
-    FetchOntologiesActions.fetchOntologiesFailure,
+    MetaboliteFromOntologyActions.fetchOntologiesFailure,
     CommonReactionAnalyteActions.fetchCommonReactionAnalytesFailure,
     ClassesFromMetabolitesActions.fetchClassesFromMetabolitesFailure,
     PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolitesFailure,

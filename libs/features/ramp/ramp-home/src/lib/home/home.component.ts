@@ -1,32 +1,27 @@
 import {
   ChangeDetectorRef,
-  Component, DestroyRef, inject,
-  OnInit
-} from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { Actions } from "@ngrx/effects";
-import { select, Store } from "@ngrx/store";
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Actions } from '@ngrx/effects';
+import { select, Store } from '@ngrx/store';
 import { SourceVersion } from '@ramp/models/ramp-models';
-import { LoadRampActions, RampSelectors } from "@ramp/stores/ramp-store";
-import { map } from "rxjs";
-import { NgIf, NgFor } from '@angular/common';
+import { RampSelectors } from '@ramp/stores/ramp-store';
+import { map } from 'rxjs';
+
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 
-
 @Component({
-    selector: 'ramp-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    standalone: true,
-    imports: [
-        MatCardModule,
-        MatButtonModule,
-        RouterLink,
-        NgIf,
-        NgFor,
-    ],
+  selector: 'ramp-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  standalone: true,
+  imports: [MatCardModule, MatButtonModule, RouterLink],
 })
 export class HomeComponent implements OnInit {
   private readonly store = inject(Store);
@@ -39,18 +34,14 @@ export class HomeComponent implements OnInit {
   dbUpdated!: string;
   databaseUrl!: string;
 
-  constructor(
-    private changeDetector: ChangeDetectorRef
-  ) {}
+  constructor(private changeDetector: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.store.dispatch(LoadRampActions.loadRampStats())
     this.store
       .pipe(
         select(RampSelectors.getAllRamp),
         takeUntilDestroyed(this.destroyRef),
         map((data) => {
-          console.log(data)
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
             if (this.sourceVersions.length > 0) {

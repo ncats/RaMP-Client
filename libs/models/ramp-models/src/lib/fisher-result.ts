@@ -1,3 +1,9 @@
+export class FishersDataframe {
+  analyte_type?: string[];
+  fishresults?: FisherResult[];
+  result_type?: string[];
+}
+
 export class FisherResult {
   Num_In_Path_Metab!: number;
   Num_In_Path_Gene!: number;
@@ -25,7 +31,7 @@ export class FisherResult {
   geneCount!: string;
   pathCount!: string;
 
-  constructor(obj: any) {
+  constructor(obj: Partial<FisherResult>) {
     Object.assign(this, obj);
 
     if (obj.Total_In_Path_Metab && obj.Num_In_Path_Metab) {

@@ -1,30 +1,31 @@
 import {
-  provideHttpClient, withFetch,
-  withInterceptorsFromDi
-} from "@angular/common/http";
-import { APP_INITIALIZER, ApplicationConfig, inject } from "@angular/core";
-import {
-  provideClientHydration,
-} from '@angular/platform-browser';
+  provideHttpClient,
+  withFetch,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import { APP_INITIALIZER, ApplicationConfig, inject } from '@angular/core';
+import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   PreloadAllModules,
-  provideRouter, withComponentInputBinding,
+  provideRouter,
+  withComponentInputBinding,
   withEnabledBlockingInitialNavigation,
   withInMemoryScrolling,
-  withPreloading, withViewTransitions
-} from "@angular/router";
-import { provideEffects } from "@ngrx/effects";
-import { provideState, provideStore, Store } from "@ngrx/store";
-import { provideStoreDevtools } from "@ngrx/store-devtools";
+  withPreloading,
+  withViewTransitions,
+} from '@angular/router';
+import { provideEffects } from '@ngrx/effects';
+import { provideState, provideStore, Store } from '@ngrx/store';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
 import {
   LoadRampActions,
   RampService,
   RampEffects,
   rampReducer,
-  RAMP_STORE_FEATURE_KEY
-} from "@ramp/stores/ramp-store";
+  RAMP_STORE_FEATURE_KEY,
+} from '@ramp/stores/ramp-store';
 import { environment } from '../environments/environment';
 
 import { routes } from './app.routes';
@@ -38,6 +39,7 @@ export function set_url(rampService: RampService) {
 export function rampInit(store = inject(Store)) {
   return () => {
     store.dispatch(LoadRampActions.loadRamp());
+    store.dispatch(LoadRampActions.loadRampStats());
   };
 }
 
@@ -61,19 +63,19 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withEnabledBlockingInitialNavigation(),
       withInMemoryScrolling({
-        anchorScrolling: "enabled",
-        scrollPositionRestoration: "enabled"
+        anchorScrolling: 'enabled',
+        scrollPositionRestoration: 'enabled',
       }),
-      withPreloading(PreloadAllModules)
+      withPreloading(PreloadAllModules),
     ),
-    provideStore({rampStore: rampReducer}),
-  //  provideRouterStore(),
+    provideStore({ rampStore: rampReducer }),
+    //  provideRouterStore(),
     provideStoreDevtools(),
     provideEffects([RampEffects]),
     provideState(RAMP_STORE_FEATURE_KEY, rampReducer),
     provideAnimations(),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
-    provideClientHydration()
-  ]
+    provideClientHydration(),
+  ],
 };

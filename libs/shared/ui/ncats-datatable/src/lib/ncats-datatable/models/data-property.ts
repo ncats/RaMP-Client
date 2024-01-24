@@ -22,7 +22,7 @@ export class DataProperty {
   /**
    * object data property
    */
-  value!: any;
+  value!: string;
   /**
    * optional url
    */

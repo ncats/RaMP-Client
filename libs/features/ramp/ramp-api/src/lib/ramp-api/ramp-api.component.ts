@@ -1,14 +1,22 @@
-import { isPlatformBrowser } from "@angular/common";
-import { AfterViewInit, Component, ElementRef, Inject, PLATFORM_ID, ViewChild, ViewEncapsulation } from "@angular/core";
-import SwaggerUI from "swagger-ui";
+import { isPlatformBrowser } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  PLATFORM_ID,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
+import SwaggerUI from 'swagger-ui';
 
 @Component({
-    selector: 'ramp-ramp-api',
-    templateUrl: './ramp-api.component.html',
-    styleUrls: ['./ramp-api.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: true,
-    imports: [],
+  selector: 'ramp-ramp-api',
+  templateUrl: './ramp-api.component.html',
+  styleUrls: ['./ramp-api.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [],
 })
 export class RampApiComponent implements AfterViewInit {
   /**

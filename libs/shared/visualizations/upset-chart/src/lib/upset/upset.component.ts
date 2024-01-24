@@ -28,11 +28,11 @@ import { extent, max } from 'd3-array';
 import { UpsetData } from '../upset-data';
 
 @Component({
-    selector: 'ramp-upset',
-    templateUrl: './upset.component.html',
-    styleUrls: ['./upset.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: true,
+  selector: 'ramp-upset',
+  templateUrl: './upset.component.html',
+  styleUrls: ['./upset.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
 })
 export class UpsetComponent implements OnInit {
   @Input() scale: 'linear' | 'log' = 'linear';
@@ -187,8 +187,8 @@ export class UpsetComponent implements OnInit {
       .append('svg:svg')
       .attr('width', this.width)
       .attr('height', this.height)
-     .append("svg:g")
-     .attr("transform", `translate(-${leftColWidth/2},0)`);
+      .append('svg:g')
+      .attr('transform', `translate(-${leftColWidth / 2},0)`);
 
     const setSizeChart = svg
       .append('svg:g')

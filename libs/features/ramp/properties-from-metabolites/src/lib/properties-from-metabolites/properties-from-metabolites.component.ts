@@ -1,32 +1,33 @@
-import { DOCUMENT, TitleCasePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, Input, OnInit } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { select } from "@ngrx/store";
-import { Properties, RampQuery } from '@ramp/models/ramp-models';
-import { InputRowComponent } from "@ramp/shared/ramp/input-row";
+import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { select } from '@ngrx/store';
+import { Properties, RampResponse } from '@ramp/models/ramp-models';
+import { InputRowComponent } from '@ramp/shared/ramp/input-row';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
-import { QueryPageComponent } from "@ramp/shared/ramp/query-page";
-import { DescriptionComponent } from "@ramp/shared/ui/description-panel";
-import { FeedbackPanelComponent } from "@ramp/shared/ui/feedback-panel";
+import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
+import { DescriptionComponent } from '@ramp/shared/ui/description-panel';
+import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
+import { StructureViewerComponent } from '@ramp/shared/ui/ncats-structure-viewer';
 import {
-  PropertiesFromMetaboliteActions, RampSelectors
-} from "@ramp/stores/ramp-store";
-import { map } from "rxjs";
+  PropertiesFromMetaboliteActions,
+  RampSelectors,
+} from '@ramp/stores/ramp-store';
+import { map } from 'rxjs';
 
 @Component({
-    selector: 'ramp-properties-from',
-    templateUrl: './properties-from-metabolites.component.html',
-    styleUrls: ['./properties-from-metabolites.component.scss'],
-    standalone: true,
-    imports: [
-        DescriptionComponent,
-        InputRowComponent,
-        FeedbackPanelComponent,
-        QueryPageComponent,
-        TitleCasePipe,
-    ],
+  selector: 'ramp-properties-from',
+  templateUrl: './properties-from-metabolites.component.html',
+  styleUrls: ['./properties-from-metabolites.component.scss'],
+  standalone: true,
+  imports: [
+    DescriptionComponent,
+    InputRowComponent,
+    FeedbackPanelComponent,
+    QueryPageComponent,
+    TitleCasePipe,
+  ],
 })
 export class PropertiesFromMetabolitesComponent
   extends PageCoreComponent
@@ -78,23 +79,17 @@ export class PropertiesFromMetabolitesComponent
     }),
   ];
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    @Inject(DOCUMENT) protected override dom: Document,
-  ) {
-    super(dom);
+  constructor(private ref: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit(): void {
-    this.store.pipe(
-      select(RampSelectors.getProperties),
-      takeUntilDestroyed(this.destroyRef),
-      map(
-        (
-          res:
-            | { data: Properties[]; query: RampQuery; dataframe: any }
-            | undefined,
-        ) => {
+    this._getSupportedIds();
+    this.store
+      .pipe(
+        select(RampSelectors.getProperties),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: RampResponse<Properties> | undefined) => {
           if (res && res.data) {
             this._mapData(res.data);
             this.matches = Array.from(
@@ -120,14 +115,17 @@ export class PropertiesFromMetabolitesComponent
             }
           }
           this.ref.markForCheck();
-        },
-      )).subscribe();
+        }),
+      )
+      .subscribe();
   }
 
   fetchProperties(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
     this.store.dispatch(
-      PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolites({ metabolites: event }),
+      PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolites({
+        metabolites: event,
+      }),
     );
   }
   fetchPropertiesFile(event: string[]): void {

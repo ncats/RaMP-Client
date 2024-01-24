@@ -6,24 +6,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
-    selector: 'ramp-input-row',
-    templateUrl: './input-row.component.html',
-    styleUrls: ['./input-row.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatFormFieldModule,
-        MatInputModule,
-        TextFieldModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatIconModule,
-        MatTooltipModule,
-        TitleCasePipe,
-    ],
+  selector: 'ramp-input-row',
+  templateUrl: './input-row.component.html',
+  styleUrls: ['./input-row.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    TextFieldModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    TitleCasePipe,
+  ],
 })
 export class InputRowComponent implements OnInit {
   @Input() showInput = true;

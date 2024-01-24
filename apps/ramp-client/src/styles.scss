@@ -6,8 +6,14 @@ html,
 body {
   height: 100%;
   margin: 0 !important;
-  font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
-  Lucida Grande, sans-serif;
+  font-family:
+    Roboto,
+    Helvetica Neue Light,
+    Helvetica Neue,
+    Helvetica,
+    Arial,
+    Lucida Grande,
+    sans-serif;
 }
 
 a {
@@ -166,6 +172,7 @@ a {
 @include utils.width-sm(75);
 @include utils.width-md(100);
 
+@include utils.width(95);
 @include utils.width(90);
 @include utils.width(80);
 @include utils.width(75);
@@ -190,11 +197,10 @@ a {
   width: 100%;
 }
 
-
 .navigation-menu-panel {
   width: 25%;
   position: fixed !important;
-  top: calc(60px + 17vh) !important
+  top: calc(60px + 17vh) !important;
 }
 
 @media only screen and (max-width: 1024px) {

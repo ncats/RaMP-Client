@@ -103,7 +103,10 @@
       "@ramp/shared/visualizations/upset-chart": [
         "libs/shared/visualizations/upset-chart/src/index.ts"
       ],
-      "@ramp/stores/ramp-store": ["libs/stores/ramp-store/src/index.ts"]
+      "@ramp/stores/ramp-store": ["libs/stores/ramp-store/src/index.ts"],
+      "@ramp/shared/ramp/full-banner": [
+        "libs/shared/ramp/full-banner/src/index.ts"
+      ]
     },
     "allowSyntheticDefaultImports": true
   },

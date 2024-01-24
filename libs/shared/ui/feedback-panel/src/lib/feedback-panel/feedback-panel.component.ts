@@ -1,16 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'ramp-feedback-panel',
-    templateUrl: './feedback-panel.component.html',
-    styleUrls: ['./feedback-panel.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatCardModule,
-    ],
+  selector: 'ramp-feedback-panel',
+  templateUrl: './feedback-panel.component.html',
+  styleUrls: ['./feedback-panel.component.scss'],
+  standalone: true,
+  imports: [MatCardModule],
 })
 export class FeedbackPanelComponent {
   @Input() matchesLength = 0;

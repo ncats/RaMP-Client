@@ -9,16 +9,16 @@ import {
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { BehaviorSubject } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
-import { NgIf, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'ramp-structure-viewer',
-    templateUrl: './structure-viewer.component.html',
-    styleUrls: ['./structure-viewer.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgIf, NgClass],
+  selector: 'ramp-structure-viewer',
+  templateUrl: './structure-viewer.component.html',
+  styleUrls: ['./structure-viewer.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgClass],
 })
 export class StructureViewerComponent implements OnInit {
   /**

@@ -1,36 +1,42 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, DestroyRef, inject,
+  Component,
+  DestroyRef,
+  inject,
   OnInit,
-  ViewEncapsulation
-} from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+  ViewEncapsulation,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import { select, Store } from "@ngrx/store";
-import { LinkTemplateProperty, RampHeaderComponent } from "@ramp/features/ramp/ramp-header";
-import { NcatsFooterComponent } from "@ramp/shared/ncats/ncats-footer";
-import { LoadingComponent } from "@ramp/shared/ui/loading-spinner";
-import { map } from "rxjs";
+import { select, Store } from '@ngrx/store';
+import {
+  LinkTemplateProperty,
+  RampHeaderComponent,
+} from '@ramp/features/ramp/ramp-header';
+import { NcatsFooterComponent } from '@ramp/shared/ncats/ncats-footer';
+import { LoadingComponent } from '@ramp/shared/ui/loading-spinner';
+import { map } from 'rxjs';
+import { RampFullBannerComponent } from '@ramp/shared/ramp/full-banner';
 import { environment } from '../environments/environment';
 import { RouterOutlet } from '@angular/router';
-import { NgIf } from '@angular/common';
-import { RampSelectors } from "@ramp/stores/ramp-store";
+
+import { RampSelectors } from '@ramp/stores/ramp-store';
 
 @Component({
-    selector: 'ramp-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-      NgIf,
-      RouterOutlet,
-      NcatsFooterComponent,
-      LoadingComponent,
-      RampHeaderComponent
-    ],
+  selector: 'ramp-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    NcatsFooterComponent,
+    LoadingComponent,
+    RampHeaderComponent,
+    RampFullBannerComponent,
+  ],
 })
 export class AppComponent implements OnInit {
   private readonly store = inject(Store);
@@ -38,7 +44,7 @@ export class AppComponent implements OnInit {
 
   title = 'ramp-client';
   loading = true;
-  showBanner = false;
+  isProd = false;
   links: LinkTemplateProperty[] = [
     {
       link: 'Biological Pathways',
@@ -119,8 +125,8 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.showBanner = !environment.production;
-/*    this.error$.subscribe((error) => {
+    this.isProd = !environment.production;
+    /*    this.error$.subscribe((error) => {
       if (error) {
         // console.log(error);
         /!* this.dialog.open(ErrorDialogComponent, {
@@ -135,10 +141,11 @@ export class AppComponent implements OnInit {
       .pipe(
         select(RampSelectors.getRampLoaded),
         takeUntilDestroyed(this.destroyRef),
-      map((res: boolean) => {
-      this.loading = res;
-      this.changeRef.markForCheck();
-    })
-      ).subscribe();
+        map((res: boolean) => {
+          this.loading = res;
+          this.changeRef.markForCheck();
+        }),
+      )
+      .subscribe();
   }
 }

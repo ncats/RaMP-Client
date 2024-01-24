@@ -1,5 +1,5 @@
 <div class="tile-holder">
-  <div class ="row space-around-row">
+  <div class="row space-around-row">
     <div class="width-50">
       <div class="grid-list">
         <mat-card appearance="outlined" class="ramp-tile">
@@ -142,26 +142,32 @@
           <mat-card-title class="ramp-card-header">Version Info</mat-card-title>
           <mat-card-content>
             <h3>
-              <span *ngIf="dbVersion">Version: {{ dbVersion }}</span
-              ><span *ngIf="dbUpdated"> Last updated: {{ dbUpdated }}</span>
+              @if (dbVersion) {
+                <span>Version: {{ dbVersion }}</span>
+              }
+              @if (dbUpdated) {
+                <span> Last updated: {{ dbUpdated }}</span>
+              }
             </h3>
 
             <h3>Source Versions:</h3>
             <ul class="ramp-list">
-              <li *ngFor="let version of sourceVersions">
-                <a
-                  href="{{ version.data_source_url }}"
-                  target="_blank"
-                  rel="noreferrer"
-                  attr.aria-label="Hyperlink to the {{
-                    version.data_source_name
-                  }} website. Link opens in a new tab."
-                >
-                  {{ version.data_source_name }}</a
-                >
-                &nbsp;
-                <span>{{ version.data_source_version }}</span>
-              </li>
+              @for (version of sourceVersions; track version) {
+                <li>
+                  <a
+                    href="{{ version.data_source_url }}"
+                    target="_blank"
+                    rel="noreferrer"
+                    attr.aria-label="Hyperlink to the {{
+                      version.data_source_name
+                    }} website. Link opens in a new tab."
+                  >
+                    {{ version.data_source_name }}</a
+                  >
+                  &nbsp;
+                  <span>{{ version.data_source_version }}</span>
+                </li>
+              }
             </ul>
             <div class="row centered-row">
               <a

@@ -2,26 +2,17 @@ import { Component, Input } from '@angular/core';
 import { DataProperty } from '../../models/data-property';
 import { RouterLink } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgIf, NgFor, NgSwitch, NgSwitchCase, NgSwitchDefault, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 
 /**
  * component to display a property, primarily in a table
  */
 @Component({
-    selector: 'ncats-property-display',
-    templateUrl: './property-display.component.html',
-    styleUrls: ['./property-display.component.scss'],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatTooltipModule,
-        NgFor,
-        NgSwitch,
-        NgSwitchCase,
-        RouterLink,
-        NgSwitchDefault,
-        DecimalPipe,
-    ],
+  selector: 'ncats-property-display',
+  templateUrl: './property-display.component.html',
+  styleUrls: ['./property-display.component.scss'],
+  standalone: true,
+  imports: [MatTooltipModule, RouterLink, DecimalPipe],
 })
 export class PropertyDisplayComponent {
   /**
@@ -65,7 +56,7 @@ export class PropertyDisplayComponent {
     return ret;
   }
 
-  isArray(data: any) {
+  isArray(data: unknown) {
     return Array.isArray(data);
   }
 }

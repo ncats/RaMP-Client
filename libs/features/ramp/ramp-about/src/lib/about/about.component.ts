@@ -1,51 +1,55 @@
-import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { OverlayModule, ScrollDispatcher } from "@angular/cdk/overlay";
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { OverlayModule, ScrollDispatcher } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, DestroyRef,
-  ElementRef, inject,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
   OnInit,
   QueryList,
-  ViewChildren, ViewEncapsulation
-} from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatSidenavModule } from "@angular/material/sidenav";
-import { select, Store } from "@ngrx/store";
+  ViewChildren,
+  ViewEncapsulation,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { select, Store } from '@ngrx/store';
 import { EntityCount, SourceVersion } from '@ramp/models/ramp-models';
-import { DataProperty, NcatsDatatableComponent } from "@ramp/shared/ui/ncats-datatable";
-import { UpsetComponent } from "@ramp/shared/visualizations/upset-chart";
-import { LoadRampActions, RampSelectors } from "@ramp/stores/ramp-store";
-import {tap } from "rxjs";
-import { CdkScrollable, ScrollingModule } from "@angular/cdk/scrolling";
-import { NgClass, NgIf, NgFor, ViewportScroller } from "@angular/common";
+import {
+  DataProperty,
+  NcatsDatatableComponent,
+} from '@ramp/shared/ui/ncats-datatable';
+import { UpsetComponent } from '@ramp/shared/visualizations/upset-chart';
+import { LoadRampActions, RampSelectors } from '@ramp/stores/ramp-store';
+import { tap } from 'rxjs';
+import { CdkScrollable, ScrollingModule } from '@angular/cdk/scrolling';
+import { NgClass, ViewportScroller } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 
 @Component({
-    selector: 'ramp-about',
-    templateUrl: './about.component.html',
-    styleUrls: ['./about.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
-    standalone: true,
-    imports: [
-        MatListModule,
-        NgClass,
-        NgIf,
-        CdkScrollable,
-        NgFor,
-        NcatsDatatableComponent,
-        UpsetComponent,
-      ScrollingModule,
-      OverlayModule,
-      MatMenuModule,
-      MatIconModule,
-      MatSidenavModule,
-      MatButtonModule
-    ],
+  selector: 'ramp-about',
+  templateUrl: './about.component.html',
+  styleUrls: ['./about.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
+  imports: [
+    MatListModule,
+    NgClass,
+    CdkScrollable,
+    NcatsDatatableComponent,
+    UpsetComponent,
+    ScrollingModule,
+    OverlayModule,
+    MatMenuModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatButtonModule,
+  ],
 })
 export class AboutComponent implements OnInit {
   private readonly store = inject(Store);
@@ -60,10 +64,10 @@ export class AboutComponent implements OnInit {
    */
   activeElement = 'about';
 
-  genesData!: any[];
-  compoundsData!: any[];
+  genesData!: { id: string; sets: string[]; size: number }[];
+  compoundsData!: { id: string; sets: string[]; size: number }[];
   sourceVersions!: Array<SourceVersion>;
-  entityCounts!: EntityCount[];
+  entityCounts!: { [key: string]: DataProperty }[];
   databaseUrl!: string;
   entityCountsColumns: DataProperty[] = [
     new DataProperty({
@@ -122,13 +126,13 @@ export class AboutComponent implements OnInit {
         this.changeRef.markForCheck();
       });
 
-    this.store.dispatch(LoadRampActions.loadRampStats())
+    this.store.dispatch(LoadRampActions.loadRampStats());
 
-    this.store.pipe(
-      select(RampSelectors.getAllRamp),
-      takeUntilDestroyed(this.destroyRef),
+    this.store
+      .pipe(
+        select(RampSelectors.getAllRamp),
+        takeUntilDestroyed(this.destroyRef),
         tap((data) => {
-          console.log(data);
           if (data.sourceVersions) {
             this.sourceVersions = data.sourceVersions;
             if (this.sourceVersions.length > 0) {
@@ -144,19 +148,17 @@ export class AboutComponent implements OnInit {
             this.changeRef.markForCheck();
           }
           if (data.entityCounts) {
-            this.entityCounts = data.entityCounts.map(
-              (count: { [s: string]: unknown } | ArrayLike<unknown>) => {
-                const newObj: { [key: string]: DataProperty } = {};
-                Object.entries(count).map((value: any) => {
-                  newObj[value[0]] = new DataProperty({
-                    name: value[0],
-                    label: value[0],
-                    value: value[1],
-                  });
+            this.entityCounts = data.entityCounts.map((count: EntityCount) => {
+              const newObj: { [key: string]: DataProperty } = {};
+              Object.entries(count).map((value: unknown[]) => {
+                newObj[<string>value[0]] = new DataProperty({
+                  name: value[0],
+                  label: value[0],
+                  value: value[1],
                 });
-                return newObj;
-              },
-            );
+              });
+              return newObj;
+            });
             this.changeRef.markForCheck();
           }
           if (data.geneIntersects) {
@@ -174,11 +176,11 @@ export class AboutComponent implements OnInit {
       )
       .subscribe();
 
-
-    this.scrollDispatcher.scrolled()
+    this.scrollDispatcher
+      .scrolled()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        let scrollTop: number = this.scroller.getScrollPosition()[1]
+        let scrollTop: number = this.scroller.getScrollPosition()[1];
         if (scrollTop === 0) {
           this.activeElement = 'about';
           this.changeRef.detectChanges();
@@ -189,7 +191,7 @@ export class AboutComponent implements OnInit {
               this.activeElement = section.nativeElement.nextSibling.id;
               this.changeRef.detectChanges();
             }
-          })
+          });
         }
       });
   }
@@ -199,7 +201,6 @@ export class AboutComponent implements OnInit {
    * @param el
    */
   public scroll(el: HTMLElement): void {
-    console.log(el);
     //  el.scrollIntoView(true);
     el.scrollIntoView({
       behavior: 'smooth',
