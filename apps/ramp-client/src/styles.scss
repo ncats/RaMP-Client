@@ -179,6 +179,7 @@ a {
 @include utils.width(70);
 @include utils.width(66);
 @include utils.width(60);
+@include utils.width(55);
 @include utils.width(50);
 @include utils.width(45);
 @include utils.width(40);
@@ -201,6 +202,11 @@ a {
   width: 25%;
   position: fixed !important;
   top: calc(60px + 17vh) !important;
+}
+
+.banner-title {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 @media only screen and (max-width: 1024px) {

@@ -11,6 +11,7 @@ import {
   Pathway,
   Properties,
   RampAPIResponse,
+  RampChemicalEnrichmentResponse,
   RampPathwayEnrichmentResponse,
   RampResponse,
   Reaction,
@@ -32,9 +33,10 @@ import { RampService } from '../ramp.service';
 import { exhaustMap, mergeMap, of, tap } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {
+  getChemicalEnrichment,
   getClusterPlot,
   getCombinedFishersDataframe,
-  getEnrichedChemicalClass,
+  // getEnrichedChemicalClass,
   getFilteredFishersDataframe,
 } from './ramp.selectors';
 
@@ -242,7 +244,10 @@ export const fetchMetabolitesFromOntologiesFile = createEffect(
 export const fetchClassesFromMetabolites = createEffect(
   (actions$ = inject(Actions), rampService = inject(RampService)) => {
     return actions$.pipe(
-      ofType(ClassesFromMetabolitesActions.fetchClassesFromMetabolites),
+      ofType(
+        ClassesFromMetabolitesActions.fetchClassesFromMetabolites,
+        MetaboliteEnrichmentsActions.fetchClassesFromMetabolites,
+      ),
       exhaustMap((action) => {
         return rampService
           .fetchChemicalClass(
@@ -530,32 +535,40 @@ export const filterEnrichedChemicalClasses = createEffect(
         MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess,
         MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolites,
       ),
-      concatLatestFrom((action) => store.select(getEnrichedChemicalClass)),
+      concatLatestFrom((action) => store.select(getChemicalEnrichment)),
       mergeMap(([action, dataframe]) => {
-        return rampService
-          .filterMetaboliteEnrichment(
-            dataframe as FishersDataframe,
-            action.pval_type,
-            action.pval_cutoff,
-          )
-          .pipe(
-            map(
-              (ret: any) => {
-                return MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesSuccess(
-                  {
-                    ...ret,
-                  },
-                );
-              },
-              catchError((error: ErrorEvent) =>
-                of(
-                  MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesFailure(
-                    { error },
+        console.log(dataframe);
+        if (dataframe) {
+          return rampService
+            .filterMetaboliteEnrichment(
+              dataframe,
+              action.pval_type,
+              action.pval_cutoff,
+            )
+            .pipe(
+              map(
+                (ret: RampChemicalEnrichmentResponse) => {
+                  console.log(ret);
+                  return MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesSuccess(
+                    { data: ret },
+                  );
+                },
+                catchError((error: ErrorEvent) =>
+                  of(
+                    MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesFailure(
+                      { error },
+                    ),
                   ),
                 ),
               ),
+            );
+        } else {
+          return of(
+            MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesFailure(
+              { error: 'No dataframe available' },
             ),
           );
+        }
       }),
     );
   },
@@ -570,10 +583,12 @@ export const fetchEnrichmentFromMetabolitesFile = createEffect(
   ) => {
     return actions$.pipe(
       ofType(MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesFile),
-      concatLatestFrom((action) => store.select(getEnrichedChemicalClass)),
+      concatLatestFrom((action) => store.select(getChemicalEnrichment)),
       tap(([action, dataframe]) => {
         if (dataframe) {
-          rampService.fetchEnrichmentFromMetabolitesFile(dataframe);
+          rampService.fetchEnrichmentFromMetabolitesFile(
+            dataframe.enriched_chemical_class_list,
+          );
         }
       }),
     );

@@ -2,7 +2,6 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { createReducer, on, Action } from '@ngrx/store';
 import {
   Analyte,
-  ChemicalEnrichment,
   Classes,
   EntityCount,
   FisherResult,
@@ -16,6 +15,7 @@ import {
   RampQuery,
   Reaction,
   SourceVersion,
+  RampChemicalEnrichmentResponse,
 } from '@ramp/models/ramp-models';
 import {
   AnalyteFromPathwayActions,
@@ -55,10 +55,7 @@ export interface State extends EntityState<RampEntity> {
 
   properties?: RampResponse<Properties>;
 
-  chemicalEnrichments?: {
-    data: ChemicalEnrichment[];
-    openModal?: boolean;
-  };
+  chemicalEnrichments?: RampChemicalEnrichmentResponse;
 
   pathwayEnrichments?: {
     data: FisherResult[];
@@ -67,8 +64,6 @@ export interface State extends EntityState<RampEntity> {
     dataframe?: FishersDataframe;
     openModal?: boolean;
   };
-
-  enriched_chemical_class?: { [key: string]: string[] };
 
   filteredFishersDataframe?: FishersDataframe;
 
@@ -212,6 +207,7 @@ export const rampReducer = createReducer(
 
   on(
     ClassesFromMetabolitesActions.fetchClassesFromMetabolitesSuccess,
+    MetaboliteEnrichmentsActions.fetchClassesFromMetabolitesSuccess,
     (state, { data, query, dataframe }) => ({
       ...state,
       loading: false,
@@ -229,22 +225,17 @@ export const rampReducer = createReducer(
   ),
 
   on(
-    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess,
-    (state, { data, enriched_chemical_class }) => ({
-      ...state,
-      loading: false,
-      chemicalEnrichments: { data, enriched_chemical_class },
-      enriched_chemical_class: enriched_chemical_class,
-    }),
-  ),
-  on(
     MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesSuccess,
-    (state, { data, enriched_chemical_class }) => ({
-      ...state,
-      loading: false,
-      chemicalEnrichments: { data, enriched_chemical_class, openModal: true },
-      enriched_chemical_class: enriched_chemical_class,
-    }),
+    MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess,
+    (state, { data }) => {
+      console.log(data);
+      return {
+        ...state,
+        loading: false,
+        chemicalEnrichments: data,
+        openModal: true,
+      };
+    },
   ),
 
   on(

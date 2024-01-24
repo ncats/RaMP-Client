@@ -126,10 +126,10 @@ export const getFilteredFishersDataframe = createSelector(
   (state: State) => state.filteredFishersDataframe,
 );
 
-export const getEnrichedChemicalClass = createSelector(
+/*export const getEnrichedChemicalClass = createSelector(
   getRampState,
-  (state: State) => state.enriched_chemical_class,
-);
+ // (state: State) => state.chemicalEnrichments,
+);*/
 
 export const getClusterPlot = createSelector(
   getRampState,

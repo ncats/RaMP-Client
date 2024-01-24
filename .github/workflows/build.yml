@@ -5,13 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "master", "development" ]
+    branches: ['master', 'development']
   pull_request:
-    branches: [ "master", "development" ]
+    branches: ['master', 'development']
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -20,14 +19,14 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm i -g @angular/cli
-    - run: npm i -g nx
-    - run: npm ci
-    - run: ng lint
-    - run: ng run-many --all --target=test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm i -g @angular/cli
+      - run: npm i -g nx
+      - run: npm i
+      - run: ng lint
+      - run: ng run-many --all --target=test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
