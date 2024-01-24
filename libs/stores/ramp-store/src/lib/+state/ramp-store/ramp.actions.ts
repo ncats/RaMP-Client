@@ -10,6 +10,7 @@ import {
   OntologyList,
   Pathway,
   Properties,
+  RampChemicalEnrichmentResponse,
   RampQuery,
   RampResponse,
   Reaction,
@@ -209,6 +210,17 @@ export const PathwayEnrichmentsActions = createActionGroup({
 export const MetaboliteEnrichmentsActions = createActionGroup({
   source: 'Metabolite Enrichment',
   events: {
+    fetchClassesFromMetabolites: props<{
+      metabolites: string[];
+      biospecimen?: string;
+      background?: File;
+    }>(),
+    fetchClassesFromMetabolitesSuccess: props<{
+      data: Classes[];
+      query: RampQuery;
+      dataframe?: FishersDataframe;
+    }>(),
+    fetchClassesFromMetabolitesFailure: props<{ error: any }>(),
     fetchEnrichmentFromMetabolites: props<{
       metabolites: string[];
       biospecimen?: string;
@@ -216,11 +228,9 @@ export const MetaboliteEnrichmentsActions = createActionGroup({
     }>(),
     fetchEnrichmentFromMetabolitesFile: emptyProps(),
     fetchEnrichmentFromMetabolitesSuccess: props<{
-      data: ChemicalEnrichment[];
-      enriched_chemical_class?: any;
+      data: RampChemicalEnrichmentResponse;
       pval_type?: string;
       pval_cutoff?: number;
-      dataframe?: FishersDataframe;
     }>(),
     fetchEnrichmentFromMetabolitesFailure: props<{ error: any }>(),
     filterEnrichmentFromMetabolites: props<{
@@ -228,9 +238,7 @@ export const MetaboliteEnrichmentsActions = createActionGroup({
       pval_cutoff: number;
     }>(),
     filterEnrichmentFromMetabolitesSuccess: props<{
-      data: ChemicalEnrichment[];
-      enriched_chemical_class?: any;
-      openModal?: boolean;
+      data: RampChemicalEnrichmentResponse;
     }>(),
     filterEnrichmentFromMetabolitesFailure: props<{ error: any }>(),
   },

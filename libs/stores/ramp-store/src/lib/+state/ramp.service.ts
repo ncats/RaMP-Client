@@ -389,18 +389,18 @@ export class RampService {
       ) // ,{responseType: 'text'})
       .pipe(
         map((response: RampChemicalEnrichmentAPIResponse) => {
-          console.log(response.data);
+          console.log(response);
           const retList: ChemicalEnrichment[] = [];
           const responseClone = response.data;
-          delete responseClone.result_type;
+          //  delete responseClone.result_type;
           [...Object.values(responseClone)].forEach((val: any) =>
             val.forEach((cc: { [key: string]: unknown }) => {
               retList.push(new ChemicalEnrichment(cc));
             }),
           );
           return {
-            data: retList,
-            enriched_chemical_class: response.data,
+            data: response,
+            enriched_chemical_class_list: retList,
           } as RampChemicalEnrichmentResponse;
         }),
         // catchError(this.handleError('chemical enrichment', [])),
@@ -408,13 +408,14 @@ export class RampService {
   }
 
   filterMetaboliteEnrichment(
-    dataframe: FishersDataframe,
+    dataframe: RampChemicalEnrichmentResponse,
     pval_type?: string,
     pval_cutoff?: number,
   ) {
+    console.log(dataframe);
     return this.http
       .post<string[]>(`${this.url}filter-fisher-test-results`, {
-        fishers_results: dataframe,
+        fishers_results: dataframe.data,
         pval_type: pval_type,
         pval_cutoff: pval_cutoff,
       })
@@ -428,21 +429,21 @@ export class RampService {
             }),
           );
           return {
-            data: retList,
-            enriched_chemical_class: response.data,
+            data: response.data,
+            enriched_chemical_class_list: retList,
           };
         }),
       );
   }
 
-  fetchEnrichmentFromMetabolitesFile(data: { [key: string]: string[] }) {
-    const enrichments: string[] = [];
-    Object.values(data).forEach((val: string[]) => {
+  fetchEnrichmentFromMetabolitesFile(data: ChemicalEnrichment[]) {
+    /*    const enrichments: string[] = [];
+    data.forEach((val: ChemicalEnrichment[]) => {
       val.forEach((v: string) => enrichments.push(v));
     });
-    enrichments.pop();
+    enrichments.pop();*/
     this._downloadFile(
-      this._makeBlob(this._toTSV(enrichments)),
+      this._makeBlob(this._toTSV(data)),
       'fetchEnrichmentFromMetabolites-download.tsv',
     );
   }

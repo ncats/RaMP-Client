@@ -24,7 +24,6 @@ export interface RampPathwayEnrichmentAPIResponse {
     pathway_matrix?: { [key: string]: string }[];
     result_type?: string[];
   };
-  query?: RampQuery;
   function_call?: string[];
 }
 
@@ -42,17 +41,18 @@ export interface RampChemicalEnrichmentAPIResponse {
     ClassyFire_super_class?: ChemicalEnrichment[];
     result_type?: string[];
   };
-  query?: RampQuery;
   function_call?: string[];
 }
 
 export interface RampChemicalEnrichmentResponse {
-  data: ChemicalEnrichment[];
-  query: RampQuery;
-  enriched_chemical_class: {
+  //  data: ChemicalEnrichment[];
+  data: {
     ClassyFire_class?: ChemicalEnrichment[];
     ClassyFire_sub_class?: ChemicalEnrichment[];
     ClassyFire_super_class?: ChemicalEnrichment[];
     result_type?: string[];
   };
+  enriched_chemical_class_list: ChemicalEnrichment[];
+  query?: RampQuery;
+  openModal?: boolean;
 }

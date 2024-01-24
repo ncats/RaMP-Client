@@ -14,6 +14,7 @@ import { select } from '@ngrx/store';
 import {
   ChemicalEnrichment,
   Classes,
+  RampChemicalEnrichmentResponse,
   RampResponse,
 } from '@ramp/models/ramp-models';
 import { InputRowComponent } from '@ramp/shared/ramp/input-row';
@@ -25,7 +26,6 @@ import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { LoadingComponent } from '@ramp/shared/ui/loading-spinner';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  ClassesFromMetabolitesActions,
   MetaboliteEnrichmentsActions,
   RampSelectors,
 } from '@ramp/stores/ramp-store';
@@ -192,51 +192,48 @@ export class ChemicalEnrichmentComponent
       .pipe(
         select(RampSelectors.getChemicalEnrichment),
         takeUntilDestroyed(this.destroyRef),
-        map(
-          (
-            res:
-              | { data: ChemicalEnrichment[]; openModal?: boolean }
-              | undefined,
-          ) => {
-            if (res && res.data) {
-              this.dataAsDataProperty = res.data.map(
-                (enrichment: ChemicalEnrichment) => {
-                  const newObj: { [key: string]: DataProperty } = {};
-                  Object.entries(enrichment).map((value: any) => {
-                    newObj[value[0]] = new DataProperty({
-                      name: value[0],
-                      label: value[0],
-                      value: value[1],
-                    });
+        map((res: RampChemicalEnrichmentResponse | undefined) => {
+          console.log(res);
+          if (res && res.enriched_chemical_class_list) {
+            this.dataAsDataProperty = res.enriched_chemical_class_list.map(
+              (enrichment: ChemicalEnrichment) => {
+                const newObj: { [key: string]: DataProperty } = {};
+                Object.entries(enrichment).map((value: any) => {
+                  newObj[value[0]] = new DataProperty({
+                    name: value[0],
+                    label: value[0],
+                    value: value[1],
                   });
-                  return newObj;
-                },
-              );
-              this.enrichmentLoading = false;
-
-              if (res.openModal) {
-                const ref: MatDialogRef<CompleteDialogComponent> =
-                  this.dialog.open(CompleteDialogComponent, {
-                    data: {
-                      title: 'Chemical Class',
-                      tabs: ['Chemical Classes', 'Enriched Chemical Classes'],
-                    },
-                  });
-
-                ref.afterClosed().subscribe((res) => {
-                  if (res) {
-                    this.resultsTabs.selectedIndex = res;
-                    this.ref.markForCheck();
-                  }
                 });
+                return newObj;
+              },
+            );
+            this.enrichmentLoading = false;
+
+            //     if (res.openModal) {
+            const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(
+              CompleteDialogComponent,
+              {
+                data: {
+                  title: 'Chemical Class',
+                  tabs: ['Chemical Classes', 'Enriched Chemical Classes'],
+                },
+              },
+            );
+
+            ref.afterClosed().subscribe((res) => {
+              if (res) {
+                this.resultsTabs.selectedIndex = res;
+                this.ref.markForCheck();
               }
-              this.ref.markForCheck();
-            }
-            /*if (res && res.dataframe) {
+            });
+            //   }
+            this.ref.markForCheck();
+          }
+          /*if (res && res.dataframe) {
           this.enrichmentDataFrame = res.dataframe;
         }*/
-          },
-        ),
+        }),
       )
       .subscribe();
 
@@ -275,7 +272,7 @@ export class ChemicalEnrichmentComponent
     this.enrichmentLoading = true;
     if (this.file) {
       this.store.dispatch(
-        ClassesFromMetabolitesActions.fetchClassesFromMetabolites({
+        MetaboliteEnrichmentsActions.fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
           background: this.file,
@@ -290,7 +287,7 @@ export class ChemicalEnrichmentComponent
       );
     } else {
       this.store.dispatch(
-        ClassesFromMetabolitesActions.fetchClassesFromMetabolites({
+        MetaboliteEnrichmentsActions.fetchClassesFromMetabolites({
           metabolites: event,
           biospecimen: this.biospecimenCtrl.value,
         }),
