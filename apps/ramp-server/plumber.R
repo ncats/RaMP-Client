@@ -580,6 +580,7 @@ function(
     analytes,
     namesOrIds,
     onlyHumanMets,
+    humanProtein,
     includeTransportRxns,
     rxnDirs
 ) {
@@ -589,6 +590,7 @@ function(
     analytes=analytes,
     namesOrIds = 'ids',
     onlyHumanMets = onlyHumanMets,
+    humanProtein = humanProtein,
     includeTransportRxns,
     rxnDirs = rxnDirs
   )
@@ -599,7 +601,7 @@ function(
   return(
     list(
       data = result,
-      function_call = paste0("RaMP::getReactionsForAnalytes(db=RaMPDB, analytes=c(",analyteStr,"), namesOrIDs='ids', onlyHumanMets=",onlyHumanMets,", includeTransportRxns=",includeTransportRxns,", rxnDirs=c(",rxnDirs,")")
+      function_call = paste0("RaMP::getReactionsForAnalytes(db=RaMPDB, analytes=c(",analyteStr,"), namesOrIDs='ids', onlyHumanMets=",onlyHumanMets,", humanProtein=",humanProtein,", includeTransportRxns=",includeTransportRxns,", rxnDirs=c(",rxnDirs,")")
     )
   )
 }
@@ -608,7 +610,7 @@ function(
 #' getReactionClassesForAnalytes returns reactions class and EC numbers for a collection of input compound ids
 #'
 #' @param analytes
-#' @param multiParticipantCount
+#' @param multiRxnParticipantCount
 #' @param humanProtein
 #' @post /api/reaction_classes_from_analytes
 #' @serializer json list(digits = 6)
