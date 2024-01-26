@@ -333,7 +333,6 @@ export class PathwayEnrichmentComponent
                 }
               | undefined,
           ) => {
-            console.log(res);
             if (res && res.data) {
               if (res.data.length) {
                 this.dataAsDataProperty = this._mapPathwaysData(res.data);
@@ -379,7 +378,6 @@ export class PathwayEnrichmentComponent
               this.query = res.query;
             }
             if (res && res.dataframe) {
-              console.log(res.dataframe);
               this.enrichedDataframe = res.dataframe;
               if (this.enrichedDataframe.analyte_type) {
                 this.selectedEnrichmentColumns =
@@ -420,7 +418,6 @@ export class PathwayEnrichmentComponent
         select(RampSelectors.getPathways),
         takeUntilDestroyed(this.destroyRef),
         map((res: RampResponse<Pathway> | undefined) => {
-          console.log(res);
           if (res && res.data) {
             this.pathwayDataAsDataProperty = this._mapPathwaysData(res.data);
             this.matches = Array.from(
@@ -464,7 +461,6 @@ export class PathwayEnrichmentComponent
 
   fetchEnrichment(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
-    console.log(this.inputList);
     this.store.dispatch(
       PathwayEnrichmentsActions.fetchPathwaysFromAnalytes({ analytes: event }),
     );

@@ -1,15 +1,20 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, InjectionToken,
   Input,
   OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+  ViewEncapsulation
+} from "@angular/core";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { BehaviorSubject } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { NgClass } from '@angular/common';
+
+
+export const STRUCTURE_VIEWER_COMPONENT = new InjectionToken<any>(
+  'StructureViewerComponent'
+);
 
 @Component({
   selector: 'ramp-structure-viewer',

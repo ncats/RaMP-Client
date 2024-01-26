@@ -147,7 +147,7 @@ export class MetabolitesFromOntologiesComponent
           if (res && res.data) {
             this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
               const newObj: { [key: string]: DataProperty } = {};
-              Object.entries(metabolite).map((value: any, index: any) => {
+              Object.entries(metabolite).map((value: any) => {
                 newObj[value[0]] = new DataProperty({
                   name: value[0],
                   label: value[0],

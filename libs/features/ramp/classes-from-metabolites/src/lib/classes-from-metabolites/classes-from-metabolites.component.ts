@@ -197,7 +197,7 @@ export class ClassesFromMetabolitesComponent
     }
   }
 
-  private _mapData(data: any): void {
+  /*private _mapData(data: any): void {
     this.dataAsDataProperty = data.map((obj: Classes) => {
       const newObj: { [key: string]: DataProperty } = {};
       Object.entries(obj).map((value: any) => {
@@ -209,7 +209,7 @@ export class ClassesFromMetabolitesComponent
       });
       return newObj;
     });
-  }
+  }*/
 
   onFileSelected(event: any) {
     this.file = event.target.files[0];

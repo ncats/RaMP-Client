@@ -389,7 +389,6 @@ export class RampService {
       ) // ,{responseType: 'text'})
       .pipe(
         map((response: RampChemicalEnrichmentAPIResponse) => {
-          console.log(response);
           const retList: ChemicalEnrichment[] = [];
           const responseClone = response.data;
           //  delete responseClone.result_type;
@@ -412,7 +411,6 @@ export class RampService {
     pval_type?: string,
     pval_cutoff?: number,
   ) {
-    console.log(dataframe);
     return this.http
       .post<string[]>(`${this.url}filter-fisher-test-results`, {
         fishers_results: dataframe.data,

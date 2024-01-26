@@ -228,7 +228,6 @@ export const rampReducer = createReducer(
     MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesSuccess,
     MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess,
     (state, { data }) => {
-      console.log(data);
       return {
         ...state,
         loading: false,

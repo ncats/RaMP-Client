@@ -344,7 +344,6 @@ export const fetchPathwayAnalysis = createEffect(
           .pipe(
             map(
               (ret: RampPathwayEnrichmentResponse) => {
-                console.log(ret);
                 return PathwayEnrichmentsActions.fetchEnrichmentFromPathwaysSuccess(
                   ret,
                 );
@@ -428,7 +427,6 @@ export const fetchPathwayCluster = createEffect(
       ),
       concatLatestFrom((action) => store.select(getFilteredFishersDataframe)),
       mergeMap(([action, dataframe]) => {
-        console.log(dataframe);
         if (dataframe) {
           return rampService
             .getClusterdData(
@@ -537,7 +535,6 @@ export const filterEnrichedChemicalClasses = createEffect(
       ),
       concatLatestFrom((action) => store.select(getChemicalEnrichment)),
       mergeMap(([action, dataframe]) => {
-        console.log(dataframe);
         if (dataframe) {
           return rampService
             .filterMetaboliteEnrichment(
@@ -548,7 +545,6 @@ export const filterEnrichedChemicalClasses = createEffect(
             .pipe(
               map(
                 (ret: RampChemicalEnrichmentResponse) => {
-                  console.log(ret);
                   return MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesSuccess(
                     { data: ret },
                   );

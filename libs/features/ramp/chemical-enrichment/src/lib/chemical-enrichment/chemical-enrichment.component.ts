@@ -193,21 +193,8 @@ export class ChemicalEnrichmentComponent
         select(RampSelectors.getChemicalEnrichment),
         takeUntilDestroyed(this.destroyRef),
         map((res: RampChemicalEnrichmentResponse | undefined) => {
-          console.log(res);
           if (res && res.enriched_chemical_class_list) {
-            this.dataAsDataProperty = res.enriched_chemical_class_list.map(
-              (enrichment: ChemicalEnrichment) => {
-                const newObj: { [key: string]: DataProperty } = {};
-                Object.entries(enrichment).map((value: any) => {
-                  newObj[value[0]] = new DataProperty({
-                    name: value[0],
-                    label: value[0],
-                    value: value[1],
-                  });
-                });
-                return newObj;
-              },
-            );
+           this._mapData(res.enriched_chemical_class_list)
             this.enrichmentLoading = false;
 
             //     if (res.openModal) {
@@ -333,7 +320,7 @@ export class ChemicalEnrichmentComponent
   private _mapClasses(data: any): void {
     this.classesAsDataProperty = data.map((obj: Classes) => {
       const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(obj).map((value: any, index: any) => {
+      Object.entries(obj).map((value: string[]) => {
         newObj[value[0]] = new DataProperty({
           name: value[0],
           label: value[0],

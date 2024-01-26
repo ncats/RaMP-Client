@@ -9,7 +9,7 @@ import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
 import { DescriptionComponent } from '@ramp/shared/ui/description-panel';
 import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
-import { StructureViewerComponent } from '@ramp/shared/ui/ncats-structure-viewer';
+import { STRUCTURE_VIEWER_COMPONENT } from "@ramp/shared/ui/ncats-structure-viewer";
 import {
   PropertiesFromMetaboliteActions,
   RampSelectors,
@@ -49,7 +49,7 @@ export class PropertiesFromMetabolitesComponent
     new DataProperty({
       label: 'Metabolite',
       field: 'imageUrl',
-      customComponent: StructureViewerComponent,
+      customComponent: STRUCTURE_VIEWER_COMPONENT,
     }),
     /*    new DataProperty({
       label: "Smiles",
@@ -91,7 +91,7 @@ export class PropertiesFromMetabolitesComponent
         takeUntilDestroyed(this.destroyRef),
         map((res: RampResponse<Properties> | undefined) => {
           if (res && res.data) {
-            this._mapData(res.data);
+            this._mapPropertyData(res.data);
             this.matches = Array.from(
               new Set(
                 res.data.map((prop) => prop.chem_source_id.toLocaleLowerCase()),
@@ -140,10 +140,10 @@ export class PropertiesFromMetabolitesComponent
     }
   }
 
-  private _mapData(data: any): void {
+  private _mapPropertyData(data: Properties[]): void {
     this.dataAsDataProperty = data.map((obj: Properties) => {
       const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(obj).map((value: any, index: any) => {
+      Object.entries(obj).map((value: string[]) => {
         newObj[value[0]] = new DataProperty({
           name: value[0],
           label: value[0],

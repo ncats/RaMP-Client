@@ -123,10 +123,10 @@ export class CommonReactionAnalytesComponent
     }
   }
 
-  private _mapData(data: any): void {
+  /*private _mapData(data: any): void {
     this.dataAsDataProperty = data.map((reaction: Reaction) => {
       const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(reaction).map((value: any, index: any) => {
+      Object.entries(reaction).map((value: any) => {
         newObj[value[0]] = new DataProperty({
           name: value[0],
           label: value[0],
@@ -135,5 +135,5 @@ export class CommonReactionAnalytesComponent
       });
       return newObj;
     });
-  }
+  }*/
 }

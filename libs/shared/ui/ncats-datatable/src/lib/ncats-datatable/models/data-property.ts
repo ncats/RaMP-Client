@@ -68,7 +68,7 @@ export class DataProperty {
   /**
    * token for a custom component
    */
-  customComponent?: InjectionToken<any>;
+  customComponent?: InjectionToken<string>;
 
   /**
    * pass a query params object for a routerLink

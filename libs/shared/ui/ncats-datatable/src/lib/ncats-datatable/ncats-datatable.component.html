@@ -59,6 +59,12 @@
         [style.max-width]="field.width"
       >
         @if (checkCustomComponent(field)) {
+  <div
+    #customOutlet
+    [cdkPortalOutlet]="getCustomComponent(field, row, i)"
+    (attached)="componentAttached($event, i, field)"
+  >
+  </div>
         } @else {
           @if (row[field.field] && isArray(row[field.field])) {
             <div>

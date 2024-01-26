@@ -11,10 +11,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { select, Store } from '@ngrx/store';
 import {
   FisherResult,
-  FishersDataframe,
+  FishersDataframe, Ontology,
   RampDataGeneric,
-  RampQuery,
-} from '@ramp/models/ramp-models';
+  RampQuery
+} from "@ramp/models/ramp-models";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { RampSelectors } from '@ramp/stores/ramp-store';
 import { map } from 'rxjs';
@@ -121,5 +121,19 @@ export class PageCoreComponent {
       (type: { analyteType: string }) =>
         this.supportedIdTypes?.includes(type.analyteType),
     );
+  }
+
+  protected _mapData<T extends RampDataGeneric>(data: T[]): void {
+    this.dataAsDataProperty = data.map((obj: T) => {
+      const newObj: { [key: string]: DataProperty } = {};
+      Object.entries(obj).map((value: string[]) => {
+        newObj[value[0]] = new DataProperty({
+          name: value[0],
+          label: value[0],
+          value: value[1],
+        });
+      });
+      return newObj;
+    });
   }
 }

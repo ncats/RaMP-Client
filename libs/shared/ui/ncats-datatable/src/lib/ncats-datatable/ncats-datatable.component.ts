@@ -66,7 +66,7 @@ const _sortingDataAccessor = (
 @Component({
   selector: 'ncats-frontend-library-ncats-datatable',
   templateUrl: './ncats-datatable.component.html',
-  styleUrls: ['./ncats-datatable.component.scss'],
+  styleUrl: './ncats-datatable.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('detailExpand', [
@@ -89,7 +89,7 @@ const _sortingDataAccessor = (
     NgClass,
     MatCheckboxModule,
     PropertyDisplayComponent,
-    PortalModule,
+    PortalModule
   ],
 })
 
@@ -144,7 +144,6 @@ export class NcatsDatatableComponent
    */
   @Input()
   set fieldsConfig(value: DataProperty[]) {
-    console.log(value);
     this._fieldsConfig.next(value);
   }
 

@@ -1,8 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,14 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { SharedRampInputRowModule } from '@ramp/shared/ramp/input-row';
-import { SharedRampPageCoreModule } from '@ramp/shared/ramp/page-core';
-import { SharedRampQueryPageModule } from '@ramp/shared/ramp/query-page';
-import { SharedUiDescriptionPanelModule } from '@ramp/shared/ui/description-panel';
-import { SharedUiFeedbackPanelModule } from '@ramp/shared/ui/feedback-panel';
-import { SharedUiLoadingSpinnerModule } from '@ramp/shared/ui/loading-spinner';
-import { SharedUiObjectTreeModule } from '@ramp/shared/ui/object-tree';
-import { RampFacade, StoresRampStoreModule } from '@ramp/stores/ramp-store';
+
 
 import { ChemicalEnrichmentComponent } from './chemical-enrichment.component';
 
@@ -38,18 +30,9 @@ describe('ChemicalEnrichmentComponent', () => {
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
-        StoresRampStoreModule,
         HttpClientTestingModule,
-        SharedRampQueryPageModule,
-        SharedRampPageCoreModule,
-        SharedRampInputRowModule,
-        SharedUiLoadingSpinnerModule,
-        SharedUiObjectTreeModule,
-        SharedUiDescriptionPanelModule,
-        FlexLayoutModule,
         MatTabsModule,
         MatFormFieldModule,
-        SharedUiFeedbackPanelModule,
         MatButtonModule,
         MatTooltipModule,
         MatIconModule,
@@ -71,7 +54,6 @@ describe('ChemicalEnrichmentComponent', () => {
         EffectsModule.forRoot([]),
       ],
       providers: [
-        RampFacade,
         {
           provide: ActivatedRoute,
           useValue: {
