@@ -3,7 +3,8 @@ export class Pathway {
   pathwaySource!: string;
   pathwayId!: string;
   pathwayType!: string;
-  analyteName!: string;
+  analyteName?: string;
+  commonName?: string;
   inputId!: string;
 
   constructor(obj: Partial<Pathway>) {

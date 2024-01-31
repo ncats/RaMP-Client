@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FullBannerComponent } from './shared-ui-full-banner.component';
+import { RampFullBannerComponent } from "./full-banner.component";
 
 describe('SharedUiFullBannerComponent', () => {
-  let component: FullBannerComponent;
-  let fixture: ComponentFixture<FullBannerComponent>;
+  let component: RampFullBannerComponent;
+  let fixture: ComponentFixture<RampFullBannerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FullBannerComponent],
+      imports: [RampFullBannerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FullBannerComponent);
+    fixture = TestBed.createComponent(RampFullBannerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

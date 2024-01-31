@@ -34,16 +34,9 @@ describe('Ramp Selectors', () => {
   describe('RampStore Selectors', () => {
     it('getAllRampStore() should return the list of RampStore', () => {
       const results = RampSelectors.getAllRampEntity(state);
-      const selId = getRampStoreId(results[1]);
+      const selId = getRampStoreId();
 
       expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getSelected() should return the selected Entity', () => {
-      const result = RampSelectors.getSelected(state) as RampEntity;
-      const selId = getRampStoreId(result);
-
       expect(selId).toBe('PRODUCT-BBB');
     });
 

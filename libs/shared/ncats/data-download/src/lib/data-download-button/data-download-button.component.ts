@@ -19,10 +19,13 @@ export class DataDownloadButtonComponent {
   constructor(@Inject(DOCUMENT) private dom: Document) {}
 
   downloadData(): void {
-    const lines: string[] = [[...Object.keys(this.data[0])].join(',')];
-    this.data.forEach((data: {[key: string]: unknown}) =>
-      lines.push([...Object.values(data)].join('\t')),
-    );
+    const firstRow = this.data[0] as {[key: string]: unknown};
+    const keys: string[] = [...Object.keys(firstRow)]
+    const lines: string[] = [keys.join(',')];
+    this.data.forEach((data: unknown) =>{
+      const values: string[] = [...Object.values(data as {[key: string]: unknown})] as string[];
+      lines.push(values.join('\t'))
+  });
     const csv = lines.join('\n');
     const file = new Blob([csv], { type: 'text/tsv' });
     const link = this.dom.createElement('a');

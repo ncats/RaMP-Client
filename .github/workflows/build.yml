@@ -28,5 +28,5 @@ jobs:
       - run: npm i -g @angular/cli
       - run: npm i -g nx
       - run: npm i
-      - run: nx run ramp:lint
+      - run: ng run-many --all --target=lint
       - run: ng run-many --all --target=test -- --no-watch --no-progress --browsers=ChromeHeadlessCI

@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from "@angular/router";
+import { provideEffects } from "@ngrx/effects";
+import { provideStore } from "@ngrx/store";
+import { provideStoreDevtools } from "@ngrx/store-devtools";
+import { RampEffects, rampReducer } from "@ramp/stores/ramp-store";
 
 import { PageCoreComponent } from './page-core.component';
 
@@ -13,15 +13,18 @@ describe('PageCoreComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PageCoreComponent],
+      declarations: [],
       imports: [
-        BrowserAnimationsModule,
-        RouterTestingModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        FlexLayoutModule,
+        PageCoreComponent
       ],
+      providers: [
+        provideStore({
+          rampStore: rampReducer
+        }),
+        provideEffects([RampEffects]),
+        provideStoreDevtools({ maxAge: 25, logOnly: false }),
+        { provide: ActivatedRoute, useValue: {} }
+      ]
     }).compileComponents();
   });
 

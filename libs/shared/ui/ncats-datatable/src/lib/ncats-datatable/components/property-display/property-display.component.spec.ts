@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PropertyDisplayComponent } from './property-display.component';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('PropertyDisplayComponent', () => {
   let component: PropertyDisplayComponent;
@@ -9,8 +8,8 @@ describe('PropertyDisplayComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PropertyDisplayComponent],
-      imports: [RouterTestingModule],
+      declarations: [],
+      imports: [PropertyDisplayComponent],
       providers: [],
     }).compileComponents();
   }));
