@@ -483,7 +483,6 @@ export class NcatsDatatableComponent
    */
   componentAttached(component: CdkPortalOutletAttachedRef, index: number, field: DataProperty) {
     if(component ) {
-      console.log(this._injector)
       const compRef: ComponentRef<Record<string, unknown>> = component as ComponentRef<Record<string, unknown>>;
       if (compRef.instance['data'] === null && this.data[index][field.field]) {
         const dataField: string = field.field;
