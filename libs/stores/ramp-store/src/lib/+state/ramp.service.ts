@@ -59,7 +59,7 @@ export class RampService {
 
   fetchSourceVersions(): Observable<SourceVersion[]> {
     return this.http
-      .get<{ data: SourceVersion[] }>(`${this.url}source_versions`) // ,{responseType: 'text'})
+      .get<{ data: SourceVersion[] }>(`${this.url}source-versions`) // ,{responseType: 'text'})
       .pipe(
         map((response) => response.data),
         catchError(this.handleError('fetchSourceVersions', [])),
@@ -68,7 +68,7 @@ export class RampService {
 
   fetchEntityCounts() {
     return this.http
-      .get<{ data: {[p: string]: string}[] }>(`${this.url}entity_counts`) // ,{responseType: 'text'})
+      .get<{ data: {[p: string]: string}[] }>(`${this.url}entity-counts`) // ,{responseType: 'text'})
       .pipe(
         map((response: { data: {[p: string]: string}[] }) =>
           response.data.map((obj: {[p: string]: string}) => new EntityCount(obj)),
@@ -92,7 +92,7 @@ export class RampService {
 
   fetchDatabaseUrl() {
     return this.http
-      .get<{ data: string }>(`${this.url}current_db_file_url`)
+      .get<{ data: string }>(`${this.url}current-db-file-url`)
       .pipe(
         map((response:{data:string}) => response.data),
       //  catchError(this.handleError('fetchAnalyteIntersects', [])),
@@ -110,7 +110,7 @@ export class RampService {
   fetchAnalyteIntersects(param: string) {
     return this.http
       .get<{ data: { id: string; sets: string[]; size: number }[]; }>(
-        `${this.url}analyte_intersects?analytetype=${param}&query_scope=global`,
+        `${this.url}analyte-intersects?analytetype=${param}&query_scope=global`,
       )
       .pipe(
         map((response: {data: { id: string; sets: string[]; size: number }[]}) => response.data),
