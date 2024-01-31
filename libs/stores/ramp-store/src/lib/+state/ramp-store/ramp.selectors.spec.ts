@@ -4,7 +4,7 @@ import * as RampSelectors from './ramp.selectors';
 
 describe('Ramp Selectors', () => {
   const ERROR_MSG = 'No Error Available';
-  const getRampStoreId = (it: RampEntity) => 'PRODUCT-BBB';
+  const getRampStoreId = () => 'PRODUCT-BBB';
   const createRampEntity = (id: string, name = '') =>
     ({
       id,

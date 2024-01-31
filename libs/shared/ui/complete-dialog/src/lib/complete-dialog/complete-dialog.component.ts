@@ -28,7 +28,11 @@ import { MatIconModule } from '@angular/material/icon';
 export class CompleteDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<CompleteDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: {
+    title?: string,
+    message?: string,
+    tabs?: string[],
+  },
   ) {}
 
   close(tab?: number): void {

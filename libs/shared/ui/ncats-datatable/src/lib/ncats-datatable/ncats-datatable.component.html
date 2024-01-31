@@ -19,7 +19,6 @@
   matSort
   #dataTable
   [dataSource]="dataSource"
-  [trackBy]="trackByFn"
   [multiTemplateDataRows]="expandable"
   (matSortChange)="changeSort($event)"
   [ngClass]="{ condensed: condensed }"
@@ -59,6 +58,12 @@
         [style.max-width]="field.width"
       >
         @if (checkCustomComponent(field)) {
+  <div
+    #customOutlet
+    [cdkPortalOutlet]="getCustomComponent(field)"
+    (attached)="componentAttached($event, i, field)"
+  >
+  </div>
         } @else {
           @if (row[field.field] && isArray(row[field.field])) {
             <div>

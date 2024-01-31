@@ -10,11 +10,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { select, Store } from '@ngrx/store';
 import {
-  FisherResult,
-  FishersDataframe,
   RampDataGeneric,
-  RampQuery,
-} from '@ramp/models/ramp-models';
+  RampQuery
+} from "@ramp/models/ramp-models";
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import { RampSelectors } from '@ramp/stores/ramp-store';
 import { map } from 'rxjs';
@@ -34,7 +32,7 @@ export class PageCoreComponent {
   @Input()
   supportedIdTypes!: string[];
 
-  supportedIds!: { analyteType: string; idTypes: string[] }[];
+  supportedIds!: {analyteType: string; idTypes: string[] }[];
 
   @Input()
   function!: string;
@@ -51,7 +49,7 @@ export class PageCoreComponent {
   @Input()
   description!: string;
 
-  dataframe!: FishersDataframe;
+  dataframe!: unknown[];
 
   query: RampQuery = {
     functionCall: '',
@@ -64,17 +62,33 @@ export class PageCoreComponent {
   dataAsDataProperty: { [key: string]: DataProperty }[] = [];
   downloadQueued = false;
   fuzzy = false;
+  fileName = '';
+  file?: File;
 
-  _toTSV<T extends RampDataGeneric>(data: any): string {
+  constructor() {
+    this.store
+      .pipe(
+        select(RampSelectors.getSupportedIds),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: { analyteType: string; idTypes: string[] }[] | undefined) => {
+          if (res) {
+            this.supportedIds = res;
+          }
+        }),
+      )
+      .subscribe();
+  }
+
+  _toTSV<T extends RampDataGeneric>(data: unknown[]): string {
     if (data) {
       // grab the column headings (separated by tabs)
-      const headings: string = Object.keys(data[0]).join('\t');
+      const headings: string = Object.keys(data[0] as string[]).join('\t');
       // iterate over the data
-      const rows: any = data.reduce(
-        (acc: string[], c: T) => {
+      const rows: string[] = <string[]>data.reduce(
+        (acc: string[], c: unknown) => {
           // for each row object get its values and add tabs between them
           // then add them as a new array to the outgoing array
-          return acc.concat([Object.values(c).join('\t')]);
+          return acc.concat([Object.values(c as T).join('\t')]);
 
           // finally joining each row with a line break
         },
@@ -84,23 +98,9 @@ export class PageCoreComponent {
     } else return '';
   }
 
-  constructor() {
-    this.store
-      .pipe(
-        select(RampSelectors.getSupportedIds),
-        takeUntilDestroyed(this.destroyRef),
-        map((res: any) => {
-          if (res && res.data) {
-            this.supportedIds = res.data;
-          }
-        }),
-      )
-      .subscribe();
-  }
-
-  _downloadFile(data: any, name: string, type: string = 'text/tsv') {
+  _downloadFile(data: unknown, name: string, type: string = 'text/tsv') {
     if (this.dom) {
-      const file = new Blob([data], { type: type });
+      const file = new Blob([data as Blob], { type: type });
       const link = this.dom.createElement('a');
       if (link.download !== undefined) {
         // feature detection
@@ -116,10 +116,35 @@ export class PageCoreComponent {
     }
   }
 
+  _onFileSelected(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target && target?.files?.length) {
+      this.file = target?.files[0];
+      if (this.file) {
+        this.fileName = this.file.name;
+        this.changeRef.markForCheck();
+      }
+    }
+  }
+
   _getSupportedIds() {
     this.supportedIds = this.supportedIds?.filter(
       (type: { analyteType: string }) =>
         this.supportedIdTypes?.includes(type.analyteType),
     );
+  }
+
+  protected _mapData<T extends RampDataGeneric>(data: T[]): void {
+    this.dataAsDataProperty = data.map((obj: T) => {
+      const newObj: { [key: string]: DataProperty } = {};
+      Object.entries(obj).map((value: string[]) => {
+        newObj[value[0]] = new DataProperty({
+         // name: value[0],
+          label: value[0],
+          value: value[1],
+        });
+      });
+      return newObj;
+    });
   }
 }

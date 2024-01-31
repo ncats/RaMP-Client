@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { StructureViewerComponent } from '@ramp/shared/ui/ncats-structure-viewer';
+import { STRUCTURE_VIEWER_COMPONENT, StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
 import rFunctions from '../assets/data/rFunctions.json';
 import { environment } from '../environments/environment';
 
@@ -113,7 +113,7 @@ export const routes: Routes = [
     pathMatch: 'full',
     runGuardsAndResolvers: 'paramsOrQueryParamsChange',
     providers: [
-      { provide: StructureViewerComponent, useValue: StructureViewerComponent },
+      { provide: STRUCTURE_VIEWER_COMPONENT, useValue: StructureViewerComponent },
     ],
     loadComponent: () =>
       import('@ramp/features/ramp/properties-from-metabolites').then(

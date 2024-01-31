@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { Params } from "@angular/router";
 
 /**
  * main config object for a table cell, contains column/field data nad value info
@@ -68,12 +69,12 @@ export class DataProperty {
   /**
    * token for a custom component
    */
-  customComponent?: InjectionToken<any>;
+  customComponent?: InjectionToken<string>;
 
   /**
    * pass a query params object for a routerLink
    */
-  queryParams?: any;
+  queryParams?: Params;
 
   /**
    * text description of the field. used for table tooltips
@@ -86,10 +87,12 @@ export class DataProperty {
    * deconstruct json as dataproperty object
    * @param data
    */
-  constructor(data?: any) {
+  constructor(data?: Partial<DataProperty>) {
     Object.assign(this, data);
     if (!this.field) {
-      this.field = data.label;
+      if (data) {
+        this.field = <string>data['label'];
+      }
     }
   }
 }

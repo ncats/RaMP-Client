@@ -98,8 +98,7 @@ export class PathwayEnrichmentComponent
   pathwaysLoading = false;
   enrichmentLoading = false;
   imageLoading = false;
-  fileName = '';
-  file?: File;
+
   enrichmentColumns: {
     [key: string]: DataProperty[];
   } = {
@@ -302,7 +301,7 @@ export class PathwayEnrichmentComponent
   allDataAsDataProperty!: { [key: string]: DataProperty }[];
   pathwayDataAsDataProperty!: { [key: string]: DataProperty }[];
   image!: SafeHtml;
-  enrichedDataframe!: FishersDataframe;
+  enrichedDataframe!: unknown[] | FishersDataframe;
   tooBig = false;
   analyteType = '';
 
@@ -333,24 +332,10 @@ export class PathwayEnrichmentComponent
                 }
               | undefined,
           ) => {
-            console.log(res);
             if (res && res.data) {
               if (res.data.length) {
                 this.dataAsDataProperty = this._mapPathwaysData(res.data);
 
-                /* res.data.map(
-              (enrichment: FisherResult) => {
-                const newObj: { [key: string]: DataProperty } = {};
-                Object.entries(enrichment).map((value:string[]) => {
-                  newObj[<string>value[0]] = new DataProperty({
-                    name: value[0],
-                    label: value[0],
-                    value: value[1],
-                  });
-                });
-                return newObj;
-              },
-            );*/
                 this.enrichmentLoading = false;
                 this.allDataAsDataProperty = this.dataAsDataProperty;
                 this.imageLoading = false;
@@ -379,9 +364,8 @@ export class PathwayEnrichmentComponent
               this.query = res.query;
             }
             if (res && res.dataframe) {
-              console.log(res.dataframe);
               this.enrichedDataframe = res.dataframe;
-              if (this.enrichedDataframe.analyte_type) {
+              if (this.enrichedDataframe instanceof FishersDataframe && this.enrichedDataframe.analyte_type) {
                 this.selectedEnrichmentColumns =
                   this.enrichmentColumns[
                     this.enrichedDataframe.analyte_type[0]
@@ -420,7 +404,6 @@ export class PathwayEnrichmentComponent
         select(RampSelectors.getPathways),
         takeUntilDestroyed(this.destroyRef),
         map((res: RampResponse<Pathway> | undefined) => {
-          console.log(res);
           if (res && res.data) {
             this.pathwayDataAsDataProperty = this._mapPathwaysData(res.data);
             this.matches = Array.from(
@@ -464,7 +447,6 @@ export class PathwayEnrichmentComponent
 
   fetchEnrichment(event: string[]): void {
     this.inputList = event.map((item) => item.toLocaleLowerCase());
-    console.log(this.inputList);
     this.store.dispatch(
       PathwayEnrichmentsActions.fetchPathwaysFromAnalytes({ analytes: event }),
     );
@@ -534,8 +516,14 @@ export class PathwayEnrichmentComponent
   }
 
   fetchEnrichedPathwaysFile(): void {
-    this._downloadFile(
-      this._toTSV(this.enrichedDataframe),
+    let data: unknown[];
+    if (this.enrichedDataframe instanceof FishersDataframe && this.enrichedDataframe.fishresults) {
+     data = this.enrichedDataframe.fishresults as unknown[]
+    } else {
+      data = this.enrichedDataframe as unknown[]
+    }
+      this._downloadFile(
+      this._toTSV(data),
       'fetchEnrichedPathwaysFromAnalytes-download.tsv',
     );
   }
@@ -550,17 +538,6 @@ export class PathwayEnrichmentComponent
     );
   }
 
-  onFileSelected(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target && target?.files?.length) {
-      this.file = target?.files[0];
-      if (this.file) {
-        this.fileName = this.file.name;
-        this.ref.markForCheck();
-      }
-    }
-  }
-
   cancelUpload() {
     this.fileName = '';
     this.fileUpload.nativeElement.value = '';
@@ -573,11 +550,11 @@ export class PathwayEnrichmentComponent
   ): { [key: string]: DataProperty }[] {
     return data.map((fieldObj: FisherResult | Pathway) => {
       const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(fieldObj).map((value: unknown[]) => {
+      Object.entries(fieldObj).map((value: string[]) => {
         newObj[<string>value[0]] = new DataProperty({
-          name: value[0],
-          label: value[0],
-          value: value[1],
+         // name: value[0],
+          label: <string>value[0],
+          value: <string>value[1],
         });
       });
       return newObj;

@@ -17,7 +17,7 @@ export class Ontology {
   HMDBOntologyType!: string;
   idType?: string;
   metabolites?: string;
-  ontology?: string;
+  ontology!: string;
   sourceId!: string;
   commonName?: string;
   rampOntologyId?: string;
@@ -25,34 +25,34 @@ export class Ontology {
   value?: string;
   source?: string;
 
-  constructor(obj: any) {
-    if (obj.HMDBOntologyType) {
-      this.HMDBOntologyType = obj.HMDBOntologyType;
-      this.source = obj.HMDBOntologyType;
+  constructor(obj: {[key: string]:unknown}) {
+    if (obj['HMDBOntologyType']) {
+      this.HMDBOntologyType = <string>obj['HMDBOntologyType'];
+      this.source = <string>obj['HMDBOntologyType'];
     }
-    if (obj.IDtype) {
-      this.idType = obj.IDtype;
+    if (obj['IDtype']) {
+      this.idType = <string>obj['IDtype'];
     }
-    if (obj.Metabolites) {
-      this.metabolites = obj.Metabolites;
+    if (obj['Metabolites']) {
+      this.metabolites = <string>obj['Metabolites'];
     }
-    if (obj.Ontology) {
-      this.ontology = obj.Ontology;
-      this.value = obj.Ontology;
+    if (obj['Ontology']) {
+      this.ontology = <string>obj['Ontology'];
+      this.value = <string>obj['Ontology'];
     }
-    if (obj.sourceId) {
-      this.sourceId = obj.sourceId;
+    if (obj['sourceId']) {
+      this.sourceId = <string>obj['sourceId'];
     }
-    if (obj.commonName) {
-      this.ontology = obj.commonName;
-      this.value = obj.commonName;
+    if (obj['commonName']) {
+      this.ontology = <string>obj['commonName'];
+      this.value = <string>obj['commonName'];
     }
-    if (obj.rampOntologyId) {
-      this.rampOntologyId = obj.rampOntologyId;
+    if (obj['rampOntologyId']) {
+      this.rampOntologyId = <string>obj['rampOntologyId'];
     }
 
-    if (obj.metCount) {
-      this.count = obj.metCount;
+    if (obj['metCount']) {
+      this.count = <number>obj['metCount'];
     }
   }
 }

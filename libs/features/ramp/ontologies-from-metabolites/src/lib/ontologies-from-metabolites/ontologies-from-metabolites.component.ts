@@ -125,17 +125,4 @@ export class OntologiesFromMetabolitesComponent
     }
   }
 
-  private _mapData(data: any): void {
-    this.dataAsDataProperty = data.map((obj: Ontology) => {
-      const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(obj).map((value: any, index: any) => {
-        newObj[value[0]] = new DataProperty({
-          name: value[0],
-          label: value[0],
-          value: value[1],
-        });
-      });
-      return newObj;
-    });
-  }
 }

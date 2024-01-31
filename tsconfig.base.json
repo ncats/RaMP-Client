@@ -97,8 +97,8 @@
       "@ramp/shared/ui/ncats-structure-viewer": [
         "libs/shared/ui/ncats-structure-viewer/src/index.ts"
       ],
-      "@ramp/shared/ui/object-tree": [
-        "libs/shared/ui/object-tree/src/index.ts"
+      "@ramp/shared/ui/highlight": [
+        "libs/shared/ui/highlight/src/index.ts"
       ],
       "@ramp/shared/visualizations/upset-chart": [
         "libs/shared/visualizations/upset-chart/src/index.ts"

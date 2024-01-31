@@ -13,7 +13,7 @@ export interface RampAPIResponse<T extends RampDataGeneric> {
 export interface RampResponse<T extends RampDataGeneric> {
   data: Array<T>;
   query: RampQuery;
-  dataframe?: FishersDataframe;
+  dataframe?: unknown[];
 }
 
 export interface RampPathwayEnrichmentAPIResponse {

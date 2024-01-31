@@ -19,6 +19,7 @@ import {
 import { provideEffects } from '@ngrx/effects';
 import { provideState, provideStore, Store } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { STRUCTURE_VIEWER_COMPONENT, StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
 import {
   LoadRampActions,
   RampService,
@@ -57,6 +58,7 @@ export const appConfig: ApplicationConfig = {
       deps: [],
       multi: true,
     },
+    { provide: STRUCTURE_VIEWER_COMPONENT, useClass: StructureViewerComponent },
     provideRouter(
       routes,
       withViewTransitions(),

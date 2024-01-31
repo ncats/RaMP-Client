@@ -14,13 +14,13 @@ import {
   Properties,
   RampAPIResponse,
   RampChemicalEnrichmentAPIResponse,
-  RampChemicalEnrichmentResponse,
+  RampChemicalEnrichmentResponse, RampDataGeneric,
   RampPathwayEnrichmentAPIResponse,
   RampPathwayEnrichmentResponse,
   RampResponse,
   Reaction,
-  SourceVersion,
-} from '@ramp/models/ramp-models';
+  SourceVersion
+} from "@ramp/models/ramp-models";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -68,31 +68,34 @@ export class RampService {
 
   fetchEntityCounts() {
     return this.http
-      .get<{ data: EntityCount[] }>(`${this.url}entity_counts`) // ,{responseType: 'text'})
+      .get<{ data: {[p: string]: string}[] }>(`${this.url}entity_counts`) // ,{responseType: 'text'})
       .pipe(
-        map((response: { data: EntityCount[] }) =>
-          response.data.map((obj: any) => new EntityCount(obj)),
+        map((response: { data: {[p: string]: string}[] }) =>
+          response.data.map((obj: {[p: string]: string}) => new EntityCount(obj)),
         ),
         catchError(this.handleError('fetchEntityCounts', [])),
       );
   }
 
   fetchSupportedIds(): Observable<
-    [{ analyteType: string; idTypes: string[] }]
+    { analyteType: string; idTypes: string[] }[]
   > {
-    return this.http.get<[{ analyteType: string; idTypes: string[] }]>(
+    return this.http.get<{data: { analyteType: string; idTypes: string[] }[]}>(
       `${this.url}id-types`,
-    );
+    )
+      .pipe(
+      map((response) => {
+        return response.data;
+      })
+      )
   }
 
   fetchDatabaseUrl() {
     return this.http
       .get<{ data: string }>(`${this.url}current_db_file_url`)
       .pipe(
-        map((response) => {
-          return response.data;
-        }),
-        catchError(this.handleError('fetchAnalyteIntersects', [])),
+        map((response:{data:string}) => response.data),
+      //  catchError(this.handleError('fetchAnalyteIntersects', [])),
       );
   }
 
@@ -106,13 +109,11 @@ export class RampService {
 
   fetchAnalyteIntersects(param: string) {
     return this.http
-      .get<{
-        data: any[];
-      }>(
+      .get<{ data: { id: string; sets: string[]; size: number }[]; }>(
         `${this.url}analyte_intersects?analytetype=${param}&query_scope=global`,
       )
       .pipe(
-        map((response) => response.data),
+        map((response: {data: { id: string; sets: string[]; size: number }[]}) => response.data),
         catchError(this.handleError('fetchAnalyteIntersects', [])),
       );
   }
@@ -131,12 +132,12 @@ export class RampService {
       .pipe(
         map((response: RampAPIResponse<Pathway>) => {
           return {
-            data: response.data.map((obj: any) => new Pathway(obj)),
+            data: response.data.map((obj: Pathway) => new Pathway(obj)),
             query: {
               functionCall: response.function_call[0],
               numFoundIds: response.numFoundIds[0],
             },
-            dataframe: response.data as FishersDataframe,
+            dataframe: response.data
           };
         }),
         //    catchError(this.handleError('pathways from analytes', of({})))
@@ -157,12 +158,12 @@ export class RampService {
       .pipe(
         map((response: RampAPIResponse<Analyte>) => {
           return {
-            data: response.data.map((obj: any) => new Analyte(obj)),
+            data: response.data.map((obj: Partial<Analyte>) => new Analyte(obj)),
             query: {
               functionCall: response.function_call[0],
               numFoundIds: response.numFoundIds[0],
             },
-            dataframe: response.data as FishersDataframe,
+            dataframe: response.data
           };
         }),
       );
@@ -182,12 +183,12 @@ export class RampService {
       .pipe(
         map((response: RampAPIResponse<Ontology>) => {
           return {
-            data: response.data.map((obj: any) => new Ontology(obj)),
+            data: response.data.map((obj: unknown) => new Ontology(obj as {[key: string]: unknown})),
             query: {
               functionCall: response.function_call[0],
               numFoundIds: response.numFoundIds[0],
             },
-            dataframe: response.data as FishersDataframe,
+            dataframe: response.data
           };
         }),
       );
@@ -207,12 +208,12 @@ export class RampService {
       .pipe(
         map((response: RampAPIResponse<Metabolite>) => {
           return {
-            data: response.data.map((obj: any) => new Metabolite(obj)),
+            data: response.data.map((obj: Partial<Metabolite>) => new Metabolite(obj)),
             query: {
               functionCall: response.function_call[0],
               numFoundIds: response.numFoundIds[0],
             },
-            dataframe: response.data as FishersDataframe,
+            dataframe: response.data
           };
         }),
       );
@@ -237,18 +238,15 @@ export class RampService {
               ontoType.HMDBOntologyType,
             );
             if (cl) {
-              cl.values.push(new Ontology(ontoType));
+              cl.values.push(new Ontology(<unknown>ontoType as {[key: string]: unknown}));
             } else {
               cl = new OntologyList({
                 ontologyType: ontoType.HMDBOntologyType,
-                values: [new Ontology(ontoType)],
+                values: [new Ontology(<unknown>ontoType as {[key: string]: unknown})],
               });
             }
             ontoMap.set(ontoType.HMDBOntologyType, cl);
           });
-          const retOnts = [...ontoMap.values()].map(
-            (ontl) => new OntologyList(ontl),
-          );
           return {
             data: [...ontoMap.values()],
             query: {},
@@ -292,20 +290,23 @@ export class RampService {
       .post<RampAPIResponse<Classes>>(`${this.url}chemical-classes`, formData)
       .pipe(
         map((response: RampAPIResponse<Classes>) => {
+          const tempResponse: {[key: string]: unknown}[] = <unknown>response.data as {[key: string]: unknown}[];
           let metClasses: Classes[] = [];
-          const metabMap: Map<string, any> = new Map<string, any>();
+          const metabMap: Map<string, {[key: string]: unknown}> = new Map<string, {[key: string]: unknown}>();
           if (response.data && response.data.length) {
-            response.data.forEach((chClass: any) => {
-              let cl = metabMap.get(chClass.sourceId);
+            tempResponse.forEach((chClass: {[key: string]: unknown}) => {
+              let cl = metabMap.get(<string>chClass['sourceId']);
               if (cl) {
-                cl.levels.push(chClass);
+               const clArr: {[key: string]: unknown}[] = cl['levels'] as Array<{[key: string]: unknown}>;
+                clArr.push(chClass);
+                cl['levels'] = clArr;
               } else {
-                cl = { sourceId: chClass.sourceId, levels: [chClass] };
+                cl = { sourceId: chClass['sourceId'], levels: [chClass] };
               }
-              metabMap.set(chClass.sourceId, cl);
+              metabMap.set(<string>chClass['sourceId'], cl);
             });
             metClasses = [...metabMap.values()].map(
-              (obj: any) => new Classes(obj),
+              (obj: { [key:string]: unknown }) => new Classes(obj ),
             );
           }
           return {
@@ -314,7 +315,7 @@ export class RampService {
               functionCall: response.function_call[0],
               numFoundIds: response.numFoundIds[0],
             },
-            dataframe: response.data as FishersDataframe,
+            dataframe: response.data as unknown[]
           };
         }),
       );
@@ -334,12 +335,12 @@ export class RampService {
       .pipe(
         map((response: RampAPIResponse<Properties>) => {
           return {
-            data: response.data.map((obj: any) => new Properties(obj)),
+            data: response.data.map((obj: Partial<Properties>) => new Properties(obj)),
             query: {
               functionCall: response.function_call[0],
               numFoundIds: response.numFoundIds[0],
             },
-            dataframe: response.data as FishersDataframe,
+            dataframe: response.data
           };
         }),
       );
@@ -358,12 +359,12 @@ export class RampService {
       .pipe(
         map((response: RampAPIResponse<Reaction>) => {
           return {
-            data: response.data.map((obj: any) => new Reaction(obj)),
+            data: response.data.map((obj: unknown) => new Reaction(obj as { [key:string]: unknown })),
             query: {
               functionCall: response.function_call[0],
               numFoundIds: response.numFoundIds[0],
             },
-            dataframe: response.data as FishersDataframe,
+            dataframe: response.data
           };
         }),
       );
@@ -386,17 +387,19 @@ export class RampService {
       .post<RampChemicalEnrichmentAPIResponse>(
         `${this.url}chemical-enrichment`,
         formData,
-      ) // ,{responseType: 'text'})
+      )
       .pipe(
         map((response: RampChemicalEnrichmentAPIResponse) => {
-          console.log(response);
           const retList: ChemicalEnrichment[] = [];
           const responseClone = response.data;
           //  delete responseClone.result_type;
-          [...Object.values(responseClone)].forEach((val: any) =>
-            val.forEach((cc: { [key: string]: unknown }) => {
-              retList.push(new ChemicalEnrichment(cc));
-            }),
+          [...Object.values(responseClone)].forEach((val: unknown[]) => {
+              if (typeof val[0] !== 'string') {
+                val.forEach((cc: unknown) => {
+                  retList.push(new ChemicalEnrichment(cc as { [key: string]: unknown }));
+                })
+              }
+            }
           );
           return {
             data: response,
@@ -412,21 +415,21 @@ export class RampService {
     pval_type?: string,
     pval_cutoff?: number,
   ) {
-    console.log(dataframe);
     return this.http
-      .post<string[]>(`${this.url}filter-fisher-test-results`, {
+      .post<RampChemicalEnrichmentAPIResponse>(`${this.url}filter-fisher-test-results`, {
         fishers_results: dataframe.data,
         pval_type: pval_type,
         pval_cutoff: pval_cutoff,
       })
       .pipe(
-        map((response: any) => {
+        map((response:RampChemicalEnrichmentAPIResponse) => {
           const retList: ChemicalEnrichment[] = [];
-          [...Object.values(response.data)].forEach((val: any) =>
-            val.forEach((cc: any) => {
-              if (cc != 'chemical_class_enrichment')
-                retList.push(new ChemicalEnrichment(cc));
-            }),
+          [...Object.values(response.data)].forEach((val: unknown[]) => {
+           return  val.forEach((cc: unknown) => {
+                if (cc != 'chemical_class_enrichment')
+                  retList.push(new ChemicalEnrichment(cc as { [key: string]: unknown }));
+              })
+            }
           );
           return {
             data: response.data,
@@ -519,7 +522,7 @@ export class RampService {
     perc_analyte_overlap?: number,
     min_pathway_tocluster?: number,
     perc_pathway_overlap?: number,
-  ) {
+  ):Observable<{ data: RampPathwayEnrichmentResponse, plot: string }> {
     return forkJoin({
       data: this.clusterPathwayEnrichment(
         dataframe,
@@ -556,7 +559,7 @@ export class RampService {
         map((response: RampPathwayEnrichmentAPIResponse) => {
           return {
             data: response.data.fishresults.map(
-              (obj: any) => new FisherResult(obj),
+              (obj: unknown) => new FisherResult(obj as Partial<FisherResult>),
             ),
             query: {},
             combinedFishersdataframe: response.data as FishersDataframe,
@@ -584,35 +587,33 @@ export class RampService {
         perc_pathway_overlap: perc_pathway_overlap,
         filename: Date.now() + '.svg',
       };
-      const options: Object = { responseType: 'text' as const };
       return this.http
-        .post<string>(`${this.url}cluster-plot`, body, options)
+        .post(`${this.url}cluster-plot`, body, HTTP_TEXT_OPTIONS)
         .pipe(
-          map((response: string) => {
-            return response;
+          map((response: unknown) => {
+            return <string>response;
           }),
-          //  catchError(this.handleError('chemical enrichment', [])),
         );
     }
   }
 
-  fetchClusterImageFile(data: any) {
+  fetchClusterImageFile(data: string) {
     this._downloadFile(
-      this._makeBlob(data, 'image/svg+xml'),
+      this._makeBlob([data], 'image/svg+xml'),
       'fetchClusterImageFile-download.svg',
     );
   }
 
-  private _toTSV(data: any[]): string[] {
+  private _toTSV<T extends RampDataGeneric>(data: unknown[]): string[] {
     // grab the column headings (separated by tabs)
-    const headings: string = Object.keys(data[0]).join('\t');
+    const headings: string = Object.keys(data[0] as string[]).join('\t');
     // iterate over the data
-    const rows: string[] = data
+    const rows: string[] = <string[]><unknown>data
       .reduce(
-        (acc: string[], c: { [key: string]: string }) => {
+        (acc: string[], c: unknown) => {
           // for each row object get its values and add tabs between them
           // then add them as a new array to the outgoing array
-          const vals = Object.values(c);
+          const vals = Object.values(c as T);
           const row = vals.join('\t');
           return acc.concat(row);
 
@@ -630,12 +631,12 @@ export class RampService {
    * @param result - optional value to return as the observable result
    */
   private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
+    return (error: ErrorEvent): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
+     // console.error(error); // log to console instead
 
       // TODO: better job of transforming error for user consumption
-      // console.log(`${operation} failed: ${error.message}`);
+       console.log(`${operation} failed: ${error.message}`);
 
       // Let the app keep running by returning an empty result.
       return of(result as T);
