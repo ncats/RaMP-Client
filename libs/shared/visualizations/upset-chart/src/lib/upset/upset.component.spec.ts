@@ -8,7 +8,7 @@ describe('UpsetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UpsetComponent],
+      imports: [UpsetComponent],
     }).compileComponents();
   });
 

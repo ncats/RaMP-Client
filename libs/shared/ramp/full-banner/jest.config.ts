@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'shared-ui-full-banner',
+  displayName: 'shared-ramp-full-banner',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../../../coverage/libs/shared/ui/full-banner',
+  coverageDirectory: '../../../../coverage/libs/shared/ramp/full-banner',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
