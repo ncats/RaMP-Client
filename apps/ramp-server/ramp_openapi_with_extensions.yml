@@ -248,7 +248,7 @@ paths:
                   type: array
                   items:
                     type: string
-                NameOrIds:
+                namesOrIds:
                   type: string
                   enum: ['name', 'ids']
                   required: false
@@ -260,7 +260,7 @@ paths:
                     'hmdb:HMDB0000148',
                     'ensembl:ENSG00000141510',
                   ]
-                NameOrIds: 'ids'
+                namesOrIds: 'ids'
   /api/metabolites-from-ontologies:
     post:
       summary: Return metabolites from ontology
@@ -397,7 +397,7 @@ paths:
                   type: array
                   items:
                     type: string
-                NameOrIds:
+                namesOrIds:
                   type: string
                   enum: ['name', 'ids']
                   required: false

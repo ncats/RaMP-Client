@@ -40,7 +40,7 @@ cors <- function(req, res) {
 ######
 #* Return source version information
 #* @serializer unboxedJSON
-#* @get /api/source_versions
+#* @get /api/source-versions
 function() {
   version_info <- RaMP::getCurrentRaMPSourceDBVersions(db = rampDB)
 
@@ -53,7 +53,7 @@ function() {
 ######
 #* Return database version id
 #* @serializer unboxedJSON
-#* @get /api/ramp_db_version
+#* @get /api/ramp-db-version
 function() {
   version <- RaMP::getCurrentRaMPVersion(db = rampDB)
 
@@ -66,7 +66,7 @@ function() {
 ######
 #* Return current database file url
 #* @serializer unboxedJSON
-#* @get /api/current_db_file_url
+#* @get /api/current-db-file-url
 function() {
   versionInfo <- RaMP::getCurrentRaMPVersion(db = rampDB, justVersion = FALSE)
   dbURL <- unlist(versionInfo$db_sql_url)
@@ -95,7 +95,7 @@ function() {
 ####
 #* Return counts on entities and their associations
 #* @serializer unboxedJSON
-#* @get /api/entity_counts
+#* @get /api/entity-counts
 function() {
   entity_counts <- RaMP::getEntityCountsFromSourceDBs(db = rampDB)
 
@@ -109,7 +109,7 @@ function() {
 #* Return analyte source intersects
 #* @param analytetype specifies type of analyte intersects to return, 'metabolites' or 'genes'
 #* @param query_scope specifies 'global' or 'mapped-to-pathway'
-#* @get /api/analyte_intersects
+#* @get /api/analyte-intersects
 function(analytetype, query_scope = 'global') {
   response <- ""
   if(!missing(analytetype)) {
@@ -209,11 +209,11 @@ function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy", max_
 #####
 #* Return ontologies from list of metabolites
 #* @param metabolite
-#* @param NameOrIds one of “name” or “ids”, default “ids"
+#* @param namesOrIds one of “name” or “ids”, default “ids"
 #* @post /api/ontologies-from-metabolites
-function(metabolite, NameOrIds= "ids") {
+function(metabolite, namesOrIds= "ids") {
     ontologies_df <-
-        RaMP::getOntoFromMeta(db = rampDB, analytes = metabolite, NameOrIds = NameOrIds)
+        RaMP::getOntoFromMeta(db = rampDB, analytes = metabolite, NameOrIds = namesOrIds)
     if(is.null(ontologies_df)){
         ontologies_df<-data.frame()
     }
@@ -328,7 +328,7 @@ function(analyte) {
     analytes_df <- RaMP::rampFastCata(
       db = rampDB,
       analytes = analyte,
-      NameOrIds = "ids"
+      namesOrIds = "ids"
     )
   },
     error = function(cond) {
@@ -339,7 +339,7 @@ function(analyte) {
   #    analytes_df_names <- tryCatch({
   #        analytes_df <- RaMP::rampFastCata(
   #            analytes = analytes,
-  #            NameOrIds = "names"
+  #            namesOrIds = "names"
   #        )
   #    },
   #        error = function(cond) {
@@ -574,15 +574,15 @@ function(metabolites = '', file = '', biospecimen = '', background = "database")
 #' @param humanProtein
 #' @param includeTransportRxns
 #' @param rxnDirs
-#' @post /api/reactions_from_analytes
+#' @post /api/reactions-from-analytes
 #' @serializer json list(digits = 6)
 function(
     analytes,
     namesOrIds,
-    onlyHumanMets,
-    humanProtein,
-    includeTransportRxns,
-    rxnDirs
+    onlyHumanMets = false,
+    humanProtein = true,
+    includeTransportRxns = true,
+    rxnDirs = 'UN'
 ) {
 
   result = getReactionsForAnalytes(
@@ -601,7 +601,7 @@ function(
   return(
     list(
       data = result,
-      function_call = paste0("RaMP::getReactionsForAnalytes(db=RaMPDB, analytes=c(",analyteStr,"), namesOrIDs='ids', onlyHumanMets=",onlyHumanMets,", humanProtein=",humanProtein,", includeTransportRxns=",includeTransportRxns,", rxnDirs=c(",rxnDirs,")")
+      function_call = paste0("RaMP::getReactionsForAnalytes(db=RaMPDB, analytes=c(",analyteStr,"), namesOrIds='ids', onlyHumanMets=",onlyHumanMets,", humanProtein=",humanProtein,", includeTransportRxns=",includeTransportRxns,", rxnDirs=c(",rxnDirs,")")
     )
   )
 }
@@ -612,13 +612,14 @@ function(
 #' @param analytes
 #' @param multiRxnParticipantCount
 #' @param humanProtein
-#' @post /api/reaction_classes_from_analytes
+#' @param concatResults
+#' @post /api/reaction-classes-from-analytes
 #' @serializer json list(digits = 6)
 function(
     analytes,
-    multiRxnParticipantCount,
+    multiRxnParticipantCount = 1,
     humanProtein,
-    concatResults
+    concatResults = true
 ) {
   result = getReactionClassesForAnalytes(db=rampDB, analytes=analytes, multiRxnParticipantCount = multiRxnParticipantCount, humanProtein=humanProtein, concatResults=concatResults)
 
@@ -639,7 +640,7 @@ function(
 #' this method can be used to return proteins on some subset of reaction ids to find related proteins.
 #'
 #' @param reactionList Rhea reactions ids, such as rhea:38747
-#' @post /api/get_reaction_participants
+#' @post /api/get-reaction-participants
 #' @serializer json list(digits = 6)
 function(
   reactionList
@@ -663,7 +664,7 @@ function(
 #' this method can be used to return general reaction info on some subset of reaction ids of interest.
 #'
 #' @param reactionList list of reaction ids
-#' @post /api/get_reaction_details
+#' @post /api/get-reaction-details
 #' @serializer json list(digits = 6)
 function(
     reactionList
