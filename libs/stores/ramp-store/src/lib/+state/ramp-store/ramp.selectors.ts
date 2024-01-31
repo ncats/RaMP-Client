@@ -33,13 +33,6 @@ export const getSelectedId = createSelector(
   (state: State) => state.selectedId,
 );
 
-export const getSelected = createSelector(
-  getRampState,
-  getSelectedId,
-  // @ts-ignore
-  (entities, selectedId) => (selectedId ? entities[selectedId] : undefined),
-);
-
 export const getSourceVersions = createSelector(
   getRampState,
   (state: State) => {

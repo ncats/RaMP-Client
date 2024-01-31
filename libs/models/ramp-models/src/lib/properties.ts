@@ -10,7 +10,7 @@ export class Properties {
   mol_formula!: string;
   imageUrl!: string;
 
-  constructor(obj: any) {
+  constructor(obj: Partial<Properties>) {
     Object.assign(this, obj);
     this.imageUrl = this.iso_smiles;
   }

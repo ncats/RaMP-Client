@@ -19,7 +19,6 @@
   matSort
   #dataTable
   [dataSource]="dataSource"
-  [trackBy]="trackByFn"
   [multiTemplateDataRows]="expandable"
   (matSortChange)="changeSort($event)"
   [ngClass]="{ condensed: condensed }"
@@ -61,7 +60,7 @@
         @if (checkCustomComponent(field)) {
   <div
     #customOutlet
-    [cdkPortalOutlet]="getCustomComponent(field, row, i)"
+    [cdkPortalOutlet]="getCustomComponent(field)"
     (attached)="componentAttached($event, i, field)"
   >
   </div>

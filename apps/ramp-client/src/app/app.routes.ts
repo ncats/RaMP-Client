@@ -1,4 +1,3 @@
-import { InjectionToken } from "@angular/core";
 import { Routes } from '@angular/router';
 import { STRUCTURE_VIEWER_COMPONENT, StructureViewerComponent } from "@ramp/shared/ui/ncats-structure-viewer";
 import rFunctions from '../assets/data/rFunctions.json';

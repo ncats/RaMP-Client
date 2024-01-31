@@ -119,18 +119,4 @@ export class PathwaysFromAnalytesComponent
       );
     }
   }
-
-  /*private _mapData(data: any): void {
-    this.dataAsDataProperty = data.map((analyte: Pathway) => {
-      const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(analyte).map((value: any) => {
-        newObj[value[0]] = new DataProperty({
-          name: value[0],
-          label: value[0],
-          value: value[1],
-        });
-      });
-      return newObj;
-    });
-  }*/
 }

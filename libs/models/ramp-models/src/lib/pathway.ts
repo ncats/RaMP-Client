@@ -6,7 +6,7 @@ export class Pathway {
   analyteName!: string;
   inputId!: string;
 
-  constructor(obj: any) {
+  constructor(obj: Partial<Pathway>) {
     Object.assign(this, obj);
   }
 }

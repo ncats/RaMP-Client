@@ -13,23 +13,23 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class DataDownloadButtonComponent {
   @Input() source!: string;
-  @Input() data!: any;
-  file!: any;
+  @Input() data!: unknown[];
+
 
   constructor(@Inject(DOCUMENT) private dom: Document) {}
 
   downloadData(): void {
     const lines: string[] = [[...Object.keys(this.data[0])].join(',')];
-    this.data.forEach((data: any) =>
+    this.data.forEach((data: {[key: string]: unknown}) =>
       lines.push([...Object.values(data)].join('\t')),
     );
     const csv = lines.join('\n');
-    this.file = new Blob([csv], { type: 'text/tsv' });
+    const file = new Blob([csv], { type: 'text/tsv' });
     const link = this.dom.createElement('a');
     if (link.download !== undefined) {
       // feature detection
       // Browsers that support HTML5 download attribute
-      const url = URL.createObjectURL(this.file);
+      const url = URL.createObjectURL(file);
       link.setAttribute('href', url);
       link.setAttribute('download', `${this.source}-download.tsv`);
       link.style.visibility = 'hidden';

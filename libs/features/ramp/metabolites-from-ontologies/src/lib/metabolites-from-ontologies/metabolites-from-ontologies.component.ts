@@ -1,3 +1,4 @@
+import { SelectionChange } from "@angular/cdk/collections";
 import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -61,7 +62,7 @@ export class MetabolitesFromOntologiesComponent
   extends PageCoreComponent
   implements OnInit
 {
-  @ViewChildren('filterPanel') filterPanels!: QueryList<FilterPanelComponent>;
+  @ViewChildren('filterPanel') filterPanels!: QueryList<FilterPanelComponent<Ontology>>;
   @ViewChild('metaTabs') metaTabs!: ElementRef<MatTabGroup>;
   tabIndex = 0;
 
@@ -69,7 +70,7 @@ export class MetabolitesFromOntologiesComponent
   metaboliteColumns: DataProperty[] = [
     new DataProperty({
       label: 'Ontology',
-      field: 'ontology',
+      field: 'ontologyTerm',
       sortable: true,
     }),
     new DataProperty({
@@ -79,7 +80,7 @@ export class MetabolitesFromOntologiesComponent
     }),
     new DataProperty({
       label: 'Metabolite',
-      field: 'metabolites',
+      field: 'metNames',
       sortable: true,
     }),
     new DataProperty({
@@ -90,7 +91,7 @@ export class MetabolitesFromOntologiesComponent
   ];
   ontologies!: OntologyList[];
   allOntologies!: OntologyList[];
-  selectedOntologies: any[] = [];
+  selectedOntologies: Ontology[] = [];
   globalFilter?: string;
   disableSearch = false;
   loading = false;
@@ -129,7 +130,7 @@ export class MetabolitesFromOntologiesComponent
       .pipe(
         select(RampSelectors.getontologiesList),
         takeUntilDestroyed(this.destroyRef),
-        map((res: any) => {
+        map((res: OntologyList[] | undefined) => {
           if (res && res.length) {
             this.ontologies = res;
             this.allOntologies = res;
@@ -147,9 +148,9 @@ export class MetabolitesFromOntologiesComponent
           if (res && res.data) {
             this.dataAsDataProperty = res.data.map((metabolite: Metabolite) => {
               const newObj: { [key: string]: DataProperty } = {};
-              Object.entries(metabolite).map((value: any) => {
+              Object.entries(metabolite).map((value: string[]) => {
                 newObj[value[0]] = new DataProperty({
-                  name: value[0],
+                  //name: value[0],
                   label: value[0],
                   value: value[1],
                 });
@@ -171,17 +172,20 @@ export class MetabolitesFromOntologiesComponent
       .subscribe();
   }
 
-  setValues(values: any) {
+  setValues(values: SelectionChange<Ontology>) {
     if (values.added) {
       this.selectedOntologies = Array.from(
-        new Set(this.selectedOntologies.concat(values.added)),
+        new Set(this.selectedOntologies.concat(values.added as Ontology[])),
       );
     }
     if (values.removed) {
       values.removed.forEach(
-        (val: { value: any }) =>
+        (val: unknown) =>
           (this.selectedOntologies = this.selectedOntologies.filter(
-            (ont) => ont.value !== val.value,
+            (ont: Ontology) => {
+              const tempVal: Ontology = val as Ontology;
+            return  ont.value !== tempVal.value
+            }
           )),
       );
     }
@@ -197,7 +201,7 @@ export class MetabolitesFromOntologiesComponent
   fetchMetabolites(): void {
     this.loading = true;
     this.tabIndex = 0;
-    const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
+    const ontologiesList: string[] = this.selectedOntologies.map((ont:Ontology) => <string>ont.value);
     this.store.dispatch(
       MetaboliteFromOntologyActions.fetchMetabolitesFromOntologies({
         ontologies: ontologiesList,
@@ -206,8 +210,8 @@ export class MetabolitesFromOntologiesComponent
   }
 
   fetchMetabolitesFile(): void {
-    const ontologiesList = this.selectedOntologies.map((ont) => ont.value);
-    if (ontologiesList.length) {
+    const ontologiesList: string[] = this.selectedOntologies.map((ont:Ontology) => <string>ont.value);
+    if (ontologiesList && ontologiesList.length) {
       this.store.dispatch(
         MetaboliteFromOntologyActions.fetchMetabolitesFromOntologiesFile({
           ontologies: ontologiesList,

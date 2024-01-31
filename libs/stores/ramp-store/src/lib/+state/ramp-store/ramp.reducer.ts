@@ -38,11 +38,11 @@ export interface State extends EntityState<RampEntity> {
   selectedId?: string | number; // which RampStore record has been selected
   loading: boolean; // has the RampStore list been loaded
   error?: string | null; // last known error (if any)
-  supportedIds?: [{ analyteType: string; idTypes: string[] }];
+  supportedIds?: { analyteType: string; idTypes: string[]}[];
   sourceVersions?: SourceVersion[];
   entityCounts?: EntityCount[];
-  metaboliteIntersects?: [];
-  geneIntersects?: [];
+  metaboliteIntersects?: { id: string; sets: string[]; size: number }[];
+  geneIntersects?: { id: string; sets: string[]; size: number }[];
   databaseUrl?: string;
   ontologies?: RampResponse<Ontology>;
   analytes?: RampResponse<Analyte>;
@@ -136,10 +136,10 @@ export const rampReducer = createReducer(
   })),
 */
 
-  on(LoadRampActions.loadRampSuccess, (state, { data }) => ({
+  on(LoadRampActions.loadRampSuccess, (state, { supportedIds }) => ({
     ...state,
     loading: false,
-    supportedIds: data,
+    supportedIds: supportedIds,
   })),
 
   on(LoadRampActions.loadSourceVersionsSuccess, (state, { versions }) => ({

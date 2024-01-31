@@ -1,20 +1,18 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
-  EventEmitter,
+  Component, ComponentRef, DestroyRef,
+  EventEmitter, inject,
   Injector,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   QueryList,
   Type,
   ViewChild,
   ViewChildren,
-  ViewContainerRef,
-} from '@angular/core';
+  ViewContainerRef
+} from "@angular/core";
 import {
   animate,
   state,
@@ -22,7 +20,8 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { BehaviorSubject, Observable } from "rxjs";
 import {
   MatRow,
   MatTable,
@@ -35,29 +34,30 @@ import {
   MatPaginatorModule,
 } from '@angular/material/paginator';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
-import { ComponentPortal, PortalModule } from '@angular/cdk/portal';
+import { CdkPortalOutletAttachedRef, ComponentPortal, PortalModule } from "@angular/cdk/portal";
 import { SelectionModel } from '@angular/cdk/collections';
-import { takeUntil } from 'rxjs/operators';
 import { PageData } from './models/page-data';
 import { DataProperty } from './models/data-property';
 import { PropertyDisplayComponent } from './components/property-display/property-display.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgClass } from '@angular/common';
 
+
 const _sortingDataAccessor = (
-  item: { [key: string]: DataProperty },
+  data: { [key: string]: DataProperty },
   property: string,
 ) => {
-  if (item[property] && item[property].value) {
-    if (!isNaN(Number(item[property].value))) {
-      return item[property].value;
+  if (data[property] && data[property].value) {
+    if (!isNaN(Number(data[property].value))) {
+      return data[property].value;
     } else {
-      return item[property].value.toLocaleUpperCase();
+      return data[property].value.toLocaleUpperCase();
     }
   } else {
     return 0;
   }
 };
+
 
 /**
  * component to show flexible data consisting of multiple data types, custom components
@@ -97,37 +97,33 @@ const _sortingDataAccessor = (
  * Generic table Component that iterates over a list of options to display fields
  */
 export class NcatsDatatableComponent
-  implements OnInit, AfterViewInit, OnDestroy
+  implements OnInit
 {
+  destroyRef = inject(DestroyRef);
+
   /**
    * Table object
    */
-  @ViewChild(MatTable) dataTable!: MatTable<any>;
-
-  /**
-   * Behaviour subject to allow extending class to unsubscribe on destroy
-   * @type {Subject<any>}
-   */
-  protected ngUnsubscribe: Subject<any> = new Subject();
+  @ViewChild(MatTable) dataTable!: MatTable<unknown>;
 
   /**
    * initialize a private variable _data, it's a BehaviorSubject
    *
    */
-  protected _data = new BehaviorSubject<any>(null);
+  protected _data = new BehaviorSubject<{ [key: string]: DataProperty; }[]>([]);
 
   /**
    * pushes changed data to {BehaviorSubject}
    */
   @Input()
-  set data(value: any) {
+  set data(value: { [key: string]: DataProperty; }[]) {
     this._data.next(value);
   }
 
   /**
    * returns value of {BehaviorSubject}
    */
-  get data(): any {
+  get data(): { [key: string]: DataProperty; }[] {
     return this._data.getValue();
   }
 
@@ -232,7 +228,7 @@ export class NcatsDatatableComponent
    * This compares each row of the table to the "expanded element - if they are equal, the row is expanded
    *  todo: this only allows one open at a time, this might need to be a map to allow multiple expanded rows
    */
-  expandedElement: any | null;
+  expandedElement: unknown | null;
 
   /**
    * event that emits when the sort value or direction is changed. The parent component will be responsible for
@@ -258,7 +254,7 @@ export class NcatsDatatableComponent
    * main table datasource
    * @type {MatTableDataSource<any>}
    */
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+  dataSource: MatTableDataSource<{[key: string]:DataProperty}> = new MatTableDataSource<{[key: string]: DataProperty}>();
 
   /**
    * whether to toggle the condensed class to make a more compact table
@@ -270,10 +266,10 @@ export class NcatsDatatableComponent
 
   @Input() internalSort = false;
 
-  @Output() rowSelectionChange: EventEmitter<SelectionModel<any>> =
-    new EventEmitter<SelectionModel<any>>();
+  @Output() rowSelectionChange: EventEmitter<SelectionModel<unknown>> =
+    new EventEmitter<SelectionModel<unknown>>();
 
-  selection = new SelectionModel<any>(true, []);
+  selection = new SelectionModel<unknown>(true, []);
 
   /**
    * Paginator object from Angular Material
@@ -303,12 +299,15 @@ export class NcatsDatatableComponent
     this._data
       // listen to data as long as term is undefined or null
       // Unsubscribe once term has value
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((res) => {
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((res: {[key: string]: DataProperty}[]) => {
         if (res) {
           if (this.useInternalPaginator) {
-            this.dataSource = new MatTableDataSource<DataProperty>(
-              res.map((val: any) => new DataProperty(val)),
+            this.dataSource = new MatTableDataSource<{[key: string]: DataProperty}>(
+              res
+            //  res.map((val: Partial<DataProperty>) => new DataProperty(val)),
             );
             this.pageData = new PageData({ total: res.length });
           } else {
@@ -318,7 +317,7 @@ export class NcatsDatatableComponent
           if (this.internalSort) {
             this.dataSource.sortingDataAccessor = _sortingDataAccessor;
             this.dataSource.sort = this._sort;
-            this._sort.sortChange.subscribe((res) => {
+            this._sort.sortChange.subscribe(() => {
               if (this.dataSource.paginator) {
                 this.dataSource.paginator.firstPage();
               }
@@ -329,26 +328,19 @@ export class NcatsDatatableComponent
       });
 
     this._fieldsConfig
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((res) => this.fetchTableFields());
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.fetchTableFields());
+
     this.selection.changed
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((change) => {
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
         this.ref.detectChanges();
         this.rowSelectionChange.emit(this.selection);
       });
-  }
-
-  ngAfterViewInit() {}
-
-  /**
-   * used to track data changes
-   * @param {number} index
-   * @param item
-   * @return {any}
-   */
-  trackByFn(index: number, item: any) {
-    return item.name && item.name.term ? item.name.term : item;
   }
 
   /**
@@ -412,7 +404,7 @@ export class NcatsDatatableComponent
     return ret;
   }
 
-  isArray(data: any) {
+  isArray(data: unknown) {
     return Array.isArray(data);
   }
 
@@ -469,16 +461,12 @@ export class NcatsDatatableComponent
    * todo: the comtainer and object should be optional fields
    * todo: table injected components need to implement an interface to get the substance or container
    * @param field
-   * @param row
-   * @param index
    */
   getCustomComponent(
-    field: DataProperty,
-    row: MatRow,
-    index: number,
-  ): ComponentPortal<any> | null {
+    field: DataProperty
+  ): ComponentPortal<unknown> | null {
     if (this.rowOutlet && field.customComponent) {
-      const comp = this._injector.get<Type<any>>(field.customComponent);
+      const comp = this._injector.get<Type<unknown>>(field.customComponent);
       return new ComponentPortal(comp);
     } else {
       return null;
@@ -493,29 +481,35 @@ export class NcatsDatatableComponent
    * @param index
    * @param field
    */
-  componentAttached(component: any, index: number, field: DataProperty) {
-    if (component.instance.data === null && this.data[index][field.field]) {
-      component.instance.data = this.data[index][field.field];
-    }
+  componentAttached(component: CdkPortalOutletAttachedRef, index: number, field: DataProperty) {
+    if(component ) {
+      console.log(this._injector)
+      const compRef: ComponentRef<Record<string, unknown>> = component as ComponentRef<Record<string, unknown>>;
+      if (compRef.instance['data'] === null && this.data[index][field.field]) {
+        const dataField: string = field.field;
+        const dataPoint: {[p: string]: DataProperty} = this.data[index];
+        compRef.instance['data'] = <unknown>dataPoint[dataField];
+      }
 
-    if (component.instance.object) {
-      component.instance.object = this.data[index];
-    }
-    if (component.instance.container) {
-      component.instance.container = this.rowOutlet.toArray()[index];
-    }
-    if (component.instance.parent) {
-      component.instance.parent = this.data[index];
-    }
-    if (component.instance.clickEvent) {
-      component.instance.clickEvent.subscribe((res: any) => {
-        this.cellClicked(res);
-      });
-    }
-
-    if (component.instance.ref) {
-      // todo this is still problematic because injected components are redrawn.
-      this.ref.detach();
+      if (compRef.instance['object']) {
+        compRef.instance['object'] = this.data[index];
+      }
+      if (compRef.instance['container']) {
+        compRef.instance['container'] = this.rowOutlet.toArray()[index];
+      }
+      if (compRef.instance['parent']) {
+        compRef.instance['parent'] = this.data[index];
+      }
+      if (compRef.instance['clickEvent']) {
+        const clickRef: Observable<MatRow> = compRef.instance['clickEvent'] as Observable<MatRow>;
+        clickRef.subscribe((res: MatRow) => {
+          this.cellClicked(res);
+        });
+      }
+      if (compRef.instance['ref']) {
+        // todo this is still problematic because injected components are redrawn.
+        this.ref.detach();
+      }
     }
   }
 
@@ -548,13 +542,5 @@ export class NcatsDatatableComponent
       ? this.selection.clear()
       : this.dataSource.data.forEach((row) => this.selection.select(row));
     this.ref.detectChanges();
-  }
-
-  /**
-   * clean up on leaving component
-   */
-  ngOnDestroy() {
-    this.ngUnsubscribe.next(null);
-    this.ngUnsubscribe.complete();
   }
 }

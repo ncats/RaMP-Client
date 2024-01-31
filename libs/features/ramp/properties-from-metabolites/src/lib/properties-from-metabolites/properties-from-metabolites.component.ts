@@ -145,7 +145,7 @@ export class PropertiesFromMetabolitesComponent
       const newObj: { [key: string]: DataProperty } = {};
       Object.entries(obj).map((value: string[]) => {
         newObj[value[0]] = new DataProperty({
-          name: value[0],
+          //name: value[0],
           label: value[0],
           value: value[1],
         });

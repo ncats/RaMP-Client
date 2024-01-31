@@ -17,10 +17,7 @@ export class HighlightPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
   transform(text: string, search: string): SafeHtml | string {
     if (search && text) {
-      let pattern = search.replace(
-        /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
-        '\\$&',
-      );
+      let pattern = search.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
       pattern = pattern
         .split(' ')
         .filter((t) => {

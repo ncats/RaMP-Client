@@ -1,18 +1,12 @@
 export class UpsetData {
   id: string;
   sets: string[];
-  size: number;
+  size: number = 0;
   combinations: { setId: string; member: boolean }[];
   connectorIndices: [number, number] | [undefined, undefined];
 
-  constructor(data: {
-    id: string | number;
-    sets: string[];
-    size: number;
-    combinations?: { setId: string; member: boolean }[];
-    connectorIndices?: [number, number] | [undefined, undefined];
-  }) {
-    this.id = data.id.toString();
+  constructor(data: Partial<UpsetData>) {
+    this.id = <string>data.id;
     this.sets = data.sets || [];
     this.size = data.size || 0;
     this.combinations = data.combinations || [];

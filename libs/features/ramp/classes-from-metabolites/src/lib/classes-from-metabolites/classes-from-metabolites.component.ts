@@ -91,8 +91,7 @@ export class ClassesFromMetabolitesComponent
       customComponent: TREE_VIEWER_COMPONENT,
     }),*/
   ];
-  fileName = '';
-  file?: File;
+
   biospecimenCtrl: UntypedFormControl = new UntypedFormControl();
   biospecimens: string[] = [
     'Blood',
@@ -118,7 +117,7 @@ export class ClassesFromMetabolitesComponent
         takeUntilDestroyed(this.destroyRef),
         map((res: RampResponse<Classes> | undefined) => {
           if (res && res.data) {
-            const classGroup: Map<string, any> = new Map<string, any>();
+           /* const classGroup: Map<string, {sourceIds: string[], classyFireTree } }[]> = new Map<string, unknown[]>();
             res.data.forEach((chclass) => {
               const classObj = classGroup.get(chclass.treePath);
               if (classObj) {
@@ -133,7 +132,7 @@ export class ClassesFromMetabolitesComponent
                 };
                 classGroup.set(chclass.treePath, temp);
               }
-            });
+            });*/
             this._mapData(res.data);
             this.matches = Array.from(
               new Set(
@@ -194,28 +193,6 @@ export class ClassesFromMetabolitesComponent
         this._toTSV(this.dataframe),
         'fetchChemicalClass-download.tsv',
       );
-    }
-  }
-
-  /*private _mapData(data: any): void {
-    this.dataAsDataProperty = data.map((obj: Classes) => {
-      const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(obj).map((value: any) => {
-        newObj[value[0]] = new DataProperty({
-          name: value[0],
-          label: value[0],
-          value: value[1],
-        });
-      });
-      return newObj;
-    });
-  }*/
-
-  onFileSelected(event: any) {
-    this.file = event.target.files[0];
-    if (this.file) {
-      this.fileName = this.file.name;
-      this.ref.markForCheck();
     }
   }
 

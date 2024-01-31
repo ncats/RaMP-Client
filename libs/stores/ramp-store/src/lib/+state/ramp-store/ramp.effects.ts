@@ -4,13 +4,11 @@ import { Store } from '@ngrx/store';
 import {
   Analyte,
   Classes,
-  FishersDataframe,
   Metabolite,
   Ontology,
   OntologyList,
   Pathway,
   Properties,
-  RampAPIResponse,
   RampChemicalEnrichmentResponse,
   RampPathwayEnrichmentResponse,
   RampResponse,
@@ -44,14 +42,14 @@ export const init$ = createEffect(
   (actions$ = inject(Actions), rampService = inject(RampService)) => {
     return actions$.pipe(
       ofType(LoadRampActions.loadRamp),
-      exhaustMap((action) => {
+      exhaustMap(() => {
         return rampService.fetchSupportedIds().pipe(
           map(
-            (ret: [{ analyteType: string; idTypes: string[] }]) => {
-              return LoadRampActions.loadRampSuccess({ data: ret });
+            (ret: { analyteType: string; idTypes: string[] }[]) => {
+              return LoadRampActions.loadRampSuccess({ supportedIds: ret });
             },
             catchError((error: ErrorEvent) =>
-              of(LoadRampActions.loadRampFailure({ error })),
+              of(LoadRampActions.loadRampFailure({ error: error.message })),
             ),
           ),
         );
@@ -65,10 +63,10 @@ export const fetchStats = createEffect(
   (actions$ = inject(Actions), rampService = inject(RampService)) => {
     return actions$.pipe(
       ofType(LoadRampActions.loadRampStats),
-      exhaustMap((action) => {
+      exhaustMap(() => {
         return rampService.loadAboutData().pipe(
           map(
-            (ret: unknown) => {
+            (ret: Stats) => {
               const data: Stats = ret as Stats;
               if (data) {
                 return LoadRampActions.loadRampStatsSuccess({ data: data });
@@ -79,7 +77,7 @@ export const fetchStats = createEffect(
               }
             },
             catchError((error: ErrorEvent) =>
-              of(LoadRampActions.loadRampStatsFailure({ error })),
+              of(LoadRampActions.loadRampStatsFailure({ error: error.message })),
             ),
           ),
         );
@@ -107,7 +105,7 @@ export const fetchPathwaysFromAnalytes = createEffect(
             catchError((error: ErrorEvent) => {
               return of(
                 PathwayFromAnalyteActions.fetchPathwaysFromAnalytesFailure({
-                  error,
+                  error: error.message
                 }),
               );
             }),
@@ -134,7 +132,7 @@ export const fetchAnalytesFromPathways = createEffect(
             catchError((error: ErrorEvent) =>
               of(
                 AnalyteFromPathwayActions.fetchAnalytesFromPathwaysFailure({
-                  error,
+                  error: error.message,
                 }),
               ),
             ),
@@ -163,7 +161,7 @@ export const fetchOntologiesFromMetabolites = createEffect(
               catchError((error: ErrorEvent) =>
                 of(
                   OntologyFromMetaboliteActions.fetchOntologiesFromMetabolitesFailure(
-                    { error },
+                    { error: error.message },
                   ),
                 ),
               ),
@@ -179,7 +177,7 @@ export const fetchOntologies = createEffect(
   (actions$ = inject(Actions), rampService = inject(RampService)) => {
     return actions$.pipe(
       ofType(MetaboliteFromOntologyActions.fetchOntologies),
-      exhaustMap((action) => {
+      exhaustMap(() => {
         return rampService.fetchOntologies().pipe(
           map(
             (ret: RampResponse<OntologyList>) => {
@@ -187,7 +185,7 @@ export const fetchOntologies = createEffect(
             },
             catchError((error: ErrorEvent) =>
               of(
-                MetaboliteFromOntologyActions.fetchOntologiesFailure({ error }),
+                MetaboliteFromOntologyActions.fetchOntologiesFailure({ error: error.message }),
               ),
             ),
           ),
@@ -214,7 +212,7 @@ export const fetchMetabolitesFromOntologies = createEffect(
               catchError((error: ErrorEvent) =>
                 of(
                   MetaboliteFromOntologyActions.fetchMetaboliteFromOntologiesFailure(
-                    { error },
+                    { error: error.message },
                   ),
                 ),
               ),
@@ -264,7 +262,7 @@ export const fetchClassesFromMetabolites = createEffect(
               catchError((error: ErrorEvent) =>
                 of(
                   ClassesFromMetabolitesActions.fetchClassesFromMetabolitesFailure(
-                    { error },
+                    { error: error.message },
                   ),
                 ),
               ),
@@ -292,7 +290,7 @@ export const fetchPropertiesFromMetabolites = createEffect(
               catchError((error: ErrorEvent) =>
                 of(
                   PropertiesFromMetaboliteActions.fetchPropertiesFromMetabolitesFailure(
-                    { error },
+                    { error: error.message },
                   ),
                 ),
               ),
@@ -318,7 +316,7 @@ export const fetchCommonReactionAnalytes = createEffect(
             catchError((error: ErrorEvent) =>
               of(
                 CommonReactionAnalyteActions.fetchCommonReactionAnalytesFailure(
-                  { error },
+                  { error: error.message },
                 ),
               ),
             ),
@@ -351,7 +349,7 @@ export const fetchPathwayAnalysis = createEffect(
               catchError((error: ErrorEvent) =>
                 of(
                   PathwayEnrichmentsActions.fetchEnrichmentFromPathwaysFailure({
-                    error,
+                    error: error.message
                   }),
                 ),
               ),
@@ -374,7 +372,7 @@ export const filterEnrichedPathways = createEffect(
         PathwayEnrichmentsActions.filterEnrichmentFromPathways,
         PathwayEnrichmentsActions.fetchEnrichmentFromPathwaysSuccess,
       ),
-      concatLatestFrom((action) => store.select(getCombinedFishersDataframe)),
+      concatLatestFrom(() => store.select(getCombinedFishersDataframe)),
       mergeMap(([action, dataframe]) => {
         if (dataframe) {
           return rampService
@@ -395,7 +393,7 @@ export const filterEnrichedPathways = createEffect(
                 catchError((error: ErrorEvent) =>
                   of(
                     PathwayEnrichmentsActions.filterEnrichmentFromPathwaysFailure(
-                      { error },
+                      { error: error.message },
                     ),
                   ),
                 ),
@@ -425,7 +423,7 @@ export const fetchPathwayCluster = createEffect(
         PathwayEnrichmentsActions.filterEnrichmentFromPathwaysSuccess,
         PathwayEnrichmentsActions.fetchClusterFromEnrichment,
       ),
-      concatLatestFrom((action) => store.select(getFilteredFishersDataframe)),
+      concatLatestFrom(() => store.select(getFilteredFishersDataframe)),
       mergeMap(([action, dataframe]) => {
         if (dataframe) {
           return rampService
@@ -437,20 +435,20 @@ export const fetchPathwayCluster = createEffect(
             )
             .pipe(
               map(
-                (ret: any) => {
+                (ret: { data: RampPathwayEnrichmentResponse, plot: string }) => {
                   return PathwayEnrichmentsActions.fetchClusterFromEnrichmentSuccess(
                     {
                       data: ret.data.data,
                       plot: ret.plot,
-                      query: ret.query,
-                      dataframe: ret.data.data,
+                      query: ret.data.query,
+                      dataframe: ret.data.combinedFishersDataframe,
                     },
                   );
                 },
                 catchError((error: ErrorEvent) =>
                   of(
                     PathwayEnrichmentsActions.fetchClusterFromEnrichmentFailure(
-                      { error },
+                      { error: error.message },
                     ),
                   ),
                 ),
@@ -476,9 +474,9 @@ export const fetchClusterImageFile = createEffect(
   ) => {
     return actions$.pipe(
       ofType(PathwayEnrichmentsActions.fetchClusterImageFile),
-      concatLatestFrom((action) => store.select(getClusterPlot)),
+      concatLatestFrom(() => store.select(getClusterPlot)),
       tap(([action, plot]) => {
-        if (plot) {
+        if (plot && action) {
           return rampService.fetchClusterImageFile(plot);
         }
       }),
@@ -500,17 +498,17 @@ export const fetchChemicalAnalysis = createEffect(
           )
           .pipe(
             map(
-              (ret: any) => {
+              (ret: RampChemicalEnrichmentResponse) => {
                 return MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess(
                   {
-                    ...ret,
+                    data: ret
                   },
                 );
               },
               catchError((error: ErrorEvent) =>
                 of(
                   MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesFailure(
-                    { error },
+                    { error: error.message },
                   ),
                 ),
               ),
@@ -533,12 +531,12 @@ export const filterEnrichedChemicalClasses = createEffect(
         MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesSuccess,
         MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolites,
       ),
-      concatLatestFrom((action) => store.select(getChemicalEnrichment)),
+      concatLatestFrom(() => store.select(getChemicalEnrichment)),
       mergeMap(([action, dataframe]) => {
         if (dataframe) {
           return rampService
             .filterMetaboliteEnrichment(
-              dataframe,
+              dataframe.data as RampChemicalEnrichmentResponse,
               action.pval_type,
               action.pval_cutoff,
             )
@@ -552,7 +550,7 @@ export const filterEnrichedChemicalClasses = createEffect(
                 catchError((error: ErrorEvent) =>
                   of(
                     MetaboliteEnrichmentsActions.filterEnrichmentFromMetabolitesFailure(
-                      { error },
+                      { error: error.message },
                     ),
                   ),
                 ),
@@ -579,9 +577,9 @@ export const fetchEnrichmentFromMetabolitesFile = createEffect(
   ) => {
     return actions$.pipe(
       ofType(MetaboliteEnrichmentsActions.fetchEnrichmentFromMetabolitesFile),
-      concatLatestFrom((action) => store.select(getChemicalEnrichment)),
+      concatLatestFrom(() => store.select(getChemicalEnrichment)),
       tap(([action, dataframe]) => {
-        if (dataframe) {
+        if (action && dataframe) {
           rampService.fetchEnrichmentFromMetabolitesFile(
             dataframe.enriched_chemical_class_list,
           );

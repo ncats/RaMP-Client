@@ -12,7 +12,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { select } from '@ngrx/store';
 import {
-  ChemicalEnrichment,
   Classes,
   RampChemicalEnrichmentResponse,
   RampResponse,
@@ -174,9 +173,6 @@ export class ChemicalEnrichmentComponent
   enrichmentLoading = false;
 
   classesAsDataProperty: { [key: string]: DataProperty }[] = [];
-  fileName = '';
-  file?: File;
-  // enrichmentdataframe: FishersDataframe;
 
   constructor(
     private ref: ChangeDetectorRef,
@@ -193,10 +189,9 @@ export class ChemicalEnrichmentComponent
         select(RampSelectors.getChemicalEnrichment),
         takeUntilDestroyed(this.destroyRef),
         map((res: RampChemicalEnrichmentResponse | undefined) => {
+          this.dialog.closeAll();
           if (res && res.enriched_chemical_class_list) {
            this._mapData(res.enriched_chemical_class_list)
-            this.enrichmentLoading = false;
-
             //     if (res.openModal) {
             const ref: MatDialogRef<CompleteDialogComponent> = this.dialog.open(
               CompleteDialogComponent,
@@ -211,10 +206,12 @@ export class ChemicalEnrichmentComponent
             ref.afterClosed().subscribe((res) => {
               if (res) {
                 this.resultsTabs.selectedIndex = res;
+                this.enrichmentLoading = false;
                 this.ref.markForCheck();
               }
             });
             //   }
+            this.enrichmentLoading = false;
             this.ref.markForCheck();
           }
           /*if (res && res.dataframe) {
@@ -317,26 +314,18 @@ export class ChemicalEnrichmentComponent
     );
   }
 
-  private _mapClasses(data: any): void {
+  private _mapClasses(data: Classes[]): void {
     this.classesAsDataProperty = data.map((obj: Classes) => {
       const newObj: { [key: string]: DataProperty } = {};
       Object.entries(obj).map((value: string[]) => {
         newObj[value[0]] = new DataProperty({
-          name: value[0],
+          //name: value[0],
           label: value[0],
           value: value[1],
         });
       });
       return newObj;
     });
-  }
-
-  onFileSelected(event: any) {
-    this.file = event.target.files[0];
-    if (this.file) {
-      this.fileName = this.file.name;
-      this.ref.markForCheck();
-    }
   }
 
   cancelUpload() {

@@ -6,26 +6,26 @@ export class Reaction {
   rxnPartnerIdsString!: string;
   queryRelation!: string;
 
-  constructor(obj: any) {
-    if (obj.input_analyte) {
-      this.inputAnalyte = obj.input_analyte;
+  constructor(obj: { [key:string]: unknown }) {
+    if (obj['input_analyte']) {
+      this.inputAnalyte = <string>obj['input_analyte'];
     }
 
-    if (obj.query_relation) {
-      this.queryRelation = obj.query_relation;
+    if (obj['query_relation']) {
+      this.queryRelation = <string>obj['query_relation'];
     }
 
-    if (obj.input_common_names) {
-      this.inputCommonNames = obj.input_common_names;
+    if (obj['input_common_names']) {
+      this.inputCommonNames = <string>obj['input_common_names'];
     }
 
-    if (obj.rxn_partner_common_name) {
-      this.rxnPartnerCommonName = obj.rxn_partner_common_name;
+    if (obj['rxn_partner_common_name']) {
+      this.rxnPartnerCommonName = <string>obj['rxn_partner_common_name'];
     }
 
-    if (obj.rxn_partner_ids) {
-      this.rxnPartnerIdsString = obj.rxn_partner_ids;
-      this.rxnPartnerIds = obj.rxn_partner_ids.split('; ');
+    if (obj['rxn_partner_ids']) {
+      this.rxnPartnerIdsString = <string>obj['rxn_partner_ids'];
+      this.rxnPartnerIds = this.rxnPartnerIdsString.split('; ');
     }
   }
 }

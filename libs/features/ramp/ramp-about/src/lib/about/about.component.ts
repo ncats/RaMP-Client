@@ -150,11 +150,11 @@ export class AboutComponent implements OnInit {
           if (data.entityCounts) {
             this.entityCounts = data.entityCounts.map((count: EntityCount) => {
               const newObj: { [key: string]: DataProperty } = {};
-              Object.entries(count).map((value: unknown[]) => {
+              Object.entries(count).map((value: string[]) => {
                 newObj[<string>value[0]] = new DataProperty({
-                  name: value[0],
-                  label: value[0],
-                  value: value[1],
+                 // name: value[0],
+                  label: <string>value[0],
+                  value: <string>value[1],
                 });
               });
               return newObj;
