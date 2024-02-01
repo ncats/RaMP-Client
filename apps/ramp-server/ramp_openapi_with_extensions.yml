@@ -1,6 +1,6 @@
 servers:
   - url: 'https://rampdb.nih.gov'
-  # - url: 'https://ramp-api-alpha.ncats.io'
+  - url: 'https://ramp-api-alpha.ncats.io'
   # - url: 'http://127.0.0.1:5762/'
 openapi: 3.0.3
 info:
@@ -16,7 +16,7 @@ info:
 tags:
   - name: NCATS-API
 paths:
-  /api/source_versions:
+  /api/source-versions:
     get:
       summary: Return source version information
       responses:
@@ -62,7 +62,7 @@ paths:
               schema:
                 type: object
       parameters: []
-  /api/entity_counts:
+  /api/entity-counts:
     get:
       summary: Return counts on entities and their associations
       responses:
@@ -85,7 +85,7 @@ paths:
               schema:
                 type: object
       parameters: []
-  /api/analyte_intersects:
+  /api/analyte-intersects:
     get:
       summary: Return analyte source intersects
       responses:
@@ -101,9 +101,7 @@ paths:
           description: Default response.
       parameters:
         - name: analytetype
-          description: >-
-            specifies type of analyte intersects to return, 'metabolites' or
-            'genes'
+          description: specifies type of analyte intersects to return, 'metabolites' or 'genes'
           in: query
           required: true
           schema:
@@ -393,7 +391,7 @@ paths:
             schema:
               type: object
               properties:
-                analyte:
+                analytes:
                   type: array
                   items:
                     type: string
@@ -408,6 +406,97 @@ paths:
                     'hmdb:HMDB0000064',
                     'hmdb:HMDB0000148',
                     'ensembl:ENSG00000141510',
+                  ]
+  /api/reactions-from-analytes:
+    post:
+      summary: Return reactions from a given list of analytes
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+      requestBody:
+        description: Retrieve reactions from a list of analytes. IDs should be prepended by ID source (e.g. **hmdb**:C00412).
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                analytes:
+                  type: array
+                  items:
+                    type: string
+                namesOrIds:
+                  type: string
+                  enum: ['name', 'ids']
+                  required: false
+                multiRxnParticipantCount:
+                  type: number
+                  required: false
+                humanProtein:
+                  type: boolean
+                  required: false
+                concatResults:
+                  type: boolean
+                  required: false
+              example:
+                analytes:
+                  [
+                    'hmdb:HMDB0000033',
+                    'hmdb:HMDB0000052',
+                    'hmdb:HMDB0000094',
+                    'hmdb:HMDBP00789',
+                    'hmdb:HMDBP00283',
+                    'hmdb:HMDBP00284'
+                  ]
+
+  /api/reaction-classes-from-analytes:
+    post:
+      summary: Return reaction classes from a given list of analytes
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+      requestBody:
+        description: Retrieve reaction classes from a list of analytes. IDs should be prepended by ID source (e.g. **hmdb**:C00412).
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                analytes:
+                  type: array
+                  items:
+                    type: string
+                namesOrIds:
+                  type: string
+                  enum: ['name', 'ids']
+                  required: false
+                onlyHumanMets:
+                  type: boolean
+                  required: false
+                humanProtein:
+                  type: boolean
+                  required: false
+                includeTransportRxns:
+                  type: boolean
+                  required: false
+                rxnDirs:
+                  type: string
+                  enum: ['UN']
+                  required: false
+              example:
+                analytes:
+                  [
+                    'hmdb:HMDB0000033',
+                    'hmdb:HMDB0000052',
+                    'hmdb:HMDB0000094',
+                    'hmdb:HMDBP00789',
+                    'hmdb:HMDBP00283',
+                    'hmdb:HMDBP00284'
                   ]
   /api/combined-fisher-test:
     post:
