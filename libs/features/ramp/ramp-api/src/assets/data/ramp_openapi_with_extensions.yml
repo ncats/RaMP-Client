@@ -1,6 +1,6 @@
 servers:
   - url: 'https://rampdb.nih.gov'
-  # - url: 'https://ramp-api-alpha.ncats.io'
+  - url: 'https://ramp-api-alpha.ncats.io'
   # - url: 'http://127.0.0.1:5762/'
 openapi: 3.0.3
 info:
@@ -16,7 +16,7 @@ info:
 tags:
   - name: NCATS-API
 paths:
-  /api/source_versions:
+  /api/source-versions:
     get:
       summary: Return source version information
       responses:
@@ -62,7 +62,7 @@ paths:
               schema:
                 type: object
       parameters: []
-  /api/entity_counts:
+  /api/entity-counts:
     get:
       summary: Return counts on entities and their associations
       responses:
@@ -85,7 +85,7 @@ paths:
               schema:
                 type: object
       parameters: []
-  /api/analyte_intersects:
+  /api/analyte-intersects:
     get:
       summary: Return analyte source intersects
       responses:
@@ -101,9 +101,7 @@ paths:
           description: Default response.
       parameters:
         - name: analytetype
-          description: >-
-            specifies type of analyte intersects to return, 'metabolites' or
-            'genes'
+          description: specifies type of analyte intersects to return, 'metabolites' or 'genes'
           in: query
           required: true
           schema:
