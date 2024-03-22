@@ -28,5 +28,7 @@ export class FeaturesRampReactionClassesFromAnalytesComponent
     super();
   }
 
+  ngOnInit() {
+  }
 
 }

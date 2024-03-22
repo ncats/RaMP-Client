@@ -27,4 +27,7 @@ export class ReactionsFromAnalytesComponent
   constructor(private ref: ChangeDetectorRef) {
     super();
   }
+
+  ngOnInit() {
+  }
 }

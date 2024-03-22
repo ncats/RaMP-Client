@@ -1,17 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FeaturesRampReactionsFromAnalytesComponent } from './features-ramp-reactions-from-analytes.component';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { provideEffects } from "@ngrx/effects";
+import { provideStore, StoreModule } from "@ngrx/store";
+import { provideStoreDevtools } from "@ngrx/store-devtools";
+import { RampEffects, rampReducer } from "@ramp/stores/ramp-store";
+import { ReactionsFromAnalytesComponent } from './features-ramp-reactions-from-analytes.component';
 
-describe('FeaturesRampReactionsFromAnalytesComponent', () => {
-  let component: FeaturesRampReactionsFromAnalytesComponent;
-  let fixture: ComponentFixture<FeaturesRampReactionsFromAnalytesComponent>;
+describe('ReactionsFromAnalytesComponent', () => {
+  let component: ReactionsFromAnalytesComponent;
+  let fixture: ComponentFixture<ReactionsFromAnalytesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FeaturesRampReactionsFromAnalytesComponent],
-    }).compileComponents();
+      imports: [
+        BrowserAnimationsModule,
+        ReactionsFromAnalytesComponent,
+        StoreModule
+      ],
+      providers: [
+        provideStore({
+          rampStore: rampReducer
+        }),
+        provideEffects([RampEffects]),
+        provideStoreDevtools({ maxAge: 25, logOnly: false }),
+      ],    }).compileComponents();
 
     fixture = TestBed.createComponent(
-      FeaturesRampReactionsFromAnalytesComponent,
+      ReactionsFromAnalytesComponent,
     );
     component = fixture.componentInstance;
     fixture.detectChanges();

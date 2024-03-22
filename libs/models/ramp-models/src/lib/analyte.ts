@@ -1,11 +1,11 @@
 export class Analyte {
-  analyteName: string = '';
-  sourceAnalyteIDs: string = '';
-  geneOrCompound: string = '';
-  pathwayName: string = '';
-  pathwayCategory: string = '';
-  pathwayType: string = '';
-  pathwayId: string = '';
+  analyteName = '';
+  sourceAnalyteIDs = '';
+  geneOrCompound = '';
+  pathwayName = '';
+  pathwayCategory = '';
+  pathwayType = '';
+  pathwayId = '';
 
   constructor(obj: Partial<Analyte>) {
     // Object.assign(this, obj);
