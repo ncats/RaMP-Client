@@ -131,6 +131,32 @@ export const CommonReactionAnalyteActions = createActionGroup({
   },
 });
 
+export const ReactionClassesFromAnalytesActions = createActionGroup({
+  source: 'Reaction Classes from Analytes',
+  events: {
+    fetchReactionClassesFromAnalytes: props<{ analytes: string[] }>(),
+    fetchReactionClassesFromAnalyteSuccess: props<{
+      data: Reaction[];
+      query: RampQuery;
+      dataframe?: unknown[];
+    }>(),
+    fetchReactionClassesFromAnalyteFailure: props<{ error: string }>(),
+  },
+});
+
+export const ReactionsFromAnalytesActions = createActionGroup({
+  source: 'Reactions From Analytes',
+  events: {
+    fetchReactionsFromAnalytesAnalytes: props<{ analytes: string[] }>(),
+    fetchReactionsFromAnalytesSuccess: props<{
+      data: Reaction[];
+      query: RampQuery;
+      dataframe?: unknown[];
+    }>(),
+    fetchReactionsFromAnalytesFailure: props<{ error: string }>(),
+  },
+});
+
 export const PathwayEnrichmentsActions = createActionGroup({
   source: 'Pathway Enrichment',
   events: {

@@ -20,7 +20,7 @@ RUN npm install -g nx
 RUN npm install
 RUN nx g @nrwl/workspace:fix-configuration
 RUN npm i
-RUN NODE_OPTIONS=--max_old_space_size=4096 nx run ramp-client:prerender:production --verbose
+RUN NODE_OPTIONS=--max_old_space_size=8192 nx run ramp-client:build:production --verbose
 
 FROM registry.ncats.nih.gov:5000/labshare/docker-base-web
 
