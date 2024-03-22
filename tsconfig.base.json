@@ -61,6 +61,9 @@
       "@ramp/shared/ncats/ncats-footer": [
         "libs/shared/ncats/ncats-footer/src/index.ts"
       ],
+      "@ramp/shared/ramp/full-banner": [
+        "libs/shared/ramp/full-banner/src/index.ts"
+      ],
       "@ramp/shared/ramp/input-row": [
         "libs/shared/ramp/input-row/src/index.ts"
       ],
@@ -88,6 +91,7 @@
       "@ramp/shared/ui/header-template": [
         "libs/shared/ui/header-template/src/index.ts"
       ],
+      "@ramp/shared/ui/highlight": ["libs/shared/ui/highlight/src/index.ts"],
       "@ramp/shared/ui/loading-spinner": [
         "libs/shared/ui/loading-spinner/src/index.ts"
       ],
@@ -97,15 +101,15 @@
       "@ramp/shared/ui/ncats-structure-viewer": [
         "libs/shared/ui/ncats-structure-viewer/src/index.ts"
       ],
-      "@ramp/shared/ui/highlight": [
-        "libs/shared/ui/highlight/src/index.ts"
-      ],
       "@ramp/shared/visualizations/upset-chart": [
         "libs/shared/visualizations/upset-chart/src/index.ts"
       ],
       "@ramp/stores/ramp-store": ["libs/stores/ramp-store/src/index.ts"],
-      "@ramp/shared/ramp/full-banner": [
-        "libs/shared/ramp/full-banner/src/index.ts"
+      "features/ramp/reaction-classes-from-analytes": [
+        "libs/features/ramp/reaction-classes-from-analytes/src/index.ts"
+      ],
+      "features/ramp/reactions-from-analytes": [
+        "libs/features/ramp/reactions-from-analytes/src/index.ts"
       ]
     },
     "allowSyntheticDefaultImports": true

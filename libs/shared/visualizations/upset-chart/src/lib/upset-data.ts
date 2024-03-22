@@ -1,7 +1,7 @@
 export class UpsetData {
   id: string;
   sets: string[];
-  size: number = 0;
+  size = 0;
   combinations: { setId: string; member: boolean }[];
   connectorIndices: [number, number] | [undefined, undefined];
 

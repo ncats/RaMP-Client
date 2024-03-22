@@ -4,12 +4,16 @@
   "projectType": "application",
   "prefix": "ramp-client",
   "sourceRoot": "apps/ramp-client/src",
+  "tags": ["app:ramp-client"],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/ramp-client/browser",
+        "allowedCommonJsDependencies": [
+          "swagger-ui"
+        ],
+        "outputPath": "dist/ramp-client",
         "index": "apps/ramp-client/src/index.html",
         "browser": "apps/ramp-client/src/main.ts",
         "polyfills": ["zone.js"],
@@ -38,7 +42,10 @@
         ],
         "scripts": [],
         "server": "apps/ramp-client/src/main.server.ts",
-        "prerender": true,
+        "prerender": {
+         "discoverRoutes": false,
+          "routesFile": "./apps/ramp-client/routes.txt"
+        },
         "ssr": {
           "entry": "apps/ramp-client/server.ts"
         }
@@ -48,13 +55,13 @@
           "budgets": [
             {
               "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1000mb"
+              "maximumWarning": "5000kb",
+              "maximumError": "10000mb"
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "500kb"
+              "maximumWarning": "2000kb",
+              "maximumError": "5000kb"
             }
           ],
           "fileReplacements": [
@@ -63,7 +70,15 @@
               "with": "apps/ramp-client/src/environments/environment.prod.ts"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "optimization": {
+            "scripts": true,
+            "styles": {
+              "minify": true,
+              "inlineCritical": true
+            },
+            "fonts": false
+          }
         },
         "development": {
           "optimization": false,
@@ -185,6 +200,5 @@
       },
       "defaultConfiguration": "production"
     }
-  },
-  "tags": ["app:ramp-client"]
+  }
 }

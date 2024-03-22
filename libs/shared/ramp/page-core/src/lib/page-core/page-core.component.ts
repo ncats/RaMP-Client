@@ -98,7 +98,7 @@ export class PageCoreComponent {
     } else return '';
   }
 
-  _downloadFile(data: unknown, name: string, type: string = 'text/tsv') {
+  _downloadFile(data: unknown, name: string, type = 'text/tsv') {
     if (this.dom) {
       const file = new Blob([data as Blob], { type: type });
       const link = this.dom.createElement('a');

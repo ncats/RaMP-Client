@@ -647,7 +647,7 @@ export class RampService {
     this.url = url;
   }
 
-  private _makeBlob(data: string[], type: string = 'text/tsv'): Blob {
+  private _makeBlob(data: string[], type = 'text/tsv'): Blob {
     return new Blob([...data], { type: type });
   }
 
