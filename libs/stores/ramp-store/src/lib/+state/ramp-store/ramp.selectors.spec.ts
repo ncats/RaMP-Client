@@ -7,6 +7,7 @@ describe('Ramp Selectors', () => {
   const getRampStoreId = () => 'PRODUCT-BBB';
   const createRampEntity = (id: string, name = '') =>
     ({
+      loading: false,
       id,
       name: name || `name-${id}`,
     }) as RampEntity;

@@ -1,0 +1,41 @@
+<div class="content-panel">
+  <div class="row space-around-row">
+    <div class="full-width">
+      <h1 class="page-title">
+        {{ title | titlecase }}
+      </h1>
+    </div>
+  </div>
+  <div class="row space-around-row">
+    <div class="full-width">
+      <ramp-description
+        [supportedIds]="supportedIds"
+        [description]="description"
+      ></ramp-description>
+    </div>
+  </div>
+
+  <ramp-input-row
+    [input]="input"
+    [examples]="examples"
+    (dataSearch)="fetchReactions($event)"
+    (dataDownload)="fetchReactionsFile($event)"
+  >
+  </ramp-input-row>
+
+  <ramp-feedback-panel
+    [matchesLength]="matches.length"
+    [dataLength]="dataAsDataProperty.length"
+    [inputLength]="inputList.length"
+    [noMatches]="noMatches"
+    [inputType]="input"
+    [function]="query.functionCall"
+  >
+  </ramp-feedback-panel>
+
+  <ramp-query-page
+    [dataColumns]="reactionColumns"
+    [dataAsDataProperty]="dataAsDataProperty"
+  >
+  </ramp-query-page>
+</div>
