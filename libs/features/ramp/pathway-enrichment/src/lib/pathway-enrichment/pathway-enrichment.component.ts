@@ -301,7 +301,7 @@ export class PathwayEnrichmentComponent
   allDataAsDataProperty!: { [key: string]: DataProperty }[];
   pathwayDataAsDataProperty!: { [key: string]: DataProperty }[];
   image!: SafeHtml;
-  enrichedDataframe!: unknown[] | FishersDataframe;
+  enrichedDataframe!: FishersDataframe;
   tooBig = false;
   analyteType = '';
 
@@ -364,8 +364,8 @@ export class PathwayEnrichmentComponent
               this.query = res.query;
             }
             if (res && res.dataframe) {
-              this.enrichedDataframe = res.dataframe;
-              if (this.enrichedDataframe instanceof FishersDataframe && this.enrichedDataframe.analyte_type) {
+              this.enrichedDataframe = res.dataframe as FishersDataframe;
+              if (this.enrichedDataframe.analyte_type) {
                 this.selectedEnrichmentColumns =
                   this.enrichmentColumns[
                     this.enrichedDataframe.analyte_type[0]
@@ -517,7 +517,7 @@ export class PathwayEnrichmentComponent
 
   fetchEnrichedPathwaysFile(): void {
     let data: unknown[];
-    if (this.enrichedDataframe instanceof FishersDataframe && this.enrichedDataframe.fishresults) {
+    if (this.enrichedDataframe.fishresults) {
      data = this.enrichedDataframe.fishresults as unknown[]
     } else {
       data = this.enrichedDataframe as unknown[]
