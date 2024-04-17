@@ -26,7 +26,7 @@ export class FisherResult {
   pathwayName!: string;
   pathwaySource!: string;
   pathwayId!: string;
-  cluster_assignment?: number;
+  cluster_assignment?: string;
   metabCount!: string;
   geneCount!: string;
   pathCount!: string;
@@ -45,5 +45,9 @@ export class FisherResult {
     if (obj.Total_In_Path && obj.Num_In_Path) {
       this.pathCount = obj.Num_In_Path + '/' + obj.Total_In_Path;
     }
+  }
+
+  _getFields() {
+   return Object.keys(this).filter(field => !['Total_In_Path', 'Pval_Holm', 'Pval_FDR', 'Pval', 'Num_In_Path', 'metabCount',	'geneCount',	'pathCount'].includes(field));
   }
 }

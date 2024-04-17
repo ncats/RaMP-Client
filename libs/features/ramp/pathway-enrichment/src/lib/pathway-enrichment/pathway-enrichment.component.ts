@@ -522,8 +522,9 @@ export class PathwayEnrichmentComponent
     } else {
       data = this.enrichedDataframe as unknown[]
     }
+    const fff = new FisherResult(data[0] as Partial<FisherResult>)
       this._downloadFile(
-      this._toTSV(data),
+      this._toTSV(data, fff._getFields()),
       'fetchEnrichedPathwaysFromAnalytes-download.tsv',
     );
   }
