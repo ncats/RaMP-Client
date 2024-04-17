@@ -2,7 +2,8 @@ import { ChemicalEnrichment } from './chemical-enrichment';
 import { FisherResult, FishersDataframe } from './fisher-result';
 import { RampQuery } from './ramp-query';
 
-export class RampDataGeneric {}
+export class RampDataGeneric {
+}
 
 export interface RampAPIResponse<T extends RampDataGeneric> {
   data: Array<T>;

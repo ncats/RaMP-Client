@@ -562,7 +562,7 @@ export class RampService {
               (obj: unknown) => new FisherResult(obj as Partial<FisherResult>),
             ),
             query: {},
-            combinedFishersdataframe: response.data as FishersDataframe,
+            combinedFishersDataframe: response.data as FishersDataframe,
           } as RampPathwayEnrichmentResponse;
         }),
         // catchError(this.handleError('chemical enrichment', [])),

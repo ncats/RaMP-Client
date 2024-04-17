@@ -79,20 +79,27 @@ export class PageCoreComponent {
       .subscribe();
   }
 
-  _toTSV<T extends RampDataGeneric>(data: unknown[]): string {
+  _toTSV<T extends RampDataGeneric>(data: unknown[], fields?: string[]): string {
     if (data) {
       // grab the column headings (separated by tabs)
-      const headings: string = Object.keys(data[0] as string[]).join('\t');
+      const headings: string[] =  fields ? fields : Object.keys(data[0] as string[]);
       // iterate over the data
       const rows: string[] = <string[]>data.reduce(
         (acc: string[], c: unknown) => {
+          const ret = headings.map(field => {
+            if((c as T)[field as keyof T]) {
+              return (c as T)[<string>field as keyof T]
+            } else {
+             return
+            }
+          })
           // for each row object get its values and add tabs between them
           // then add them as a new array to the outgoing array
-          return acc.concat([Object.values(c as T).join('\t')]);
+          return acc.concat(ret.join('\t'));
 
           // finally joining each row with a line break
         },
-        [headings],
+        [headings.join('\t')],
       );
       return rows.join('\n');
     } else return '';
