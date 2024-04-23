@@ -16,9 +16,7 @@ print(dbname)
 #pkg.globals <- setConnectionToRaMP(dbname=dbname,username=username,conpass=conpass,host = host)
 
 # this call is used specifically for connection to MySQL/MariaDB databases.
-rampDB <<- RaMP:::.RaMP(driver = RMariaDB::MariaDB(), dbname = dbname,
-                    username = username, conpass = conpass,
-                    host = host, port = as.integer(port))
+rampDB <<- RaMP:::RaMP()
 
 
 
