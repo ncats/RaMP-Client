@@ -517,14 +517,18 @@ export class PathwayEnrichmentComponent
 
   fetchEnrichedPathwaysFile(): void {
     let data: unknown[];
+    let analyteType = 'both';
     if (this.enrichedDataframe.fishresults) {
      data = this.enrichedDataframe.fishresults as unknown[]
     } else {
       data = this.enrichedDataframe as unknown[]
     }
+    if(this.enrichedDataframe.analyte_type) {
+      analyteType = this.enrichedDataframe.analyte_type[0];
+    }
     const fff = new FisherResult(data[0] as Partial<FisherResult>)
       this._downloadFile(
-      this._toTSV(data, fff._getFields()),
+      this._toTSV(data, fff._getFields(analyteType)),
       'fetchEnrichedPathwaysFromAnalytes-download.tsv',
     );
   }
