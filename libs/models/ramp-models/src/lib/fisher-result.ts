@@ -47,7 +47,12 @@ export class FisherResult {
     }
   }
 
-  _getFields() {
-   return Object.keys(this).filter(field => !['Total_In_Path', 'Pval_Holm', 'Pval_FDR', 'Pval', 'Num_In_Path', 'metabCount',	'geneCount',	'pathCount'].includes(field));
+  _getFields(analyte_type: string) {
+    let ret: string[];
+    if(analyte_type ==='both') {
+      return Object.keys(this).filter(field => !['Total_In_Path', 'Pval_Holm', 'Pval_FDR', 'Pval', 'Num_In_Path', 'metabCount', 'geneCount', 'pathCount'].includes(field));
+    } else {
+      return Object.keys(this).filter(field => !['Total_In_Path_Metab', 'Total_In_Path_Gene', 'Pval_combined_Holm', 'Pval_combined_FDR', 'Pval_Metab','Pval_combined', 'Num_In_Path_Metab', 'Num_In_Path_Gene', 'metabCount', 'geneCount', 'pathCount'].includes(field));
+    }
   }
 }
