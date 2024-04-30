@@ -328,10 +328,19 @@ function(analyte) {
     analytes_df <- RaMP::rampFastCata(
       db = rampDB,
       analytes = analyte,
-      NamesOrIds = "ids"
+      NameOrIds = "ids"
     )
+
+    hmdbMatches <- unlist(unique(analytes_df[[1]]$input_analyte))
+    rheaMatches <- unlist(unique(analytes_df[[2]]$input_analyte))
+    idMatches = length(union(hmdbMatches, rheaMatches))
+
+    # this is the return object from the try/catch
+    # with ramp v3.0, the result is a dataframe of HMDB results and a second dataframe of Rhea results
+    list(data=analytes_df, idMatchCount=idMatches)
   },
     error = function(cond) {
+      idMatches = 0
       return(data.frame(stringsAsFactors = FALSE))
     })
 
@@ -347,15 +356,19 @@ function(analyte) {
   #        }
   #    )
   #    analytes_df <- rbind(analytes_df_ids, analytes_df_names)
-    return(
-      list(
-        data = unique(analytes_df_ids),
-        function_call = makeFunctionCall(analyte,"rampFastCata"),
-        numFoundIds = length(unique(analytes_df_ids$Input_Analyte))
-      )
-    )
-}
 
+  return(
+    # note... currently we're just returning the HMDB results.
+    # RaMP v3 also has Rhea results that can be displayed
+    # It would be referenced like this in this method:  analytes_df_ids$data$Rhea_Analyte_Associations
+    # note below we only reference the HMDB result until the UI can process both dataframes.
+    list(
+      data = unique(analytes_df_ids$data$HMDB_Analyte_Associations),
+      function_call = makeFunctionCall(analyte,"rampFastCata"),
+      numFoundIds = analytes_df_ids$idMatchCount
+    )
+  )
+}
 #####
 #' Return combined Fisher's test results
 #' from given list of analytes query results
