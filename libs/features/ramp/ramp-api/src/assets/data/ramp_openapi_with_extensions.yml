@@ -18,7 +18,7 @@ tags:
 paths:
   /api/source_versions:
     get:
-      summary: Return source version information
+      summary: Return source version information. Includes RaMP version number, source database versions, and other metadata
       responses:
         '200':
           description: OK
@@ -41,7 +41,7 @@ paths:
       parameters: []
   /api/id-types:
     get:
-      summary: Return analyte ID types
+      summary: Return valid RaMP-DB database prefixes for genes and metabolites (e.g. 'hmdb:', 'kegg:')
       responses:
         '200':
           description: OK
@@ -64,7 +64,7 @@ paths:
       parameters: []
   /api/entity_counts:
     get:
-      summary: Return counts on entities and their associations
+      summary: Return association counts for different RaMP-DB data types, broken down by source database (chemical properties, pathway associations, gene/metabolite/pathway counts)
       responses:
         '200':
           description: OK
@@ -87,7 +87,7 @@ paths:
       parameters: []
   /api/analyte_intersects:
     get:
-      summary: Return analyte source intersects
+      summary: Return redundancy of source databases. Lists counts of identical analytes pulled from source databases.
       responses:
         '200':
           description: OK
@@ -119,7 +119,7 @@ paths:
             query_scope: "mapped-to-pathway"
   /api/ontology-types:
     get:
-      summary: Return all types of ontologies present in RaMP-DB
+      summary: Return all metabolite ontologies present in RaMP-DB, including ontology category (e.g. 'Health condition', 'Biofluid and excreta', etc.)
       responses:
         '200':
           description: OK
@@ -142,7 +142,7 @@ paths:
       parameters: []
   /api/chemical-class-type:
     get:
-      summary: Return available high level chemical class types (from ClassyFire)
+      summary: Return chemical class levels present in RaMP-DB (e.g. sub-class, super-class)
       responses:
         '200':
           description: OK
@@ -162,7 +162,7 @@ paths:
             type: string
   /api/pathways-from-analytes:
     post:
-      summary: Return pathways from given list of analytes
+      summary: Return chemical class levels present in RaMP-DB (e.g. sub-class, super-class)
       responses:
         '200':
           description: OK
@@ -184,7 +184,7 @@ paths:
                 analytes: ["ensembl:ENSG00000135679", "hmdb:HMDB0000064", "hmdb:HMDB0000148", "ensembl:ENSG00000141510"]
   /api/analytes-from-pathways:
     post:
-      summary: Retrieve analytes (genes/proteins, metabolites) by pathway.
+      summary: Return analytes from given list of pathways as either json or a tsv
       responses:
         '200':
           description: OK
@@ -220,7 +220,7 @@ paths:
                 match: "exact"
   /api/ontologies-from-metabolites:
     post:
-      summary: Return ontologies from list of metabolites
+      summary: Return ontology mappings from list of metabolites
       responses:
         '200':
           description: OK
@@ -247,7 +247,7 @@ paths:
                 NameOrIds: "ids"
   /api/metabolites-from-ontologies:
     post:
-      summary: Return metabolites from ontology
+      summary: Return metabolites associated with input ontology
       responses:
         '200':
           description: OK
@@ -303,7 +303,7 @@ paths:
                               "hmdb:HMDB0011211"]
   /api/chemical-properties:
     post:
-      summary: Return chemical properties of given metabolites
+      summary: Return chemical properties of given metabolites regarding structure
       responses:
         '200':
           description: OK
@@ -402,7 +402,7 @@ paths:
         '500':
           description: Internal Server Error
       requestBody:
-        description: Filter Pathway Enrichment. This is primarily used after running `combined-fisher-test` as the required input is the output from that call.
+        description: Filter Pathway Enrichment. This is primarily used after running `combined-fisher-test` as the required input is the output from that call. Only pathway below a specified p value threshold will be returned.
         required: true
         content:
           application/json:
@@ -819,7 +819,7 @@ paths:
         '500':
           description: Internal Server Error
       requestBody:
-        description: Cluster Pathway Enrichment. This is primarily used after running `combined-fisher-test` or `filter-fisher-test` as the required input is the output from that call.
+        description: Cluster Pathway Enrichment. This is primarily used after running `combined-fisher-test` or `filter-fisher-test` as the required input is the output from that call. Uses the findCluster agglomerative clustering method from the R package (see documentation for more details).
         required: true
         content:
           application/json:
@@ -1235,7 +1235,7 @@ paths:
                   ]
   /api/chemical-enrichment:
     post:
-      summary: Perform chemical enrichment on given metabolites
+      summary: Perform chemical class enrichment on given metabolites
       responses:
         '200':
           description: OK
