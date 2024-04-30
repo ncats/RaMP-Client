@@ -12,6 +12,7 @@ port <- config$db_port
 print("in db.R... config host:")
 print(host)
 print(dbname)
+print(port)
 
 #pkg.globals <- setConnectionToRaMP(dbname=dbname,username=username,conpass=conpass,host = host)
 

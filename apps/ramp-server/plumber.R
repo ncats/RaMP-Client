@@ -10,7 +10,7 @@ library(ggplot2)
 #* @apiVersion 1.0.1
 
 serializers <- list(
-  "json" = serializer_json(),
+  "json" = serializer_json(serializer_fn=jsonlite::toJSON(na='null')),
   "tsv" = serializer_tsv()
 )
 
