@@ -395,7 +395,7 @@ paths:
                   type: array
                   items:
                     type: string
-                namesOrIds:
+                NamesOrIds:
                   type: string
                   enum: ['name', 'ids']
                   required: false

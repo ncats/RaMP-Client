@@ -328,7 +328,7 @@ function(analyte) {
     analytes_df <- RaMP::rampFastCata(
       db = rampDB,
       analytes = analyte,
-      namesOrIds = "ids"
+      NamesOrIds = "ids"
     )
   },
     error = function(cond) {
