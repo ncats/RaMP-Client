@@ -15,7 +15,7 @@ export class Analyte {
     }
     if (obj.sourceAnalyteIDs) {
       this.sourceAnalyteIDs = obj.sourceAnalyteIDs
-        .split('; ')
+        .split(',')
         .sort((a: string, b: string) => a.localeCompare(b))
         .join('; ');
     }

@@ -24,8 +24,10 @@ export class Reaction {
     }
 
     if (obj['rxn_partner_ids']) {
-      this.rxnPartnerIdsString = <string>obj['rxn_partner_ids'];
-      this.rxnPartnerIds = this.rxnPartnerIdsString.split('; ');
+      this.rxnPartnerIdsString = (<string>obj['rxn_partner_ids']).replace(/,/g, ', ');
+      console.log(obj['rxn_partner_ids'])
+      console.log(this.rxnPartnerIdsString)
+      this.rxnPartnerIds = this.rxnPartnerIdsString.split(',');
     }
   }
 }
