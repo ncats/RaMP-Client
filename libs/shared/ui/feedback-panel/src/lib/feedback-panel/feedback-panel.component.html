@@ -1,32 +1,40 @@
-<br>
-<br>
-<br>
-<div fxLayout="row" fxLayoutAlign="space-around center">
-  <div fxFlex="25" *ngIf="dataLength && dataLength > 0">
-    <mat-card class="ramp-feedback-card">
-      <div fxLayout="row" fxLayoutAlign="space-around start">
-        <div fxFlex="95">
-          Found {{dataLength}} results <br>
-          <span *ngIf="!fuzzy">
-            Matched {{matchesLength}} of {{inputLength}} {{inputType}}
-          </span>
-          <span *ngIf="fuzzy">
-            Fuzzy matched {{matchesLength}} {{inputType}}
-          </span>
+<br />
+<br />
+<br />
+<div class="row space-around-row centered-row">
+  @if (dataLength && dataLength > 0) {
+    <div class="width-25">
+      <mat-card class="ramp-feedback-card">
+        <div class="row">
+          <div class="width-95">
+            Found {{ dataLength }} results <br />
+            @if (!fuzzy) {
+              <span>
+                Matched {{ matchesLength }} of {{ inputLength }} {{ inputType }}
+              </span>
+            }
+            @if (fuzzy) {
+              <span> Fuzzy matched {{ matchesLength }} {{ inputType }} </span>
+            }
+          </div>
         </div>
-      </div>
-      <div fxLayout="row" fxLayoutAlign="space-around start" *ngIf="noMatches && noMatches.length > 0">
-        <div fxFlex="95">
-          There were no matches for the following {{inputType}}:
-          {{noMatches.join(", ")}}
-        </div>
-      </div>
-    </mat-card>
-  </div>
-  <div fxFlex = "70">
-    <div *ngIf="function">
-      <div >The following R function was called:</div>
-      <pre class="code-block">{{function}}</pre>
+        @if (noMatches && noMatches.length > 0) {
+          <div class="row">
+            <div class="width-95">
+              There were no matches for the following {{ inputType }}:
+              {{ noMatches.join(', ') }}
+            </div>
+          </div>
+        }
+      </mat-card>
     </div>
+  }
+  <div class="width-70">
+    @if (function) {
+      <div>
+        <div>The following R function was called:</div>
+        <pre class="code-block">{{ function }}</pre>
+      </div>
+    }
   </div>
 </div>

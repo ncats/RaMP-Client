@@ -1,1 +1,1 @@
-export * from './lib/features-ramp-analytes-from-pathways.module';
+export * from './lib/analytes-from-pathways/analytes-from-pathways.component';

@@ -17,4 +17,34 @@ ramp-header {
     height: 42px;
     padding: 10px;
   }
+
+  .toolbar-template {
+    position: fixed;
+  }
+
+  img.toolbar-template-logo {
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .fill-remaining-space {
+    flex: 1 1 auto;
+  }
+
+  .active {
+    text-decoration: underline;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .menu-button {
+      display: block;
+    }
+    .toolbar-template {
+      justify-content: end;
+    }
+
+    .menu-content {
+      display: none;
+    }
+  }
 }

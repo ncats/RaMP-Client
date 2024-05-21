@@ -9,8 +9,10 @@ describe('ErrorDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ErrorDialogComponent],
-      imports: [],
+      declarations: [],
+      imports: [
+        ErrorDialogComponent
+      ],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: {} }],
     }).compileComponents();
   });

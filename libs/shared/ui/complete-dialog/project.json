@@ -1,11 +1,12 @@
 {
   "name": "shared-ui-complete-dialog",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/ui/complete-dialog/src",
   "prefix": "ramp",
   "targets": {
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/shared/ui/complete-dialog"],
       "options": {
         "jestConfig": "libs/shared/ui/complete-dialog/jest.config.ts",
@@ -13,7 +14,7 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "libs/shared/ui/complete-dialog/**/*.ts",

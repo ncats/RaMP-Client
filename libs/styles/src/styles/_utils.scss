@@ -1,0 +1,48 @@
+@mixin width-sm($width) {
+  @media only screen and (max-width: 768px) {
+    .width-sm-#{$width} {
+      width: $width * 1% !important;
+      flex-basis: $width * 1% !important;
+    }
+  }
+}
+
+@mixin width-md($width) {
+  @media only screen and (max-width: 1240px) {
+    .width-md-#{$width} {
+      width: $width * 1% !important;
+      flex-basis: $width * 1% !important;
+    }
+  }
+}
+
+@mixin width($width) {
+  .width-#{$width} {
+    width: $width * 1%;
+    flex-basis: $width * 1%;
+  }
+}
+
+@mixin horizontalpadding($padding) {
+  .horizontal-padding-#{$padding} {
+    padding: 0 $padding;
+  }
+}
+
+@mixin verticalpadding($padding) {
+  .vertical-padding-#{$padding} {
+    padding: $padding 0;
+  }
+}
+
+@mixin padding($padding) {
+  .padding-#{$padding} {
+    padding: $padding;
+  }
+}
+
+@mixin text-align($direction) {
+  .text-align-#{$direction} {
+    text-align: $direction;
+  }
+}

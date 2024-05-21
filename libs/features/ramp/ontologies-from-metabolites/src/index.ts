@@ -1,1 +1,1 @@
-export * from './lib/features-ramp-ontologies.module';
+export * from './lib/ontologies-from-metabolites/ontologies-from-metabolites.component';

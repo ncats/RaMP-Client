@@ -1,26 +1,45 @@
-<div class = "content-wrapper">
-<header>
-<ramp-header [links]="links"></ramp-header>
-</header>
-<main role ="ncats-main">
-<div class="main-content">
-  <ramp-loading [isLoading]="loading"></ramp-loading>
-  <router-outlet></router-outlet>
-</div>
-</main>
-<footer>
-<ncats-footer>
-  <div class="app-description">
-    <a href="/" title="RaMP home page">
-      <img
-        src="./assets/images/RaMPLogoNCATS.png"
-        alt="RaMP logo"
-        class="ramp-logo-footer"
-        id="logo"
-      />
-    </a>
-
-  </div>
-</ncats-footer>
-</footer>
+<div class="content-wrapper">
+  <header>
+    <ramp-header class="header" [links]="links">
+      <div class="left-options">
+        <a href="/" title="RaMP home page">
+          <img
+            src="./assets/images/RaMPLogoNCATS.png"
+            alt="RaMP logo"
+            class="ramp-logo"
+            id="logo"
+          />
+        </a>
+      </div>
+      <div class="right-options"></div>
+    </ramp-header>
+    <!--
+    <ramp-header [links]="links"></ramp-header>
+-->
+  </header>
+  <main role="ncats-main">
+    <div class="main-content">
+      <div class="row space-around-row">
+        <div class="width-95">
+          <ramp-full-banner [showBanner]="isProd"></ramp-full-banner>
+        </div>
+      </div>
+      <ramp-loading [isLoading]="loading"></ramp-loading>
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+  <footer>
+    <ncats-footer>
+      <div class="app-description">
+        <a href="/" title="RaMP home page">
+          <img
+            src="./assets/images/RaMPLogoNCATS.png"
+            alt="RaMP logo"
+            class="ramp-logo-footer"
+            id="logo"
+          />
+        </a>
+      </div>
+    </ncats-footer>
+  </footer>
 </div>

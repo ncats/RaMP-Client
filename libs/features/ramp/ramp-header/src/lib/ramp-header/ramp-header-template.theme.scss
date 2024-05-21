@@ -1,0 +1,10 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+// Import library functions for theme creation.
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin header-theme($theme) {
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+}

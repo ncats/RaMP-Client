@@ -1,15 +1,27 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, ElementRef,
-  OnInit, ViewChild,
-  ViewEncapsulation
-} from "@angular/core";
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorDialogComponent } from '@ramp/shared/ui/error-dialog';
-import { LinkTemplateProperty } from '@ramp/shared/ui/header-template';
-import { RampFacade } from '@ramp/stores/ramp-store';
+import { select, Store } from '@ngrx/store';
+import {
+  LinkTemplateProperty,
+  RampHeaderComponent,
+} from '@ramp/features/ramp/ramp-header';
+import { NcatsFooterComponent } from '@ramp/shared/ncats/ncats-footer';
+import { LoadingComponent } from '@ramp/shared/ui/loading-spinner';
+import { map } from 'rxjs';
+import { RampFullBannerComponent } from '@ramp/shared/ramp/full-banner';
+import { environment } from '../environments/environment';
+import { RouterOutlet } from '@angular/router';
 
+import { RampSelectors } from '@ramp/stores/ramp-store';
 
 @Component({
   selector: 'ramp-root',
@@ -17,10 +29,22 @@ import { RampFacade } from '@ramp/stores/ramp-store';
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    NcatsFooterComponent,
+    LoadingComponent,
+    RampHeaderComponent,
+    RampFullBannerComponent,
+  ],
 })
 export class AppComponent implements OnInit {
+  private readonly store = inject(Store);
+  destroyRef = inject(DestroyRef);
+
   title = 'ramp-client';
   loading = true;
+  isProd = false;
   links: LinkTemplateProperty[] = [
     {
       link: 'Biological Pathways',
@@ -32,7 +56,7 @@ export class AppComponent implements OnInit {
         {
           link: 'analytes-from-pathways',
           label: 'Analytes from Input Pathways',
-        }
+        },
       ],
     },
     {
@@ -66,9 +90,10 @@ export class AppComponent implements OnInit {
       children: [
         {
           link: 'common-reaction-analytes',
-          label: 'Retrieve Analytes involved in Same Reactions as input Analytes\n',
-        }
-        ]
+          label:
+            'Retrieve Analytes involved in Same Reactions as input Analytes\n',
+        },
+      ],
     },
     {
       link: 'Enrichment Analyses',
@@ -97,24 +122,30 @@ export class AppComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private changeRef: ChangeDetectorRef,
-    protected rampFacade: RampFacade
   ) {}
 
   ngOnInit() {
-    this.rampFacade.error$.subscribe((error) => {
+    this.isProd = !environment.production;
+    /*    this.error$.subscribe((error) => {
       if (error) {
-        console.log(error);
-        /* this.dialog.open(ErrorDialogComponent, {
+        // console.log(error);
+        /!* this.dialog.open(ErrorDialogComponent, {
           data: {
             error: error,
           },
-        });*/
+        });*!/
       }
-    });
+    });*/
 
-    this.rampFacade.loading$.subscribe((res) => {
-      this.loading = res;
-      this.changeRef.markForCheck();
-    });
+    this.store
+      .pipe(
+        select(RampSelectors.getRampLoaded),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: boolean) => {
+          this.loading = res;
+          this.changeRef.markForCheck();
+        }),
+      )
+      .subscribe();
   }
 }

@@ -1,11 +1,9 @@
-<div
-  class="progress-bar-container"
-  [ngClass]="positions[position]"
-  *ngIf="isLoading"
->
-  <mat-spinner
-    color="accent"
-    [diameter]="sizes[size]"
-    class="spinner-svg"
-  ></mat-spinner>
-</div>
+@if (isLoading) {
+  <div class="progress-bar-container" [ngClass]="positions[position]">
+    <mat-spinner
+      color="accent"
+      [diameter]="sizes[size]"
+      class="spinner-svg"
+    ></mat-spinner>
+  </div>
+}

@@ -7,10 +7,13 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './description.component.html',
   styleUrls: ['./description.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [],
 })
 export class DescriptionComponent {
   @Input() function!: string | undefined;
-  @Input() supportedIds?: [{ analyteType: string, idTypes: string[]}];
+
+  @Input() supportedIds!: { analyteType: string; idTypes: string[] }[];
 
   /**
    * initialize a private variable _data, it's a BehaviorSubject

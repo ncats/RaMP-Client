@@ -10,12 +10,11 @@ sudo: false
 cache: packages
 r_build_args: --no-build-vignettes --no-manual
 r_check_args: --no-build-vignettes --no-manual --as-cran
-before_install:
-  Rscript -e 'update.packages(ask = FALSE)'
+before_install: Rscript -e 'update.packages(ask = FALSE)'
 
 os:
   - linux
 r_packages:
   - covr
 after_success:
-- Rscript -e 'library(covr); codecov()'
+  - Rscript -e 'library(covr); codecov()'
