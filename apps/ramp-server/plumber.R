@@ -38,7 +38,7 @@ cors <- function(req, res) {
 }
 
 ######
-#* Return source version information
+#* Return source version information. Includes RaMP version number, source database versions, and other metadata
 #* @serializer unboxedJSON
 #* @get /api/source-versions
 function() {
@@ -51,7 +51,7 @@ function() {
 }
 
 ######
-#* Return database version id
+#* Return RaMP database version number
 #* @serializer unboxedJSON
 #* @get /api/ramp-db-version
 function() {
@@ -64,7 +64,7 @@ function() {
 }
 
 ######
-#* Return current database file url
+#* Return RaMP database version number along with current version notes
 #* @serializer unboxedJSON
 #* @get /api/current-db-file-url
 function() {
@@ -77,9 +77,8 @@ function() {
 }
 
 
-
 ####
-#* Return analyte ID types
+#* Return valid RaMP-DB database prefixes for genes and metabolites (e.g. 'hmdb:', 'kegg:')
 #* @serializer unboxedJSON
 #* @get /api/id-types
 function() {
@@ -93,7 +92,7 @@ function() {
 }
 
 ####
-#* Return counts on entities and their associations
+#* Return association counts for different RaMP-DB data types, broken down by source database (chemical properties, pathway associations, gene/metabolite/pathway counts)
 #* @serializer unboxedJSON
 #* @get /api/entity-counts
 function() {
@@ -106,7 +105,7 @@ function() {
 }
 
 ###
-#* Return analyte source intersects
+#* Return redundancy of source databases. Lists counts of identical analytes pulled from source databases.
 #* @param analytetype specifies type of analyte intersects to return, 'metabolites' or 'genes'
 #* @param query_scope specifies 'global' or 'mapped-to-pathway'
 #* @get /api/analyte-intersects
@@ -130,9 +129,9 @@ function(analytetype, query_scope = 'global') {
 }
 
 #####
-#* Return all types of ontologies present in RaMP-DB
-#* @serializer unboxedJSON
-#* @get /api/ontology-types
+#' Return all metabolite ontologies present in RaMP-DB, including ontology category (e.g. 'Health condition', 'Biofluid and excreta', etc.)
+#' @serializer unboxedJSON
+#' @get /api/ontology-types
 function() {
   ontologies <- RaMP::getOntologies(db = rampDB)
   ontologies <- list(
@@ -145,8 +144,7 @@ function() {
 }
 
 #####
-#' Return available high level chemical class types (from ClassyFire)
-#' @param classtype
+#' Return chemical class levels present in RaMP-DB (e.g. sub-class, super-class)
 #' @get /api/chemical-class-type
 function() {
   ##todo show these in chemical classes page
@@ -160,7 +158,7 @@ function() {
 }
 
 #####
-#' Return pathways from given list of analytes
+#' Return pathway mappings from given list of analytes
 #' @post /api/pathways-from-analytes
 #' @param analytes:[string]
 function(analytes) {
@@ -181,11 +179,11 @@ function(analytes) {
 
 ##########
 #' Return analytes from given list of pathways as either json or a tsv
-#' @param pathway
-#' @param analyte_type
-#' @param names_or_ids
-#' @param match
-#' @param max_pathway_size
+#' @param pathway pathway identifier
+#' @param analyte_type genes, metabolites, or both
+#' @param names_or_ids Pathway common name or database identifier
+#' @param match fuzzy or exact match
+#' @param max_pathway_size Upper limit for size of returned pathways
 #' @post /api/analytes-from-pathways
 function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy", max_pathway_size=1000) {
   analyte <- analyte_type
@@ -207,7 +205,7 @@ function(pathway, analyte_type="both", names_or_ids="names", match="fuzzy", max_
 }
 
 #####
-#* Return ontologies from list of metabolites
+#* Return ontology mappings from list of metabolites
 #* @param metabolite
 #* @param namesOrIds one of “name” or “ids”, default “ids"
 #* @post /api/ontologies-from-metabolites
@@ -226,10 +224,10 @@ function(metabolite, namesOrIds= "ids") {
     )
 }
 
-#* Return metabolites from ontology
-#* @param ontology
-#* @param format one of "json" or "tsv"
-#* @post /api/metabolites-from-ontologies
+#' Return metabolites associated with input ontology
+#' @param ontology Ontology name to be queried
+#' @param format one of "json" or "tsv"
+#' @post /api/metabolites-from-ontologies
 function(ontology, format = "json", res) {
   ontologies_names <- c(ontology)
  # ontologies_names <- paste(ontologies_names, collapse = ", ")
@@ -261,9 +259,7 @@ function(ontology, format = "json", res) {
 
 ######
 #' Return available chemical classes of given metabolites in RaMP-DB
-#' @param metabolites
-#' @param biospecimen
-#' @param file: File
+#' @param metabolites Input metabolites
 #' @parser multi
 #' @parser text
 #' @parser json
@@ -290,9 +286,9 @@ function(metabolites="") {
 }
 
 #####
-#' Return chemical properties of given metabolites
-#' @param metabolites
-#' @param property
+#' Return chemical properties of given metabolites regarding structure
+#' @param metabolites a list object of source prepended metabolite ids, representing a metabolite set of interest
+#' @param property an optional list of specific properties to extract. Options include 'all' (default), 'smiles', 'inchi_key', 'inchi_key_prefix', 'inchi', 'mw', 'monoisotop_mass', 'formula', 'common_name'. If a props list is not supplied, all property fields will be returned.
 #' @post /api/chemical-properties
 function(metabolites="", property="all") {
     properties <- property
@@ -320,8 +316,8 @@ function(metabolites="", property="all") {
 }
 
 ####
-#' Return analytes involved in same reaction as given list of analytes
-#' @param analyte
+#' Return analytes involved in same reaction as given list of analytes from the 'catalyzed' table
+#' @param analyte list of analytes to be queried
 #' @post /api/common-reaction-analytes
 function(analyte) {
   analytes_df_ids <- tryCatch({
@@ -372,8 +368,8 @@ function(analyte) {
 #####
 #' Return combined Fisher's test results
 #' from given list of analytes query results
-#' @param analytes
-#' @param biospecimen
+#' @param analytes list of analytes of interest for pathway analysis
+#' @param biospecimen biospecimen background for Fisher's test
 #' @param file: File
 #' @parser multi
 #' @parser text
@@ -429,9 +425,9 @@ function(analytes = '', biospecimen = '', file = '', background_type= "database"
 #####
 #' Return filtered Fisher's test results
 #' from given list of Fisher's test results
-#' @param fishers_results
+#' @param fishers_results output of runCombinedFisherTest
 #' @param pval_type one of "fdr" or "holm" or "pval"
-#' @param pval_cutoff
+#' @param pval_cutoff p value threshold below which results are considered significant
 #' @post /api/filter-fisher-test-results
 #' @serializer json list(digits = 6)
 function(fishers_results,  pval_type = 'fdr', pval_cutoff = 0.1) {
@@ -449,11 +445,11 @@ function(fishers_results,  pval_type = 'fdr', pval_cutoff = 0.1) {
 
 #####
 #' Return clustered Fisher's test results
-#' from given list of Fisher's test results
-#' @param fishers_results
-#' @param perc_analyte_overlap
-#' @param perc_pathway_overlap
-#' @param min_pathway_tocluster
+#' from given list of Fisher's test results using the findCluster method from the R package (see documentation for further details)
+#' @param fishers_results Output of Fisher's enrichment
+#' @param perc_analyte_overlap Minimum overlap for pathways to be considered similar
+#' @param perc_pathway_overlap Minimum overlap for clusters to merge
+#' @param min_pathway_tocluster Minimum number of 'similar' pathways required to start a cluster (medoid)
 #' @post /api/cluster-fisher-test-results
 #' @serializer json list(digits = 6)
 function(
@@ -483,12 +479,12 @@ function(
 }
 
 #####
-#' Return clustered Fisher's test results
-#' from given list of Fisher's test results
-#' @param fishers_results
-#' @param perc_analyte_overlap
-#' @param perc_pathway_overlap
-#' @param min_pathway_tocluster
+#' Return lollipop plot for clustered Fisher's test results
+#' from given list of Fisher's test results using the findCluster method from the R package (see documentation for further details)
+#' @param fishers_results Output of Fisher's enrichment
+#' @param perc_analyte_overlap Minimum overlap for pathways to be considered similar
+#' @param perc_pathway_overlap Minimum overlap for clusters to merge
+#' @param min_pathway_tocluster Minimum number of 'similar' pathways required to start a cluster (medoid)
 #' @param filename
 #' @post /api/cluster-plot
 #' @serializer contentType list(type='image/svg')
@@ -520,11 +516,11 @@ function(
 
 #####
 #' Perform chemical enrichment on given metabolites
-#' @param metabolites
-#' @param biospecimen
+#' @param metabolites Input for chemical enrichment
+#' @param biospecimen Restrict background to particular biospecimen
 #' @param file: File
 #' @parser multi
-#' @parser text
+#' @parser text                                                               
 #' @parser json
 #' @post /api/chemical-enrichment
 function(metabolites = '', file = '', biospecimen = '', background = "database") {
