@@ -1,41 +1,26 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { MatDialogModule } from '@angular/material/dialog';
-import { RouterTestingModule } from '@angular/router/testing';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { FeaturesRampRampHeaderModule } from '@ramp/features/ramp/ramp-header';
-import { SharedNcatsNcatsFooterModule } from "@ramp/shared/ncats/ncats-footer";
-import { SharedUiLoadingSpinnerModule } from '@ramp/shared/ui/loading-spinner';
-import { RampFacade, StoresRampStoreModule } from '@ramp/stores/ramp-store';
-import { environment } from '../environments/environment';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import {  provideEffects } from "@ngrx/effects";
+import { provideStore } from "@ngrx/store";
+import { provideStoreDevtools } from "@ngrx/store-devtools";
+import { RampEffects, rampReducer } from "@ramp/stores/ramp-store";
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
-        SharedUiLoadingSpinnerModule,
-        FeaturesRampRampHeaderModule,
-        SharedNcatsNcatsFooterModule,
-        MatDialogModule,
-        StoresRampStoreModule,
-        StoreModule.forRoot(
-          {},
-          {
-            metaReducers: !environment.production ? [] : [],
-            runtimeChecks: {
-              strictActionImmutability: true,
-              strictStateImmutability: true,
-            },
-          }
-        ),
-        EffectsModule.forRoot([]),
+        BrowserAnimationsModule,
+        AppComponent
       ],
-      providers: [RampFacade],
+      providers: [
+        provideStore({
+          rampStore: rampReducer
+        }),
+        provideEffects([RampEffects]),
+        provideStoreDevtools({ maxAge: 25, logOnly: false })
+      ]
     }).compileComponents();
   });
 

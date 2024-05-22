@@ -9,7 +9,7 @@ describe('Ontology', () => {
         metabolites: 'tim',
         ontology: 'tim',
         sourceId: 'tim',
-      })
+      }),
     ).toBeTruthy();
   });
 });

@@ -1,10 +1,28 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'ramp-input-row',
   templateUrl: './input-row.component.html',
   styleUrls: ['./input-row.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    TextFieldModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    TitleCasePipe,
+  ],
 })
 export class InputRowComponent implements OnInit {
   @Input() showInput = true;
@@ -30,7 +48,7 @@ export class InputRowComponent implements OnInit {
     if (this.inputFormCtrl.value && this.inputFormCtrl.value.length > 0) {
       if (Array.isArray(this.inputFormCtrl.value)) {
         this.retArr = this.inputFormCtrl.value.map(
-          (val: string) => (val = val.trim())
+          (val: string) => (val = val.trim()),
         );
       } else {
         this.retArr = this.inputFormCtrl.value

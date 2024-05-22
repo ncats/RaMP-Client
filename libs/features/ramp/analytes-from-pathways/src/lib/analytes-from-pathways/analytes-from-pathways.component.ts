@@ -1,21 +1,37 @@
-import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, Input, OnInit } from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
-import { Analyte, RampQuery } from '@ramp/models/ramp-models';
+import { TitleCasePipe } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { select } from '@ngrx/store';
+import { Analyte, RampResponse } from '@ramp/models/ramp-models';
+import { InputRowComponent } from '@ramp/shared/ramp/input-row';
 import { PageCoreComponent } from '@ramp/shared/ramp/page-core';
+import { QueryPageComponent } from '@ramp/shared/ramp/query-page';
+import { DescriptionComponent } from '@ramp/shared/ui/description-panel';
+import { FeedbackPanelComponent } from '@ramp/shared/ui/feedback-panel';
 import { DataProperty } from '@ramp/shared/ui/ncats-datatable';
 import {
-  fetchAnalytesFromPathways,
-  RampFacade,
+  AnalyteFromPathwayActions,
+  RampSelectors,
 } from '@ramp/stores/ramp-store';
-import { takeUntil } from "rxjs";
+import { map } from 'rxjs';
 
 @Component({
   selector: 'ramp-analytes-from-pathways',
   templateUrl: './analytes-from-pathways.component.html',
   styleUrls: ['./analytes-from-pathways.component.scss'],
+  standalone: true,
+  imports: [
+    DescriptionComponent,
+    InputRowComponent,
+    FeedbackPanelComponent,
+    QueryPageComponent,
+    TitleCasePipe,
+  ],
 })
-export class AnalytesFromPathwaysComponent extends PageCoreComponent implements OnInit {
+export class AnalytesFromPathwaysComponent
+  extends PageCoreComponent
+  implements OnInit
+{
   analyteColumns: DataProperty[] = [
     new DataProperty({
       label: 'Pathway Name',
@@ -49,26 +65,31 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
     }),
   ];
 
-  fuzzy= true;
+  override fuzzy = true;
 
-  constructor(
-    private ref: ChangeDetectorRef,
-    protected rampFacade: RampFacade,
-    protected route: ActivatedRoute,
-    @Inject(DOCUMENT) protected dom: Document,
-  ) {
-    super(route, rampFacade, dom);
+  constructor(private ref: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit(): void {
-    this.rampFacade.analytes$
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-        (res: { data: Analyte[]; query: RampQuery, dataframe: any } | undefined) => {
+    this._getSupportedIds();
+    this.store
+      .pipe(
+        select(RampSelectors.getAnalytes),
+        takeUntilDestroyed(this.destroyRef),
+        map((res: RampResponse<Analyte> | undefined) => {
           if (res && res.data) {
             this._mapData(res.data);
-            this.matches = Array.from(new Set(res.data.map(pathway => pathway.pathwayName.toLocaleLowerCase())));
-            this.noMatches = this.inputList.filter((p: string) => !this.matches.includes(p.toLocaleLowerCase()));
+            this.matches = Array.from(
+              new Set(
+                res.data.map((analyte: Analyte) =>
+                  analyte.pathwayName.toLocaleLowerCase(),
+                ),
+              ),
+            );
+            this.noMatches = this.inputList.filter(
+              (p: string) => !this.matches.includes(p.toLocaleLowerCase()),
+            );
           }
           if (res && res.query) {
             this.query = res.query;
@@ -76,40 +97,35 @@ export class AnalytesFromPathwaysComponent extends PageCoreComponent implements 
           if (res && res.dataframe) {
             this.dataframe = res.dataframe;
             if (this.downloadQueued) {
-              this._downloadFile(this._toTSV(this.dataframe), 'fetchAnalytesFromPathways-download.tsv')
+              this._downloadFile(
+                this._toTSV(this.dataframe),
+                'fetchAnalytesFromPathways-download.tsv',
+              );
               this.downloadQueued = false;
             }
           }
           this.ref.markForCheck();
-        }
-      );
+        }),
+      )
+      .subscribe();
   }
 
   fetchAnalytes(event: string[]): void {
-    this.inputList = event.map(item => item.toLocaleLowerCase());
-    this.rampFacade.dispatch(fetchAnalytesFromPathways({ pathways: event }));
+    this.inputList = event.map((item) => item.toLocaleLowerCase());
+    this.store.dispatch(
+      AnalyteFromPathwayActions.fetchAnalytesFromPathways({ pathways: event }),
+    );
   }
 
   fetchAnalytesFile(event: string[]): void {
-    if(!this.dataframe) {
+    if (!this.dataframe) {
       this.fetchAnalytes(event);
       this.downloadQueued = true;
     } else {
-      this._downloadFile(this._toTSV(this.dataframe), 'fetchAnalytesFromPathways-download.tsv')
+      this._downloadFile(
+        this._toTSV(this.dataframe),
+        'fetchAnalytesFromPathways-download.tsv',
+      );
     }
-  }
-
-  private _mapData(data: any): void {
-    this.dataAsDataProperty = data.map((analyte: Analyte) => {
-      const newObj: { [key: string]: DataProperty } = {};
-      Object.entries(analyte).map((value: any, index: any) => {
-        newObj[value[0]] = new DataProperty({
-          name: value[0],
-          label: value[0],
-          value: value[1],
-        });
-      });
-      return newObj;
-    });
   }
 }

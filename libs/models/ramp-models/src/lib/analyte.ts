@@ -1,22 +1,22 @@
 export class Analyte {
-  analyteName: string = '';
-  sourceAnalyteIDs: string = '';
-  geneOrCompound: string = '';
-  pathwayName: string = '';
-  pathwayCategory: string = '';
-  pathwayType: string = '';
-  pathwayId: string = '';
+  analyteName = '';
+  sourceAnalyteIDs = '';
+  geneOrCompound = '';
+  pathwayName = '';
+  pathwayCategory = '';
+  pathwayType = '';
+  pathwayId = '';
 
-  constructor(obj: any) {
-   // Object.assign(this, obj);
+  constructor(obj: Partial<Analyte>) {
+    // Object.assign(this, obj);
 
     if (obj.analyteName) {
       this.analyteName = obj.analyteName;
     }
     if (obj.sourceAnalyteIDs) {
       this.sourceAnalyteIDs = obj.sourceAnalyteIDs
-        .split('; ')
-        .sort((a: string, b: any) => a.localeCompare(b))
+        .split(',')
+        .sort((a: string, b: string) => a.localeCompare(b))
         .join('; ');
     }
     if (obj.geneOrCompound) {

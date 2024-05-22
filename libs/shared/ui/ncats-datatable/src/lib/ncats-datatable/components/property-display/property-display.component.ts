@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { DataProperty } from '../../models/data-property';
+import { RouterLink } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { DecimalPipe } from '@angular/common';
 
 /**
  * component to display a property, primarily in a table
@@ -8,6 +11,8 @@ import { DataProperty } from '../../models/data-property';
   selector: 'ncats-property-display',
   templateUrl: './property-display.component.html',
   styleUrls: ['./property-display.component.scss'],
+  standalone: true,
+  imports: [MatTooltipModule, RouterLink, DecimalPipe],
 })
 export class PropertyDisplayComponent {
   /**
@@ -16,7 +21,12 @@ export class PropertyDisplayComponent {
    */
   @Input() showLabel = true;
 
-  @Input() displayType?: 'string' | 'number' | 'externalLink' | 'internalLink' | 'date'
+  @Input() displayType?:
+    | 'string'
+    | 'number'
+    | 'externalLink'
+    | 'internalLink'
+    | 'date';
   /**
    * property object being shown
    */
@@ -24,7 +34,7 @@ export class PropertyDisplayComponent {
 
   fetchDisplayType(): string {
     let ret = 'string';
-    if(this.displayType) {
+    if (this.displayType) {
       ret = this.displayType;
     } else {
       if (this.property) {
@@ -35,7 +45,10 @@ export class PropertyDisplayComponent {
             ret = 'externalLink';
           }
         }
-        if (Number.isNaN(this.property.value) || Number.isInteger(this.property.value)) {
+        if (
+          Number.isNaN(this.property.value) ||
+          Number.isInteger(this.property.value)
+        ) {
           ret = 'number';
         }
       }
@@ -43,7 +56,7 @@ export class PropertyDisplayComponent {
     return ret;
   }
 
-  isArray(data: any) {
+  isArray(data: unknown) {
     return Array.isArray(data);
   }
 }

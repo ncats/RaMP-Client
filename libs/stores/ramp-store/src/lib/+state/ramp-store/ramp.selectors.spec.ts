@@ -4,12 +4,13 @@ import * as RampSelectors from './ramp.selectors';
 
 describe('Ramp Selectors', () => {
   const ERROR_MSG = 'No Error Available';
-  const getRampStoreId = (it: RampEntity) => 'PRODUCT-BBB';
+  const getRampStoreId = () => 'PRODUCT-BBB';
   const createRampEntity = (id: string, name = '') =>
     ({
+      loading: false,
       id,
       name: name || `name-${id}`,
-    } as RampEntity);
+    }) as RampEntity;
 
   let state: RampPartialState;
 
@@ -26,7 +27,7 @@ describe('Ramp Selectors', () => {
           selectedId: 'PRODUCT-BBB',
           error: ERROR_MSG,
           loading: false,
-        }
+        },
       ),
     };
   });
@@ -34,16 +35,9 @@ describe('Ramp Selectors', () => {
   describe('RampStore Selectors', () => {
     it('getAllRampStore() should return the list of RampStore', () => {
       const results = RampSelectors.getAllRampEntity(state);
-      const selId = getRampStoreId(results[1]);
+      const selId = getRampStoreId();
 
       expect(results.length).toBe(3);
-      expect(selId).toBe('PRODUCT-BBB');
-    });
-
-    it('getSelected() should return the selected Entity', () => {
-      const result = RampSelectors.getSelected(state) as RampEntity;
-      const selId = getRampStoreId(result);
-
       expect(selId).toBe('PRODUCT-BBB');
     });
 

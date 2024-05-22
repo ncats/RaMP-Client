@@ -8,9 +8,8 @@ describe('FeedbackPanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FeedbackPanelComponent ]
-    })
-    .compileComponents();
+      imports: [FeedbackPanelComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

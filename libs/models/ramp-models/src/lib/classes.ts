@@ -6,53 +6,54 @@ export class Classes {
   lipidMapsCategory!: string;
   lipidMapsMainClass!: string;
   lipidMapsSubClass!: string;
-  private _classyFireClasses: ClassLevelNode[] = [];
-  classyFireTree?: any;
-  lipidMapsTree?: any;
-  private _lipidMapsClasses: ClassLevelNode[] = [];
-  treePath!: string;
+ // private _classyFireClasses: ClassLevelNode[] = [];
+ // classyFireTree?: any;
+ // lipidMapsTree?: any;
+ // private _lipidMapsClasses: ClassLevelNode[] = [];
+ // treePath!: string;
   sourceId!: string;
 
-  constructor(obj: any) {
-    if (obj.sourceId) {
-      this.sourceId = obj.sourceId;
+  constructor(obj: {[key: string]: unknown}) {
+    if (obj['sourceId']) {
+      this.sourceId = <string>obj['sourceId'];
     }
-    if (obj.levels) {
-      obj.levels.forEach((level: any) => {
-        if (level.common_names) {
-          this.commonNames = level.common_names;
+    if (obj['levels']) {
+      const arrs: {[key: string]: string}[] = obj['levels'] as {[key: string]: string}[];
+      arrs.forEach((level: {[key: string]: string}) => {
+        if (level['common_names']) {
+          this.commonNames = <string>level['common_names'];
         }
 
-        if(level.class_level_name === "ClassyFire_super_class") {
-          this.classyFireSuperClass = level.class_name;
+        if (level['class_level_name'] === 'ClassyFire_super_class') {
+          this.classyFireSuperClass = <string>level['class_name'];
         }
-        if(level.class_level_name === "ClassyFire_class") {
-          this.classyFireClass = level.class_name;
+        if (level['class_level_name'] === 'ClassyFire_class') {
+          this.classyFireClass = <string>level['class_name'];
         }
-        if(level.class_level_name === "ClassyFire_sub_class") {
-          this.classyFireSubClass = level.class_name;
-        }
-
-        if(level.class_level_name === "LipidMaps_category") {
-          this.lipidMapsCategory = level.class_name;
-        }
-        if(level.class_level_name === "LipidMaps_main_class") {
-          this.lipidMapsMainClass = level.class_name;
-        }
-        if(level.class_level_name === "LipidMaps_sub_class") {
-          this.lipidMapsSubClass = level.class_name;
+        if (level['class_level_name'] === 'ClassyFire_sub_class') {
+          this.classyFireSubClass = <string>level['class_name'];
         }
 
-      //  this[class_level_name] =
-        if (level.class_level_name.includes('LipidMaps')) {
+        if (level['class_level_name'] === 'LipidMaps_category') {
+          this.lipidMapsCategory = <string>level['class_name'];
+        }
+        if (level['class_level_name'] === 'LipidMaps_main_class') {
+          this.lipidMapsMainClass = <string>level['class_name'];
+        }
+        if (level['class_level_name'] === 'LipidMaps_sub_class') {
+          this.lipidMapsSubClass = <string>level['class_name'];
+        }
+
+        //  this[class_level_name] =
+       /* if (level['class_level_name.includes('LipidMaps')) {
           this._lipidMapsClasses.push(new ClassLevelNode(level));
         } else {
           this._classyFireClasses.push(new ClassLevelNode(level));
-        }
+        }*/
       });
     }
 
-    if (this._classyFireClasses.length) {
+/*    if (this._classyFireClasses.length) {
       this.classyFireTree = [
         {
           value: this._classyFireClasses.find((node) => node.level === 0)
@@ -64,7 +65,7 @@ export class Classes {
               children: [
                 {
                   value: this._classyFireClasses.find(
-                    (node) => node.level === 2
+                    (node) => node.level === 2,
                   )?.value,
                 },
               ],
@@ -107,10 +108,11 @@ export class Classes {
         )
           .toLocaleLowerCase()
           .replace(/ /g, '');
-    }
+    }*/
   }
 }
 
+/*
 export class ClassLevelNode {
   class_level_name!: string;
   // label!: string;
@@ -139,3 +141,4 @@ export class ClassLevelNode {
     }
   }
 }
+*/

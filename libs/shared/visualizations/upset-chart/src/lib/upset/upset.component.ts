@@ -1,18 +1,19 @@
 import {
-  Component,
+  Component, DestroyRef,
   ElementRef,
   EventEmitter,
-  HostListener,
+  HostListener, inject,
   Inject,
   Input,
   OnInit,
   Output,
   PLATFORM_ID,
   ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
-import { map, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, Subject } from 'rxjs';
+  ViewEncapsulation
+} from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { select } from 'd3-selection';
 import { axisLeft, AxisScale } from 'd3-axis';
@@ -32,37 +33,34 @@ import { UpsetData } from '../upset-data';
   templateUrl: './upset.component.html',
   styleUrls: ['./upset.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: true,
 })
 export class UpsetComponent implements OnInit {
   @Input() scale: 'linear' | 'log' = 'linear';
   @Output() upSetBarClicked = new EventEmitter();
   @Input() title!: string;
   @ViewChild('upsetPlotBox', { static: true }) upsetPlotElement!: ElementRef;
+  destroyRef = inject(DestroyRef);
 
-  svg: any;
+  svg: unknown;
   width = 300;
   height = 300;
   margin = { top: 5, bottom: 5, left: 5, right: 5 };
   allSetIds: string[] = [];
-  /**
-   * Behaviour subject to allow extending class to unsubscribe on destroy
-   * @type {Subject<any>}
-   */
-  protected ngUnsubscribe: Subject<any> = new Subject();
 
   /**
    * initialize a private variable _data, it's a BehaviorSubject
-   * @type {BehaviorSubject<any>}
+   * @type {BehaviorSubject<UpsetData[]>}
    * @private
    */
-  protected _data = new BehaviorSubject<any>(null);
+  protected _data = new BehaviorSubject<UpsetData[]>([]);
 
   /**
    * pushes changed data to {BehaviorSubject}
    * @param value
    */
   @Input()
-  set data(value: any[]) {
+  set data(value: Partial<UpsetData>[]) {
     this._data.next(value.map((val) => new UpsetData(val)));
   }
 
@@ -74,6 +72,12 @@ export class UpsetComponent implements OnInit {
     return this._data.getValue();
   }
 
+  isBrowser =true;
+
+  intersectionSizeScale!:
+    | AxisScale<number>
+    | (number[] & ScaleLinear<number, number>);
+
   /**
    * function to redraw/scale the graph on window resize
    */
@@ -82,14 +86,16 @@ export class UpsetComponent implements OnInit {
     this.redrawChart();
   }
 
-  constructor(@Inject(PLATFORM_ID) private platformID: any) {}
+  constructor(@Inject(PLATFORM_ID) platformId: object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit(): void {
     this._data
       // listen to data as long as term is undefined or null
       // Unsubscribe once term has value
       .pipe(
-        takeUntil(this.ngUnsubscribe),
+        takeUntilDestroyed(this.destroyRef),
         map((data: UpsetData[]) => {
           data.forEach((d) => this.allSetIds.push(...d.sets));
           this.allSetIds = [...new Set(this.allSetIds)];
@@ -105,7 +111,7 @@ export class UpsetComponent implements OnInit {
             // Determine which sets (circles in the combination matrix) should be connected with a line
             if (combination.sets.length > 1) {
               combination.connectorIndices = extent(combination.sets, (d) =>
-                this.allSetIds.indexOf(d)
+                this.allSetIds.indexOf(d),
               );
             } else {
               combination.connectorIndices = [0, 0];
@@ -113,10 +119,10 @@ export class UpsetComponent implements OnInit {
           });
           this.allSetIds = [...new Set(this.allSetIds)];
           return data;
-        })
+        }),
       )
       .subscribe((data) => {
-        if (isPlatformBrowser(this.platformID)) {
+        if (this.isBrowser) {
           if (data.length > 0) {
             this.drawContainer();
           }
@@ -142,7 +148,7 @@ export class UpsetComponent implements OnInit {
     //  const height = this.height - margin.top - margin.left;
 
     const leftColWidth = this.width * 0.25;
-    const rightColWidth = this.width - leftColWidth;
+    const rightColWidth = this.width - leftColWidth - innerMargin;
 
     const topRowHeight = this.height * 0.66;
     const bottomRowHeight = this.height - topRowHeight - innerMargin;
@@ -158,37 +164,34 @@ export class UpsetComponent implements OnInit {
       .range([0, bottomRowHeight])
       .paddingInner(0.2);
 
-    let intersectionSizeScale:
-      | AxisScale<number>
-      | (number[] & ScaleLinear<number, number>);
 
     if (this.scale === 'log') {
-      intersectionSizeScale = scaleLog()
+      this.intersectionSizeScale = scaleLog()
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-       axisLeft(intersectionSizeScale)
-        .scale(intersectionSizeScale)
+      axisLeft(this.intersectionSizeScale)
+        .scale(this.intersectionSizeScale)
         .tickFormat((d, i) => {
           return (i % 5 === 0 && format(',d')(Number(d))) || '';
         })
         .tickSize(5);
     } else {
-      intersectionSizeScale = scaleLinear()
+      this.intersectionSizeScale = scaleLinear()
         .domain([1, this._getMax()])
         .range([topRowHeight, 0]);
 
-      axisLeft(intersectionSizeScale).tickSize(5);
+      axisLeft(this.intersectionSizeScale).tickSize(5);
     }
 
     // Prepare the overall layout
     const svg = select(element)
       .append('svg:svg')
       .attr('width', this.width)
-      .attr('height', this.height);
-    /* .append("svg:g")
-     .attr("transform", `translate(0, ${this.margin.top})`);
-*/
+      .attr('height', this.height)
+      .append('svg:g')
+      .attr('transform', `translate(-${leftColWidth / 2},0)`);
+
     const setSizeChart = svg
       .append('svg:g')
       .attr('transform', `translate(0, ${topRowHeight + innerMargin})`);
@@ -202,7 +205,7 @@ export class UpsetComponent implements OnInit {
       .append('svg:g')
       .attr(
         'transform',
-        `translate(${leftColWidth}, ${topRowHeight + innerMargin})`
+        `translate(${leftColWidth}, ${topRowHeight + innerMargin})`,
       );
 
     /*
@@ -217,9 +220,13 @@ export class UpsetComponent implements OnInit {
       .attr('class', 'combination')
       .attr(
         'transform',
-        // @ts-ignore
-        //todo: fix the ts-ignore
-        (d) => `translate(${xScale(d.id) + xScale.bandwidth() / 2}, 0)`
+        (d: UpsetData) =>  {
+          let ret = xScale(d.id);
+          if (!ret) {
+            ret = 0
+          }
+          return`translate(${ret + xScale.bandwidth() / 2}, 0)`
+        }
       );
 
     // Select all circles within each group and bind the inner array per data item
@@ -231,33 +238,45 @@ export class UpsetComponent implements OnInit {
 
       .attr(
         'cy',
-        // @ts-ignore
-        //todo: fix the ts-ignore
-        (d) => yCombinationScale(d.setId) + yCombinationScale.bandwidth() / 2
+        (d) => {
+           const ret = yCombinationScale(<string>d.setId);
+            if(ret) {
+              return ret + yCombinationScale.bandwidth() / 2
+            } else {
+              return  yCombinationScale.bandwidth() / 2
+            }
+        },
       )
       .attr('r', () => yCombinationScale.bandwidth() / 4);
 
     // Connect the sets with a vertical line
-    const connector = combinationGroup
+  //  const connector =
+      combinationGroup
       .filter((d) => d.connectorIndices.length > 0)
       .append('svg:line')
       .style('fill', '#265668')
       .attr('class', 'connector')
       .attr(
         'y1',
-        (d) =>
-          // @ts-ignore
-          //todo: fix the ts-ignore
-          yCombinationScale(this.allSetIds[d.connectorIndices[0]]) +
-          yCombinationScale.bandwidth() / 2
+        (d) => {
+        if(d.connectorIndices && d.connectorIndices[0]) {
+         return <number>yCombinationScale(<string>this.allSetIds[d.connectorIndices[0]]) +
+          <number>yCombinationScale.bandwidth() / 2
+        } else {
+        return 0
+        }
+        }
       )
-      .attr(
+        .attr(
         'y2',
-        (d) =>
-          // @ts-ignore
-          //todo: fix the ts-ignore
-          yCombinationScale(this.allSetIds[d.connectorIndices[1]]) +
-          yCombinationScale.bandwidth() / 2
+        (d) => {
+        if(d.connectorIndices && d.connectorIndices[1]) {
+         return <number>yCombinationScale(<string>this.allSetIds[d.connectorIndices[1]]) +
+          <number>yCombinationScale.bandwidth() / 2
+        } else {
+        return 0
+        }
+        }
       );
 
     /*
@@ -277,22 +296,14 @@ export class UpsetComponent implements OnInit {
       .attr('x', leftColWidth - this.margin.left)
       .attr(
         'y',
-        // @ts-ignore
-        //todo: fix the ts-ignore
-        (d) => yCombinationScale(d) + yCombinationScale.bandwidth() / 2
+        (d: string) => <number>yCombinationScale(d) + <number>yCombinationScale.bandwidth() / 2,
       )
       .attr('dy', '0.35em')
       .text((d) => d);
 
-    /*
-     * Intersection size chart
-     */
 
-    // const intersectionSizeAxis = d3.axisLeft(intersectionSizeScale).ticks(3);
-
-    //todo: this ignores the previous Yaxis assignment
-    const intersectionSizeAxis = axisLeft(intersectionSizeScale)
-      .scale(intersectionSizeScale)
+    const intersectionSizeAxis = axisLeft(this.intersectionSizeScale)
+      .scale(this.intersectionSizeScale)
       .tickFormat((d, i) => {
         return (i % 5 === 0 && format(',d')(Number(d))) || '';
       })
@@ -305,7 +316,7 @@ export class UpsetComponent implements OnInit {
         () =>
           `translate(${-(this.margin.left + this.margin.right)}, ${
             this.margin.top + this.margin.bottom
-          })`
+          })`,
       )
       .call(intersectionSizeAxis);
 
@@ -313,23 +324,29 @@ export class UpsetComponent implements OnInit {
       .append('g')
       .attr(
         'transform',
-        () => `translate(0, ${this.margin.top + this.margin.bottom})`
+        () => `translate(0, ${this.margin.top + this.margin.bottom})`,
       )
       .selectAll('rect')
       .data(this.data)
       .join('rect')
       .attr('class', 'bar')
       .style('fill', '#265668')
-      // @ts-ignore
-      //todo: fix the ts-ignore
-      .attr('height', (d) => topRowHeight - intersectionSizeScale(d.size))
+      .attr('height', (d) => {
+        let ret = this.intersectionSizeScale(d.size);
+        if (!ret) {
+          ret = 0
+        }
+        return topRowHeight - ret;
+      })
       .attr('width', xScale.bandwidth())
-      // @ts-ignore
-      //todo: fix the ts-ignore
-      .attr('x', (d) => xScale(d.id))
-      // @ts-ignore
-      //todo: fix the ts-ignore
-      .attr('y', (d) => intersectionSizeScale(d.size))
+      .attr('x', (d: UpsetData) => <number>xScale(<string>d.id))
+      .attr('y', (d) => {
+        let ret = this.intersectionSizeScale(d.size);
+        if (!ret) {
+          ret = 0
+        }
+        return ret;
+      })
       .on('mouseover', () => {
         //  d3.select("#tooltip").style("opacity", 1).html(d.values.join("<br/>"));
       })
@@ -350,19 +367,20 @@ export class UpsetComponent implements OnInit {
       .enter()
       .append('text')
       .attr('font-size', '.6em')
-      // @ts-ignore
-      //todo: fix the ts-ignore
-      .attr('x', (d) => xScale(d.id))
-      // @ts-ignore
-      //todo: fix the ts-ignore
-      .attr('y', (d) =>
-        d.size > 0
-          ? // @ts-ignore
-            //todo: fix the ts-ignore
-            intersectionSizeScale(d.size) + this.margin.top
-          : // @ts-ignore
-            //todo: fix the ts-ignore
-            intersectionSizeScale(1) + this.margin.top
+      .attr('x', (d: UpsetData) => <number>xScale(<string>d.id))
+      .attr('y', (d: UpsetData) => {
+        let scale: number = this.margin.top;
+        let ret;
+          if(d.size > 0) {
+            ret = this.intersectionSizeScale(d.size)
+          } else {
+            ret = this.intersectionSizeScale(1)
+          }
+        if(ret) {
+          scale = scale+ ret;
+        }
+        return scale;
+        }
       )
       .text((d: { size: number }) => format(',d')(Number(d.size)));
   }

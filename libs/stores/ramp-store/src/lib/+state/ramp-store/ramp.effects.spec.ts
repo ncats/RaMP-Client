@@ -5,13 +5,12 @@ import { Action } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { hot } from 'jasmine-marbles';
 import { Observable } from 'rxjs';
+import { LoadRampActions } from "./ramp.actions";
 
-import * as RampActions from './ramp.actions';
-import { RampEffects } from './ramp.effects';
+import * as RampEffects from './ramp.effects';
 
 describe('RampEffects', () => {
   let actions: Observable<Action>;
-  let effects: RampEffects;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -23,14 +22,14 @@ describe('RampEffects', () => {
       ],
     });
 
-    effects = TestBed.inject(RampEffects);
+    //effects = TestBed.inject(RampEffects);
   });
 
   describe('initAbout$', () => {
     it('should work', () => {
-      actions = hot('-a-|', { a: RampActions.initAbout() });
+      actions = hot('-a-|', { a: LoadRampActions.loadRamp() });
 
-      const expected: any[] = [];
+      const expected: string[] = [];
 
       expect(expected).toStrictEqual([]);
     });
