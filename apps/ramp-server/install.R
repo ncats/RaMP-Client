@@ -10,3 +10,4 @@ install_github("ncats/RaMP-DB", force = TRUE, dependencies=TRUE)
 
 library(RaMP)
 
+rampDB <<- RaMP:::RaMP() # pre-load sqlite database to the container

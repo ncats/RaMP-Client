@@ -5,6 +5,8 @@ library(R.cache)
 library(readr)
 library(ggplot2)
 
+rampDB <<- RaMP:::RaMP()
+
 #* @apiTitle RaMP_API
 #* @apiDescription REST API for the Relational Database of Metabolomics Pathways (RaMP) Application
 #* @apiVersion 1.0.1
@@ -520,7 +522,7 @@ function(
 #' @param biospecimen Restrict background to particular biospecimen
 #' @param file: File
 #' @parser multi
-#' @parser text                                                               
+#' @parser text
 #' @parser json
 #' @post /api/chemical-enrichment
 function(metabolites = '', file = '', biospecimen = '', background = "database") {
