@@ -1,1 +1,1 @@
-export * from './lib/features-ramp-pathway-enrichment.module';
+export * from './lib/pathway-enrichment/pathway-enrichment.component';

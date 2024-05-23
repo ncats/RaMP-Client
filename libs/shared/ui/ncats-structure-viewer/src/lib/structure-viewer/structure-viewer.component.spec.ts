@@ -9,7 +9,7 @@ describe('StructureViewerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [StructureViewerComponent],
+      imports: [StructureViewerComponent],
     }).compileComponents();
   });
 

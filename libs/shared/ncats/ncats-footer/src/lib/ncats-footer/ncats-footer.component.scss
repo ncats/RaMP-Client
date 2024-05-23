@@ -2,9 +2,11 @@ ncats-footer {
   .footer-template {
     padding: 5vh 1vw 5vh 1vw;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
-  .links-header{
+  .links-header {
     display: block;
     text-align: center;
     font-size: 1.2em;
@@ -22,9 +24,8 @@ ncats-footer {
   .link-list-item > a {
     color: white;
     font-size: 1em;
-    padding: 1.5vh 0 .2vh 0
+    padding: 1.5vh 0 0.2vh 0;
   }
-
 
   .centered {
     display: flex;
@@ -80,8 +81,7 @@ ncats-footer {
   }
 
   @media only screen and (max-width: 960px) {
-
-    .links-header{
+    .links-header {
       font-size: 1em;
       padding: 2vw;
       text-align: start;
@@ -89,11 +89,11 @@ ncats-footer {
 
     .link-list {
       display: flex;
-      margin-top:1vh;
-      margin-bottom:1vh;
+      margin-top: 1vh;
+      margin-bottom: 1vh;
     }
     .link-list > a {
-      font-size: .8em;
+      font-size: 0.8em;
       padding: 3vw;
     }
   }

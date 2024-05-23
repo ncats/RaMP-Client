@@ -1,13 +1,13 @@
 <div class="content-panel">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <h1 class="page-title">
         {{ title | titlecase }}
       </h1>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <ramp-description
         [supportedIds]="supportedIds"
         [description]="description"
@@ -25,16 +25,18 @@
 
   <ramp-feedback-panel
     [matchesLength]="matches.length"
-    [dataLength] = dataAsDataProperty.length
+    [dataLength]="dataAsDataProperty.length"
     [inputLength]="inputList.length"
     [noMatches]="noMatches"
     [inputType]="input"
-    [fuzzy] = "fuzzy"
-    [function]="query.functionCall">
+    [fuzzy]="fuzzy"
+    [function]="query.functionCall"
+  >
   </ramp-feedback-panel>
 
   <ramp-query-page
     [dataColumns]="analyteColumns"
-    [dataAsDataProperty]="dataAsDataProperty">
+    [dataAsDataProperty]="dataAsDataProperty"
+  >
   </ramp-query-page>
 </div>

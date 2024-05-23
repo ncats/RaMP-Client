@@ -1,18 +1,3 @@
-@use '@angular/material' as mat;
-@import 'libs/styles/src/styles/ncats-theme';
-
-
-
-.toolbar-template {
-  background-color: mat.get-color-from-palette($app-accent);
-  color: #ffffff;
-}
-
-.footer-template {
-  background-color: mat.get-color-from-palette($app-accent);
-  color: #ffffff;
-}
-
 .toolbar-template button {
   color: #ffffff !important;
   padding: 0 1vw 0 1vw;
@@ -30,4 +15,14 @@
 
 .ramp-logo-footer {
   max-width: 100%;
+}
+
+.right-options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  align-content: center;
+  align-items: center;
+  justify-content: flex-start;
 }

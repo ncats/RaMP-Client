@@ -2,3 +2,9 @@
 
 /dist
 /coverage
+/.angular
+/.idea
+/node_modules
+/.nx/cache
+
+.angular

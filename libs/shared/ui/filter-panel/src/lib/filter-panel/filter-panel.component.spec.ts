@@ -1,36 +1,19 @@
-import { ScrollingModule } from "@angular/cdk/scrolling";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { ReactiveFormsModule } from "@angular/forms";
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatInputModule } from "@angular/material/input";
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { FilterPanelComponent } from './filter-panel.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { FilterPanelComponent, FilterValue } from "./filter-panel.component";
 
 describe('FilterPanelComponent', () => {
-  let component: FilterPanelComponent;
-  let fixture: ComponentFixture<FilterPanelComponent>;
+  let component: FilterPanelComponent<FilterValue>;
+  let fixture: ComponentFixture<FilterPanelComponent<FilterValue>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FilterPanelComponent],
+      declarations: [],
       imports: [
         BrowserAnimationsModule,
-        FlexLayoutModule,
-        MatPaginatorModule,
-        MatTableModule,
-        MatSortModule,
-        MatCheckboxModule,
-        MatCardModule,
-        MatCheckboxModule,
-        ScrollingModule,
-        MatInputModule,
-        ReactiveFormsModule
+        FilterPanelComponent
       ],
     }).compileComponents();
   });

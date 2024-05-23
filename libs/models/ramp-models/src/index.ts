@@ -1,4 +1,3 @@
-export * from './lib/models-ramp-models.module';
 export * from './lib/source-version';
 export * from './lib/entity-count';
 export * from './lib/ontology';
@@ -11,3 +10,4 @@ export * from './lib/classes';
 export * from './lib/chemical-enrichment';
 export * from './lib/ramp-query';
 export * from './lib/fisher-result';
+export * from './lib/_utils';

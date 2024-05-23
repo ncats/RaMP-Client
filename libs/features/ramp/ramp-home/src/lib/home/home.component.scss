@@ -1,6 +1,3 @@
-@use '@angular/material' as mat;
-@import 'libs/styles/src/styles/ncats-theme';
-
 .tile-holder {
   margin-top: 10vh;
 }
@@ -25,30 +22,15 @@
   }
 }
 
-.ramp-tile {
-  border: 1px solid;
-  border-color: mat.get-color-from-palette($app-accent);
-;
-  padding: 0;
-
-}
-
-.ramp-card-header {
-  background-color: mat.get-color-from-palette($app-accent);
-  color: #ffffff;
-  padding: 20px;
-}
-
 mat-card-content {
   padding: 16px;
 }
 
 .tile-button {
-  width:95%;
+  width: 95%;
   padding-top: 3vh;
   padding-bottom: 3vh;
   margin-top: 1vh;
   margin-bottom: 1vh;
   line-height: 1.2rem;
 }
-

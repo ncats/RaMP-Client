@@ -1,14 +1,30 @@
-<div matDialogTitle fxLayout = "row" fxLayoutAlign = "space-between start">
-  <span mat-dialog-title>Analysis Complete</span> <mat-icon matRipple (click)="close()" class="close-button">close</mat-icon>
+<div class="dialog-content">
+  <div class="row space-between-row">
+    <span class="banner-title">Analysis Complete</span>
+    <mat-icon matRipple (click)="close()" class="close-button">close</mat-icon>
+  </div>
+  <div mat-dialog-content>
+    @if (!data.message) {
+      <p>
+        {{ data.title }} analysis is now complete. Click on the tabs or below
+        buttons to view the data.
+      </p>
+    }
+    @if (data.message) {
+      <p>{{ data.message }}</p>
+    }
+    <br />
+    <br />
+  </div>
+  <div class="row space-around-row">
+    @for (tab of data.tabs; track tab; let i = $index) {
+      <div>
+        <button mat-flat-button (click)="close(i + 1)" [color]="'accent'">
+          {{ tab }}
+        </button>
+      </div>
+    }
+  </div>
+  <br />
+  <br />
 </div>
-<div mat-dialog-content>
-  <p>{{data.title}} analysis is now complete. Click on the tabs or below buttons to view the data.</p>
-  <br>
-  <br>
-
-</div>
-<div mat-dialog-actions fxLayout = "row" fxLayoutAlign = "space-around start">
-  <button *ngFor = "let tab of data.tabs; index as i"  mat-flat-button (click)="close(i+1)" [color]="'accent'" >{{tab}}</button>
-</div>
-<br>
-<br>

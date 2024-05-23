@@ -1,0 +1,21 @@
+@if (showBanner) {
+  <mat-card class="ramp-banner">
+    <div class="row space-between-row">
+      <span class="banner-title">RaMP Test Instance</span>
+      <button mat-icon-button class="pull-right" (click)="closeBanner()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <mat-card-content>
+      <p>
+        This is the demo version of new RaMP features, and may not behave as
+        expected. If you would like to reach the production version of RaMP,
+        &nbsp;
+        <a href="https://rampdb.nih.gov"> Click Here</a>. <br />
+        If you are interested in testing these new features, or have found a
+        bug, feel free to send us a message at
+        <a href="mailto:NCATSRaMP@nih.gov"> NCATSRaMP&#64;nih.gov</a>
+      </p>
+    </mat-card-content>
+  </mat-card>
+}

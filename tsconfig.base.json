@@ -8,9 +8,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es2022",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2022", "dom", "esnext.asynciterable"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -61,8 +61,8 @@
       "@ramp/shared/ncats/ncats-footer": [
         "libs/shared/ncats/ncats-footer/src/index.ts"
       ],
-      "@ramp/shared/ncats/ncats-header": [
-        "libs/shared/ncats/ncats-header/src/index.ts"
+      "@ramp/shared/ramp/full-banner": [
+        "libs/shared/ramp/full-banner/src/index.ts"
       ],
       "@ramp/shared/ramp/input-row": [
         "libs/shared/ramp/input-row/src/index.ts"
@@ -101,14 +101,18 @@
       "@ramp/shared/ui/ncats-structure-viewer": [
         "libs/shared/ui/ncats-structure-viewer/src/index.ts"
       ],
-      "@ramp/shared/ui/object-tree": [
-        "libs/shared/ui/object-tree/src/index.ts"
-      ],
       "@ramp/shared/visualizations/upset-chart": [
         "libs/shared/visualizations/upset-chart/src/index.ts"
       ],
-      "@ramp/stores/ramp-store": ["libs/stores/ramp-store/src/index.ts"]
-    }
+      "@ramp/stores/ramp-store": ["libs/stores/ramp-store/src/index.ts"],
+      "features/ramp/reaction-classes-from-analytes": [
+        "libs/features/ramp/reaction-classes-from-analytes/src/index.ts"
+      ],
+      "features/ramp/reactions-from-analytes": [
+        "libs/features/ramp/reactions-from-analytes/src/index.ts"
+      ]
+    },
+    "allowSyntheticDefaultImports": true
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -4,11 +4,11 @@
   "include": [],
   "references": [
     {
-      "path": "./tsconfig.lib.json"
+      "path": "./tsconfig.lib.json",
     },
     {
-      "path": "./tsconfig.spec.json"
-    }
+      "path": "./tsconfig.spec.json",
+    },
   ],
   "compilerOptions": {
     "resolveJsonModule": true,
@@ -18,11 +18,11 @@
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "target": "es2020"
+    "target": "es2020",
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+    "strictTemplates": true,
+  },
 }

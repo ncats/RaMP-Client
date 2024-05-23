@@ -1,13 +1,13 @@
 <div class="content-panel">
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <h1 class="page-title">
         {{ title | titlecase }}
       </h1>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around start">
-    <div fxFlex="95">
+  <div class="row space-around-row">
+    <div class="full-width">
       <ramp-description
         [supportedIds]="supportedIds"
         [description]="description"
@@ -21,7 +21,7 @@
     (dataSearch)="fetchClasses($event)"
     (dataDownload)="fetchClassesFile($event)"
   >
-   <!-- <div class ="additional-params">
+    <!-- <div class ="additional-params">
         <br>
         <br>
         <span class="mat-h3">Optional Background Parameters</span>
@@ -59,16 +59,16 @@
           </mat-form-field>
         </div>
       </div>-->
-
   </ramp-input-row>
 
   <ramp-feedback-panel
     [matchesLength]="matches.length"
-    [dataLength] = dataAsDataProperty.length
+    [dataLength]="dataAsDataProperty.length"
     [inputLength]="inputList.length"
     [noMatches]="noMatches"
     [inputType]="input"
-    [function]="query.functionCall">
+    [function]="query.functionCall"
+  >
   </ramp-feedback-panel>
 
   <ramp-query-page
