@@ -1,5 +1,5 @@
 # Define the name of the workflow
-name: snyk-zap
+name: snyk-zap-client
 
 # Define variables
 env:
