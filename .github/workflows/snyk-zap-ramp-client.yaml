@@ -81,7 +81,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_CLI }}
         with:
           image: $DOCKER_REGISTRY/$IMAGE_NAME:$BUILD_VERSION
-          args: --sarif-file-output=snyk.sarif --file=Dockerfile
+          args: --sarif-file-output=snyk.sarif --file=./apps/ramp-client/Dockerfile
       
       - name: Replace security-severity undefined for license-related findings 
         run: |
