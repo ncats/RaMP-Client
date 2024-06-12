@@ -70,7 +70,7 @@ jobs:
     
       # Step 4: Build a Docker image
       - name: Build a Docker image
-        run: ls -ltra && docker build --no-cache -f ./ramp-client/Dockerfile --build-arg BUILD_VERSION=$BUILD_VERSION -t $DOCKER_REGISTRY/$IMAGE_NAME:$BUILD_VERSION .
+        run: ls -ltra && docker build --no-cache -f ./apps/ramp-client/Dockerfile --build-arg BUILD_VERSION=$BUILD_VERSION -t $DOCKER_REGISTRY/$IMAGE_NAME:$BUILD_VERSION .
 
        # Step 5: Run Snyk to check Docker image for vulnerabilities
       - name: Run Snyk to check Docker image for vulnerabilities
