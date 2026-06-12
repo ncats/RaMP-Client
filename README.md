@@ -1,3 +1,5 @@
+This repository has been archived and is no longer maintained.The code is provided for historical reference and may contain unpatched or unknown vulnerabilities. It should not be used in production systems.
+
 # RaMP DB Web Client and API
 
 This are the web client and API for the RaMP DB R package. You can find details on the capabilities on its repository (https://github.com/ncats/RaMP-DB).
